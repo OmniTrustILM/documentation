@@ -1,0 +1,20 @@
+# Configure CZERTAINLY
+
+By default, users and roles that do not exist are rejected.
+
+When you are integrating with AD FS, or generally with an external IdM, it is
+desirable to register new users automatically, make sure that IdM assign them
+some role with permissions configured within CZERTAINLY.
+
+Automatic registration of new roles is also possible but without further
+configuration of permissions, users only with those new roles will not have any
+permissions within CZERTAINLY.
+
+To enable the automatic creation of new users, define in your `values.yaml`
+following section:
+
+```yaml
+authService:
+  createUnknownUsers: "true"
+  createUnknownRoles: "false"
+```
