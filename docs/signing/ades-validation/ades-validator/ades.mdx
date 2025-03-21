@@ -1,0 +1,192 @@
+---
+sidebar_position: 1
+---
+
+import {Fragment} from "react";
+
+# AdES Validator Properties
+
+The implementation class of the AdES Validator is:
+
+```
+com.czertainly.signserver.module.ades.validator.AdESValidator
+```
+
+It contains the integration with the DSS framework and extends the Worker interface of the SignServer. If you want to use the AdES Validator, you must specify this property. The AdES Validator will check the following configuration properties.
+
+export const data = [
+    {
+        property: "REPORT_TYPE",
+        description:
+            (
+                <>
+                    Report type to be returned after the validation process is complete. Allowed values are:
+                    <ul>
+                        <li>SIMPLE - for a simple report</li>
+                        <li>DETAILED - for a detailed report</li>
+                        <li>DIAGNOSTIC - for a diagnostic data report</li>
+                        <li>ETSI - for ETSI validation report</li>
+                        <li>ALL - to return all of the above</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "OUTPUT_TYPE",
+        description:
+            (
+                <>
+                    Output format of the report. Allowed values are:
+                    <ul>
+                        <li>XML</li>
+                        <li>JSON</li>
+                        <li>YAML</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "TRUSTED_CERTIFICATES",
+        description:
+            (
+                <>
+                    Contains list of PEM certificates to use as a trusted sources, additionally to the LOTL and TLs.
+                    This is the place where you need to provide your trusted certificates that are not part of the public trust list.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">LOTL and TLs</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "INCLUDE_SEMANTICS",
+        description:
+            (
+                <>
+                    Sets if the semantics for Indication / SubIndication must be included in the report (see table 5 / 6 of the ETSI TS 119 102-1)
+                    <br/><b>true / false</b>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "VALIDATION_LEVEL",
+        description:
+            (
+                <>
+                    Sets an expected signature validation level. Supported values are:
+                    <ul>
+                        <li>BASIC_SIGNATURES</li>
+                        <li>TIMESTAMPS</li>
+                        <li>LONG_TERM_DATA</li>
+                        <li>ARCHIVAL_DATA</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ARCHIVAL_DATA</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "VALIDATION_POLICY",
+        description:
+            (
+                <>
+                    Provide a custom validation policy. The custom validation policy must be provided as XML document. See example of the <a href="../default-policy">default validation policy</a>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">default validation policy</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    }
+];
+
+export const GenTable = ({data}) => (
+  <Fragment>
+    {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                  <td><b>{dat.property}</b></td>
+                  <td>{dat.description}</td>
+                  <td>{dat.default}</td>
+                  <td>{dat.mandatory}</td>
+                </tr>)
+         })}
+  </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+  <tbody>
+    <GenTable data={data}/>
+  </tbody>
+</table>
+
+## Metadata
+
+The data that needs to be provide for validation of detached signatures should be included as a Base64 encoded original data in the `DETACHED_CONTENTS` metadata when requesting for the augmentation.

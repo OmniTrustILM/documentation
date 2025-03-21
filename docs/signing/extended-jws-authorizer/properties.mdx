@@ -1,0 +1,242 @@
+---
+sidebar_position: 3
+---
+
+import {Fragment} from "react";
+
+# Properties
+
+To enable Extended JWS Authorizer for the worker, use the following class:
+
+```
+AUTHTYPE=com.czertainly.signserver.module.extendedjws.ExtendedJwsAuthorizer
+```
+
+The following properties are available to be configured:
+
+export const data = [
+    {
+        property: "SERVER.N.ISSUER",
+        description:
+            (
+                <>
+                    Issuer of the JWS. It must match the <code>iss</code> claim contained in the JWS.
+                    Several authorization servers can be configured based on the number <b>N</b> that links different authorization servers configurations.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "SERVER.N.PUBLICKEY",
+        description:
+            (
+                <>
+                    Base64 encoded associated public key with the authorization server that is used to validate JWS signature.
+                    The public key is matched with the issuer based on the number <b>N</b>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "SERVER.N.KEYALGORITHM",
+        description:
+            (
+                <>
+                    Public key algorithm. The algorithm is matched with the associated public key based on the number <b>N</b>.
+                    Currently supported algorithms are:
+                    <ul>
+                        <li><b>RSA</b></li>
+                        <li><b>ECDSA</b></li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">RSA</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "SERVER.N.DESCRIPTION",
+        description:
+            (
+                <>
+                    Description of authorization server for identification.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NO</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "JWS.N.CLAIM.NAME",
+        description:
+            (
+                <>
+                    Defines the claim name that must be present in the JWS for authorization.
+                    When the claim name is not available, user is unauthorized.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Must be present when <b>JWS.N.CLAIM.VALUE</b> is present.
+                </>
+            )
+    },
+    {
+        property: "JWS.N.CLAIM.VALUE",
+        description:
+            (
+                <>
+                    Value of the associated claim name that must match.
+                    If the value of the claim does not match, user is unauthorized.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Must be present when <b>JWS.N.CLAIM.NAME</b> is present.
+                </>
+            )
+    },
+    {
+        property: "MAX_ALLOWED_CLOCK_SCEW",
+        description:
+            (
+                <>
+                    Sets the amount of clock skew in seconds to tolerate when verifying the local time against the exp and nbf claims in JWS.
+                    The value in seconds.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">300</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ACCEPTED_AUDIENCES",
+        description:
+            (
+                <>
+                    Comma separated list of accepted audiences that are checked against the intended audiences from the claim of the JWS.
+                    If the JWS has an audience, it must match a one of the audience configured, otherwise the user is not authorized.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "CLAIMS_TO_CONTEXT",
+        description:
+            (
+                <>
+                    When <code>true</code>, all claims from the JWS are added into the <code>RequestContext</code> and can be used further in the signing process.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    }
+];
+
+export const GenTable = ({data}) => (
+    <Fragment>
+        {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                    <td><b>{dat.property}</b></td>
+                    <td>{dat.description}</td>
+                    <td>{dat.default}</td>
+                    <td>{dat.mandatory}</td>
+                </tr>)
+        })}
+    </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={data}/>
+    </tbody>
+</table>
