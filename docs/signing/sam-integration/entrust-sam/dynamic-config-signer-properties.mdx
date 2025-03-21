@@ -1,0 +1,179 @@
+---
+sidebar_position: 9
+---
+
+import {Fragment} from "react";
+
+# Dynamic Configuration Signer
+
+The Dynamic Configuration Signer is a special implementation of the Signer that can be used to sign and apply dynamic configuration for the Entrust SAM.
+
+:::info
+This implementation is compliant with the Entrust SAM version 1.0.3.
+For more information about the dynamic configuration, please refer to the official Entrust SAM documentation.
+:::
+
+The implementation class that must be specified for the Signer is:
+```
+com.czertainly.signserver.module.entrustsam.signer.DynamicConfigSigner
+```
+
+The Dynamic Configuration Signer has the following modes of operation:
+- **sign only**, in which case the signer will only sign the configuration using the Operation Privileged User private key and return the JWS
+- **sign and apply**, in which case the signer will sign the configuration using the Operation Privileged User private key and apply the configuration to the Entrust SAM. The Signer will return the JWS of the current configuration.
+
+The mode can be specified using the [Request Metadata](#request-metadata).
+
+The Dynamic Configuration Signer is configured with the following properties:
+
+export const data = [
+    {
+        property: "ENTRUST_SAM_SERVER",
+        description:
+            (
+                <>
+                    End point to access Entrust SAM administrative functions.
+                    The value of Entrust SAM Server should be specified if you would like to apply the dynamic configuration in the form <b>https://[ip address or hostname]:[port]</b>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_TRUST_SELF_SIGNED",
+        description:
+            (
+                <>
+                    True if the self-signed certificate of the Entrust SAM server can be trusted.
+                    False otherwise.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_CONNECTION_POOL_SIZE",
+        description:
+            (
+                <>
+                    Number as the maximum size of the pooled connections with the Entrust SAM. This value can be fine-tuned to optimize the performance of the signing process.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">30</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "OTHER_SIGNERS",
+        description:
+            (
+                <>
+                    Sets the reference to the Crypto Token containing the key that is used to authenticate to the Entrust SAM.
+                    Only one value should be specified for this attribute. In case it contains multiple comma separated references to Crypto Token, the first one is taken.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Must be present when <b>ENTRUST_SAM_SERVER</b> is specified.
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_CLIENT_AUTHENTICATION_KEY_ALIAS",
+        description:
+            (
+                <>
+                    Identification of the key, based on alias, that should be used to authenticate to the Entrust SAM interface.
+                    The key alias is taken from the <b>OTHER_SIGNERS</b> Crypto Token configuration.
+                    The specified key should authorize Operation Privileged User.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Must be present when <b>ENTRUST_SAM_SERVER</b> is specified.
+                </>
+            )
+    },
+];
+
+export const GenTable = ({data}) => (
+  <Fragment>
+    {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                  <td><b>{dat.property}</b></td>
+                  <td>{dat.description}</td>
+                  <td>{dat.default}</td>
+                  <td>{dat.mandatory}</td>
+                </tr>)
+         })}
+  </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+  <tbody>
+    <GenTable data={data}/>
+  </tbody>
+</table>
+
+See the [Dynamic Configuration Signer sample configuration](./samples/sample-dynamic-config-signer).
+
+## Request Metadata
+
+Request metadata can be used to control the behavior of the Signer. By default, the Dynamic Configuration Signer is in the **sign only** mode.
+If you would like to apply the configuration on the Entrust SAM once it is successfully signed, you can set the **sign and apply** mode using the following request metadata:
+
+```
+ENTRUST_SAM_SYNC=true
+```
+
+:::warning
+**Sign and apply** mode requires `ENTRUST_SAM_SERVER` to be specified.
+:::

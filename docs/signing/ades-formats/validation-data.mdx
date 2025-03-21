@@ -1,0 +1,151 @@
+---
+sidebar_position: 33
+---
+
+import {Fragment} from "react";
+
+# Validation Data
+
+You can configure AdES Signers to return the validation data for the signature. In this case, the following validation data is collected for each signature and certificate in the signature:
+- all certificates in the certificate chain that is needed to validate the signature and timestamps
+- all CRLs that are needed to validate the signatures and timestamps
+- all OCSP responses that are needed to validate the signatures and timestamps
+
+To enable the validation data, you can set the following properties in Signer:
+
+export const data = [
+    {
+        property: "WRAP_WITH_VALIDATION_INFO",
+        description:
+            (
+                <>
+                    Enable the collection of validation data for the signature.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "INCLUDE_CRL_IN_VALIDATION_INFO",
+        description:
+            (
+                <>
+                    Include CRLs in the validation data. If not enabled, the CRLs are not collected and included in the validation data.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">true</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "INCLUDE_OCSP_IN_VALIDATION_INFO",
+        description:
+            (
+                <>
+                    Include OCSP responses in the validation data. If not enabled, the OCSP responses are not collected and included in the validation data.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">true</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "DOWNLOAD_VALIDATION_DATA_FOR_UNTRUSTED_CHAINS",
+        description:
+            (
+                <>
+                    If enabled, the validation data is collected for all certificates in the chain. If not enabled, the validation data is only collected up to the configured trusted anchors.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    }
+];
+
+export const GenTable = ({data}) => (
+    <Fragment>
+        {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                    <td><b>{dat.property}</b></td>
+                    <td>{dat.description}</td>
+                    <td>{dat.default}</td>
+                    <td>{dat.mandatory}</td>
+                </tr>)
+        })}
+    </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={data}/>
+    </tbody>
+</table>
+
+:::tip[External CMS Signer with Validation Data]
+If you are using the [External CMS Signer](./pades-signer/external-cms.mdx), you can get the validation data for the signature and embed it into the resulting PDF document without having to implement the validation data collection yourself, achieving the same result as with the PAdES Signer on Baseline signatures levels B-LT and B-LTA.
+:::
+
+## Structure of the Validation Data
+
+When enabled, the signature response is returned as a JSON object containing the `validationData` field:
+
+```json
+"signatureData": "MIIdSQYJ...",
+"validationData": {
+    "crl": [],
+    "ocsp": [],
+    "certificates": []
+}
+```
+
+Where:
+- **`crl`** is an array of Base64-encoded CRLs
+- **`ocsp`** is an array of Base64-encoded OCSP responses
+- **`certificates`** is an array of Base64-encoded certificates
+
+### Batch signing
+
+When using batch signatures, the `signatureData` has a form of JSON object representing the batch signature response as defined in [Batch Signing](./batch-signing.mdx). The `validationData` is common to all signatures as the signatures were created by the same key.

@@ -1,0 +1,476 @@
+---
+sidebar_position: 3
+---
+
+import {Fragment} from "react";
+
+# Trident SAM Crypto Token Properties
+
+`TridentSAMCryptoToken` implements the Trident SAM and requires access to Trident QSCD.
+Once configured, it can be used to create remote signatures on behalf of the users. The `TridentSAMCryptoToken` can be attached to any `Signer` implementation.
+
+`TridentSAMCryptoToken` can be operated in 2 modes:
+1. **Signing-only mode:** To support only remote signing operations (the user and key management is handled by different component in the solution)
+2. **Key Management mode:** To support signing, user, and key management operations (in this case, it is a single point of SAM key management)
+3. **User Management mode:** To suppord additional user management functions, such as create user, configure authorization, or remove user.
+
+The implementation class of the `TridentSAMCryotoToken` Worker is:
+
+```
+com.czertainly.signserver.trident.TridentSAMCryptoToken
+```
+
+The Worker seamlessly integrates with the Trident SAM interface. The `TridentSAMCryptoToken` Worker will check the following configuration properties.
+
+## Signing-only mode
+
+export const data = [
+    {
+        property: "TRIDENT_URL",
+        description:
+            (
+                <>
+                    URL to access the Trident SAM.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_CEISK",
+        description:
+            (
+                <>
+                    Infrastructural certificate for encryption, represented as PEM encoded string.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_CSISK",
+        description:
+            (
+                <>
+                    Infrastructural certificate for digital signature, represented as PEM encoded string.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "CERT_STORAGE_IMPLEMENTATION_CLASS",
+        description:
+            (
+                <>
+                    Implementation class for certificate storage. Certificates issued for assigned signing keys will be stored according the implementation provided. Each implementation may have additional properties that needs to be configured.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                    <br/>
+                    See <a href='../../cert-storage-providers/overview'>Certificate Storage Providers</a> for more information.
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "SAP_PROVIDER_IMPLEMENTATION_CLASS",
+        description:
+            (
+                <>
+                    Implementation class for Signature Activation Protocol handling between the Signature Integration Component and the Signature Activation Module. This is the interface for providing the Signature Activation Data to be used in order to execute signing operation.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                    <br/>
+                    See <a href='./signature-sap-providers/overview'>Signature SAP Providers</a> for more information.
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    }
+];
+
+export const GenTable = ({data}) => (
+    <Fragment>
+        {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                    <td><b>{dat.property}</b></td>
+                    <td>{dat.description}</td>
+                    <td>{dat.default}</td>
+                    <td>{dat.mandatory}</td>
+                </tr>)
+        })}
+    </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={data}/>
+    </tbody>
+</table>
+
+## Key Management mode
+
+For the Key Management mode, the same properties as for the Signing-only mode must be configured. Additional properties are defined in order to support the management of the users and assigned keys. The following properties are optional for the Signing-only mode, but mandatory for Key Management mode:
+
+export const management = [
+    {
+        property: "TRIDENT_KEY_ADMIN",
+        description:
+            (
+                <>
+                    Identification of the key administrator.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_KEY_ADMIN_PASSWORD",
+        description:
+            (
+                <>
+                    Password associated with the key administrator.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_KEY_ADMIN_TOTP_SEED",
+        description:
+            (
+                <>
+                    TOTP seed associated with the key administrator, in HEX format.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_KEY_ADMIN_TOTP_STEP",
+        description:
+            (
+                <>
+                    TOTP step for generating correct codes for TOTP authentication.
+                    TOPS step is represented in seconds.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_KEY_ADMIN_TOTP_REFRESH_INTERVAL",
+        description:
+            (
+                <>
+                    Refresh interval of the key administrator session based on the TOTP authentication.
+                    Interval is represented in number of seconds.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "KM_SAP_PROVIDER_IMPLEMENTATION_CLASS",
+        description:
+            (
+                <>
+                    Implementation class for the key management operations handling through the Signature Activation Protocol. This interface provides ability for user to activate and manage assigned private keys.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                    <br/>
+                    See <a href='./km-sap-providers/overview'>Key Management SAP Providers</a> for more information.
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_KEYGEN_MDOE",
+        description:
+            (
+                <>
+                    Mode of the key generation based on the configuration of the Trident HSM. Allowed values are:
+                    <ul>
+                        <li>AUTO</li>
+                        <li>MANUAL</li>
+                        <li>HYBRID</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    }
+];
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={management}/>
+    </tbody>
+</table>
+
+### MANUAL and HYBRID key generation
+
+In order to enable **MANUAL** or **HYBRID** key generation mode, additional configuration properties must be available. These are not mandatory in case of **AUTO** key generation mode:
+
+export const keygen = [
+    {
+        property: "TRIDENT_CM_URL",
+        description:
+            (
+                <>
+                    URL to access the Trident CM API.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_CM_ADMIN_UID",
+        description:
+            (
+                <>
+                    Identification of the CM administrator.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_CM_ADMIN_PASSWORD",
+        description:
+            (
+                <>
+                    Password associated with the CM administrator.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "TRIDENT_CM_ADMIN_SESSION_REFRESH_INTERVAL",
+        description:
+            (
+                <>
+                    Refresh interval of the CM administrator session.
+                    Interval is represented in number of seconds.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    }
+];
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={keygen}/>
+    </tbody>
+</table>
+
+## User Management Mode
+
+User Management mode is an extension of the Key Management mode allowing you to manage SAM users. The Key Management Mode must be configured in order to use the User Management mode. This mode allows you to manage users independently of the key management operations. The following properties are optional for other modes, but mandatory for User Management mode:
+
+export const usermanagement = [
+    {
+        property: "UM_SAP_PROVIDER_IMPLEMENTATION_CLASS",
+        description:
+            (
+                <>
+                    Implementation class for the user management operations handling through the Signature Activation Protocol. This interface provides ability to manage users and the authorisation configuration.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                    <br/>
+                    See <a href='./user-sap-providers/overview'>User Management SAP Providers</a> for more information.
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    }
+];
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={usermanagement}/>
+    </tbody>
+</table>
