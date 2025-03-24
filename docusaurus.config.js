@@ -3,6 +3,7 @@ const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
 const apiVersion = '2.14.1-fix';
 const chartVersion = '2.14.1';
+const cscVersion = '1.0.0';
 
 import remarkFindReplacePlugin from './src/plugins/remarkFindReplacePlugin.mjs';
 import remarkSimplePlantumlPlugin from './src/plugins/remarkSimplePlantumlPlugin.mjs';
@@ -299,6 +300,11 @@ const config = {
             spec: 'https://api.czertainly.com/'+apiVersion+'/doc-openapi-protocol-scep.yaml',
             route: '/api/protocol-scep/',
           },
+          {
+            id: 'csc-component',
+            spec: 'https://api.czertainly.com/csc/'+cscVersion+'/csc-component.yaml',
+            route: '/api/csc-component/',
+          },
         ],
         theme: {
           /**
@@ -509,11 +515,11 @@ const config = {
                 },
               ],
             },
-            // {
-            //   href: 'https://api.czertainly.com',
-            //   label: 'OpenAPI',
-            //   position: 'left',
-            // },
+            {
+              label: 'CSC API',
+              position: 'left',
+              to: '/api/csc-component/',
+            },
             {
               href: 'https://github.com/CZERTAINLY/CZERTAINLY/discussions',
               className: 'pseudo-icon github-icon',
