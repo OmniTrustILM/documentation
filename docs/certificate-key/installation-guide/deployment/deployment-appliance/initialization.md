@@ -87,13 +87,13 @@ Option **[Configure CZERTAINLY](./TUI/main-menu.md#configure-czertainly)** of th
 When you select **[Install CZERTAINLY](./TUI/main-menu.md#install-czertainly)** from the main menu, the installation will begin after confirmation.
 
 :::info[Installation time]
-Complete installation takes about 10 minutes on a decent system with good internet access. The most time-consuming part is downloading docker images that are deployed in the cluster.
+Complete installation takes about 10 minutes on a decent system with good internet access. The most time-consuming part is downloading Docker images that are deployed in the cluster.
 :::
 
 After successful installation, the administrator web interface is available at the address:
 ```
 https://[hostname]/administrator/
 ```
-where `hostname` is the value configured in the previous step.
-
-The [Dummy administrator certificate](https://github.com/CZERTAINLY/CZERTAINLY-Helm-Charts/blob/master/dummy-certificates/private/admin.p12) is available for quick testing purposes with password `00000000`.
+where `hostname` is the value configured in the previous step. For logging into the web interface you can use:
+  * the [dummy administrator certificate](https://github.com/CZERTAINLY/CZERTAINLY-Helm-Charts/blob/master/dummy-certificates/private/admin.p12) which is preconfigured for testing purposes, it has password `00000000` or,
+  * the username / password provided at the beginning of the page (if you installed Keycloak).
