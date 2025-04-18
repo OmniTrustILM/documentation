@@ -39,7 +39,7 @@ export const data = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -66,7 +66,7 @@ export const data = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -93,7 +93,7 @@ export const data = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -120,7 +120,7 @@ export const data = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -147,7 +147,7 @@ export const data = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -174,7 +174,7 @@ export const data = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -201,7 +201,39 @@ export const data = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "CERTIFICATION_PERMISSION",
+        description:
+            (
+                <>
+                    Certification signature creation with one of the following values (see "12.8.2.2 DocMDP" of ISO 32000-1):
+                    <ul>
+                        <li><b>NO_CHANGE_PERMITTED</b> (DocMDP value "1") - No changes to the document are permitted; any change to the document shall invalidate the signature.</li>
+                        <li><b>MINIMAL_CHANGES_PERMITTED</b> (DocMDP value "2") - Permitted changes shall be filling in forms, instantiating page templates, and signing; other changes shall invalidate the signature.</li>
+                        <li><b>CHANGES_PERMITTED</b> (DocMDP value "3") - Permitted changes are the same as for 2, as well as annotation creation, deletion, and modification; other changes shall invalidate the signature.</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -232,7 +264,7 @@ export const visible = [
                     <span class="badge badge--success">YES</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -265,7 +297,7 @@ export const visible = [
                     <span class="badge badge--success">YES</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -292,7 +324,7 @@ export const visible = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -319,7 +351,7 @@ export const visible = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -346,7 +378,7 @@ export const visible = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -373,7 +405,7 @@ export const visible = [
                     <span class="badge badge--danger">NO</span>
                 </>
             ),
-        metdata:
+        metadata:
             (
                 <>
                     <span class="badge badge--success">YES</span>
@@ -391,7 +423,7 @@ export const GenTable = ({data}) => (
                   <td>{dat.description}</td>
                   <td>{dat.default}</td>
                   <td>{dat.mandatory}</td>
-                  <td>{dat.metdata}</td>
+                  <td>{dat.metadata}</td>
                 </tr>)
          })}
   </Fragment>
