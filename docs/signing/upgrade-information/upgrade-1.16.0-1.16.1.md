@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 24
 ---
 
 # From 1.16.0 To 1.16.1
