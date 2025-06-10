@@ -68,15 +68,17 @@ For testing purposes, you can use preconfigured [Dummy CA certificate](https://g
 
 CZERTAINLY persists all its data in the Postgres database. The server will be installed for you, but you might want to set your own password for the database. To do so, choose **[Configure database](./TUI/main-menu.md#configure-database)** from the **Main menu**.
 
-## Credentials for CZERTAINLY docker repository
+## Credentials for CZERTAINLY docker repository (optional)
 
-Some parts of CZERTAINLY are private and can't be provided publicly. Those parts are [hosted in a private Docker repository](../../../current-versions/) `harbor.3key.company`.
+Credentials for private CZERTAINLY Docker repository are optional and typically not required. We are providing all necessary Docker containers in the public Docker repository `docker.io/czertainly`. Private Docker containers [hosted in a private Docker repository](../../../current-versions.md) `harbor.3key.company` are kept mainly for internal use and legacy purposes.
+
+The credentials can be used also in case you would like to access your own private Docker repository where you store your own Docker containers.
 
 :::warning[Obtain access to private Docker repository]
-Ask [support](../../../../feedback-support/) for credentials to access a private repository.
+Ask [support](../../../../feedback-support.md) for credentials to access a private repository in case you believe you need access to legacy containers.
 :::
 
-To enter obtained credentials, use option **Main Menu -> [Configure Docker repository access credentials](./TUI/main-menu.md#configure-docker-repository-access-credentials)**.
+To enter credentials for private repository, use option **Main Menu -> [Configure Docker repository access credentials](./TUI/main-menu.md#configure-docker-repository-access-credentials)**.
 
 ## Configure CZERTAINLY
 

@@ -43,19 +43,19 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 | PyADCS Connector               | `1.1.3`  | `docker.io/czertainly/czertainly-pyadcs-connector`                         |
 | HashiCorp Vault Connector      | `1.1.2`  | `docker.io/czertainly/czertainly-hashicorp-vault-connector`                |
 | EJBCA Legacy Connector         | `1.4.1`  | `harbor.3key.company/czertainly/czertainly-ejbca-legacy-ca-connector`      |
-| Keystore Entity Provider       | `1.4.1`  | `docker.io/3keycompany/czertainly-keystore-entity-provider`                |
-| X.509 Compliance Provider      | `1.3.0`  | `docker.io/3keycompany/czertainly-x509-compliance-provider`                |
-| Software Cryptography Provider | `1.2.2`  | `docker.io/3keycompany/czertainly-software-cryptography-provider`          |
+| Keystore Entity Provider       | `1.4.1`  | `docker.io/czertainly/czertainly-keystore-entity-provider`                 |
+| X.509 Compliance Provider      | `1.3.0`  | `docker.io/czertainly/czertainly-x509-compliance-provider`                 |
+| Software Cryptography Provider | `1.2.2`  | `docker.io/czertainly/czertainly-software-cryptography-provider`           |
 | Email Notification Provider    | `1.1.0`  | `docker.io/czertainly/czertainly-email-notification-provider`              |
-| CT Logs Discovery Provider     | `1.0.1`  | `docker.io/czertainly/czertainly-email-notification-provider`              |
+| CT Logs Discovery Provider     | `1.0.1`  | `docker.io/czertainly/ct-logs-discovery-provider`                          |
 
 ## Other
 
-| Service           | Version    | Docker Image                                              |
-|-------------------|------------|-----------------------------------------------------------|
-| Keycloak Internal | `26.1.0-0` | `docker.io/czertainly/czertainly-keycloak-optimized`      |
-| Keycloak Theme    | `0.1.2`    | `docker.io/czertainly/czertainly-keycloak-theme`          |
-| Utils Service     | `1.0.1`    | `harbor.3key.company/czertainly/czertainly-utils-service` |
+| Service           | Version    | Docker Image                                         |
+|-------------------|------------|------------------------------------------------------|
+| Keycloak Internal | `26.1.0-0` | `docker.io/czertainly/czertainly-keycloak-optimized` |
+| Keycloak Theme    | `0.1.2`    | `docker.io/czertainly/czertainly-keycloak-theme`     |
+| Utils Service     | `1.0.1`    | `docker.io/czertainly/czertainly-utils-service`      |
 
 ## Private repository
 
