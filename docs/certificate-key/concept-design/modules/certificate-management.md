@@ -12,11 +12,10 @@ All the certificate management operations in the platform are achieved through t
 
 Operations on `Certificate` includes:
 
-- [Certificate Management](#certificate-management)
-    - [Issuing](#issuing-issuecert)
-    - [Revocation](#revocation-revokecert)
-    - [Renewal](#renewal-renewcert)
-    - [Rekey](#rekey-rekeycert)
+- [Issuing](#issueCert)
+- [Revocation](#revokeCert)
+- [Renewal](#renewCert)
+- [Rekey](#rekeyCert)
 
 ### Issuing \{#issueCert}
 
