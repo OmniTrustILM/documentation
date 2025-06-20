@@ -12,10 +12,11 @@ All the certificate management operations in the platform are achieved through t
 
 Operations on `Certificate` includes:
 
-- [Issuing](#issueCert)
-- [Revocation](#revokeCert)
-- [Renewal](#renewCert)
-- [Rekey](#rekeyCert)
+- [Certificate Management](#certificate-management)
+    - [Issuing {#issueCert}](#issuing-issuecert)
+    - [Revocation {#revokeCert}](#revocation-revokecert)
+    - [Renewal {#renewCert}](#renewal-renewcert)
+    - [Rekey {#rekeyCert}](#rekey-rekeycert)
 
 ### Issuing \{#issueCert}
 
@@ -26,8 +27,11 @@ With defined `RA Profile`, the `Client` will need only the following data to req
 - `RA Profile` Name
 - based on key source
   - *external* - CSR (Certificate Signing Request)
-  - *existing key* - token profile, its key and belonging request and signature attributes
-- `Attributes` for issuing, if needed by the `Connector` implementation
+  - *existing key* - token profile, its key and and signature attributes
+  - *existing alternative key* - optionally, key to be used as alternative public key, along with token profile and signature attributes
+  - `Request Attributes` - attributes for the request, if request is created from existing key(s)
+
+- `Connector Attributes` for issuing, if needed by the `Connector` implementation
 
 Upon successful issuing of the `Certificate`, it will be parsed, validated, and stored in the `Certificate Inventory`.
 
@@ -41,7 +45,7 @@ Once the reason for the revocation is specified, the platform communicates with 
 
 ### Renewal \{#renewCert}
 
-To renew `Certificate`, information currently available in the `Certificate Inventory` is used. Therefore, the `Client` need to provide only new certification signing request or otherwise information about key belonging to certificate will be used.
+To renew `Certificate`, information currently available in the `Certificate Inventory` is used. Therefore, the `Client` need to provide only new certification signing request or otherwise information about key (and alternative key for hybrid certificates) belonging to certificate will be used.
 
 :::note
 Only the `Certificate` that is bound to `RA Profile` can be renewed.
@@ -51,4 +55,6 @@ Only the `Certificate` that is bound to `RA Profile` can be renewed.
 
 This operation is used in case it is necessary to change key that was used for issuance of original certificate because of various reasons.
 
-Data that need to be provided are same as for issuing certificate with a condition that different key needs to be used.
+Data that need to be provided are same as for issuing certificate with a condition that different key needs to be used. If certificate was already hybrid, different alternative key must be used as well. If certificate was not hybrid, and request contains alternative key, the alternative key will be added to the certificate (if CA that issued the certificate supports alternative keys).
+
+
