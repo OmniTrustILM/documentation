@@ -17,9 +17,10 @@ Operations on `Key` includes:
 - **Sign / Verify**
 - **Generate random data**
 
-## Experimental support for PQC algorithms
+## Support for PQC algorithms
 
-The platform implements experimental support for post-quantum cryptography algorithms. The following PQC signature schemes are supported:
-- FALCON
-- CRYSTALS-Dilithium
-- SPHINCS+
+The platform implements support for several post-quantum cryptography algorithms. The following PQC signature schemes are supported:
+- ML-DSA - also known as CRYSTALS-Dilithium, lattice-based and the primary signature algorithm standardised by NIST - [FIPS 204](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf)
+- SLH-DSA - also known as SPHINCS+, a stateless hash-based signature algorithm standardised by NIST - [FIPS 205](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.205.pdf)
+- ML-KEM - also known as CRYSTALS-Kyber, a lattice-based and the primary key encapsulation mechanism standardised by NIST - [FIPS 203](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf)
+- FALCON - a lattice-based signature scheme, now only selected by NIST for standardisation
