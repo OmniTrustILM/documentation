@@ -16,13 +16,13 @@ The CZERTAINLY platform supports workflows starting from version 2.12.0. The cur
 
 A workflow consists of the following components:
 
-| Component                                                  | Description                                                                                                                                                                            |
-|------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **[Conditions](../core-components/workflow/condition.md)** | Criteria used to evaluate if specific operations should be executed. If the conditions are met, the corresponding actions are triggered for the object.                                |
-| **[Rules](../core-components/workflow/rule.md)**           | Collections of conditions that are assessed to decide if an action should be initiated. Rules can include multiple conditions with various types and operators.                        |
-| **[Executions](../core-components/workflow/execution.md)** | Operations performed when a rule is triggered. Executions are typically processed in a specified order to ensure the correct sequence of actions.                                      |
-| **[Actions](../core-components/workflow/action.md)**       | Groups of executions triggered when a rule's conditions are met. Actions may consist of multiple executions, each processed in a defined order for objects that match the rules.       |
-| **[Triggers](../core-components/workflow/trigger.md)**     | Events that initiate a workflow. Triggers are linked to rules and actions, determining how and when a workflow starts. Triggers can be time-based, event-based, or manually initiated. |
+| Component                                                  | Description                                                                                                                                                                                |
+|------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **[Conditions](../core-components/workflow/condition.md)** | Criteria used to evaluate if specific operations should be executed. If the conditions are met, the corresponding actions are triggered for the object.                                    |
+| **[Rules](../core-components/workflow/rule.md)**           | Collections of conditions that are assessed to decide if an action should be initiated. Rules can include multiple conditions with various types and operators.                            |
+| **[Executions](../core-components/workflow/execution.md)** | Operations performed when a rule is triggered. Executions are typically processed in a specified order to ensure the correct sequence of actions.                                          |
+| **[Actions](../core-components/workflow/action.md)**       | Groups of executions triggered when a rule's conditions are met. Actions may consist of multiple executions, each processed in a defined order for objects that match the rules.           |
+| **[Triggers](../core-components/workflow/trigger.md)**     | Constructs that initiate a workflow. Triggers are linked to rules and actions, determining how and when a workflow starts. Triggers can be time-based, event-based, or manually initiated. |
 
 ## Components relations
 
