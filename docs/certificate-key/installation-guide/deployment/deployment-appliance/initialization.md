@@ -23,7 +23,7 @@ Bold items are mandatory, even for testing purposes.
 3. [Setup TLS certificate](#tls-certificate-for-czertainly-interface)
 4. [Trusted certificate list](#trusted-certificates-list)
 5. [Configure database](#database)
-6. [Configure credentials to CZERTAINLY docker repository](#credentials-for-czertainly-docker-repository)
+6. [Configure credentials to CZERTAINLY docker repository](#credentials-for-czertainly-docker-repository-optional)
 7. [**Configure CZERTAINLY**](#configure-czertainly)
 8. [**Install CZERTAINLY**](#install-czertainly)
 
