@@ -38,11 +38,13 @@ The following steps illustrate the process of requesting the certificate through
 4. `Authority Provider` validates the certificate signing request and issues the certificate
 5. `RA Profile` forwards the certificate to the `Client`
 
-### Certificate Validation
+### Certificate Validation Settings
 
-`RA Profile` can override platform certificate validation settings for certificates that are assigned to it. 
-| Name                  | Description                            | Default Value                                             |
-|-----------------------|----------------------------------------|------------------------------------------------------|
-| **Validation Enabled** |If NULL, platform settings will be used, if true validation of certificates associated with the RA Profile is enabled, if false, validation is disabled| NULL |
-| **Validation Frequency** |Frequency of validation of certificates associated with the RA Profile in days| Everyday|
-| **Expiring Threshold** |How many days before expiration should certificate validation status of certificates associated with the RA Profile change to Expiring| 30 days|
+`RA Profile` can override platform certificate validation settings for certificates that are assigned to it. The following attributes are used to configure the certificate validation for the `RA Profile`:
+
+| Name                                  | Description                                                                                                                                                         | Default Value |
+|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| **Platform Validation Settings Used** | If enabled, platform settings will be used for validation of certificates associated with the RA Profile, otherwise RA Profile settings will be used for validation | `enabled`     |
+| **Validation Enabled**                | Enable or disable validation of certificates associated with the RA Profile                                                                                         | `disabled`    |
+| **Validation Frequency**              | Validation frequency of certificates associated with the RA Profile specified in days                                                                               | Everyday      |
+| **Expiring Threshold**                | How many days before expiration should validation status of certificates associated with the RA Profile change to `Expiring`                                        | 30 days       |
