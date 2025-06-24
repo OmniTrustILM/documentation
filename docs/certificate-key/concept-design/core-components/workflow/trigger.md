@@ -18,7 +18,7 @@ They provide the starting point for the workflow execution, enabling the automat
 | **Trigger Name**   | A unique name for the trigger.                                             |
 | **Description**    | A brief explanation of the trigger's purpose.                              |
 | **Type**           | The type of trigger to restrict its usage.                                 |
-| **Event**          | The specific event that limits the trigger to be associated with.          |
+| **Event Name**     | The specific event that is supported by the trigger.                       |
 | **Ignore Trigger** | A flag to indicate if the trigger should ignore processing matched object. |
 | **Resource**       | The object or entity to which the trigger applies.                         |
 | **Rules**          | The rules associated with the trigger.                                     |

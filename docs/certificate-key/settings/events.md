@@ -4,19 +4,17 @@ sidebar_position: 20
 
 # Events
 
-The `Events` feature empowers administrators to seamlessly configure external notifications for users within the platform, enhancing communication and user engagement.
+The `Events` allows users to seamlessly configure and manage events that occur within the platform, enabling a robust workflow automation system. Events can be triggered by changes in the lifecycle of objects, such as state changes or performed actions. They can also be part of scheduled monitoring for objects that require user attention.
 
-For detailed insights, refer to the comprehensive guide on [Events](../concept-design/core-components/workflow/event).
+For more details about the events, refer to the [Events](../concept-design/core-components/workflow/event.md) section in architecture documentation.
 
 ## Managing `Events` in settings
 
-Within the settings section, administrators wield control over events and associate triggers with them. In that way, when event occurs, all associated triggers are processed.
-Thanks to event triggers, it is possible to automatize actions and/or notify users about events.
+Within the settings section, users can configure associated triggers for each event. This configuration allows users to define how the platform should respond when specific events occur. By associating triggers with events, users can automate actions or notify users about significant occurrences.
 
 ### `Notification` instances
 
-The flexibility of the platform shines through the ability to create, edit, and delete `Notification` instances.
-These instances are the building blocks that determine the content and conditions for each external notification.
-By managing these instances, administrators can precisely tailor the notification experience for users.
+The platform provides ability to create, edit, and delete `Notification` instances.
+Notification instances defines external channels through which notifications are delivered, such as email, webhooks, or other external systems. Each instance can be configured with specific attributes.
 
-For detailed insights, refer to the comprehensive guide on [Notifications](../concept-design/architecture/notifications).
+For more details about the notification instances, refer to the [Notification Instances](../concept-design/architecture/notifications.md) section in architecture documentation.

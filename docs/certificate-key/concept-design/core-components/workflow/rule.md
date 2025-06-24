@@ -16,7 +16,7 @@ Rules are collections of conditions that are evaluated to decide whether an acti
 | **Conditions**  | The conditions that must be met for the rule to trigger an action. |
 
 :::note
-Rule can support resource `Any`, which allows to combine conditions with different resources. It is useful in case we want to reuse same rule/condition in multiple triggers.
+Rule can support resource `Any`, which allows to combine conditions with different resources. It is useful in case you would like to reuse same rule/condition in multiple triggers.
 :::
 
 ## Rule evaluation
