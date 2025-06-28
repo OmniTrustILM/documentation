@@ -38,4 +38,4 @@ The following resources can be useful when integrating the CZERTAINLY with the c
 | [cert-manager installation guide](https://cert-manager.io/docs/installation/)                                                             | cert-manager installation guide         |
 | [cert-manager Certificate resource](https://cert-manager.io/docs/concepts/certificate/)                                                   | cert-manager Certificate resource guide |
 | [CZERTAINLY Issuer repository](https://github.com/CZERTAINLY/CZERTAINLY-Cert-Manager-Issuer)                                              | CZERTAINLY Issuer repository            |
-| [CZERTAINLY Issuer Helm chart](https://github.com/CZERTAINLY/CZERTAINLY-Cert-Manager-Issuer/tree/develop/deploy/charts/czertainly-issuer) | CZERTAINLY Issuer Helm chart repository |
+| [CZERTAINLY Issuer Helm chart](https://github.com/CZERTAINLY/CZERTAINLY-Cert-Manager-Issuer/tree/main/deploy/charts/czertainly-issuer) | CZERTAINLY Issuer Helm chart repository |
