@@ -8,7 +8,7 @@ Platform settings represent general configuration of the platform.
 
 Currently there are following platform settings categories:
 - [Util](#util-settings)
-- [Certificates](#certificates-settinngs)
+- [Certificates](#certificates-settings)
 
 ## Util settings
 
