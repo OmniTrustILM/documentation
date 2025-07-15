@@ -8,32 +8,9 @@ OpenShift is a Red Hat edition of Kubernetes. It has some differences from the g
 
 ## UID ranges
 
-OpenShift uses UID isolation between namespaces. This isolation means that PODs in different namespaces can't run under the same UID. You can learn about assigned ranges:
-```
-$ oc describe project semik75-dev
-Name:       semik75-dev
-...
-Annotations:
-...
- openshift.io/sa.scc.supplemental-groups=1011740000/10000
- openshift.io/sa.scc.uid-range=1011740000/10000
-```
+OpenShift uses UID isolation between namespaces. This isolation means that PODs in different namespaces can't run under the same UID. You can learn about assigned ranges by running the following command: `oc describe project <project-name`.
 
-OpenShift ignores the UID assigned by the `USER` command inside container images. CZERTAINLY Helm Charts respects those UIDs and defines them in `securityContext`, but this conflicts with OpenShift security limits, and containers fail to get scheduled with the error message:
-`.containers[0].runAsUser: Invalid value: 70: must be in the ranges: [1011740000, 1011749999]`.
-
-The problem can be resolved by removing `runAsUser` values from securityContext; this can be achieved by setting this key to a null value, like this:
-```
-schedulerService:
- image:
- securityContext:
- runAsUser: null
- curl:
- image:
- securityContext:
- runAsUser: null
-```
-A complete example value file can be found in [czertainly.values.security.yaml](https://github.com/semik/CZERTAINLY-OpenShift/blob/develop/czertainly.values.security.yaml)
+CZERTAINLY Helm Charts before version 2.15.0 were using hardcoded UIDs for running containers which were not compatible with OpenShift. It is now fixed in CZERTAINLY Helm Charts version 2.15.1 and later.
 
 ## Resource limits
 
@@ -76,12 +53,11 @@ cp czertainly.values.private.example czertainly.values.private.yaml
 helm upgrade -n semik75-dev --install czertainly-tlm \
   oci://harbor.3key.company/czertainly-helm/czertainly \
   --values=./czertainly.values.openshift.base.yaml \
-  --values=./czertainly.values.security.yaml \
   --values=./czertainly.values.resources.yaml \
   --values=./czertainly.values.private.yaml
 
 # install NGINX to terminate mTLS
-kubectl apply -f nginx-ingress-deployment.yaml \
+oc apply -f nginx-ingress-deployment.yaml \
   -f nginx-ingress-configmap.yaml \
   -f nginx-ingress-service.yaml \
   -f openshift-route.yaml
