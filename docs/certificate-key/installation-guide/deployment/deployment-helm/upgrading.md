@@ -18,6 +18,41 @@ The following contains important information and instructions about upgrading He
 
 Upgrading Helm chart is done by running the `helm upgrade` command. The command upgrades the platform to the specified version. The command can be used to upgrade the platform to the same version with changed parameters.
 
+## To 2.15.0
+
+### New connector sub-charts
+
+The following sub-charts were added to support additional connectors as optional components:
+- Webhook Notification Provider
+
+When you enable new connector during upgrade, you need to register the connector manually in the platform:
+```yaml
+webhookNotificationProvider:
+  enabled: false
+```
+
+### User option removed from PgBouncer
+
+The `user` configuration option was removed from the `pg-bouncer` sub-chart to avoid conflicts with the running user in the container for different K8s distributions. If you need to set the user, you can do it by setting the following properties in the `pgBouncer` section of the `values.yaml` file:
+```yaml
+pgBouncer:
+  section:
+    pgbouncer:
+      user: "postgres"
+```
+
+### Removed default runAsUser option
+
+The default `runAsUser` was removed from the Helm chart for optimized deployment on different K8s distributions, including OpenShift. The `runAsUser` value can be set in the `securityContext` and `podSecurityContext` sections of the `values.yaml` file.
+
+### Global configuration of replica count
+
+The global `replicaCount` parameter was introduced to allow setting the number of replicas for all components in the platform. The parameter can be set in the `global` section of the `values.yaml` file:
+```yaml
+global:
+  replicaCount: 1
+```
+
 ## To 2.14.1
 
 ### External messaging support

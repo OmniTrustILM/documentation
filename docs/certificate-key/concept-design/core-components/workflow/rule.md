@@ -15,6 +15,10 @@ Rules are collections of conditions that are evaluated to decide whether an acti
 | **Resource**    | The object or entity to which the rule applies.                    |
 | **Conditions**  | The conditions that must be met for the rule to trigger an action. |
 
+:::note
+Rule can support resource `Any`, which allows to combine conditions with different resources. It is useful in case you would like to reuse same rule/condition in multiple triggers.
+:::
+
 ## Rule evaluation
 
 Rules are evaluated based on the conditions they contain. All the conditions within a rule must be met for the rule to be evaluated as matching. The evaluation logic determines how the conditions are processed and whether the rule is triggered.

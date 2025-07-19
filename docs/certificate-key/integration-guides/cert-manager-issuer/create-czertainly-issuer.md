@@ -9,24 +9,40 @@ The CZERTAINLY Issuer implements `czertainly-issuer.czertainly.com/v1alpha1` API
 | Field                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Mandatory                                     |
 |----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
 | `apiUrl`             | URL to access CZERTAINLY platform API                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | <span class="badge badge--success">YES</span> |
-| `authSecretName`     | Reference to a `kubernetes.io/tls` Secret that is used to authenticate and authorize to CZERTAINLY platform. The `Secret` must be in the same namespace as the referent. If the referent is a `CzertainlyClusterIssuer`, the reference instead refers to the resource with the given name in the configured 'cluster resource namespace', which is set as a flag on the controller component (and defaults to the namespace that the controller runs in)                                              | <span class="badge badge--success">YES</span> |
+| `authSecretName`     | Reference to a `kubernetes.io/tls` or `Opaque` Secret that is used to authenticate and authorize to CZERTAINLY platform. The `Secret` must be in the same namespace as the referent. If the referent is a `CzertainlyClusterIssuer`, the reference instead refers to the resource with the given name in the configured 'cluster resource namespace', which is set as a flag on the controller component (and defaults to the namespace that the controller runs in)                                  | <span class="badge badge--success">YES</span> |
 | `raProfileUuid`      | UUID of the RA profile to use when managing certificates. You can get the UUID of configured RA profile in the CZERTAINLY platform. The user should have permission to use the RA profile                                                                                                                                                                                                                                                                                                             | <span class="badge badge--success">YES</span> |
 | `raProfileName`      | Name of the RA profile to use when managing certificates. This is the name of configured RA profile in the CZERTAINLY platform. The user should have permission to use the RA profile                                                                                                                                                                                                                                                                                                                 | <span class="badge badge--danger">NO</span>   |
 | `caBundleSecretName` | Reference to a `Secret` that contains the CA bundle to use when verifying the CZERTAINLY platform's serving certificates. The Secret must be in the same namespace as the referent and must contain 'ca.crt' in data. If the referent is a `CzertainlyClusterIssuer`, the reference instead refers to the resource with the given name in the configured 'cluster resource namespace', which is set as a flag on the controller component (and defaults to the namespace that the controller runs in) | <span class="badge badge--danger">NO</span>   |
 
 ## Authentication
 
-The CZERTAINLY Issuer uses the `authSecretName` referenced secret to authenticate and authorize to the CZERTAINLY platform. The secret must be a `kubernetes.io/tls` to establish mutual TLS connection with the CZERTAINLY platform.
+The CZERTAINLY Issuer uses the `authSecretName` referenced secret to authenticate and authorize to the CZERTAINLY platform. The secret must be:
+- a `kubernetes.io/tls` to establish mutual TLS connection with the CZERTAINLY platform;
+- or an `Opaque` secret containing the OAuth 2.0 client credentials to authenticate with the CZERTAINLY platform.
 
-To create the `kubernetes.io/tls` secret, you can use your existing certificate and key pair and create the secret with the following command:
+The secret with the name `czertainly-credentials` is created and can be used as the `authSecretName` in the CZERTAINLY Issuer.
+
+### mTLS authentication
+
+To create the [`kubernetes.io/tls`](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) secret, you can use your existing certificate and key pair and create the secret with the following command:
 ```bash
 kubectl create secret tls czertainly-credentials \
   --namespace czertainly-issuer \
-  --cert=<path-to-cert-file> \
-  --key=<path-to-key-file>
+  --cert=<path to cert file> \
+  --key=<path to key file>
 ```
 
-The secret with the name `czertainly-credentials` is created and can be used as the `authSecretName` in the CZERTAINLY Issuer.
+### OAuth 2.0 client credentials authentication
+
+To create the [`Opaque`](https://kubernetes.io/docs/concepts/configuration/secret/#opaque-secrets) secret for OAuth 2.0 client credentials, you can use the following command:
+```bash
+kubectl create secret generic czertainly-credentials \
+  --namespace czertainly-issuer \
+  --from-literal=client_id=<your client id> \
+  --from-literal=client_secret=<your client secret> \
+  --from-literal=token_url=<your token url> \
+  --from-literal=scopes=<your comma-separated scopes>
+```
 
 ## CA Bundle
 

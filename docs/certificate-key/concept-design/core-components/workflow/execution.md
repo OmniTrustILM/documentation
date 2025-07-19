@@ -15,9 +15,17 @@ Executions are the specific operations performed when a rule is evaluated as mat
 | **Execution Type** | The type of execution to be performed.               |
 | **Resource**       | The object or entity to which the execution applies. |
 
+:::note
+Execution supports resource `Any`, which allows to use the same execution for different resources.
+It is especially useful for execution types that are not resource or event specific.
+:::
+
 ## Execution types
 
 Executions can be classified into various types based on the nature of the operation they perform. Each type has specific attributes and behaviors that determine how the execution is processed.
+Currently, there are two supported execution types:
+- `Set Field` - set properties or custom attributes of processed object
+- `Send Notification` - notify users based on notification profile
 
 ## Examples
 
@@ -38,3 +46,8 @@ We would like to illustrate the concept of executions with a few examples:
 - **Execution Type:** Set Field
 - **Resource:** Certificate
 - **Execution Items:** `Custom attribute 'Category' to 'To check'`
+
+**Send Notification:**
+- **Execution Name:** Send notification
+- **Description:** This execution sends notification based on notification profile
+- **Notification Profile:** Notification profile to use when processing notification
