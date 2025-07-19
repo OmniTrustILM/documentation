@@ -15,6 +15,10 @@ Actions are groups of executions triggered when a rule's conditions are met. An 
 | **Resource**     | The object or entity to which the action applies.    |
 | **Executions**   | The operations to be performed when the action runs. |
 
+:::note
+Action can support resource `Any`, which allows to combine executions with different resources. It is useful in case we want to reuse same action/execution in multiple triggers.
+:::
+
 ## Actions processing
 
 The executions within an action are processed in the order specified, ensuring that the operations are carried out as intended. Actions are the concrete tasks that implement the workflow's logic and define the response to specific conditions.

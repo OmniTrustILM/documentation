@@ -131,6 +131,33 @@ export const data = [
             )
     },
     {
+        property: "ENCRYPTIONALGORITHM",
+        description:
+            (
+                <>
+                    Encryption algorithm to use with the signature algorithm, for example <b>RSASSA-PSS</b>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    Taken from the Subject Public Key Info of the signing certificate.
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
         property: "DIGESTALGORITHM",
         description:
             (

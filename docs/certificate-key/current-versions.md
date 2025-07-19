@@ -14,12 +14,16 @@ The following is a list of current versions of the CZERTAINLY platform and conne
 
 ## Core
 
-| Service           | Version  | Docker Image                                        |
-|-------------------|----------|-----------------------------------------------------|
-| Core              | `2.14.1` | `docker.io/czertainly/czertainly-core`              |
-| Auth              | `1.6.1`  | `docker.io/czertainly/czertainly-auth`              |
-| Auth OPA policies | `1.3.0`  | `docker.io/czertainly/czertainly-auth-opa-policies` |
-| Scheduler         | `1.0.1`  | `docker.io/czertainly/czertainly-scheduler`         |
+| Service           | Version        | Docker Image                                        |
+|-------------------|----------------|-----------------------------------------------------|
+| Core              | `2.15.0`       | `docker.io/czertainly/czertainly-core`              |
+| Auth              | `1.6.2`        | `docker.io/czertainly/czertainly-auth`              |
+| Auth OPA policies | `1.4.0`        | `docker.io/czertainly/czertainly-auth-opa-policies` |
+| Scheduler         | `1.0.3`        | `docker.io/czertainly/czertainly-scheduler`         |
+| API Gateway       | `3.8.0`        | `docker.io/czertainly/czertainly-kong`              |
+| Messaging         | `3.13.7`       | `docker.io/czertainly/czertainly-rabbitmq`          |
+| OPA               | `1.5.1-static` | `docker.io/czertainly/czertainly-opa`               |
+| PgBouncer         | `v1.24.0-p0`   | `docker.io/czertainly/czertainly-pgbouncer`         |
 
 ## Front Ends
 
@@ -29,33 +33,35 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 
 | Front End     | Version  | Docker Image                                             |
 |---------------|----------|----------------------------------------------------------|
-| Administrator | `2.14.1` | `docker.io/czertainly/czertainly-frontend-administrator` |
+| Administrator | `2.15.0` | `docker.io/czertainly/czertainly-frontend-administrator` |
 
 ## Connectors
 
 | Connector                      | Version  | Docker Image                                                               |
 |--------------------------------|----------|----------------------------------------------------------------------------|
-| Common Credential Provider     | `1.3.3`  | `docker.io/czertainly/czertainly-common-credential-provider`               |
-| EJBCA NG Connector             | `1.11.0` | `docker.io/czertainly/czertainly-ejbca-ng-connector`                       |
-| Network Discovery Provider     | `1.6.0`  | `docker.io/czertainly/czertainly-ip-discovery-provider`                    |
-| Cryptosense Discovery Provider | `1.4.0`  | `harbor.3key.company/czertainly/czertainly-cryptosense-discovery-provider` |
-| MS ADCS Connector              | `1.6.0`  | `harbor.3key.company/czertainly/czertainly-ms-adcs-connector`              |
-| PyADCS Connector               | `1.1.3`  | `docker.io/czertainly/czertainly-pyadcs-connector`                         |
-| HashiCorp Vault Connector      | `1.1.2`  | `docker.io/czertainly/czertainly-hashicorp-vault-connector`                |
-| EJBCA Legacy Connector         | `1.4.1`  | `harbor.3key.company/czertainly/czertainly-ejbca-legacy-ca-connector`      |
-| Keystore Entity Provider       | `1.4.1`  | `docker.io/3keycompany/czertainly-keystore-entity-provider`                |
-| X.509 Compliance Provider      | `1.3.0`  | `docker.io/3keycompany/czertainly-x509-compliance-provider`                |
-| Software Cryptography Provider | `1.2.2`  | `docker.io/3keycompany/czertainly-software-cryptography-provider`          |
-| Email Notification Provider    | `1.1.0`  | `docker.io/czertainly/czertainly-email-notification-provider`              |
-| CT Logs Discovery Provider     | `1.0.1`  | `docker.io/czertainly/czertainly-email-notification-provider`              |
+| Common Credential Provider     | `1.3.5`  | `docker.io/czertainly/czertainly-common-credential-provider`               |
+| EJBCA NG Connector             | `1.11.1` | `docker.io/czertainly/czertainly-ejbca-ng-connector`                       |
+| Network Discovery Provider     | `1.6.1`  | `docker.io/czertainly/czertainly-ip-discovery-provider`                    |
+| Cryptosense Discovery Provider | `1.4.1`  | `harbor.3key.company/czertainly/czertainly-cryptosense-discovery-provider` |
+| PyADCS Connector               | `1.1.4`  | `docker.io/czertainly/czertainly-pyadcs-connector`                         |
+| HashiCorp Vault Connector      | `1.1.3`  | `docker.io/czertainly/czertainly-hashicorp-vault-connector`                |
+| EJBCA Legacy Connector         | `1.5.0`  | `harbor.3key.company/czertainly/czertainly-ejbca-legacy-ca-connector`      |
+| Keystore Entity Provider       | `1.4.2`  | `docker.io/czertainly/czertainly-keystore-entity-provider`                 |
+| X.509 Compliance Provider      | `1.3.1`  | `docker.io/czertainly/czertainly-x509-compliance-provider`                 |
+| Software Cryptography Provider | `1.3.0`  | `docker.io/czertainly/czertainly-software-cryptography-provider`           |
+| Email Notification Provider    | `1.1.1`  | `docker.io/czertainly/czertainly-email-notification-provider`              |
+| CT Logs Discovery Provider     | `1.0.2`  | `docker.io/czertainly/czertainly-ct-logs-discovery-provider`               |
+| Webhook Notification Provider  | `1.0.0`  | `docker.io/czertainly/czertainly-webhook-notification-provider`            |
 
 ## Other
 
-| Service           | Version    | Docker Image                                              |
-|-------------------|------------|-----------------------------------------------------------|
-| Keycloak Internal | `26.1.0-0` | `docker.io/czertainly/czertainly-keycloak-optimized`      |
-| Keycloak Theme    | `0.1.2`    | `docker.io/czertainly/czertainly-keycloak-theme`          |
-| Utils Service     | `1.0.1`    | `harbor.3key.company/czertainly/czertainly-utils-service` |
+| Service           | Version    | Docker Image                                         |
+|-------------------|------------|------------------------------------------------------|
+| Keycloak Internal | `26.1.0-0` | `docker.io/czertainly/czertainly-keycloak-optimized` |
+| Keycloak Theme    | `0.1.2`    | `docker.io/czertainly/czertainly-keycloak-theme`     |
+| Utils Service     | `1.0.1`    | `docker.io/czertainly/czertainly-utils-service`      |
+| Curl              | `8.1.1`    | `docker.io/czertainly/czertainly-curl`               |
+| Kubectl           | `1.31.1`   | `docker.io/czertainly/czertainly-kubectl`            |
 
 ## Private repository
 
