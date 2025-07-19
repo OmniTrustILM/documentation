@@ -52,10 +52,10 @@ cd CZERTAINLY-OpenShift
 
 # Create a secret for accessing private images in harbor.3key.company (typically not required)
 oc create secret docker-registry harbor-secret \
- --docker-server=harbor.3key.company \
- --docker-username=<uid> \
- --docker-password=<password> \
- --docker-email=<registerd-email>
+  --docker-server=harbor.3key.company \
+  --docker-username=<uid> \
+  --docker-password=<password> \
+  --docker-email=<registerd-email>
 
 # Create route first
 oc apply -f openshift-route.yaml
@@ -67,17 +67,17 @@ cp czertainly.values.private.example czertainly.values.private.yaml
 
 # Install CZERTAINLY
 helm upgrade -n semik75-dev --install czertainly-tlm \
- oci://harbor.3key.company/czertainly-helm/czertainly \
- --values=./czertainly.values.openshift.base.yaml \
- --values=./czertainly.values.resources.yaml \
- --values=./czertainly.values.security.yaml \
- --values=./czertainly.values.private.yaml
+  oci://harbor.3key.company/czertainly-helm/czertainly \
+  --values=./czertainly.values.openshift.base.yaml \
+  --values=./czertainly.values.resources.yaml \
+  --values=./czertainly.values.security.yaml \
+  --values=./czertainly.values.private.yaml
 
 # Install NGINX to terminate mTLS
 oc apply -f nginx-ingress-deployment.yaml \
- -f nginx-ingress-configmap.yaml \
- -f nginx-ingress-service.yaml \
- -f openshift-route.yaml
+  -f nginx-ingress-configmap.yaml \
+  -f nginx-ingress-service.yaml \
+  -f openshift-route.yaml
 
 # Now you can test your CZERTAINLY deployment, don't forget to add /administrator/ after hostname :)
 ```
