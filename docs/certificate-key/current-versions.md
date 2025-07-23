@@ -16,7 +16,7 @@ The following is a list of current versions of the CZERTAINLY platform and conne
 
 | Service           | Version        | Docker Image                                        |
 |-------------------|----------------|-----------------------------------------------------|
-| Core              | `2.15.0`       | `docker.io/czertainly/czertainly-core`              |
+| Core              | `2.15.1`       | `docker.io/czertainly/czertainly-core`              |
 | Auth              | `1.6.2`        | `docker.io/czertainly/czertainly-auth`              |
 | Auth OPA policies | `1.4.0`        | `docker.io/czertainly/czertainly-auth-opa-policies` |
 | Scheduler         | `1.0.3`        | `docker.io/czertainly/czertainly-scheduler`         |
@@ -33,7 +33,7 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 
 | Front End     | Version  | Docker Image                                             |
 |---------------|----------|----------------------------------------------------------|
-| Administrator | `2.15.0` | `docker.io/czertainly/czertainly-frontend-administrator` |
+| Administrator | `2.15.1` | `docker.io/czertainly/czertainly-frontend-administrator` |
 
 ## Connectors
 
@@ -43,7 +43,7 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 | EJBCA NG Connector             | `1.11.1` | `docker.io/czertainly/czertainly-ejbca-ng-connector`                       |
 | Network Discovery Provider     | `1.6.1`  | `docker.io/czertainly/czertainly-ip-discovery-provider`                    |
 | Cryptosense Discovery Provider | `1.4.1`  | `harbor.3key.company/czertainly/czertainly-cryptosense-discovery-provider` |
-| PyADCS Connector               | `1.1.4`  | `docker.io/czertainly/czertainly-pyadcs-connector`                         |
+| PyADCS Connector               | `1.1.5`  | `docker.io/czertainly/czertainly-pyadcs-connector`                         |
 | HashiCorp Vault Connector      | `1.1.3`  | `docker.io/czertainly/czertainly-hashicorp-vault-connector`                |
 | EJBCA Legacy Connector         | `1.5.0`  | `harbor.3key.company/czertainly/czertainly-ejbca-legacy-ca-connector`      |
 | Keystore Entity Provider       | `1.4.2`  | `docker.io/czertainly/czertainly-keystore-entity-provider`                 |
