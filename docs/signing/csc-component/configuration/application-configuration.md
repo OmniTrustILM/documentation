@@ -54,6 +54,15 @@ csc:
     # How often will the cleaning of the used-up keys be performed according to the specified cron expression
     # The cron expression is in the UN*X definition format: second, minute, hour, day of month, month, and day of week
     cleanupCronExpression: "0 0 * * * *"
+  # Configuration of the concurrency defines the maximum number of concurrent requests that can be processed
+  # for specific operations
+  concurrency:
+    # Maximum number of concurrent key generation requests
+    # The value must be greater than 0, default is 10
+    maxKeyGeneration: 10
+    # Maximum number of concurrent key deletion requests
+    # The value must be greater than 0, default is 10
+    maxKeyDeletion: 10
 
 # IDP configuration
 idp:
