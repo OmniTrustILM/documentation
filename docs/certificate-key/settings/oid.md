@@ -1,12 +1,12 @@
 By definition, object identifiers or `OID`s are an identifier mechanism standardised by the International Telecommunication Union (ITU) and ISO/IEC for naming any object, concept, or "thing" with a globally unambiguous persistent name. `OID`s are in format of tree hierarchy, where each node is represented by number and separated by dot. 
 
-In X.509 certificates, OIDs serve to name almost every object. In order to be displayed in a human-readable format, they need to translated. In CZERTAINLY, the most widely used OIDs are covered internally as System OIDs. In addition to that, `Custom OID`s can be registered in order to translate OID to human-readable format outside of System OIDs.
+In X.509 certificates, OIDs serve to name almost every object. In order to be displayed in a human-readable format, they need to translated. In CZERTAINLY, the most widely used OIDs are covered internally as `System OID`s. In addition to that, `Custom OID`s can be registered in order to translate OID to human-readable format outside of `System OID`s. 
 
 `Custom OID` has the following properties
 
 | Property    | Description                                                         | Required | Updatable | Example                               |
 |-------------|---------------------------------------------------------------------|----------|-----------|---------------------------------------|
-| `OID`         | the identifier                                                      | <span class="badge badge--success">Yes</span>     |  <span class="badge badge--danger">No</span>       | `"1.2.840.113549.1.9.1"`                | <span class="badge badge--success">Yes</span>      | <span class="badge badge--success">Yes</span>       | `"Email"`                               |
+| `OID`         | the identifier, cannot override a `System OID`                                                      | <span class="badge badge--success">Yes</span>     |  <span class="badge badge--danger">No</span>       | `"1.2.840.113549.1.9.1"`                | <span class="badge badge--success">Yes</span>      | <span class="badge badge--success">Yes</span>       | `"Email"`                               |
 | `description` | description of the role of the OID                                  |  <span class="badge badge--danger">No</span>      | <span class="badge badge--success">Yes</span>       | `"Email associated with a certificate"` |
 | `category`    | category of the OID indicating its general purpose or usage context | <span class="badge badge--success">Yes</span>      |  <span class="badge badge--danger">No</span>        | `RdnAttributeType`                    |
 
