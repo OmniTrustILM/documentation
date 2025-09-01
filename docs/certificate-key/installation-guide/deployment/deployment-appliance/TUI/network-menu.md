@@ -1,4 +1,4 @@
----
+    ---
 sidebar_position: 4
 ---
 
@@ -32,6 +32,35 @@ If your network policy requires using an HTTP proxy, you can configure it using 
 Files `/etc/profile.d/proxy.sh`, `/etc/apt/apt.conf.d/80proxy`, `/etc/default/rke2-server` and `/etc/default/rke2-agent` are modified by this action.
 
 Values you provided in this dialog are stored on the file system in: `/etc/czertainly-ansible/vars/proxy.yml`.
+
+In case installing behind restrictive HTTP proxy make sure that you enable all hostnames holding resources needed for successful installation:
+* **Debian packages**:
+  * deb.debian.org
+  * security.debian.org
+* **CZERTAINLY resources**:
+  * deb.czertainly.com
+  * harbor.3key.company
+* **Helm**:
+  * baltocdn.com
+  * github.com
+  * release-assets.githubusercontent.com
+* **Docker images**:
+  * index.docker.io
+  * auth.docker.io
+  * production.cloudflare.docker.com
+  * registry-1.docker.io
+* **RKE2**:
+  * get.rke2.io
+  * update.rke2.io
+* **local-path-provisioner**:
+  * ^raw\.githubusercontent\.com$
+  * ^docker-images-prod\..*\.cloudflarestorage\.com$
+* **cert-manager**:
+  * ^charts\.jetstack\.io$
+  * ^quay\.io$
+  * ^cdn.*\.quay\.io$
+
+In [documentation on GitHub](https://github.com/CZERTAINLY/CZERTAINLY-Appliance/blob/develop/http-proxy.md#http-proxy) is provided a configuration snippet for Squid HTTP proxy..
 
 :::warning
 In case you are setting HTTP Proxy parameters before the first run of the installation. You need to close the actual terminal session and open a new one to reload environment variables from file `/etc/profile.d/proxy.sh`.
