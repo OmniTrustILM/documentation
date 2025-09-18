@@ -98,4 +98,4 @@ https://[hostname]/administrator/
 ```
 where `hostname` is the value configured in the previous step. For logging into the web interface you can use:
   * the [dummy administrator certificate](https://github.com/CZERTAINLY/CZERTAINLY-Helm-Charts/blob/master/dummy-certificates/private/admin.p12) which is preconfigured for testing purposes, it has password `00000000` or,
-  * the username / password provided at the beginning of the page (if you installed Keycloak).
+  * the username is `admin` and the password is provided at the beginning of the page (if you installed Keycloak).
