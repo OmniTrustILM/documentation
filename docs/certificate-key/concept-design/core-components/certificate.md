@@ -77,6 +77,10 @@ state "Pending Revoke" as PendingRevoke
 @enduml
 ```
 
+### Archived Certificate
+
+Certificates that are not used anymore for different reasons and should belong to archive can be marked as archived. Archived certificates will not have its state changed, will not be validated, cannot be updated, used in locations or protocols - the only operations allowed for archived certificates are viewing, downloading and deleting the certificate. To again allow all operations for an archived certificate, the certificate must be unarchived first.
+
 ## Certificate validation status
 
 Certificate validation status represents the result of the certificate validation process in time. It is periodically checked by system scheduled job to keep up-to-date certificate validation status. The validation status is calculated based on the validation result of the certificate and its chain.
@@ -136,10 +140,6 @@ Revoked --> [*]
 
 @enduml
 ```
-
-## Archived Certificate
-
-Certificates that are not used anymore for different reasons and should belong to archive can be marked as archived. Archived certificates will not have its state changed, will not be validated, cannot be updated, used in locations or protocols - the only operations allowed for archived certificates are get, download and delete. To again allow all operations for an archived certificate, the certificate must be unarchived first.
 
 ## Validation
 
