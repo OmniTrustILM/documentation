@@ -10,4 +10,4 @@ Certificate management `Attributes` for `Protocol Profile` are used during certi
 :::
 
 # Default certificate associations
-In order to set default owner, group or custom attributes for a certificate issued by a protocol, default certificate associations can be configured in a protocol profile. This is done by calling 
+Default certificate associations can be configured within a protocol profile to specify the owner, group, or custom attributes applied to certificates issued by the protocol. These associations may be defined during profile creation or modified later when editing the profile.
