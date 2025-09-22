@@ -287,3 +287,17 @@ When certificate is checked for revocation:
 
 Metadata provides any additional information about the `Certificate` that can be technology specific.
 Metadata can be used for further processing of the `Certificate` by different components and modules of the platform.
+
+## Relations
+Certificates can be related to each other through a successor and predecessor relation, where a successor certificate is meant to be used in place of predecessor certificate. This relation is set either automatically when succesor certificate is created as a result of rekey/replacement operation or can be manually set by calling [associate certificate endpoint](/api/core-certificate.html#tag/Certificate-Inventory/operation/associateCertificates). For manual associations, certificates in a relation must comply with following:
+  - they must have the same subject type (Root CA, Intermediate CA or End Entity)
+  - predecessor certificate state must be in either Issued or Revoked state
+  - successor ceritificate cannot be in Failed or Rejected state
+
+Predecessor certificate is always the certificate which has been issued earlier. The relation type is then determined in the following way:
+  - `Pending` - successor certificate is not yet issued and the type will be set automatically after it is issued
+  - `Renewal` - if both certificates have the same issuer and the same public key and alternative public key, if present
+  - `Rekey` - if both certificates have the same issuer, but their public keys are different
+  - `Replacement` - otherwise
+
+Certificate relation can also be removed by calling [remove certificate association endpoint](/api/core-certificate.html#tag/Certificate-Inventory/operation/removeCertificateAssociation)
