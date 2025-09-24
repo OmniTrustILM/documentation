@@ -1,7 +1,7 @@
-Profiles for all protocols supported have some common properties, which behave in the same way for each protocol.
+Protocol profiles for all supported protocols have some common properties that behave in the same way for each protocol.
 
 # RA Profile
-Default RA Profile can be assigned to a protocol profile. 
+A default RA Profile can be assigned to a protocol profile. 
 
 If a default `RA Profile` is selected then `Attributes` to issue certificates and revoke certificates must be configured, if needed.
 
