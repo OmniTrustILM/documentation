@@ -16,6 +16,7 @@ The log record structure is defined by the following properties:
 |-----------------------------------|---------|-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | `version`                         | String  | <span class="badge badge--success">Yes</span> | Version of log structure JSON schema                                                                                            |
 | `audited`                         | Boolean | <span class="badge badge--success">Yes</span> | Flag marking log record as audit log, representing user triggered action                                                        |
+| `timestamp`                         | Date Time | <span class="badge badge--success">Yes</span> | Timestamp of creation of the log record          |
 | [`module`](#module)               | Enum    | <span class="badge badge--success">Yes</span> | Module where event occurred. Represents part or resource of system related to event.                                            |
 | [`actor`](#actor)                 | Object  | <span class="badge badge--success">Yes</span> | Affiliated party or platform component that triggered operation/event                                                           |
 | [`source`](#source)               | Object  | <span class="badge badge--danger">No</span>   | Contains request source information like IP address, agent, etc.                                                                |
