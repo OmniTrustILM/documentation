@@ -81,9 +81,10 @@ Resource object contains following properties:
 | Property  | Type   | Required                                      | Description                                                                            |
 |-----------|--------|-----------------------------------------------|----------------------------------------------------------------------------------------|
 | `type`    | Enum   | <span class="badge badge--success">Yes</span> | Type of the resource                                                                   |
-| `uuids`   | List   | <span class="badge badge--danger">No</span>   | List of associated UUIDs for the resource, possible more values due to bulk operations |
-| `names`   | List   | <span class="badge badge--danger">No</span>   | List of resource names, possible more values due to bulk operations                    |
+| `objects`   | List   | <span class="badge badge--danger">No</span>   | List of identities of associated objects|               |
 
-:::info[Name and UUID]
-UUIDs and names lists items on same index correspond to each other.
-:::
+Structure of the identities of associated objects is:
+| Property  | Type   | Required                                      | Description                                                                            |
+|-----------|--------|-----------------------------------------------|----------------------------------------------------------------------------------------|
+| `name`    | String   | <span class="badge badge--danger">No</span> | Name of the object                                                                   |
+| `uuid`   | String   | <span class="badge badge--danger">No</span>   | UUID of the object|               |
