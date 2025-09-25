@@ -41,9 +41,10 @@ In case installing behind restrictive HTTP proxy make sure that you enable all h
   * deb.czertainly.com
   * harbor.3key.company
 * **Helm**:
-  * baltocdn.com
+  * packages.buildkite.com
   * github.com
   * release-assets.githubusercontent.com
+  * cloudfront.net
 * **Docker images**:
   * index.docker.io
   * auth.docker.io
