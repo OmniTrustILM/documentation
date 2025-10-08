@@ -10,7 +10,8 @@ Various cryptographic assets, like certificate and cryptographic key, can contai
 There are also various standards and regulations that require specific behavior of the certificate, for example to be able to react on algorithm deprecation or vulnerabilities.
 The compliance checking helps to monitor the compliance status of each certificate (and other supported compliance subjects) that is included in the inventory of the platform.
 
-Compliance Provider implements the functionality of compliance settings and checking for different objects available in the platform. it applies specific compliance rules and group of compliance rules to objects and informs about the compliance status. Based on the compliance check, the object will either be determined as compliant or not compliant.
+Compliance Provider implements the functionality of compliance settings and checking for different objects available in the platform.
+It applies specific compliance rules and group of compliance rules to objects and informs about the compliance status. Based on the compliance check, the object will either be determined as compliant or not compliant.
 
 Currently supported resources that can be checked for compliance are:
 - Certificates

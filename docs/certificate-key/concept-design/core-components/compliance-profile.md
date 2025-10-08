@@ -26,10 +26,10 @@ Characteristics of `Compliance Profile` are:
 
 Objects that are associated with the `Compliance Profile` are:
 
-| Object  | Purpose                                                                                                                                                                                                                                                          |
-|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Rule`  | The `rule` that is used to check the compliance of the object. `Rules` contains specific logic that will apply it to the certificate. If the rule is satisfied, then the certificate is marked as `Compliant`. Else the certificate is marked as `Non Compliant` |
-| `Group` | The `group` of `rules` that are used to check the compliance of the certificate. The groups are the logical grouping of the `rules` provided by the `Compliance Provider`. A `rule` may or may not be a part of the `Group`.                                     |
+| Object  | Purpose                                                                                                                                                                                                                                                        |
+|---------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Rule`  | The `rule` that is used to check the compliance of the object. `Rules` contain specific logic that will apply to the resource object. If the rule is satisfied, then the object is marked as `Compliant`. Otherwise, the object is marked as `Non Compliant`.  |
+| `Group` | The `group` of `rules` that are used to check the compliance of the resource object. The groups are the logical grouping of the `rules` provided by the `Compliance Provider`. A `rule` may or may not be a part of the `Group`.                               |
 
 ### Compliance rules
 
