@@ -32,6 +32,8 @@ With defined `RA Profile`, the `Client` will need only the following data to req
 
 - `Connector Attributes` for issuing, if needed by the `Connector` implementation
 
+In case of RA profile has associated `Compliance Profile`, compliance check will be first run on certificate request. If certificate request is Not compliant, certificate is `Rejected`, otherwise certificate issuance will proceed.
+
 Upon successful issuing of the `Certificate`, it will be parsed, validated, and stored in the `Certificate Inventory`.
 
 ### Revocation \{#revokeCert}
