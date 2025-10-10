@@ -79,7 +79,9 @@ state "Pending Revoke" as PendingRevoke
 
 ### Archived Certificate
 
-Certificates that are not used anymore for different reasons and should belong to archive can be marked as archived. Archived certificates will not have its state changed, will not be validated, cannot be updated, used in locations or protocols - the only operations allowed for archived certificates are viewing, downloading and deleting the certificate. To again allow all operations for an archived certificate, the certificate must be unarchived first.
+Certificate can be marked as archived. When certificate is archived, it will not be validated, and cannot be managed. It is intended for certificates that are not going to be used anymore and should be tracked only for historical reasons, eventually removed from the inventory.
+
+Archived certificate can be unarchived to again allow all operations for the certificate.
 
 ## Certificate validation status
 
