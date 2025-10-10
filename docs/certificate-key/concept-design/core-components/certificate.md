@@ -294,10 +294,30 @@ Certificates can be related to each other through a successor and predecessor re
   - predecessor certificate state must be in either Issued or Revoked state
   - successor certificate cannot be in Failed or Rejected state
 
-Predecessor certificate is always the certificate which has been issued earlier. The relation type is then determined in the following way:
+Predecessor certificate is always the certificate which has been issued earlier and successor certificate is then the one issued later. The relation type is then determined in the following way:
   - `Pending` - successor certificate is not yet issued and the type will be set automatically after it is issued
   - `Renewal` - if both certificates have the same issuer and the same public key and alternative public key, if present
   - `Rekey` - if both certificates have the same issuer, but their public keys are different
   - `Replacement` - otherwise
+
+Transition diagram of relation types is as follows:
+
+```plantuml
+  @startuml
+hide empty description
+
+[*] --> Pending
+Pending --> Replacement
+Pending --> Rekey
+Pending --> Renew
+[*] --> Replacement
+[*] --> Rekey
+[*] --> Renew
+Replacement --> [*]
+Rekey --> [*]
+Renew --> [*]
+
+@enduml
+```
 
 Certificate relation can also be removed.
