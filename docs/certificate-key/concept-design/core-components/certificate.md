@@ -40,8 +40,7 @@ Certificate can be in following states:
 | `Rejected`                                 | The `Certificate` issuance approval request was rejected.                | When approval for certificate issue action was rejected or expired.                                                                                                                |
 | `Failed`                                   | The `Certificate` request issuance failed.                               | When certificate fails to be issued by authority caused by error or invalid request.                                                                                               |
 | `Issued`                                   | The `Certificate` is issued.                                             | Initial state in case certificate is uploaded or discovered.<br />When certificate is successfully issued.<br/> When certificate revocation failed state returns back to `Issued`. |
-| `Revoked`                                  | The `Certificate` is revoked.                                            | When certificate is successfully revoked.                                                                                                                                          |
-| `Archived` (***Not yet supported***)       | The `Certificate` is archived and not displayed in inventory by default. | When certificate is marked by user or scheduled job as archived.                                                                                                                   |
+| `Revoked`                                  | The `Certificate` is revoked.                                            | When certificate is successfully revoked.                                                                                                                                          |                                                                                                                 |
 
 Certificate state transition diagram is as follows:
 
@@ -71,16 +70,18 @@ state "Pending Revoke" as PendingRevoke
   Issued --> PendingApproval
   Issued --> PendingRevoke
   Issued --> Revoked
-  Issued --> Archived
-  Revoked --> Archived
   Rejected --> [*]
   Failed --> [*]
   Issued --> [*]
   Revoked --> [*]
-  Archived --> [*]
-
 @enduml
 ```
+
+### Archived Certificate
+
+Certificate can be marked as archived. When certificate is archived, it will not be validated, and cannot be managed. It is intended for certificates that are not going to be used anymore and should be tracked only for historical reasons, eventually removed from the inventory.
+
+Archived certificate can be unarchived to again allow all operations for the certificate.
 
 ## Certificate validation status
 
