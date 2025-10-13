@@ -38,3 +38,31 @@ We would like to illustrate the concept of conditions with a few examples:
 - **Condition Type:** Check Field
 - **Resource:** Certificate
 - **Condition Items:** `Property 'Public Key Algorithm' equals 'RSA'`
+
+
+**Matching conditions based on regex:**
+
+Condition item can also consist of matches regex operator. In that case, the string being matched against must comply to POSIX Regular Expression, as it is the format used in Postgres. For example, regex expressions can be used to create conditions for certifcate Subject Alternative Name. In database, SAN are serialized as JSON of the names. An example of such entry is 
+```json
+{"dNSName":["3key.company","www.3key.company"],"directoryName":[],"ediPartyName":[],"iPAddress":["156.88.27.150"],"otherName":[],"registeredID":[],"rfc822Name":[],"uniformResourceIdentifier":[],"x400Address":[]}
+```
+For each empty name, the corresponding value is `[]`. Condition for selecting certificates with `registeredID` SAN not empty would be as follows:
+
+- **Condition Name:** Certificate SAN registeredID is not empty
+- **Description:** This condition checks if SAN of a certificate contains any registeredId
+- **Condition Type:** Check Field
+- **Resource:** Certificate
+- **Condition Items:** `Property 'Subject Alternative Name' not matches regex '"registeredID"\s*:\s*\[\s*\]'`
+
+For not empty names, values are strings in quotes separated by commas. Condition for selecting certificates with `dNSName` SAN equal to `3key.company` would be as follows:
+
+- **Condition Name:** Certificate SAN dNSName equals 3key.company
+- **Description:** This condition checks if SAN of a certificate contains a dNSName equal to 3key.company
+- **Condition Type:** Check Field
+- **Resource:** Certificate
+- **Condition Items:** `Property 'Subject Alternative Name' matches regex '"dNSName"\s*:\s*\[[^\]]*"\s*3key\.company\s*"[^]]*\]'`
+
+:::info
+The same principles as for `matches regex` operator in condition items hold for `matches regex` operator in search filters.
+:::
+ 
