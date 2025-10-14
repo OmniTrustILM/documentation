@@ -42,7 +42,7 @@ We would like to illustrate the concept of conditions with a few examples:
 
 **Matching conditions based on regex:**
 
-Condition item can also consist of matches regex operator. In that case, the string being matched against must comply to POSIX Regular Expression, as it is the format used in Postgres. For example, regex expressions can be used to create conditions for certifcate Subject Alternative Name. In database, SAN are serialized as JSON of the names. An example of such entry is 
+Condition item can also consist of matches regex operator. In that case, the string being matched against must comply to POSIX Regular Expression, as it is the format used in [Postgres](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-REGEXP). For example, regex expressions can be used to create conditions for certifcate Subject Alternative Name. In database, SAN are serialized as JSON of the names. An example of such entry is 
 ```json
 {"dNSName":["3key.company","www.3key.company"],"directoryName":[],"ediPartyName":[],"iPAddress":["156.88.27.150"],"otherName":[],"registeredID":[],"rfc822Name":[],"uniformResourceIdentifier":[],"x400Address":[]}
 ```
