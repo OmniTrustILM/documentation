@@ -64,6 +64,31 @@ csc:
     # The value must be greater than 0, default is 10
     maxKeyDeletion: 10
 
+# HTTP client configuration for all outbound connections (SignServer, EJBCA, IDP)
+http:
+  client:
+    # Maximum total connections in the connection pool
+    # Increase this if you have high concurrent requests to external services
+    # Default: 200
+    maxTotal: 200
+    # Maximum connections per route (per host/port combination)
+    # This limits connections to a single endpoint
+    # Default: 20
+    defaultMaxPerRoute: 20
+    # Connection timeout in seconds
+    # Time to wait for a connection from the connection pool
+    # Default: 10
+    connectionTimeoutSeconds: 10
+    # Socket read timeout in seconds
+    # Time to wait for data after establishing connection
+    # Increase this if external services are slow to respond
+    # Default: 30
+    readTimeoutSeconds: 30
+    # HTTP response timeout in seconds
+    # Total time to wait for the complete response.
+    # Default: 30
+    responseTimeoutSeconds: 30
+
 # IDP configuration
 idp:
   # Base URL of the IDP OpenID Connect endpoint
