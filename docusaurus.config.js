@@ -260,6 +260,11 @@ const config = {
             route: '/api/connector-compliance-provider/',
           },
           {
+            id: 'connector-compliance-provider-v2',
+            spec: 'https://api.czertainly.com/'+apiVersion+'/doc-openapi-connector-compliance-provider-v2.yaml',
+            route: '/api/connector-compliance-provider-v2/',
+          },
+          {
             id: 'connector-credential-provider',
             spec: 'https://api.czertainly.com/'+apiVersion+'/doc-openapi-connector-credential-provider.yaml',
             route: '/api/connector-credential-provider/',
@@ -474,6 +479,10 @@ const config = {
                 {
                   label: 'Compliance Provider',
                   to: '/api/connector-compliance-provider/',
+                },
+                {
+                  label: 'Compliance Provider v2',
+                  to: '/api/connector-compliance-provider-v2/',
                 },
                 {
                   label: 'Credential Provider',
