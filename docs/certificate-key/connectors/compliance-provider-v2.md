@@ -37,6 +37,25 @@ Many different `Compliance Profiles` with different compliance requirements can 
 
 The following processes are associated with the Compliance Provider and management of the `Compliance Profile` objects and checking compliance status of object.
 
+### Retrieve Compliance Groups and its detail
+
+```plantuml
+    @startuml
+    autonumber
+    skinparam topurl https://docs.czertainly.com/api/
+        Client -> Core [[core-compliance-v2/#tag/Compliance-Profile-Management-v2/operation/getComplianceGroupsV2]]: Get Compliance Groups from provider
+        Core -> Core: Determine API version of selected compliance provider
+        Core -> Connector [[connector-compliance-provider-v2/#tag/Compliance-Rules/operation/getGroups]]: Request to retrieve groups from provider
+        Connector --> Core: List Compliance Groups
+        Core -> Core: Set availability status of each provider rule and group 
+        Core -> Client: Return Compliance Groups of specified Compliance Provider
+        Client -> Core [[core-compliance-v2/#tag/Compliance-Profile-Management-v2/operation/getComplianceGroupRulesV2]]: Get Compliance Group rules
+        Core -> Connector [[connector-compliance-provider-v2/#tag/Compliance-Rules/operation/getGroupRules]]: Request to retrieve group rules from provider
+        Connector --> Core: List Compliance Rules belonging to the group
+        Core -> Client: Return Compliance Group rules
+    @enduml
+```
+
 ### Retrieve Compliance Rules and Groups in batch
 
 ```plantuml
@@ -52,8 +71,6 @@ The following processes are associated with the Compliance Provider and manageme
         Core -> Client: Return Compliance Profile detail
     @enduml
 ```
-
-
 
 ### Check Compliance of object
 
