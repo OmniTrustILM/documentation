@@ -153,6 +153,11 @@ const config = {
             route: '/api/core-compliance-profile/',
           },
           {
+            id: 'core-compliance-v2',
+            spec: 'https://api.czertainly.com/'+apiVersion+'/doc-openapi-core-compliance-v2.yaml',
+            route: '/api/core-compliance-v2/',
+          },
+          {
             id: 'core-connector',
             spec: 'https://api.czertainly.com/'+apiVersion+'/doc-openapi-core-connector.yaml',
             route: '/api/core-connector/',
@@ -393,6 +398,10 @@ const config = {
                 {
                   label: 'Compliance Profile',
                   to: '/api/core-compliance-profile/',
+                },
+                {
+                  label: 'Compliance v2',
+                  to: '/api/core-compliance-v2/',
                 },
                 {
                   label: 'Connector',
