@@ -21,17 +21,8 @@ sidebar_position: 3
 | **Changes in Terms of Service URL**                 | New Terms of Service URL that will be set if the Disable new Order is configured   | `None`               | <span class="badge badge--danger">No</span>   |
 | **Require Contacts for new Accounts**               | Specifies whether the contacts are required for registering a new account          | `false`              | <span class="badge badge--danger">No</span>   |
 | **Require agree to Terms of Service**               | Specifies whether the Terms of Service must be agreed for new account registration | `false`              | <span class="badge badge--danger">No</span>   |
-| **RA Profile**                                      | `RA Profile` that will be set as default for this `ACME Profile`                   | `None`               | <span class="badge badge--danger">No</span>   |
 
 By default `ACME Profiles` will be created without any default `RA Profile`, if not selected any.
-
-### Attributes for certificate management
-
-If a default `RA Profile` is selected then `Attributes` to issue certificates and revoke certificates must be configured, if needed.
-
-:::warning
-Certificate management `Attributes` for `ACME Profile` are used during finalize of the ACME Orders or ACME revocation requests and cannot be changed by the ACME client.
-:::
 
 ### Operations on `ACME Profile`
 

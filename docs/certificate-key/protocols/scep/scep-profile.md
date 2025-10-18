@@ -19,7 +19,6 @@ sidebar_position: 3
 | **Intune Application ID**        | ID of the Microsoft Intune Application                                         |                                                       | <span class="badge badge--danger">No</span>   |
 | **Intune Application Key**       | Secret to authenticate with the Intune application                             |                                                       | <span class="badge badge--danger">No</span>   |
 | **CA Certificate**               | Certificate to be used as SCEP CA certificate (for decryption and signing)     |                                                       | <span class="badge badge--success">Yes</span> |
-| **RA Profile**                   | `RA Profile` that will be set as default for the `SCEP Profile`                |                                                       | <span class="badge badge--danger">No</span>   |
 
 ## `SCEP Profile` certificate requirements
 
@@ -31,14 +30,6 @@ The certificate to be used for the `SCEP Profile` should meet the following crit
 
 :::warning[Microsoft Intune certificate requirements]
 For Microsoft Intune validation, there may be additional requirements for the certificate. See the [Intune Integration Guide](../../integration-guides/intune/overview.md) for more information.
-:::
-
-## Attributes for certificate management
-
-If a default `RA Profile` is selected then `Attributes` to issue and revoke certificates must be configured, if needed.
-
-:::warning[Certificate operations]
-Certificate management `Attributes` for `SCEP Profile` are used during issuing process of the certificate and cannot be changed by the SCEP client.
 :::
 
 ## Operations on `SCEP Profile`

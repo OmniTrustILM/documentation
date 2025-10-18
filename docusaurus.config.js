@@ -1,8 +1,8 @@
 const lightCodeTheme = require('prism-react-renderer').themes.github;
 const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
-const apiVersion = '2.15.1';
-const chartVersion = '2.15.1';
+const apiVersion = '2.16.0';
+const chartVersion = '2.16.0';
 const cscVersion = '1.3.0';
 
 import remarkFindReplacePlugin from './src/plugins/remarkFindReplacePlugin.mjs';
@@ -153,6 +153,11 @@ const config = {
             route: '/api/core-compliance-profile/',
           },
           {
+            id: 'core-compliance-v2',
+            spec: 'https://api.czertainly.com/'+apiVersion+'/doc-openapi-core-compliance-v2.yaml',
+            route: '/api/core-compliance-v2/',
+          },
+          {
             id: 'core-connector',
             spec: 'https://api.czertainly.com/'+apiVersion+'/doc-openapi-core-connector.yaml',
             route: '/api/core-connector/',
@@ -258,6 +263,11 @@ const config = {
             id: 'connector-compliance-provider',
             spec: 'https://api.czertainly.com/'+apiVersion+'/doc-openapi-connector-compliance-provider.yaml',
             route: '/api/connector-compliance-provider/',
+          },
+          {
+            id: 'connector-compliance-provider-v2',
+            spec: 'https://api.czertainly.com/'+apiVersion+'/doc-openapi-connector-compliance-provider-v2.yaml',
+            route: '/api/connector-compliance-provider-v2/',
           },
           {
             id: 'connector-credential-provider',
@@ -390,6 +400,10 @@ const config = {
                   to: '/api/core-compliance-profile/',
                 },
                 {
+                  label: 'Compliance v2',
+                  to: '/api/core-compliance-v2/',
+                },
+                {
                   label: 'Connector',
                   to: '/api/core-connector/',
                 },
@@ -474,6 +488,10 @@ const config = {
                 {
                   label: 'Compliance Provider',
                   to: '/api/connector-compliance-provider/',
+                },
+                {
+                  label: 'Compliance Provider v2',
+                  to: '/api/connector-compliance-provider-v2/',
                 },
                 {
                   label: 'Credential Provider',

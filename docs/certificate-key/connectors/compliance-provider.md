@@ -14,13 +14,13 @@ Compliance Provider implements the functionality of compliance settings and chec
 
 Compliance Provider have a set of applicable compliance rules and groups that can be configured as part of the `Compliance Profile`. This defines the set of compliance requirements. To check for the compliance status, `Compliance Profile` should be associated with `RA Profile`. After that every `Certificate` managed by such `RA Profile` will be checked against compliance rules configured in the `Compliance Profile`.
 
-Compliance checking can be executed on `RA Profile` level (for all `Certificates`), for every specific `Certificate` in the inventory, or for each `Compliance Profile`. 
+Compliance checking can be executed on `RA Profile` level (for all `Certificates`), for every specific `Certificate` in the inventory, or for each `Compliance Profile`.
 
 ## Provider objects
 
 [`Compliance Profiles`](../concept-design/core-components/compliance-profile.md) objects are managed in the platform through the Compliance Provider implementation.
 Each `Compliance Profile` contains a list of available compliance rules and groups that can be applied for a compliance checking.
-Many different `Compliance Profiles` with differenty compliance requirements can be managed and applied on certificates.
+Many different `Compliance Profiles` with different compliance requirements can be managed and applied on certificates.
 
 ## Processes
 
