@@ -12,20 +12,21 @@ Structure of log records is defined by [Log Record JSON Schema](https://github.c
 
 The log record structure is defined by the following properties:
 
-| Property                          | Type    | Required                                      | Description                                                                                                                     |
-|-----------------------------------|---------|-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| `version`                         | String  | <span class="badge badge--success">Yes</span> | Version of log structure JSON schema                                                                                            |
-| `audited`                         | Boolean | <span class="badge badge--success">Yes</span> | Flag marking log record as audit log, representing user triggered action                                                        |
-| [`module`](#module)               | Enum    | <span class="badge badge--success">Yes</span> | Module where event occurred. Represents part or resource of system related to event.                                            |
-| [`actor`](#actor)                 | Object  | <span class="badge badge--success">Yes</span> | Affiliated party or platform component that triggered operation/event                                                           |
-| [`source`](#source)               | Object  | <span class="badge badge--danger">No</span>   | Contains request source information like IP address, agent, etc.                                                                |
-| [`resource`](#resource)           | Object  | <span class="badge badge--success">Yes</span> | Information about resource that is subject of log event                                                                         |
-| [`affiliatedResource`](#resource) | Object  | <span class="badge badge--danger">No</span>   | Information about affiliated resource that acts in event and is related to subject resource (e.g. push certificate to location) | 
-| `operation`                       | Enum    | <span class="badge badge--success">Yes</span> | Operation that is being logged                                                                                                  |
-| `operationResult`                 | Enum    | <span class="badge badge--success">Yes</span> | Operation result which is either success or failed                                                                              |
-| `message`                         | String  | <span class="badge badge--danger">No</span>   | Free form text message to provide additional information, e.g. error message for failed operation result                        |
-| `operationData`                   | Object  | <span class="badge badge--danger">No</span>   | Structured data based on operation, list of possible properties defined in schema                                               |
-| `additionalData`                  | Map     | <span class="badge badge--danger">No</span>   | Additional key-paired data that can contain debug information or data specific to operation logged                              |
+| Property                          | Type      | Required                                      | Description                                                                                                                     |
+|-----------------------------------|-----------|-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `version`                         | String    | <span class="badge badge--success">Yes</span> | Version of log structure JSON schema                                                                                            |
+| `audited`                         | Boolean   | <span class="badge badge--success">Yes</span> | Flag marking log record as audit log, representing user triggered action                                                        |
+| `timestamp`                       | Date Time | <span class="badge badge--success">Yes</span> | Timestamp of creation of the log record                                                                                         |
+| [`module`](#module)               | Enum      | <span class="badge badge--success">Yes</span> | Module where event occurred. Represents part or resource of system related to event.                                            |
+| [`actor`](#actor)                 | Object    | <span class="badge badge--success">Yes</span> | Affiliated party or platform component that triggered operation/event                                                           |
+| [`source`](#source)               | Object    | <span class="badge badge--danger">No</span>   | Contains request source information like IP address, agent, etc.                                                                |
+| [`resource`](#resource)           | Object    | <span class="badge badge--success">Yes</span> | Information about resource that is subject of log event                                                                         |
+| [`affiliatedResource`](#resource) | Object    | <span class="badge badge--danger">No</span>   | Information about affiliated resource that acts in event and is related to subject resource (e.g. push certificate to location) | 
+| `operation`                       | Enum      | <span class="badge badge--success">Yes</span> | Operation that is being logged                                                                                                  |
+| `operationResult`                 | Enum      | <span class="badge badge--success">Yes</span> | Operation result which is either success or failed                                                                              |
+| `message`                         | String    | <span class="badge badge--danger">No</span>   | Free form text message to provide additional information, e.g. error message for failed operation result                        |
+| `operationData`                   | Object    | <span class="badge badge--danger">No</span>   | Structured data based on operation, list of possible properties defined in schema                                               |
+| `additionalData`                  | Map       | <span class="badge badge--danger">No</span>   | Additional key-paired data that can contain debug information or data specific to operation logged                              |
 
 ### Module
 
@@ -78,12 +79,14 @@ Resource object contains information about resource that is subject of log event
 
 Resource object contains following properties:
 
-| Property  | Type   | Required                                      | Description                                                                            |
-|-----------|--------|-----------------------------------------------|----------------------------------------------------------------------------------------|
-| `type`    | Enum   | <span class="badge badge--success">Yes</span> | Type of the resource                                                                   |
-| `uuids`   | List   | <span class="badge badge--danger">No</span>   | List of associated UUIDs for the resource, possible more values due to bulk operations |
-| `names`   | List   | <span class="badge badge--danger">No</span>   | List of resource names, possible more values due to bulk operations                    |
+| Property  | Type | Required                                      | Description                              |
+|-----------|------|-----------------------------------------------|------------------------------------------|
+| `type`    | Enum | <span class="badge badge--success">Yes</span> | Type of the resource                     |
+| `objects` | List | <span class="badge badge--danger">No</span>   | List of identities of associated objects |
 
-:::info[Name and UUID]
-UUIDs and names lists items on same index correspond to each other.
-:::
+Structure of the identities of associated objects is:
+
+| Property | Type   | Required                                    | Description        |
+|----------|--------|---------------------------------------------|--------------------|
+| `name`   | String | <span class="badge badge--danger">No</span> | Name of the object |
+| `uuid`   | String | <span class="badge badge--danger">No</span> | UUID of the object |
