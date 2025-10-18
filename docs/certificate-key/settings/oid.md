@@ -2,11 +2,12 @@
 sidebar_position: 35
 ---
 
-# OID
+# Object Identifiers (OIDs)
 
+Object Identifiers (`OIDs`) are a standardized mechanism for uniquely naming any object, concept, or entity using a globally unambiguous and persistent identifier. OIDs follow a hierarchical tree structure, where each node is represented by a numerical value separated by dots (for example, `1.2.840.113549`).
 
-By definition, object identifiers or `OID`s are an identifier mechanism used for naming any object, concept, or "thing" with a globally unambiguous persistent name. `OID`s are in format of tree hierarchy, where each node is represented by number and separated by dot. 
+In **X.509 certificates**, OIDs are widely used to identify various objects and attributes. Since OIDs are numerical, they often need to be translated into human-readable names for easier interpretation.
 
-In X.509 certificates, OIDs serve to name almost every object. In order to be displayed in a human-readable format, they need to translated. In CZERTAINLY, the most widely used OIDs are covered internally as `System OID`s. In addition to that, `Custom OID`s can be registered in order to extend the OID repository using custom definition. This definition can be utilized to translate OID to human-readable format outside of `System OID`s. 
+The most commonly used OIDs are typically predefined as **System OIDs**. To extend the repository, additional **Custom OIDs** can be registered to define new identifiers beyond the default set. These custom definitions allow the translation of OIDs into human-readable names outside of the predefined System OIDs.
 
-`Custom OID` can be managed using [Custom OID API](/api/core-other#tag/Custom-OID-Management)
+Custom OIDs can be managed using the [Custom OID Management API](/api/core-other#tag/Custom-OID-Management).
