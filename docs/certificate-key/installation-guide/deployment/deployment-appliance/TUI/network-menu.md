@@ -67,6 +67,8 @@ In [documentation on GitHub](https://github.com/CZERTAINLY/CZERTAINLY-Appliance/
 In case you are setting HTTP Proxy parameters before the first run of the installation. You need to close the actual terminal session and open a new one to reload environment variables from file `/etc/profile.d/proxy.sh`.
 
 In case you need to change the HTTP Proxy parameters of an existing installation, you need first reboot the Appliance and, after that, execute the function "Install CZERTAINLY" from the main menu to get changes correctly propagated into the system, RKE2 and all CZERTAINLY PODs.
+
+When you are using `sudo` to execute privileged commands in the shell use `sudo -i` to source all files from `/etc/profile.d/`, without this proxy settings will not be used.
 :::
 
 ## Configure time parameters

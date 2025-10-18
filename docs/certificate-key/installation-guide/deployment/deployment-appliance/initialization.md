@@ -44,7 +44,7 @@ It is always good to have a current version of `czertainly-appliance-tools` and 
 
 Depending on your hypervisor you might want to install its specific tools.
 
-For VMware, it is good to install [open-vm-tools](https://packages.debian.org/bookworm/open-vm-tools). Select from the main menu **Advanced options -> Enter system shell** and type `sudo apt install open-vm-tools.
+For VMware, it is good to install [open-vm-tools](https://packages.debian.org/bookworm/open-vm-tools). Select from the main menu **Advanced options -> Enter system shell** and type `sudo -i apt install open-vm-tools.
 
 For Virtualbox, you do not have to install anything [virtualbox-guest-module](https://packages.debian.org/bookworm/virtualbox-guest-modules) that is already part of the running kernel image.
 

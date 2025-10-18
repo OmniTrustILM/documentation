@@ -40,4 +40,3 @@ You can enter system shell as `czertainly` user. The user is in `sudo` group. Yo
 :::warning[System shell access]
 If you are not sure about the result of your operations on the system shell, consult it with the CZERTAINLY support team. It may happen that you will break the system and you will not be able to access it anymore.
 :::
-

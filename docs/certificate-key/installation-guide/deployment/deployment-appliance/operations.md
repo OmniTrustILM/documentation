@@ -114,7 +114,7 @@ Before any upgrade, make sure you have a recent snapshot first!
 
 #### OS packages upgrades
 
-CZERTAINLY Virtual Appliance is based on Debian GNU/Linux. To upgrade it [enter system shell](./TUI/advanced-menu.md#enter-system-shell), and execute command `sudo apt update && sudo apt upgrade`. This command also upgrades `czertainly-appliance-tools` package, this package provides [TUI](./TUI/intro.md), it is necessary to close the open shell connection and login back to start using the new version of the TUI.
+CZERTAINLY Virtual Appliance is based on Debian GNU/Linux. To upgrade it [enter system shell](./TUI/advanced-menu.md#enter-system-shell), and execute command `sudo -i apt update && sudo -i apt upgrade`. This command also upgrades `czertainly-appliance-tools` package, this package provides [TUI](./TUI/intro.md), it is necessary to close the open shell connection and login back to start using the new version of the TUI.
 
 The above command first updates information about package versions and the second upgrades them. This way is safe from major upgrades and should be done periodically.
 
@@ -156,9 +156,9 @@ To upgrade exec "Install CZERTAINLY" from the main menu. This will download the 
 TASK [rke2 : download rke2 installer] ******************************************
 changed: [localhost]
 ```
-Exec installer from shell command `sudo /usr/local/bin/rke2-install.sh`, example output:
+Exec installer from shell command `sudo -i /usr/local/bin/rke2-install.sh`, example output:
 ```bash
-$ sudo /usr/local/bin/rke2-install.sh
+$ sudo -i /usr/local/bin/rke2-install.sh
 [sudo] password for czertainly:
 [INFO]  finding release for channel stable
 [INFO]  using v1.30.4+rke2r1 as release
