@@ -3,7 +3,7 @@ const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
 const apiVersion = '2.15.1';
 const chartVersion = '2.15.1';
-const cscVersion = '1.2.0';
+const cscVersion = '1.3.0';
 
 import remarkFindReplacePlugin from './src/plugins/remarkFindReplacePlugin.mjs';
 import remarkSimplePlantumlPlugin from './src/plugins/remarkSimplePlantumlPlugin.mjs';
