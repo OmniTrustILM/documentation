@@ -18,7 +18,7 @@ The following endpoints are supported:
 - `info`
 - `credentials/list`
 - `credentials/info`
-- `signatures/signDoc` (only for `documentDigest`)
+- `signatures/signDoc`
 
 Additionally, the CSC component supports the following non CSC API features:
 - [Credential Management](./credential-management.md)
