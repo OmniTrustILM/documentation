@@ -289,21 +289,35 @@ Metadata provides any additional information about the `Certificate` that can be
 Metadata can be used for further processing of the `Certificate` by different components and modules of the platform.
 
 ## Relations
-Certificates can be related to each other through a successor and predecessor relation, where a successor certificate is meant to be used in place of predecessor certificate. This relation is set either automatically when successor certificate is created as a result of rekey/renew operation or they can be manually set. For manual associations, certificates in a relation must comply with following:
-  - they must have the same subject type (Root CA, Intermediate CA or End Entity)
-  - predecessor certificate state must be in either Issued or Revoked state
-  - successor certificate cannot be in Failed or Rejected state
 
-Predecessor certificate is always the certificate which has been issued earlier and successor certificate is then the one issued later. The relation type is then determined in the following way:
-  - `Pending` - successor certificate is not yet issued and the type will be set automatically after it is issued
-  - `Renewal` - if both certificates have the same issuer and the same public key and alternative public key, if present
-  - `Rekey` - if both certificates have the same issuer, but their public keys are different
-  - `Replacement` - otherwise
+Certificates can be linked to each other through **successor** and **predecessor** relationships. A *successor* certificate is intended to replace its *predecessor*.
 
-Transition diagram of relation types is as follows:
+This relationship can be established in two ways:
+- **Automatically** — when a successor certificate is created as a result of a **rekey** or **renewal** operation.
+- **Manually** — by explicitly associating existing certificates.
+
+When setting up a **manual relationship**, the following conditions must be met:
+- Both certificates must have the **same subject type** (Root CA, Intermediate CA, or End Entity).
+- The **predecessor certificate** must be in either the **Issued** or **Revoked** state.
+- The **successor certificate** must **not** be in the **Failed** or **Rejected** state.
+
+The **predecessor** certificate is always the one issued earlier, and the **successor** certificate is the one issued later.
+
+### Relation Type Determination
+
+The type of relationship between the two certificates is determined as follows:
+
+- **`Pending`** — The successor certificate has not yet been issued. The relation type will be automatically updated once issuance is complete.
+- **`Renewal`** — Both certificates share the same issuer, public key, and (if applicable) alternative public key.
+- **`Rekey`** — Both certificates share the same issuer, but their public keys differ.
+- **`Replacement`** — Any other case that does not fit the above criteria.
+
+### Relation Type Transitions
+
+The following diagram illustrates possible state transitions between relation types:
 
 ```plantuml
-  @startuml
+@startuml
 hide empty description
 
 [*] --> Pending
@@ -319,5 +333,3 @@ Renew --> [*]
 
 @enduml
 ```
-
-Certificate relation can also be removed.
