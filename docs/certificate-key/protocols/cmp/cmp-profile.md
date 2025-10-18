@@ -15,7 +15,7 @@ sidebar_position: 3
 | **Shared Secret**              | Shared secret for the protection of CMP message when request protection method is shared secret |               | <span class="badge badge--danger">No</span>   |
 | **Response Protection Method** | One of available protection methods for the CMP responses                                       |               | <span class="badge badge--success">Yes</span> |
 | **Signing Certificate**        | Certificate used for signing CMP responses whn the response protection method is signature      |               | <span class="badge badge--success">Yes</span> |
-| **RA Profile**                 | `RA Profile` that will be set as default for the `CMP Profile`                                  |               | <span class="badge badge--danger">No</span>   |
+
 
 ## Supported CMP variants
 
@@ -48,14 +48,6 @@ The certificate with associated private key should be available in the inventory
 - The certificate should have associated private key managed by the platform
 - The private key should be valid and active
 - The private key should have the `Key Usage` set to `Sign`
-
-## Attributes for certificate management
-
-If a default `RA Profile` is selected then `Attributes` to issue and revoke certificates must be configured, if needed.
-
-:::warning[Certificate operations]
-Certificate management `Attributes` for `CMP Profile` are used during certificate management and cannot be changed by the CMP client.
-:::
 
 ## Operations on `CMP Profile`
 
