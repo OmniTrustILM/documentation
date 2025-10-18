@@ -30,5 +30,5 @@ The following protocols are implemented:
 
 ## Common Protocol Properties
 
-All supported protocol profiles share a set of [**Common Protocol Properties**](common-protocol-properties.md) that define consistent behaviors and configuration options across all protocols.
+All supported protocol profiles share a set of [**Common Protocol Properties**](./common-properties.md) that define consistent behaviors and configuration options across all protocols.
 Understanding these shared properties helps ensure consistent configuration and predictable behavior when managing certificates across different protocols.
