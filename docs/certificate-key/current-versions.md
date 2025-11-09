@@ -14,16 +14,16 @@ The following is a list of current versions of the CZERTAINLY platform and conne
 
 ## Core
 
-| Service           | Version        | Docker Image                                        |
-|-------------------|----------------|-----------------------------------------------------|
-| Core              | `2.16.0`       | `docker.io/czertainly/czertainly-core`              |
-| Auth              | `1.6.2`        | `docker.io/czertainly/czertainly-auth`              |
-| Auth OPA policies | `1.4.0`        | `docker.io/czertainly/czertainly-auth-opa-policies` |
-| Scheduler         | `1.0.3`        | `docker.io/czertainly/czertainly-scheduler`         |
-| API Gateway       | `3.8.0`        | `docker.io/czertainly/czertainly-kong`              |
-| Messaging         | `3.13.7`       | `docker.io/czertainly/czertainly-rabbitmq`          |
-| OPA               | `1.5.1-static` | `docker.io/czertainly/czertainly-opa`               |
-| PgBouncer         | `v1.24.0-p0`   | `docker.io/czertainly/czertainly-pgbouncer`         |
+| Service           | Version         | Docker Image                                        |
+|-------------------|-----------------|-----------------------------------------------------|
+| Core              | `2.16.1`        | `docker.io/czertainly/czertainly-core`              |
+| Auth              | `1.6.3`         | `docker.io/czertainly/czertainly-auth`              |
+| Auth OPA policies | `1.4.1`         | `docker.io/czertainly/czertainly-auth-opa-policies` |
+| Scheduler         | `1.0.4`         | `docker.io/czertainly/czertainly-scheduler`         |
+| API Gateway       | `3.9.1`         | `docker.io/czertainly/czertainly-kong`              |
+| Messaging         | `4.2.0`         | `docker.io/czertainly/czertainly-rabbitmq`          |
+| OPA               | `1.10.0-static` | `docker.io/czertainly/czertainly-opa`               |
+| PgBouncer         | `v1.24.1-p1`    | `docker.io/czertainly/czertainly-pgbouncer`         |
 
 ## Front Ends
 
@@ -33,7 +33,7 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 
 | Front End     | Version  | Docker Image                                             |
 |---------------|----------|----------------------------------------------------------|
-| Administrator | `2.16.0` | `docker.io/czertainly/czertainly-frontend-administrator` |
+| Administrator | `2.16.1` | `docker.io/czertainly/czertainly-frontend-administrator` |
 
 ## Connectors
 
@@ -57,11 +57,11 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 
 | Service           | Version    | Docker Image                                         |
 |-------------------|------------|------------------------------------------------------|
-| Keycloak Internal | `26.1.0-0` | `docker.io/czertainly/czertainly-keycloak-optimized` |
-| Keycloak Theme    | `0.1.2`    | `docker.io/czertainly/czertainly-keycloak-theme`     |
-| Utils Service     | `1.0.1`    | `docker.io/czertainly/czertainly-utils-service`      |
-| Curl              | `8.1.1`    | `docker.io/czertainly/czertainly-curl`               |
-| Kubectl           | `1.31.1`   | `docker.io/czertainly/czertainly-kubectl`            |
+| Keycloak Internal | `26.4.2-0` | `docker.io/czertainly/czertainly-keycloak-optimized` |
+| Keycloak Theme    | `0.1.3`    | `docker.io/czertainly/czertainly-keycloak-theme`     |
+| Utils Service     | `1.0.2`    | `docker.io/czertainly/czertainly-utils-service`      |
+| Curl              | `8.16.0`   | `docker.io/czertainly/czertainly-curl`               |
+| Kubectl           | `2.16.1`   | `docker.io/czertainly/czertainly-kubectl`            |
 
 ## Private repository
 
