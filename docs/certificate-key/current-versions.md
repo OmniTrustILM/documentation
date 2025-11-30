@@ -16,7 +16,7 @@ The following is a list of current versions of the CZERTAINLY platform and conne
 
 | Service           | Version         | Docker Image                                        |
 |-------------------|-----------------|-----------------------------------------------------|
-| Core              | `2.16.1`        | `docker.io/czertainly/czertainly-core`              |
+| Core              | `2.16.2`        | `docker.io/czertainly/czertainly-core`              |
 | Auth              | `1.6.3`         | `docker.io/czertainly/czertainly-auth`              |
 | Auth OPA policies | `1.4.1`         | `docker.io/czertainly/czertainly-auth-opa-policies` |
 | Scheduler         | `1.0.4`         | `docker.io/czertainly/czertainly-scheduler`         |
@@ -33,7 +33,7 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 
 | Front End     | Version  | Docker Image                                             |
 |---------------|----------|----------------------------------------------------------|
-| Administrator | `2.16.1` | `docker.io/czertainly/czertainly-frontend-administrator` |
+| Administrator | `2.16.2` | `docker.io/czertainly/czertainly-frontend-administrator` |
 
 ## Connectors
 
