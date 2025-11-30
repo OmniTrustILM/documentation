@@ -24,6 +24,11 @@ cryptoTokens:
     id: 2
     keyPoolProfiles:
       - onetime-rsa
+  - name: "SigningToken01"
+    id: 1
+    keyPoolProfiles:
+      - onetime-rsa
+      - onetime-ecdsa
 
 signers:
   # - name: Name of the Signer
@@ -36,7 +41,7 @@ signers:
   #     signaturePackaging: Signature packaging
   #     signatureAlgorithms: List of signature algorithms
   #     returnsValidationInfo: Flag to return validation info
-  #     documentTypes: Optional list of document types signer supports (e.g., FULL, HASH). Default is HASH.
+  #     documentTypes: Optional list of document types signer supports (e.g., FULL, HASH, RAW). Default is HASH.
   - name: "ExtCMS-Long"
     id: 2005
     cryptoToken: "EntrustSAMCryptoToken"
@@ -84,4 +89,15 @@ signers:
       documentTypes:
         - FULL
         - HASH
+
+  - name: RawSigner
+    id: 401
+    cryptoToken: "SigningToken01"
+    capabilities:
+      signatureAlgorithms:
+        - SHA256withRSA
+        - SHA384withRSA
+        - SHA512withRSA
+      documentTypes:
+        - RAW
 ```

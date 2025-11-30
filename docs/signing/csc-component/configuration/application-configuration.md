@@ -54,6 +54,13 @@ csc:
     # How often will the cleaning of the used-up keys be performed according to the specified cron expression
     # The cron expression is in the UN*X definition format: second, minute, hour, day of month, month, and day of week
     cleanupCronExpression: "0 0 * * * *"
+  # Configuration of the long-term keys
+  # Long-term keys are pre-generated keys used during the credential creation to speed up the process
+  # The keys are generated in pools
+  longTermKeys:
+    # Pre-generate long-term keys according to the specified cron expression on defined key pool profiles
+    # The cron expression is in the UN*X definition format: second, minute, hour, day of month, month, and day of week
+    generateCronExpression: "45 */1 * * * *"
   # Configuration of the concurrency defines the maximum number of concurrent requests that can be processed
   # for specific operations
   concurrency:

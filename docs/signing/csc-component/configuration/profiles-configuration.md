@@ -119,5 +119,6 @@ keyPoolProfiles:
     # Designated usage of the keys in the pool
     # SESSION_SIGNATURE: Keys are used for signing multiple times in a session
     # ONE_TIME_SIGNATURE: Keys are used for signing only once
+    # LONG_TERM_SIGNATURE: Keys are used during credential creation to speed up the process
     designatedUsage: ONE_TIME_SIGNATURE
 ```

@@ -18,6 +18,7 @@ The following endpoints are supported:
 - `info`
 - `credentials/list`
 - `credentials/info`
+- `signatures/signHash`
 - `signatures/signDoc`
 
 Additionally, the CSC component supports the following non CSC API features:
@@ -32,6 +33,10 @@ The CSC components supports the following credential types and associated signin
 | **Short-lived credential** | Immediate signing, one-time signing requests without need to pre-provision users. Useful when you do not require users to create accounts, signing after identification and destroy the private keys after the signing operation.                                                        |
 | **Session credentials**    | For transactions that require signatures within a specific timeframe. Useful when users would like to sign data within short timeframe but requires multiple signatures. Session credentials are like short-lived credentials that can be used multiple times within its short validity. |
 | **Long-lived credentials** | For users who need extended, secure access to their signing credentials. Provisioned credentials that are associated with identities. Users do not need to be identified for every signing operation.                                                                                    |
+
+:::warning[signHash limitation]
+The `signHash` operation does not support signature qualifiers as defined in the CSC API specification. Therefore, any `signHash` request should contain the credential identifier that is associated with the required signature qualifier.
+:::
 
 ## CSC component deployment
 
