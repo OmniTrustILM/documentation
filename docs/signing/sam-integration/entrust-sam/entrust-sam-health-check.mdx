@@ -1,0 +1,70 @@
+---
+sidebar_position: 11
+---
+
+import {Fragment} from "react";
+
+# Health Check
+
+The health check timed service is used to monitor the health of the Entrust SAM. It periodically checks the status of the configured [Entrust SAM Crypto Token](./properties.mdx) and reports any issues. This service is useful for ensuring that the signing infrastructure is operational and can help in identifying problems before they impact signing operations.
+
+The implementation class of this service is:
+```properties
+com.czertainly.signserver.module.entrustsam.timedservice.HealthCheckTimedService
+```
+
+The following properties are available for this service:
+
+export const data = [
+    {
+        property: "CRYPTOTOKEN",
+        description:
+            (
+                <>
+                    The name of the Entrust SAM crypto token to check the health of.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span className="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span className="badge badge--success">YES</span>
+                </>
+            )
+    },
+];
+
+export const GenTable = ({data}) => (
+    <Fragment>
+        {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                    <td><b>{dat.property}</b></td>
+                    <td>{dat.description}</td>
+                    <td>{dat.default}</td>
+                    <td>{dat.mandatory}</td>
+                </tr>)
+        })}
+    </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={data}/>
+    </tbody>
+</table>
+
+## How It Works
+
+The health check service periodically checks the connection to the Entrust SAM using the configured crypto token. It verifies that the SAM is reachable and connection can be established. If the connection fails, the service marks the related crypto token as `Offline`. This service will automatically try to activate the crypto token if it is found to be `Offline` during the health check. Once the connection is successfully re-established, the crypto token status will be updated to `Active`.
+
+All health check activities are recoded in the logs, which can be reviewed for troubleshooting and monitoring purposes.
