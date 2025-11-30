@@ -67,4 +67,4 @@ export const GenTable = ({data}) => (
 
 The health check service periodically checks the connection to the Entrust SAM using the configured crypto token. It verifies that the SAM is reachable and connection can be established. If the connection fails, the service marks the related crypto token as `Offline`. This service will automatically try to activate the crypto token if it is found to be `Offline` during the health check. Once the connection is successfully re-established, the crypto token status will be updated to `Active`.
 
-All health check activities are recoded in the logs, which can be reviewed for troubleshooting and monitoring purposes.
+All health check activities are recorded in the logs, which can be reviewed for troubleshooting and monitoring purposes.
