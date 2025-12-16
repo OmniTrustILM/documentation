@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 60
 ---
 
 # From 1.18.0 To 1.19.0

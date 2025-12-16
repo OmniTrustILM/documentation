@@ -80,6 +80,20 @@ export const data = [
         module:
             (
                 <>
+                    <a href="./raw-signer/overview"><b>Raw Signatures</b></a>
+                </>
+            ),
+        description:
+            (
+                <>
+                    Perform raw signature operations on precomputed hashes with support for both single and batch signing capabilities.
+                </>
+            )
+    },
+    {
+        module:
+            (
+                <>
                     <a href="./qscd-integration/overview"><b>QSCD Integration</b></a>
                 </>
             ),
@@ -142,16 +156,58 @@ export const GenTable = ({data}) => (
 
 Moreover, the following part seamlessly integrates with the CZERTAINLY Signing and are optional:
 
+export const optional = [
+    {
+        module:
+            (
+                <>
+                    <a href="./csc-component/overview"><b>CSC Component</b></a>
+                </>
+            ),
+        description:
+            (
+                <>
+                    Cloud Signature Consortium (CSC) API component that enables integration with
+                    CSC compliant signature applications for remote signing.
+                </>
+            )
+    },
+    {
+        module:
+            (
+                <>
+                    <b>Windows KSP Module</b>
+                </>
+            ),
+        description:
+            (
+                <>
+                    Signature module for Windows environment, which provides integration with the KSP
+                    (Key Storage Provider) to sign documents and data through Windows applications on the SignServer.
+                </>
+            )
+    },
+    {
+        module:
+            (
+                <>
+                    <b>DMR</b>
+                </>
+            ),
+        description:
+            (
+                <>
+                    Dashboarding, Monitoring, and Reporting module for the SignServer cluster.
+                </>
+            )
+    },
+];
+
 <table>
+    <th></th>
+    <th>Description</th>
     <tbody>
-    <tr>
-        <td><b>Windows KSP Module</b></td>
-        <td>Signature module for Windows environment, which provides integration with the KSP (Key Storage Provider) to sign documents and data through Windows applications on the SignServer.</td>
-    </tr>
-    <tr>
-        <td><b>DMR</b></td>
-        <td>Dashboarding, Monitoring, and Reporting module for the SignServer cluster.</td>
-    </tr>
+    <GenTable data={optional}/>
     </tbody>
 </table>
 

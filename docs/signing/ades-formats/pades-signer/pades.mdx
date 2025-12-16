@@ -1222,3 +1222,137 @@ You can specify additional properties:
     <GenTable data={visibleText}/>
     </tbody>
 </table>
+
+### Alerts properties
+
+:::info[Common Alerts Properties]
+The AdES Signer supports common alerts properties that can be used to configure alerts behavior for different
+types of issues and event occurring during the signing process, and how they should be handled.
+For more information, refer to the [Alerts Properties](../common-properties/alerts-properties.mdx) section.
+:::
+
+The following properties are available for configuring alerts specific to PAdES signing:
+
+export const alertsAttributes = [
+    {
+        property: "ALERTS_SIGNATUREFIELDOVERLAP",
+        description:
+            (
+                <>
+                    Defines a behavior in case a new signature field overlaps an existing annotations
+                    within PDF document.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_SIGNATUREFIELDOUTSIDEPAGEDIMENSIONS",
+        description:
+            (
+                <>
+                    Defines a behavior in case a new signature field lies outside (full or partially)
+                    of the defined page within the PDF document.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_DOCUMENTREADEXCEPTION",
+        description:
+            (
+                <>
+                    Defines a behavior in case the attempt to read the PDF document properly fails.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_FORBIDDENSIGNATURECREATION",
+        description:
+            (
+                <>
+                    Defines a behavior in case signature creation is forbidden by PDF document policy.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+];
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+    <tbody>
+    <GenTable data={alertsAttributes}/>
+    </tbody>
+</table>
