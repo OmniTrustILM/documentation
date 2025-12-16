@@ -1,0 +1,393 @@
+---
+sidebar_position: 9
+---
+
+import {Fragment} from "react";
+
+# Alerts Properties
+
+The overall configuration of alerts can be set using alerts profiles. Profiles support the following values:
+- **`DEFAULT`** - the default DSS alerts configuration that is used when no other profile is specified
+- **`STRICT`** - a strict alerts profile that enforces all alerts to be treated as errors with raised exceptions
+- **`RELAXED`** - a relaxed alerts profile that treats all alerts as warnings in log only
+- **`IGNORE`** - an ignore alerts profile that ignores all alerts without any logging or exceptions
+
+export const alertsProfileAttributes = [
+    {
+        property: "ALERTS_PROFILE",
+        description:
+            (
+                <>
+                    Sets the alerts profile to be used during signing.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">DEFAULT</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+];
+
+export const GenTable = ({data}) => (
+  <Fragment>
+    {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                  <td><b>{dat.property}</b></td>
+                  <td>{dat.description}</td>
+                  <td>{dat.default}</td>
+                  <td>{dat.mandatory}</td>
+                  <td>{dat.metadata}</td>
+                </tr>)
+         })}
+  </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+    <tbody>
+    <GenTable data={alertsProfileAttributes}/>
+    </tbody>
+</table>
+
+Specific alerts behavior can be further overridden using the following values:
+- **`INHERIT`** - inherit the behavior from the alerts profile
+- **`ERROR`** - treat the alert as an error and raise an exception
+- **`WARN`** - treat the alert as a warning and log it
+- **`IGNORE`** - ignore the alert without any logging or exceptions
+
+The following alerts can be configured:
+
+export const alertsAttributes = [
+    {
+        property: "ALERTS_EXPIREDCERTIFICATE",
+        description:
+            (
+                <>
+                    Defines a behavior on a signature creation or augmentation with an expired signing-certificate
+                    or its related POE(s).
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_REVOKEDCERTIFICATE",
+        description:
+            (
+                <>
+                    Defines a behavior if a revoked certificate is present.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_INVALIDSIGNATURE",
+        description:
+            (
+                <>
+                    Defines a behavior on augmentation of a cryptographically invalid signature.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_INVALIDTIMESTAMP",
+        description:
+            (
+                <>
+                    Defines a behavior if an invalid timestamp is found.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_NOTYETVALIDCERTIFICATE",
+        description:
+            (
+                <>
+                    Defines a behavior on a signature creation or augmentation with a not yet valid
+                    signing-certificate.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_MISSINGREVOCATIONDATA",
+        description:
+            (
+                <>
+                    Defines a behavior in case of missing revocation data.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_NOREVOCATIONAFTERBESTSIGNATURETIME",
+        description:
+            (
+                <>
+                    Defines a behavior in case if there is no valid revocation data with thisUpdate time
+                    after the best signature time.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">WARN</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_UNCOVEREDPOE",
+        description:
+            (
+                <>
+                    Defines a behavior if a TSU certificate chain is not covered with a
+                    revocation data (timestamp generation time &gt; CRL/OCSP production time).
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">WARN</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_HIGHERSIGNATURELEVEL",
+        description:
+            (
+                <>
+                    Defines a behavior on a signature creation or augmentation within a document containing
+                    signatures of a higher level.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_SIGNATUREWITHOUTCERTIFICATES",
+        description:
+            (
+                <>
+                    Defines a behavior on augmentation of a signature without certificates in its B-level.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_SELFSIGNEDCERTIFICATECHAINS",
+        description:
+            (
+                <>
+                    Defines a behavior on augmentation of a signature built only with self-signed certificate chains.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+];
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+    <tbody>
+    <GenTable data={alertsAttributes}/>
+    </tbody>
+</table>
