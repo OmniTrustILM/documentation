@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Signing with Onetime Crypto Worker
 
-The following chapters describe the signing flow using the `EntrustSAMOneTimeCryptoWorker`. The same process is applicable for any type of the Signer configured.
+The following chapter describes the signing flow using the `EntrustSAMOneTimeCryptoWorker`. The same process is applicable for any type of the Signer configured.
 
 ## Signing process
 
@@ -44,9 +44,9 @@ The signing process has 2 subprocesses that are described in more detail below:
 
 ### Prepare SAM key data
 
-This process consists of generating, assigning, and certifying the SAM key that is should be authorized to be used on behalf of the user.
+This process consists of generating, assigning, and certifying the SAM key that should be authorized for use on behalf of the user.
 
-When the SAM key is generated, it must be certified. This consists of providing the proof of possession in the form of the CSR to certification authority. How is the certificate requested and issued depends on the implementation of CA Connector identified by `CA_CONNECTOR_IMPLEMENTATION_CLASS` property of the `EntrustSAMOneTimeCryptoWorker`.
+When the SAM key is generated, it must be certified. This consists of providing the proof of possession in the form of the CSR to certification authority. How the certificate is requested and issued depends on the implementation of CA Connector identified by `CA_CONNECTOR_IMPLEMENTATION_CLASS` property of the `EntrustSAMOneTimeCryptoWorker`.
 
 :::warning
 Out-of-the-box implementation of the EJBCA connector using Web Services can be used with the SAM crypto worker. The implementation class for this CA connector is `CA_CONNECTOR_IMPLEMENTATION_CLASS=com.czertainly.signserver.module.sam.onetime.caconnector.EjbcaWSSAMCAConnector`. It is expected that this implementation will be moved to generic package in the future release. The configuration properties are same as in case [EJBCA WS CA Connector](https://doc.primekey.com/signserver/signserver-operations/setting-up-one-time-keys#SettingupOnetimeKeys-EJBCAWSCAConnector)
@@ -76,13 +76,13 @@ Out-of-the-box implementation of the EJBCA connector using Web Services can be u
     @enduml
 ```
 
-As a result of this process, the SAM key data are ready to be activated and used to generate a digital signature on behalf of the user that owns the SAM key.
+As a result of this process, the SAM key data is ready to be activated and used to generate a digital signature on behalf of the user that owns the SAM key.
 
 ### Activate SAM key and sign
 
-Once the data to be signed (DTBS) and SAM key is ready, the process of activation the SAM key and signing on behalf of the user can be executed.
+Once the data to be signed (DTBS) and the SAM key is ready, the process of activation the SAM key and signing on behalf of the user can be executed.
 
-For that we need to get Signature Activation Data (SAD) which represents the explicit authorization from the user to sign the DTBS and can be used to generate the digital signature. How is the SAD obtained depends on the implementation of the SAD Provider and it can be configured using the `SAD_PROVIDER_IMPLEMENTATION_CLASS` of the underlying `CRYPTOTOKEN` of the `EntrustSAMOneTimeCryptoWorker`. See [SAD Providers](../sad-providers/overview.md) for more information.
+For that, we need to get Signature Activation Data (SAD) which represents the explicit authorization from the user to sign the DTBS and can be used to generate the digital signature. How the SAD is obtained depends on the implementation of the SAD Provider and it can be configured using the `SAD_PROVIDER_IMPLEMENTATION_CLASS` of the underlying `CRYPTOTOKEN` of the `EntrustSAMOneTimeCryptoWorker`. See [SAD Providers](../sad-providers/overview.md) for more information.
 
 ```plantuml
     @startuml
