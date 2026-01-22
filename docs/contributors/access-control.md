@@ -12,10 +12,10 @@ For more information about the definition of authorization policies, refer to [C
 
 `Core` service works with different types of objects (entities) that are called **resources**. Each resource then has defined set of **actions** that are available for that particular resource. Available resources and actions are defined as `enum` type to easily refer to.
 
-| Access Control Enum | Reference                                                                                                                                         |
-|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Resources**       | [Resource enum](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/model/auth/Resource.java)             |
-| **Actions**         | [ResourceAction enum](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/model/auth/ResourceAction.java) |
+| Access Control Enum | Reference                                                                                                                                             |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Resources**       | [Resource enum](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/model/auth/Resource.java)                 |
+| **Actions**         | [ResourceAction enum](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/core/model/auth/ResourceAction.java) |
 
 The list of available actions for particular resources is dynamically constructed by the `Core` service based on the `@ExternalAuthorization` annotation. Continue reading to get more details.
 
