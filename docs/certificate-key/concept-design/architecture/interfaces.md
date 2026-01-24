@@ -37,7 +37,7 @@ Platform offers REST API to communicate with the platform. REST API can be split
 
 ## `Connector` Interfaces
 
-The `Connector` interface implements specific technology that can be connected with the platform. Depending on the technology and use-case, the `Connector` may be of different `Types` and `Functional Groups`.
+The `Connector` interface implements specific technology that can be connected with the platform. Depending on the technology and use-case, the `Connector` may be of different `Functional Groups` and `Kinds`.
 
 Each `Connector` has to implement at least the following interfaces:
 
@@ -47,7 +47,7 @@ Each `Connector` has to implement at least the following interfaces:
 
 ## `Core` Interfaces
 
-`Core` interfaces are used by the platform to communicate with the `Connector` and the `Client`.
+`Core` interfaces are used by the platform to communicate with `Connector`s and `Client`s.
 
 You can find the description of the `Core` interfaces in the following sections:
-- [Core interfaces](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/develop/src/main/java/com/czertainly/api/interfaces/core)
+- [Core interfaces](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/interfaces/core)
