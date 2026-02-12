@@ -6,7 +6,8 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #3fb24d;
+  --ifm-color-primary: #0072CF;
+  --ifm-secondary-color: #B3B3B3;
   /*--ifm-color-primary: #1473b5;*/
   --ifm-color-primary-dark: rgb(33, 175, 144);
   --ifm-color-primary-darker: rgb(31, 165, 136);
@@ -17,12 +18,8 @@
   --ifm-code-font-size: 95%;
 
   --ifm-badge-background-color: #1473b5;
-}
 
-.hero {
-  background-image: url("/static/img/czertainly-chain.png");
-  background-position: center;
-  background-size: cover;
+  --ifm-button-background-color: #0072CF;
 }
 
 .docusaurus-highlight-code-line {
