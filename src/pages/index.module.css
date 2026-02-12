@@ -8,7 +8,7 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  background-color: #f2fbff;
+  background-color: var(--ifm-color-primary);
 }
 
 @media screen and (max-width: 966px) {
@@ -33,6 +33,17 @@
   margin-bottom: 2rem;
 }
 
+.blueButton {
+  background-color: var(--ifm-secondary-color);
+}
+
+.blueButton:hover {
+  background-color: color-mix(
+          in srgb,
+          var(--ifm-color-secondary) 50%,
+          black 50%
+  );
+}
 .buttons {
   display: flex;
   align-items: center;

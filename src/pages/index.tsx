@@ -7,7 +7,7 @@ import styles from "./index.module.css";
 import HomepageFeatures from "../components/HomepageFeatures";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import PlatformModules from "@site/src/components/PlatformModules";
-import WhatIsCZERTAINLY from "@site/src/components/WhatIsCZERTAINLY";
+import WhatIsILM from "@site/src/components/WhatIsILM";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -15,7 +15,7 @@ function HomepageHeader() {
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className="container">
         <img
-          src={useBaseUrl("img/czertainly_white_H.svg")}
+          src={useBaseUrl("img/ilm-logo-white.svg")}
           className={styles.introImage}
         />
         <br />
@@ -26,6 +26,7 @@ function HomepageHeader() {
           <Link
             className="button button--success button--lg buttonTextWhite"
             // className={[styles.buttonTextColor, styles.button, styles.buttonSuccess, styles.buttonLg].join(' ')}
+            className={clsx("button button--lg", styles.blueButton)}
             to={useBaseUrl("docs/")}
           >
             Get Started️
@@ -45,7 +46,7 @@ export default function Home(): JSX.Element {
     >
       <HomepageHeader />
       <main className={styles.main}>
-        <WhatIsCZERTAINLY />
+        <WhatIsILM />
         <PlatformModules />
       </main>
     </Layout>

@@ -1,15 +1,15 @@
 import React from 'react';
 
 import Divider from './Divider';
-import styles from './WhatIsCZERTAINLY.module.css';
+import styles from './WhatIsILM.module.css';
 
 const WhatIs = (): React.ReactElement => (
     <section className={styles.whatIs}>
         <h1 className={styles.whatIsHeader}>
-            What is CZERTAINLY?
+            What is ILM?
         </h1>
         <p>
-            CZERTAINLY is a platform that brings easy and convenient solution to protect our baseline security in every
+            Identity Lifecycle Management (ILM) is a platform that brings easy and convenient solution to protect our baseline security in every
             day digital communication by assuring and automating cryptographic keys, digital certificates, and
             digital signature as part of trust services lifecycle.
         </p>
