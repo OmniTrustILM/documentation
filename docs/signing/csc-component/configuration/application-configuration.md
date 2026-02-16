@@ -70,6 +70,42 @@ csc:
     # Maximum number of concurrent key deletion requests
     # The value must be greater than 0, default is 10
     maxKeyDeletion: 10
+  # Management API authentication configuration
+  management:
+    auth:
+      # Authentication type for the management API.
+      # certificate_oauth2 - mTLS with OAuth2 fallback (default); tries client certificate first,
+      #                      falls back to OAuth2 JWT Bearer token if no certificate is presented
+      # oauth2 - use OAuth2 JWT Bearer token only; rejects requests without a valid token
+      # certificate - use mTLS client certificate authentication only; rejects requests without a certificate
+      type: oauth2
+      certificate:
+      # At least one of the following allowlists or truststoreBundle must be configured for certificate
+      # authentication to work. The application will not start if not configured properly.
+
+      # Optional: Spring SSL Bundle name for a management-specific truststore.
+      # When mTLS is terminated directly at this server, the client certificate is validated during the TLS
+      # handshake against the truststore configured in `spring.ssl`. This option allows an additional
+      # truststore to be used for management API client certificate validation (including when a certificate
+      # is received via `clientCertificateHeader` after TLS is terminated at a reverse proxy).
+      # truststoreBundle: managementTrust
+
+      # Optional: Issuer DN allowlist
+      # allowedIssuers:
+      #   - "CN=Management CA,O=Example,C=US"
+
+      # Optional: Subject DN allowlist
+      # allowedSubjects:
+      #   - "CN=Admin,O=Example,C=US"
+
+      # Optional: SHA-256 fingerprint pinning
+      # allowedFingerprints:
+      #   - "A1:B2:C3:D4:E5:..."
+
+      # Optional: HTTP header name containing the client certificate (PEM or Base64-encoded DER)
+      # when TLS is terminated at a reverse proxy. The proxy should forward the client certificate
+      # in this header. If not set, certificates are only read from the TLS handshake.
+      # clientCertificateHeader: X-SSL-Client-Cert
 
 # HTTP client configuration for all outbound connections (SignServer, EJBCA, IDP)
 http:
@@ -208,6 +244,13 @@ spring:
         #         type: "PKCS12" # Keystore type, allowed values: JKS, PKCS12
         #         location: /opt/cscapi/admin-keystore.p12 # Absolute path to the keystore file
         #         password: password # Keystore password
+
+        # Sample configuration of a truststore for credential management API client certificate authentication
+        # managementTrust:
+        #    keystore:
+        #        type: "PKCS12"
+        #        location: /opt/cscapi/management-truststore.p12
+        #        password: password
         idpClient:
           keystore:
             type: "PKCS12"
