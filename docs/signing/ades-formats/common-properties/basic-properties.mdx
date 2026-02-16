@@ -100,6 +100,62 @@ export const data = [
             )
     },
     {
+        property: "CRL_DATA_LOADER_TIMEOUT_CONNECTION",
+        description:
+            (
+                <>
+                    Timeout in milliseconds for connection to the CRL data loader.
+                    This is the timeout for establishing a connection to the CRL distribution point.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">60000</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "CRL_DATA_LOADER_TIMEOUT_SOCKET",
+        description:
+            (
+                <>
+                    Timeout in milliseconds for socket of the CRL data loader.
+                    This is the timeout for waiting for data after a connection to the CRL distribution point has been established.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">60000</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
         property: "EMBED_OCSP_RESPONSE",
         description:
             (
@@ -127,6 +183,62 @@ export const data = [
             (
                 <>
                     <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "OCSP_DATA_LOADER_TIMEOUT_CONNECTION",
+        description:
+            (
+                <>
+                    Timeout in milliseconds for connection to the OCSP data loader.
+                    This is the timeout for establishing a connection to the OCSP URI located in the certificate AIA extension.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">60000</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "OCSP_DATA_LOADER_TIMEOUT_SOCKET",
+        description:
+            (
+                <>
+                    Timeout in milliseconds for socket of the OCSP data loader.
+                    This is the timeout for waiting for data after a connection to the OCSP URI located in the certificate AIA extension has been established.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">60000</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
                 </>
             )
     },

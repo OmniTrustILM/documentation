@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 9
 ---
 
 # From 1.20.0 To 1.20.1
