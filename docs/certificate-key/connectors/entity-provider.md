@@ -21,9 +21,9 @@ Entity Provider `Connector` provides access to the locations on the remote devic
 ## Provider objects
 
 [`Entity`](../concept-design/core-components/entity.md) and [`Location`](../concept-design/core-components/location.md) objects are managed in the platform through the Entity Provider implementation.
-`Entity` represents end user of the `Certificate` and it can have access to multiple `Locations`.
+`Entity` represents an end user of the `Certificate` and it can have access to multiple `Locations`.
 
-The following diagram shows the relation (sample) between `Entity Provier`, `Entity`, `Location`, and `Certificate`:
+The following diagram shows the relation (sample) between `Entity Provider`, `Entity`, `Location`, and `Certificate`:
 
 ```plantuml
 @startuml
