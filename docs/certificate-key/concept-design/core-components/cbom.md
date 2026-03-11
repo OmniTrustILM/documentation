@@ -1,3 +1,7 @@
+---
+sidebar_position: 23
+---
+
 ## What is CBOM
 
 **CBOM (Cryptographic Bill of Materials)** is a comprehensive inventory document that describes all cryptographic assets and materials within a system, application, or organization. It provides transparency and visibility into cryptographic usage and assets, enabling better security management, compliance, and risk assessment.
