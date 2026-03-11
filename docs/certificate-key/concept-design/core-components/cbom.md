@@ -70,7 +70,7 @@ Cryptographic algorithms in use within the system.
 Cryptographic protocols and their configurations.
 
 **Properties:**
-- Protocol name (TLS, SSH,)
+- Protocol name (TLS, SSH)
 - Protocol version
 - Supported cipher suites
 - Authentication methods
