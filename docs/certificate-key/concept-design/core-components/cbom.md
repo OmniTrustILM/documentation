@@ -182,4 +182,3 @@ To configure CBOM Repository integration:
 - [Certificate](certificate.md)
 - [Key](key.md)
 - [Compliance Profile](compliance-profile.md)
-- [Certificate Discovery](../../modules/certificate-discovery.md)
