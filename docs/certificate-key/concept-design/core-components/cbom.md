@@ -109,12 +109,9 @@ Following diagram illustrates:
 ```plantuml
 @startuml CBOM Pull and Push Modes
 
-!define RECTANGLE_COLOR #E8F5E9
-!define ACTOR_COLOR #BBDEFB
-
 title CBOM Synchronization - Pull and Push Modes
 
-actor User as user #ACTOR_COLOR
+actor User as user
 participant "CZERTAINLY\nREST API" as api
 participant "Scheduled Job" as scheduler
 database "CZERTAINLY\nDatabase" as db
