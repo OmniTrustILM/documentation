@@ -1,11 +1,8 @@
 ## What is CBOM
 
-**CBOM (Cryptographic Bill of Materials)** is a comprehensive inventory document that describes all cryptographic assets and materials within a system, application, or organization. It provides transparency and visibility into, enabling better security management, compliance, and risk assessment.
+**CBOM (Cryptographic Bill of Materials)** is a comprehensive inventory document that describes all cryptographic assets and materials within a system, application, or organization. It provides transparency and visibility into cryptographic usage and assets, enabling better security management, compliance, and risk assessment.
 
-It is The International Standard for Bill of Materials (ECMA-424) which is a
-specification maintained by The OWASP Foundation and Ecma International
-Technical Committee for Software & System Transparency (TC54). See [CycloneDX](https://cyclonedx.org).
-
+CBOM is based on the international standard ECMA-424, *The International Standard for Bill of Materials*, a specification maintained by the OWASP Foundation and Ecma International Technical Committee 54 (TC54) on Software & System Transparency. See [CycloneDX](https://cyclonedx.org).
 CBOMs are essential for:
 - **Security auditing** - identifying weak or outdated cryptographic algorithms
 - **Compliance** - meeting regulatory requirements for cryptographic asset tracking
@@ -15,7 +12,7 @@ CBOMs are essential for:
 
 ## CBOM Structure
 
-A CBOM document follows a standardized structure containing metadata and asset information. As specification evolves, several version exists. CZERTAINLY supports [CycloneDX v1.6 JSON](https://cyclonedx.org/docs/1.6/json/)
+A CBOM document follows a standardized structure containing metadata and asset information. As the specification evolves, several versions exist. CZERTAINLY supports [CycloneDX v1.6 JSON](https://cyclonedx.org/docs/1.6/json/)
 
 ### Basic details
 
@@ -88,10 +85,10 @@ Various secrets found on a system like:
 
 CZERTAINLY generates and maintains CBOMs for all managed cryptographic assets. The platform:
 
-- **Automatically discovers** cryptographic assets from various sources via CBOM Lens Discovery protocol
-- **Continuously synchronized** CBOM documents are regularly pulled from Repository
-- **Visualize** CBOM data for a compliance
-- **Exports** raw CBOM in JSON formats
+- **Automatically discovers** cryptographic assets from various sources via the *CBOM Lens Discovery* protocol, which defines how connectors scan external systems and report discovered cryptographic assets in CBOM format
+- **Continuously synchronizes** CBOM documents that are regularly pulled from the repository
+- **Visualizes** CBOM data for compliance
+- **Exports** raw CBOM in JSON format
 
 ## Integration with CBOM Repository Service
 
