@@ -17,13 +17,13 @@ For more information about `Attribute` and `attributeCallback` property, see [At
 
 ## Callback properties
 
-The [`AttributeCallback`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/callback/AttributeCallback.java) contains the following properties:
+The [`AttributeCallback`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/common/callback/AttributeCallback.java) contains the following properties:
 
 | Property          | Type                                                                                                                                                                                                   | Short description                                                                                                                               | Required                                      |
 |-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
 | `callbackContext` | `string`                                                                                                                                                                                               | Context part of callback URL that should be used.                                                                                               | <span class="badge badge--success">Yes</span> |
 | `callbackMethod`  | `string`                                                                                                                                                                                               | HTTP method of the callback URL that should be used.                                                                                            | <span class="badge badge--success">Yes</span> |
-| `mappings`        | set of [`AttributeCallbackMapping`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/callback/AttributeCallbackMapping.java) | Mappings for the callback method, which defines how to use the data in context of the request path variables, query parameter, or body payload. | <span class="badge badge--success">Yes</span> |
+| `mappings`        | set of [`AttributeCallbackMapping`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/common/callback/AttributeCallbackMapping.java) | Mappings for the callback method, which defines how to use the data in context of the request path variables, query parameter, or body payload. | <span class="badge badge--success">Yes</span> |
 
 The complex structure, such as objects, arrays, etc., can be mapped only into the body payload of the callback. If the complex structure will be mapped as path variable or query parameter, only its `value` content property will be used.
 
@@ -46,7 +46,7 @@ The following is the sample `AttributeCallback` structure:
 ```
 
 :::info
-Mappings have various options how to include the data from other `Attributes` and request additional action based on them. See the available options in [AttributeCallbackMapping](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/callback/AttributeCallbackMapping.java).
+Mappings have various options how to include the data from other `Attributes` and request additional action based on them. See the available options in [AttributeCallbackMapping](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/common/callback/AttributeCallbackMapping.java).
 :::
 
 ## Special purpose callbacks
@@ -90,6 +90,40 @@ For that purpose we have a special callback interface that will give the `Client
 }
 ```
 This callback allows to get the list of `Credentials` protecting its sensitive data. The list will contain only UUID and name of the `Credentials` that have the required `kind`.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+Resource Callback
+
+</td>
+<td>
+
+```json
+{
+  "mappings": [
+    {
+      "to": "COMMON_NAME.CONTAINS",
+      "targets": [
+        "filter"
+      ],
+      "value": "com"
+    }
+  ]
+}
+```
+This callback is used to retrieve resource objects for attributes with `Resource Object` content type. The context and method do not have to be specified, since this callback is called based on the content type.
+In this case, mappings serve to filter resource objects, which will be retrieved from Core database, identified by their name and UUID. 
+Formatting of a mapping is as follows:
+ - "to" - is of format `{fieldIdentifier}.{operator}`, the values of the identifier and operator for a specific resource can be retrieved by calling API endpoint which lists the searchable information (`/v1/{resource}/search`). 
+ The fieldIdentifier must be of field source `PROPERTY`.
+ - "targets" - must contain "filter"
+ - "value" - value to filter by
+
+ If the mapping contains field "from", then the value of filter can be retrieved from other attribute and field "value" can be ommited.
 
 </td>
 </tr>
@@ -161,7 +195,7 @@ attributeTwo.setAttributeCallback(listCredentialCallback);
 
 ## Callbacks model
 
-The following diagram represents the callbacks model. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/master/src/main/java/com/czertainly/api/model/common/attribute/v2/callback).
+The following diagram represents the callbacks model. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/master/src/main/java/com/czertainly/api/model/common/attribute/common/callback).
 
 ```plantuml
 @startuml
