@@ -2,7 +2,7 @@
 sidebar_position: 23
 ---
 
-## What is CBOM
+# CBOM
 
 **CBOM (Cryptographic Bill of Materials)** is a comprehensive inventory document that describes all cryptographic assets and materials within a system, application, or organization. It provides transparency and visibility into cryptographic usage and assets, enabling better security management, compliance, and risk assessment.
 
@@ -16,7 +16,7 @@ CBOMs are essential for:
 
 ## CBOM Structure
 
-A CBOM document follows a standardized structure containing metadata and asset information. As the specification evolves, several versions exist. CZERTAINLY supports [CycloneDX v1.6 JSON](https://cyclonedx.org/docs/1.6/json/)
+A CBOM document follows a standardized structure containing metadata and asset information. As the specification evolves, several versions exist. Platform supports [CycloneDX v1.6](https://cyclonedx.org/docs/1.6/json/)
 
 ### Basic details
 
@@ -85,12 +85,13 @@ Various secrets found on a system like:
 - Client IDs and Client secrets
 - Access Tokens
 
-## CBOM in CZERTAINLY
+## CBOM in Platform
 
-CZERTAINLY generates and maintains CBOMs for all managed cryptographic assets. The platform:
+Platform generates and maintains CBOMs for all cryptographic assets. The platform:
 
-- **Automatically discovers** cryptographic assets from various sources via the *CBOM Lens Discovery* protocol, which defines how connectors scan external systems and report discovered cryptographic assets in CBOM format
-- **Continuously synchronizes** CBOM documents that are regularly pulled from the repository
+- **Automatically discovers** cryptographic assets from various sources via the connectors implementing *Discovery* protocol such as CBOM Lens.
+- **Manual uploads** CBOMs can be manually uploaded using REST API or Platform's UI.
+- **Continuously synchronizes** CBOM documents that are regularly pulled from the CBOM repository
 - **Visualizes** CBOM data for compliance
 - **Exports** raw CBOM in JSON format
 
@@ -111,14 +112,12 @@ Following diagram illustrates:
 - Returns the CBOM details to the user
 
 ```plantuml
-@startuml CBOM Pull and Push Modes
+@startuml CBOM Synchronization
 
-title CBOM Synchronization - Pull and Push Modes
+title CBOM Synchronization
 
-actor User as user
-participant "CZERTAINLY\nREST API" as api
 participant "Scheduled Job" as scheduler
-database "CZERTAINLY\nDatabase" as db
+database "Platform\nDatabase" as db
 participant "CBOM Repository" as repo
 
 == Pull Mode ==
@@ -127,7 +126,7 @@ activate scheduler
 scheduler -> scheduler: Start sync job
 scheduler -> scheduler: Get last sync timestamp
 
-scheduler -> repo: GET /cbom/entries?after={timestamp}
+scheduler -> repo: GET /api/v1/cbom?after={timestamp}
 activate repo
 repo --> scheduler: Return CBOM entries\n(created after timestamp)
 deactivate repo
@@ -142,27 +141,6 @@ end
 scheduler -> db: Update last sync timestamp
 scheduler -> scheduler: Schedule next run
 deactivate scheduler
-
-== Push Mode ==
-
-user -> api: POST /cbom\n(Upload new CBOM)
-activate api
-
-api -> repo: Store CBOM
-activate repo
-repo -> repo: Reuse or assign new\nserialNumber and version
-repo --> api: Return CBOM with\nserialNumber and version
-deactivate repo
-
-api --> user: Return CBOM details
-deactivate api
-
-note right of repo
-  CBOM is now available
-  in the repository and
-  will be returned to
-  other users/systems
-end note
 
 @enduml
 ```
