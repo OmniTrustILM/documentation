@@ -18,7 +18,9 @@ The following is a complete list of supported and available properties:
 | `group`       | `string`  | Name of the group `Attribute` belong to. It can be used for logical grouping of multiple `Attributes`                                            |
 | `global`      | `boolean` | Boolean determining if the `Attribute` is global. Global mean that two `Attributes` with the same definition cannot exist                        |
 | `overwrite`   | `boolean` | Boolean determining if updating the `Attribute` content for object overwrite (replace) existing content or appends it which is default behaviour |
-
+| `protectionLevel`   | [ProtectionLevel](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/ProtectionLevel.java) | Protection level of the attribute content. If protection level is `encrypted`, then the content of `Attribute` is encrypted in the database. |
+| `extensibleList`   | `boolean` | Boolean determining if a list `Attribute` can have values other than predefined options |
+| `resource`   | [AttributeResource](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/core/auth/AttributeResource.java) | Resource of content. Applicable only to `Attribute` with `Resource Object` content type. |
 ## Properties and Attribute types
 
 Not every property is mandatory and applicable for every `Attribute` type. The following matrix shows which properties are supported for each `Attribute` type:
@@ -34,6 +36,9 @@ Not every property is mandatory and applicable for every `Attribute` type. The f
 | `multiSelect`                  | <span class="badge badge--secondary"></span> | <span class="badge badge--success"></span>          | <span class="badge badge--secondary"></span> | <span class="badge badge--success"></span>   | <span class="badge badge--secondary"></span> |
 | `global`                       | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span>        | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span> | <span class="badge badge--danger"></span>    |
 | `overwrite`                    | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span>        | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span> | <span class="badge badge--danger"></span>    |
+| `protectionLevel`                    | <span class="badge badge--secondary"></span> | <span class="badge badge--danger"></span>        | <span class="badge badge--secondary"></span> | <span class="badge badge--danger"></span>  | <span class="badge badge--danger"></span>   |
+| `extensibleList`                    | <span class="badge badge--secondary"></span> | <span class="badge badge--success"></span>        | <span class="badge badge--secondary"></span> | <span class="badge badge--success"></span>  | <span class="badge badge--secondary"></span>   |
+| `resource`                    | <span class="badge badge--secondary"></span> | <span class="badge badge--danger"></span>        | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span>    |
 
 - <span class="badge badge--success" size="s"></span> - the property is required
 - <span class="badge badge--danger"></span> - the property is optional
@@ -45,7 +50,7 @@ For more details about `Attribute` types, see [Attributes](attributes.mdx).
 
 ## Properties model
 
-Th following diagram represents the Properties model inherited from the `AbstractBaseAttribute`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/master/src/main/java/com/czertainly/api/model/common/attribute/v2/properties).
+Th following diagram represents the Properties model inherited from the `AbstractBaseAttribute`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/properties).
 
 ```plantuml
 @startuml
