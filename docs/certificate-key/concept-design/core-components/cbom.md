@@ -145,13 +145,6 @@ deactivate scheduler
 @enduml
 ```
 
-### Configuration
-
-To configure CBOM Repository integration:
-
-1. Go to **Platform Settings**
-2. Configure **CBOM Repository URL**
-
 ## See Also
 
 - [CycloneDX v1.6 reference](https://cyclonedx.org/docs/1.6/json/)
