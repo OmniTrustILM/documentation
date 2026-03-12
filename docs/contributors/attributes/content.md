@@ -12,7 +12,7 @@ For more details about `Attribute` types and `contentType`, see [Attributes](att
 
 ## Content properties
 
-Each content type must extend, based on attribute version, either [`BaseAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/content/BaseAttributeContentV2.java) or [`BaseAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/BaseAttributeContentV3.java) which are abstracted from [`AttributeContent`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/AttributeContent.java).
+Each content type must extend, based on the attribute version, either [`BaseAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/content/BaseAttributeContentV2.java) or [`BaseAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/BaseAttributeContentV3.java) which are abstracted from [`AttributeContent`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/AttributeContent.java).
 
 The content has the following properties defined and inherited from `BaseAttributeContentV2`:
 
@@ -22,33 +22,33 @@ The content has the following properties defined and inherited from `BaseAttribu
 | `data`      | `AttributeContent` | The value of the content, depending on the `contentType` from supported [`AttributeContentType`](#supported-content-types)                              | <span class="badge badge--success">Yes</span> |
 
 The content has the following properties defined and inherited from `BaseAttributeContentV3`:
-| Property    | Type               | Short description                                                                                                                                       | Required                                      |
+| Property | Type | Short description | Required |
 |-------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
-| `reference` | `string`           | Reference that can be used for the content value. It is usefull especially when the `data` contains an object, or any other more complex data structure | <span class="badge badge--danger">No</span>   |
+| `reference` | `string`           | Reference that can be used for the content value. It is usefull especially when the `data` contains an object, or any other more complex data structure | <span class="badge badge--danger">No</span> |
 | `data`      | `AttributeContent` | The value of the content, depending on the `contentType` from supported [`AttributeContentType`](#supported-content-types)                              | <span class="badge badge--success">Yes</span> |
-| `contentType`      | `AttributeContentType` | The type of the content, must match the content type of attribute definition                 | <span class="badge badge--success">Yes</span> |
+| `contentType`      | `AttributeContentType` | The type of the content, must match the content type of attribute definition | <span class="badge badge--success">Yes</span> |
 
 ## Supported content types
 
 Supported content types are defined in [`AttributeContentType`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/content/AttributeContentType.java).
 The following content types are available and supported:
 
-| `AttributeContentType` | Class V2                                                                                                                                                                                   | Class V3                                                                                                                                                                                   | Data                                                                                                                                                                                                          |
-|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `STRING`               | [`StringAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/StringAttributeContentV2.java) | [`StringAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/StringAttributeContentV3.java) | `string`                                                                                                                                                                                                     |
-| `INTEGER`              | [`IntegerAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/IntegerAttributeContentV2.java) | [`IntegerAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/IntegerAttributeContentV3.java) | `integer`                                                                                                                                                                                                    |
-| `SECRET`               | [`SecretAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/SecretAttributeContentV2.java) | N/A                                                                                                                                                                                       | [`SecretAttributeContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/SecretAttributeContentData.java)       |
-| `FILE`                 | [`FileAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/FileAttributeContentV2.java)   | [`FileAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/FileAttributeContentV3.java)   | [`FileAttributeContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/FileAttributeContentData.java)           |
-| `BOOLEAN`              | [`BooleanAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/BooleanAttributeContentV2.java) | [`BooleanAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/BooleanAttributeContentV3.java) | `boolean`                                                                                                                                                                                                    |
-| `TEXT`                 | [`TextAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/TextAttributeContentV2.java)   | [`TextAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/TextAttributeContentV3.java)   | `string`                                                                                                                                                                                                     |
-| `CODEBLOCK`            | [`CodeBlockAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/CodeBlockAttributeContentV2.java) | [`CodeBlockAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/CodeBlockAttributeContentV3.java) | [`CodeBlockAttributeContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/CodeBlockAttributeContentData.java) |
-| `FLOAT`                | [`FloatAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/FloatAttributeContentV2.java) | [`FloatAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/FloatAttributeContentV3.java) | `float`                                                                                                                                                                                                      |
-| `DATE`                 | [`DateAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/DateAttributeContentV2.java)   | [`DateAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/DateAttributeContentV3.java)   | `date`                                                                                                                                                                                                       |
-| `DATETIME`             | [`DateTimeAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/DatetimeAttributeContentV2.java) | [`DateTimeAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/DateTimeAttributeContentV3.java) | `datetime`                                                                                                                                                                                                   |
-| `TIME`                 | [`TimeAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/TimeAttributeContentV2.java)   | [`TimeAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/TimeAttributeContentV3.java)   | `time`                                                                                                                                                                                                       |
-| `CREDENTIAL`           | [`CredentialAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/CredentialAttributeContentV2.java) | N/A                                                                                                                                                                                       | [`CredentialAttributeContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/CredentialAttributeContentData.java) |
-| `OBJECT`               | [`ObjectAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/ObjectAttributeContentV2.java) | [`ObjectAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/ObjectAttributeContentV3.java) | `object`                                                                                                                                                                                                     |
-| `RESOURCE OBJECT`      | N/A                                                                                                                                                                                       | [`ResourceObjectContent`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/ResourceObjectContent.java)       | [`ResourceObjectContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceObjectContentData.java)            |
+| `AttributeContentType` | Class V2                                                                                                                                                                                               | Class V3                                                                                                                                                                                             | Data                                                                                                                                                                                                              |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `STRING`               | [`StringAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/StringAttributeContentV2.java)         | [`StringAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/StringAttributeContentV3.java)       | `string`                                                                                                                                                                                                          |
+| `INTEGER`              | [`IntegerAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/IntegerAttributeContentV2.java)       | [`IntegerAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/IntegerAttributeContentV3.java)     | `integer`                                                                                                                                                                                                         |
+| `SECRET`               | [`SecretAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/SecretAttributeContentV2.java)         | N/A                                                                                                                                                                                                  | [`SecretAttributeContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/SecretAttributeContentData.java)       |
+| `FILE`                 | [`FileAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/FileAttributeContentV2.java)             | [`FileAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/FileAttributeContentV3.java)           | [`FileAttributeContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/FileAttributeContentData.java)           |
+| `BOOLEAN`              | [`BooleanAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/BooleanAttributeContentV2.java)       | [`BooleanAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/BooleanAttributeContentV3.java)     | `boolean`                                                                                                                                                                                                         |
+| `TEXT`                 | [`TextAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/TextAttributeContentV2.java)             | [`TextAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/TextAttributeContentV3.java)           | `string`                                                                                                                                                                                                          |
+| `CODEBLOCK`            | [`CodeBlockAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/CodeBlockAttributeContentV2.java)   | [`CodeBlockAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/CodeBlockAttributeContentV3.java) | [`CodeBlockAttributeContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/CodeBlockAttributeContentData.java) |
+| `FLOAT`                | [`FloatAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/FloatAttributeContentV2.java)           | [`FloatAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/FloatAttributeContentV3.java)         | `float`                                                                                                                                                                                                           |
+| `DATE`                 | [`DateAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/DateAttributeContentV2.java)             | [`DateAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/DateAttributeContentV3.java)           | `date`                                                                                                                                                                                                            |
+| `DATETIME`             | [`DateTimeAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/DatetimeAttributeContentV2.java)     | [`DateTimeAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/DateTimeAttributeContentV3.java)   | `datetime`                                                                                                                                                                                                        |
+| `TIME`                 | [`TimeAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/TimeAttributeContentV2.java)             | [`TimeAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/TimeAttributeContentV3.java)           | `time`                                                                                                                                                                                                            |
+| `CREDENTIAL`           | [`CredentialAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/CredentialAttributeContentV2.java) | N/A                                                                                                                                                                                                  | [`CredentialAttributeContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/CredentialAttributeContentData.java) |
+| `OBJECT`               | [`ObjectAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/ObjectAttributeContentV2.java)         | [`ObjectAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/content/ObjectAttributeContentV3.java)       | `object`                                                                                                                                                                                                          |
+| `RESOURCE OBJECT`      | N/A                                                                                                                                                                                                    | [`ResourceObjectContent`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/ResourceObjectContent.java)               | [`ResourceObjectContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceObjectContentData.java)               |
 
 :::warning[Mulitple content types in one Attribute]
 One `Attribute` can define only one `contentType`. Multiple different content types for one `Attribute` is not supported.
@@ -71,11 +71,6 @@ The table below shows the `AttributeContentType` and the sample for each type an
 Associated `content` field v2
 
 </th>
-<th>
-
-Associated `content` field v3
-
-</th>
 </tr>
 
 <tr>
@@ -85,7 +80,8 @@ Associated `content` field v3
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {  
   "content": [
@@ -96,10 +92,9 @@ Associated `content` field v3
   ]
 }
 ```
-
-</td>
-<td>
-
+</details>
+<details>
+<summary>v3</summary>
 ```json
 {  
   "content": [
@@ -111,7 +106,7 @@ Associated `content` field v3
   ]
 }
 ```
-
+</details>
 </td>
 </tr>
 
@@ -122,7 +117,8 @@ Associated `content` field v3
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {  
   "content": [
@@ -133,10 +129,9 @@ Associated `content` field v3
   ]
 }
 ```
-
-</td>
-<td>
-
+</details>
+<details>
+<summary>v3</summary>
 ```json
 {  
   "content": [
@@ -148,7 +143,7 @@ Associated `content` field v3
   ]
 }
 ```
-
+</details>
 </td>
 </tr>
 
@@ -159,7 +154,8 @@ Associated `content` field v3
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {  
   "content": [
@@ -167,17 +163,13 @@ Associated `content` field v3
       "reference": "string",
       "data": {
         "secret": "secret"
+        }
     }
   ]
 }
 ```
-
-`SECRET` is handled by the platform in a secure way and its value will never be presented to client once defined.
-
-</td>
-<td>
-
-N/A
+</details>
+`SECRET` is handled by the platform securely, and its value will never be presented to a client once defined.
 
 </td>
 </tr>
@@ -189,7 +181,8 @@ N/A
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {  
   "content": [
@@ -205,11 +198,10 @@ N/A
 }
 ```
 
-`FILE` type can be specifically handled based on the `mimeType`.
+</details>
 
-</td>
-<td>
-
+<details>
+<summary>v3</summary>
 ```json
 {  
   "content": [
@@ -226,6 +218,7 @@ N/A
 }
 ```
 
+</details>
 `FILE` type can be specifically handled based on the `mimeType`.
 
 </td>
@@ -238,7 +231,8 @@ N/A
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {  
   "content": [
@@ -249,9 +243,10 @@ N/A
   ]
 }
 ```
+</details>
 
-</td>
-<td>
+<details>
+<summary>v3</summary>
 
 ```json
 {  
@@ -264,7 +259,7 @@ N/A
   ]
 }
 ```
-
+</details>
 </td>
 </tr>
 
@@ -275,7 +270,8 @@ N/A
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {
   "content": [
@@ -297,11 +293,9 @@ N/A
 }
 ```
 
-`CREDENTIAL` is a special purpose type that is handled by the platform for `Connectors` that needs to use the credential for authentication and authorization to technology, for example API Key, username/password, and any other `Credential`.
+</details>
+`CREDENTIAL` is a special purpose type that is handled by the platform for `Connectors` that needs to use the credential for authentication and authorization to technology, for example, API Key, username/password, and any other `Credential`.
 
-</td>
-<td>
-N\A
 </td>
 </tr>
 
@@ -312,7 +306,8 @@ N\A
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {
   "content": [
@@ -323,11 +318,9 @@ N\A
   ]
 }
 ```
-
-`DATE` should be in the format `yyyy-MM-dd`.
-
-</td>
-<td>
+</details>
+<details>
+<summary>v3</summary>
 
 ```json
 {
@@ -340,9 +333,8 @@ N\A
   ]
 }
 ```
-
+</details>
 `DATE` should be in the format `yyyy-MM-dd`.
-
 </td>
 </tr>
 
@@ -353,6 +345,8 @@ N\A
 
 </td>
 <td>
+<details>
+<summary>v2</summary>
 
 ```json
 {
@@ -364,22 +358,21 @@ N\A
   ]
 }
 ```
-
-</td>
-<td>
-
+</details>
+<details>
+<summary>v3</summary>
 ```json
 {
   "content": [
     {
       "reference": "string",
       "data": 12.4487211,
-      "contentType" "float"
+      "contentType": "float"
     }
   ]
 }
 ```
-
+</details>
 </td>
 </tr>
 
@@ -390,6 +383,8 @@ N\A
 
 </td>
 <td>
+<details>
+<summary>v2</summary>
 
 ```json
 {
@@ -404,11 +399,9 @@ N\A
 }
 ```
 
-`OBJECT` type provides a flexible way how to work with the custom objects within the `Attributes` and `Callbacks`.
-
-</td>
-<td>
-
+</details>
+<details>
+<summary>v3</summary>
 ```json
 {
   "content": [
@@ -422,7 +415,7 @@ N\A
   ]
 }
 ```
-
+</details>
 `OBJECT` type provides a flexible way how to work with the custom objects within the `Attributes` and `Callbacks`.
 
 </td>
@@ -435,7 +428,8 @@ N\A
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {
   "content": [
@@ -446,12 +440,10 @@ N\A
   ]
 }
 ```
+</details>
 
-`TEXT` supports long string/text data to be processed.
-
-</td>
-<td>
-
+<details>
+<summary>v3</summary>
 ```json
 {
   "content": [
@@ -463,6 +455,7 @@ N\A
   ]
 }
 ```
+</details>
 
 `TEXT` supports long string/text data to be processed.
 
@@ -476,7 +469,8 @@ N\A
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {
   "content": [
@@ -490,32 +484,10 @@ N\A
   ]
 }
 ```
+</details>
 
-`CODEBLOCK` supports scripts from various [languages](https://github.com/3KeyCompany/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/data/ProgrammingLanguageEnum.java). For example, to store simple addition method written in C#
-
-```csharp
-public void Add(string a, string b) {
-  return a + b;
-}
-```
-
-you would sent following content
-```json
-{
-  "content": [
-    {
-      "reference": "sample",
-      "data": {
-          "language": "csharp",
-          "code": "cHVibGljIHZvaWQgQWRkKHN0cmluZyBhLCBzdHJpbmcgYikgewogIHJldHVybiBhICsgYjsKfQ=="
-        }
-    }
-  ]
-}
-```
-
-</td>
-<td>
+<details>
+<summary>v3</summary>
 
 ```json
 {
@@ -531,7 +503,50 @@ you would sent following content
   ]
 }
 ```
+</details>
 
+`CODEBLOCK` supports scripts from various [languages](https://github.com/3KeyCompany/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/content/data/ProgrammingLanguageEnum.java). For example, to store a simple addition method written in C#
+
+```csharp
+public void Add(string a, string b) {
+  return a + b;
+}
+```
+
+you would send the following content
+<details>
+<summary>v2</summary>
+```json
+{
+  "content": [
+    {
+      "reference": "sample",
+      "data": {
+          "language": "csharp",
+          "code": "cHVibGljIHZvaWQgQWRkKHN0cmluZyBhLCBzdHJpbmcgYikgewogIHJldHVybiBhICsgYjsKfQ=="
+        }
+    }
+  ]
+}
+```
+</details>
+<details>
+<summary>v3</summary>
+```json
+{
+  "content": [
+    {
+      "reference": "sample",
+      "data": {
+          "language": "csharp",
+          "code": "cHVibGljIHZvaWQgQWRkKHN0cmluZyBhLCBzdHJpbmcgYikgewogIHJldHVybiBhICsgYjsKfQ==",
+          "contentType": "codeblock"
+        }
+    }
+  ]
+}
+```
+</details>
 </td>
 </tr>
 
@@ -542,7 +557,8 @@ you would sent following content
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {
   "content": [
@@ -553,12 +569,10 @@ you would sent following content
   ]
 }
 ```
+</details>
 
-`TIME` should be in the format `HH:mm:ss`.
-
-</td>
-<td>
-
+<details>
+<summary>v3</summary>
 ```json
 {
   "content": [
@@ -570,7 +584,7 @@ you would sent following content
   ]
 }
 ```
-
+</details>
 `TIME` should be in the format `HH:mm:ss`.
 
 </td>
@@ -583,7 +597,8 @@ you would sent following content
 
 </td>
 <td>
-
+<details>
+<summary>v2</summary>
 ```json
 {
   "content": [
@@ -594,11 +609,9 @@ you would sent following content
   ]
 }
 ```
-
-`DATETIME` should be in the format `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`, which is ISO-8601 extended offset date-time format.
-
-</td>
-<td>
+</details>
+<details>
+<summary>v3</summary>
 
 ```json
 {
@@ -611,6 +624,7 @@ you would sent following content
   ]
 }
 ```
+</details>
 
 `DATETIME` should be in the format `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`, which is ISO-8601 extended offset date-time format.
 
@@ -622,9 +636,8 @@ you would sent following content
 `RESOURCE OBJECT`
 </td>
 <td>
-N/A
-</td>
-<td>
+<details>
+<summary>v3</summary>
 ```json
 {
   "content": [
@@ -636,21 +649,24 @@ N/A
   ]
 }
 ```
+</details>
+
+
 </td>
 </tr>
 
 </table>
 
 ## Resource Object Content Type
-Attributes V3 support `Resource Object` content type, which can also use in place of `Credential` and `Secret` content types. This content type is used to retrieve data of resource objects saved in Core. Following resources are supported:
-| Resource      | Data                                                                                                                                                                                                          |   |
+Attributes V3 support `Resource Object` content type, which can also use in place of `Credential` and `Secret` content types. This content type is used to retrieve data of resource objects saved in Core. The following resources are supported:
+| Resource | Data
 |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
-| `Certificate` | [`ResourceCertificateContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceCertificateContentData.java) |   |
-| `Credential`  | [`ResourceSimpleContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)           |   |
-| `Authority`   | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)        |   |
-| `Entity`      | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)        |   |
-| `Location`    | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)        |   |
-| `Secret`      | [`ResourceSecretContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSecretContentData.java)           |   |
+| `Certificate` | [`ResourceCertificateContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceCertificateContentData.java) 
+| `Credential`  | [`ResourceSimpleContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)       
+| `Authority`   | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)   
+| `Entity`      | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)   
+| `Location`    | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)     
+| `Secret`      | [`ResourceSecretContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSecretContentData.java)        
 
 
 ## Content model
