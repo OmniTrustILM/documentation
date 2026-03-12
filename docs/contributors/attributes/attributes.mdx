@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # Attributes
 
-Attribute, specifically its type is used to control different behaviour of the content and values in the platform. Some attributes defined the data that are exchanged between technologies, some of them may represent read-only information, and some of them may contain additional attributes that are grouped together or works as a wizard.
+Attribute, specifically its type, is used to control different behaviour of the content and values in the platform. Some attributes defined the data that are exchanged between technologies, some of them may represent read-only information, and some of them may contain additional attributes that are grouped together or work as a wizard.
 
 ## Attribute properties
 
@@ -24,28 +24,28 @@ The following is a list of properties that can be used to define the behaviour o
 
 Based on the usage and specific behaviour you want to provide, `Attribute` can be one of the following defined types in [AttributeType](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/AttributeType.java):
 
-| `AttributeType` | Class                                                                                                                                                                     | Short description                                                                                                                                                                     |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `DATA`          | [`DataAttribute`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/DataAttribute.java)          | Full fledged data carriers used by in the platform for information exchange                                                                                                           |
-| `INFO`          | [`InfoAttributes`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/InfoAttribute.java)         | Information carriers whose primary responsibility is to provide additional helper information. The content of this attribute is not sent back to the platform, it is just informative |
-| `GROUP`         | [`GroupAttributes`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/GroupAttribute.java)       | Advanced type of attribute that can group multiple attributes. Main use is when the attributes are dependent on the content selected from other attributes                            |
-| `META`          | [`MetadataAttributes`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/MetadataAttribute.java) | Metadata representation that can be exchanged between the platform and connectors                                                                                                     |
-| `CUSTOM`        | [`CustomAttributes`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/CustomAttribute.java)     | Used defined attributes for storing additional information about the objects supported in the platform                                                                                |
+| `AttributeType` | Class v2                                                                                                                                                                     | Class v3                                                                                                                                                                     | Short description                                                                                                                                                                     |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `DATA`          | [`DataAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/DataAttributeV2.java)         | [`DataAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/DataAttributeV3.java)         | Full fledged data carriers used by in the platform for information exchange                                                                                                           |
+| `INFO`          | [`InfoAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/InfoAttributeV2.java)         | [`InfoAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/InfoAttributeV3.java)         | Information carriers whose primary responsibility is to provide additional helper information. The content of this attribute is not sent back to the platform, it is just informative |
+| `GROUP`         | [`GroupAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/GroupAttributeV2.java)       | [`GroupAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/GroupAttributeV3.java)       | Advanced type of attribute that can group multiple attributes. Main use is when the attributes are dependent on the content selected from other attributes                            |
+| `META`          | [`MetadataAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/MetadataAttributeV2.java) | [`MetadataAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/MetadataAttributeV3.java) | Metadata representation that can be exchanged between the platform and connectors                                                                                                     |
+| `CUSTOM`        | [`CustomAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v2/CustomAttributeV2.java)     | [`CustomAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/attribute/v3/CustomAttributeV3.java)     | Used defined attributes for storing additional information about the objects supported in the platform                                                                                |
 
 ## Attribute properties and types
 
-The following matrix shows which `Attribute` properties are supported for each `Attribute` type:
+The following matrix shows which `Attribute` properties are supported for each `Attribute` type (here, the version is ommited for simplicity, but the same applies for both `v2` and `v3`):
 
-| Property name / Attribute type | `DataAttribute`                            | `InfoAttributeP`                             | `GroupAttributes`                            | `MetadataAttribute`                          | `CustomAttribute`                            |
+| Property name / Attribute type | `DataAttribute`                            | `InfoAttribute`                              | `GroupAttribute`                             | `MetadataAttribute`                          | `CustomAttribute`                            |
 |--------------------------------|--------------------------------------------|----------------------------------------------|----------------------------------------------|----------------------------------------------|----------------------------------------------|
 | `contentType`                  | <span class="badge badge--success"></span> | <span class="badge badge--success"></span>   | <span class="badge badge--secondary"></span> | <span class="badge badge--success"></span>   | <span class="badge badge--success"></span>   |
 | `constraints`                  | <span class="badge badge--danger"></span>  | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span> |
 | `properties`                   | <span class="badge badge--success"></span> | <span class="badge badge--success"></span>   | <span class="badge badge--secondary"></span> | <span class="badge badge--success"></span>   | <span class="badge badge--success"></span>   |
-| `attributeCallback`            | <span class="badge badge--danger"></span>  | <span class="badge badge--secondary"></span> | <span class="badge badge--danger"></span>    | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span> |
+| `attributeCallback`            | <span class="badge badge--danger"></span>  | <span class="badge badge--secondary"></span> | <span class="badge badge--success"></span>   | <span class="badge badge--secondary"></span> | <span class="badge badge--secondary"></span> |
 
-- <span class="badge badge--success" size="s"></span> - the property is required
-- <span class="badge badge--danger"></span> - the property is optional
-- <span class="badge badge--secondary"></span> - the property is not applicable
+- <span className="badge badge--success" size="s"></span> - the property is required
+- <span className="badge badge--danger"></span> - the property is optional
+- <span className="badge badge--secondary"></span> - the property is not applicable
 
 ## Attribute structure samples
 
@@ -53,12 +53,12 @@ The following samples show how the `Attribute` can be defined in the platform fo
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="data" label="DATA">
+<TabItem value="datav2" label="DATA v2">
 ```
 
 ```json
 {
-  "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
+  "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8",
   "name": "certificateTemplate",
   "label": "Certificate Template",
   "type": "data",
@@ -100,7 +100,57 @@ The following samples show how the `Attribute` can be defined in the platform fo
 ```mdx-code-block
 </TabItem>
 
-<TabItem value="info" label="INFO">
+<TabItem value="datav3" label="DATA v3">
+```
+
+```json
+{
+  "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8",
+  "name": "certificateTemplate",
+  "label": "Certificate Template",
+  "type": "data",
+  "contentType": "string",
+  "content": [
+    {
+      "reference": "Template 1",
+      "data": "template1",
+      "contentType": "string"
+    },
+    {
+      "reference": "Template 2",
+      "data": "template2",
+      "contentType": "string"
+    },
+    {
+      "reference": "Template 3",
+      "data": "template3",
+      "contentType": "string"
+    }
+  ],
+  "properties": {
+    "required": true,
+    "readOnly": false,
+    "visible": true,
+    "list": true,
+    "multiSelect": true,
+    "group": "Certificate Configuration"
+  },
+  "description": "Available certificate templates that can be selected for the certificate request",
+  "constraints": [
+    {
+      "description": "Certificate Template Regex",
+      "errorMessage": "Certificate Template must be a valid string",
+      "type": "regexp",
+      "data": "^[a-z\\s]{0,255}"
+    }
+  ]
+}
+```
+
+```mdx-code-block
+</TabItem>
+
+<TabItem value="info" label="INFO v2">
 ```
 
 ```json
@@ -121,14 +171,43 @@ The following samples show how the `Attribute` can be defined in the platform fo
     "visible": true,
     "group": "Certificate Configuration"
   },
-  "description": "Available certificate templates that can be selected for the certificate request",
+  "description": "Available certificate templates that can be selected for the certificate request"
 }
 ```
 
 ```mdx-code-block
 </TabItem>
 
-<TabItem value="group" label="GROUP">
+<TabItem value="info v3" label="INFO v3">
+```
+
+```json
+{
+  "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
+  "name": "certificateTemplate",
+  "label": "Certificate Template",
+  "type": "info",
+  "contentType": "string",
+  "content": [
+    {
+      "reference": "Template 1",
+      "data": "template1",
+      "contentType": "string"
+    }
+  ],
+  "properties": {
+    "readOnly": false,
+    "visible": true,
+    "group": "Certificate Configuration"
+  },
+  "description": "Available certificate templates that can be selected for the certificate request"
+}
+```
+
+```mdx-code-block
+</TabItem>
+
+<TabItem value="group" label="GROUP v2">
 ```
 
 ```json
@@ -177,14 +256,73 @@ The following samples show how the `Attribute` can be defined in the platform fo
       ]
     }
   ],
-  "description": "Available certificate templates that can be selected for the certificate request",
+  "description": "Available certificate templates that can be selected for the certificate request"
 }
 ```
 
 ```mdx-code-block
 </TabItem>
 
-<TabItem value="meta" label="META">
+<TabItem value="groupv3" label="GROUP v3">
+```
+
+```json
+{
+  "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
+  "name": "group1",
+  "label": "Option A Attributes",
+  "type": "group",
+  "content": [
+    {
+      "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
+      "name": "certificateTemplate",
+      "label": "Certificate Template",
+      "type": "data",
+      "contentType": "string",
+      "content": [
+        {
+          "reference": "Template 1",
+          "data": "template1",
+          "contentType": "string"
+        },
+        {
+          "reference": "Template 2",
+          "data": "template2",
+          "contentType": "string"
+        },
+        {
+          "reference": "Template 3",
+          "data": "template3",
+          "contentType": "string"
+        }
+      ],
+      "properties": {
+        "required": true,
+        "readOnly": false,
+        "visible": true,
+        "list": true,
+        "multiSelect": true,
+        "group": "Certificate Configuration"
+      },
+      "description": "Available certificate templates that can be selected for the certificate request",
+      "constraints": [
+        {
+          "description": "Certificate Template Regex",
+          "errorMessage": "Certificate Template must be a valid string",
+          "type": "regexp",
+          "data": "^[a-z\\s]{0,255}"
+        }
+      ]
+    }
+  ],
+  "description": "Available certificate templates that can be selected for the certificate request"
+}
+```
+
+```mdx-code-block
+</TabItem>
+
+<TabItem value="meta" label="META v2">
 ```
 
 ```json
@@ -206,15 +344,45 @@ The following samples show how the `Attribute` can be defined in the platform fo
     "global": true,
     "group": "Discovery"
   },
-  
-  "description": "Source from where the certificate is discovered",
+
+  "description": "Source from where the certificate is discovered"
 }
 ```
 
 ```mdx-code-block
 </TabItem>
 
-<TabItem value="custom" label="CUSTOM">
+<TabItem value="metav3" label="META v3">
+```
+
+```json
+{
+  "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
+  "name": "discoverySource",
+  "label": "Discovery Source",
+  "type": "meta",
+  "contentType": "string",
+  "content": [
+    {
+      "reference": "Internet",
+      "data": "internet.com",
+      "contentType": "string"
+    }
+  ],
+  "properties": {
+    "readOnly": false,
+    "visible": true,
+    "global": true,
+    "group": "Discovery"
+  },
+  "description": "Source from where the certificate is discovered"
+}
+```
+
+```mdx-code-block
+</TabItem>
+
+<TabItem value="custom" label="CUSTOM v2">
 ```
 
 ```json
@@ -244,30 +412,89 @@ The following samples show how the `Attribute` can be defined in the platform fo
 
 ```mdx-code-block
 </TabItem>
-</Tabs>
+
+<TabItem value="custom v3" label="CUSTOM v3">
 ```
 
-## `Attribute` model
+```json
+{
+  "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
+  "name": "purpose",
+  "label": "Purpose",
+  "type": "custom",
+  "contentType": "string",
+  "content": [
+    {
+      "reference": "",
+      "data": "Created to test the custom attribute",
+      "contentType": "string"
+    }
+  ],
+  "properties": {
+    "required": true,
+    "readOnly": false,
+    "visible": true,
+    "list": true,
+    "multiSelect": true,
+    "group": "Certificate Configuration"
+  },
+  "description": "Sample description for the custom attribute"
+}
+```
 
-Th following diagram represents the `Attribute` model inherited from the `AbstractBaseAttribute`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/develop/src/main/java/com/czertainly/api/model/common/attribute/v2).
+```mdx-code-block
+</TabItem>
+</Tabs>
+
+
+The following diagram represents the `Attribute` model inherited from the `AbstractBaseAttribute`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute).
 
 ```plantuml
 @startuml
     scale 3/4
     left to right direction
-    
-    abstract AbstractBaseAttribute
+
     class BaseAttribute
+
+    class BaseAttributeV2
+    class BaseAttributeV3
+
     class DataAttribute
-    class InfoAttribute
-    class GroupAttribute
     class MetadataAttribute
     class CustomAttribute
-  
-    AbstractBaseAttribute <-right- BaseAttribute : extends
+
+    class DataAttributeV2
+    class DataAttributeV3
+    class MetadataAttributeV2
+    class MetadataAttributeV3
+    class CustomAttributeV2
+    class CustomAttributeV3
+    class InfoAttributeV3
+    class InfoAttributeV2
+    class GroupAttributeV2
+    class GroupAttributeV3
+
     BaseAttribute <-- DataAttribute : extends
-    BaseAttribute <-- InfoAttribute : extends
-    BaseAttribute <-- GroupAttribute : extends
     BaseAttribute <-- MetadataAttribute : extends
     BaseAttribute <-- CustomAttribute : extends
+    BaseAttribute <-- BaseAttributeV2 : extends
+    BaseAttribute <-- BaseAttributeV3 : extends
+
+    BaseAttributeV2 <-- InfoAttributeV2 : extends
+    BaseAttributeV2 <-- GroupAttributeV2 : extends
+
+    BaseAttributeV3 <-- InfoAttributeV3 : extends
+    BaseAttributeV3 <-- GroupAttributeV3 : extends
+
+    DataAttribute <-- DataAttributeV2 : extends
+    DataAttribute <-- DataAttributeV3 : extends
+
+    CustomAttribute <-- CustomAttributeV2 : extends
+    CustomAttribute <-- CustomAttributeV3 : extends
+
+    MetadataAttribute <-- MetadataAttributeV2 : extends
+    MetadataAttribute <-- MetadataAttributeV3 : extends
+
+
 ```
+
