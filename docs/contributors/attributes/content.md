@@ -272,6 +272,7 @@ Associated `content` field v2
 <td>
 <details>
 <summary>v2</summary>
+
 ```json
 {
   "content": [
@@ -294,6 +295,7 @@ Associated `content` field v2
 ```
 
 </details>
+
 `CREDENTIAL` is a special purpose type that is handled by the platform for `Connectors` that needs to use the credential for authentication and authorization to technology, for example, API Key, username/password, and any other `Credential`.
 
 </td>
@@ -573,6 +575,7 @@ you would send the following content
 
 <details>
 <summary>v3</summary>
+
 ```json
 {
   "content": [
@@ -585,6 +588,7 @@ you would send the following content
 }
 ```
 </details>
+
 `TIME` should be in the format `HH:mm:ss`.
 
 </td>
@@ -599,6 +603,7 @@ you would send the following content
 <td>
 <details>
 <summary>v2</summary>
+
 ```json
 {
   "content": [
@@ -633,17 +638,29 @@ you would send the following content
 
 <tr>
 <td>
+
 `RESOURCE OBJECT`
+
 </td>
 <td>
 <details>
 <summary>v3</summary>
+
 ```json
 {
   "content": [
     {
-      "reference": "string",
-      "data": "2011-12-03T10:15:30+01:00",
+      "reference": "secretPassword",
+      "data": {
+        "uuid": "c18e6466-e435-4fdd-97e4-02f4f2c6ceee",
+        "name": "secretPassword",
+        "type": "basicAuth",
+        "content": {
+          "username": "username",
+          "password": "password"
+        }
+        
+      },
       "contentType": "resourceObject"
     }
   ]
@@ -651,23 +668,22 @@ you would send the following content
 ```
 </details>
 
-
-</td>
-</tr>
-
-</table>
-
-## Resource Object Content Type
-Attributes V3 support `Resource Object` content type, which can also use in place of `Credential` and `Secret` content types. This content type is used to retrieve data of resource objects saved in Core. The following resources are supported:
+`RESOURCE OBJECT` content type is used to retrieve data of resource objects saved in Core for a `Connector`. Can also be used in place of `Credential` and `Secret` content types.
+The following resources are supported:
 | Resource | Data
-|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
-| `Certificate` | [`ResourceCertificateContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceCertificateContentData.java) 
+|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Certificate` | [`ResourceCertificateContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceCertificateContentData.java)
 | `Credential`  | [`ResourceSimpleContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)       
 | `Authority`   | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)   
 | `Entity`      | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)   
 | `Location`    | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)     
-| `Secret`      | [`ResourceSecretContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSecretContentData.java)        
+| `Secret`      | [`ResourceSecretContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSecretContentData.java)
 
+Attribute with `RESOURCE OBJECT` then also must have the attribute resource as `resource` in its properties and corresponding [callback](./callbacks#supported-special-purpose-callbacks).
+</td>
+</tr>
+
+</table>
 
 ## Content model
 
