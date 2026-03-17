@@ -10,7 +10,7 @@ Although the CZERTAINLY platform is technology independent, each technology have
 
 CZERTAINLY uses `Attribute` to control such specific behaviour of different technologies, like certification authorities, credential providers, discovery of certificates, etc. So called `Attributes` are used in almost every `Connector` and developer must understand them in order to implement custom behaviour or extend the functionality of the platform.
 
-:::info◊
+:::info
 For more information about the concept behind the `Connector`, `Attributes`, `Callbacks`, etc, see the [CZERTAINLY platform overview](../../certificate-key/concept-design/overview.md).
 :::
 
@@ -41,7 +41,7 @@ Because the communication is controlled by the platform, it ensures the consiste
 
 ## `BaseAttribute`
 
-The `BaseAttribute` is the base class for all `Attributes`. It contains the basic properties that are common for all `Attributes` and uses the generic type `T` to define the 'content`. Attributes are available in two versions - V2 and V3. Basic functionality of both versions is the same.
+The `BaseAttribute` is the base class for all `Attributes`. It contains the basic properties that are common for all `Attributes` and uses the generic type `T` to define the `content`. Attributes are available in two versions – V2 and V3. The basic functionality of both versions is the same.
 
 You can find specification of the `BaseAttribute` in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces).
 
@@ -54,7 +54,7 @@ Table below describes the properties of the `BaseAttribute`:
 | `description` | `string`                                            | Description of the `Attribute` for better understanding of the `Attribute` purpose. This should contain descriptive explanation of the `Attribtue`. | <span class="badge badge--danger">No</span>   |
 | `type`        | [`AttributeType`](./attributes.mdx#attribute-types) | Type of the `Attribute`                                                                                                                             | <span class="badge badge--success">Yes</span> |
 | `content`     | [`AttributeContent`](./content.md)                  | Content of the `Attribute` based on the [`AttributeContentType`](./content.md#supported-content-types)                                              | <span class="badge badge--danger">No</span>   |
-| `version`        | `integer`                                            | Version of the `Attribute`. Supported versions are `2` and `3`, where `2` is currently the default version.                                   | <span class="badge badge--success">Yes</span> |
+| `version`     | `integer`                                           | Version of the `Attribute`. Supported versions are `2` and `3`, where `2` is currently the default version.                                         | <span class="badge badge--success">Yes</span> |
 
 ## `Attribute` building blocks:
 

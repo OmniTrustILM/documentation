@@ -50,7 +50,7 @@ For more details about `Attribute` types, see [Attributes](attributes.mdx).
 
 ## Properties model
 
-Th following diagram represents the Properties model inherited from the `AbstractBaseAttribute`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/properties).
+The following diagram represents the Properties model inherited from the `AbstractBaseAttribute`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/properties).
 
 ```plantuml
 @startuml
