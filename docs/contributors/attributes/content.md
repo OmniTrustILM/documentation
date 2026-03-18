@@ -682,7 +682,7 @@ The following resources are supported:
 | `Location`    | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)     
 | `Secret`      | [`ResourceSecretContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSecretContentData.java)
 
-Attribute with `RESOURCE OBJECT` then also must have the attribute resource as `resource` in its properties and corresponding [callback](./callbacks#supported-special-purpose-callbacks).
+Attribute with `RESOURCE OBJECT` then also must have the resource of the object to retrieve as `resource` in its properties and define corresponding [callback](./callbacks#supported-special-purpose-callbacks).
 </td>
 </tr>
 
