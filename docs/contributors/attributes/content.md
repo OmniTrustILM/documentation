@@ -50,7 +50,7 @@ The following content types are available and supported:
 | `OBJECT`               | [`ObjectAttributeContentV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/content/ObjectAttributeContentV2.java)         | [`ObjectAttributeContentV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/ObjectAttributeContentV3.java)       | `object`                                                                                                                                                                                                          |
 | `RESOURCE OBJECT`      | N/A                                                                                                                                                                                                  | [`ResourceObjectContent`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/ResourceObjectContent.java)             | [`ResourceObjectContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceObjectContentData.java)               |
 
-:::warning[Mulitple content types in one Attribute]
+:::warning[Multiple content types in one Attribute]
 One `Attribute` can define only one `contentType`. Multiple different content types for one `Attribute` is not supported.
 :::
 
@@ -508,7 +508,7 @@ Associated `content` field v2
 ```
 </details>
 
-`CODEBLOCK` supports scripts from various [languages](https://github.com/3KeyCompany/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/content/data/ProgrammingLanguageEnum.java). For example, to store a simple addition method written in C#
+`CODEBLOCK` supports scripts from various [languages](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/ProgrammingLanguageEnum.java). For example, to store a simple addition method written in C#
 
 ```csharp
 public void Add(string a, string b) {
@@ -673,7 +673,7 @@ you would send the following content
 
 `RESOURCE OBJECT` content type is used to retrieve data of resource objects saved in Core for a `Connector`. Can also be used in place of `Credential` and `Secret` content types.
 The following resources are supported:
-| Resource | Data
+| Resource | Data |
 |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `Certificate` | [`ResourceCertificateContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceCertificateContentData.java)
 | `Credential`  | [`ResourceSimpleContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)       
