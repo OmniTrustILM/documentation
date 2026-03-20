@@ -17,7 +17,7 @@ const config = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/ilm-sign-color.svg',
+  favicon: 'img/ot-sign-color.svg',
   organizationName: 'CZERTAINLY', // Usually your GitHub org/user name.
   projectName: 'CZERTAINLY-Documentation', // Usually your repo name.
   trailingSlash: false,
@@ -320,7 +320,7 @@ const config = {
           /**
            * Highlight color for docs
            */
-          primaryColor: '#0072CF',
+          primaryColor: '#0073CF',
           /**
            * Options to pass to redoc
            * @see https://github.com/redocly/redoc#redoc-options-object
@@ -343,8 +343,8 @@ const config = {
           title: 'ILM Documentation',
           logo: {
             alt: 'ILM Logo',
-            src: 'img/ilm-sign-color.svg',
-            srcDark: 'img/ilm-sign-white.svg',
+            src: 'img/ot-sign-color.svg',
+            srcDark: 'img/ot-sign-white.svg',
           },
           items: [
             // {
