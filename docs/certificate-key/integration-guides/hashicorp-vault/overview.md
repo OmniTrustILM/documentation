@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Overview
 
-This document outlines the steps necessary to be taken to integrate the CZERTAINLY with the HashiCorp Vault PKI secrets engine to manage and automate certificate lifecycle.
+This document outlines the steps necessary to integrate CZERTAINLY with HashiCorp Vault. Depending on the use case, you may need to configure the PKI secrets engine for certificate lifecycle management, the KV secrets engine for secret management, or both.
 
 This integration guide was tested on:
 - Vault version 1.14.0+
@@ -23,10 +23,22 @@ For more information about the PKI secrets engine, refer to the [Vault PKI secre
 
 ## Integration
 
-The following steps should be done to successfully integrate HashiCorp Vault with CZERTAINLY:
+### Certificate Lifecycle Management (PKI)
+
+The following steps are required to integrate HashiCorp Vault with CZERTAINLY for certificate lifecycle management using the PKI secrets engine:
 
 | #     | Reference                                                 | Short description                                 |
 |-------|-----------------------------------------------------------|---------------------------------------------------|
 | **1** | [Enable PKI Secrets Engine](./enable-pki-engine.md)       | Enable and configure the PKI secrets engine       |
 | **2** | [Create ACL Policy](./create-acl-policy.md)               | Create ACL policy with permissions for CZERTAINLY |
 | **3** | [Enable Authentication Methods](./enable-auth-methods.md) | Enable authentication methods that can be used    |
+
+### Secret Management (KV)
+
+The following steps are required to integrate HashiCorp Vault with CZERTAINLY for secret management using the KV secrets engine:
+
+| #     | Reference                                                       | Short description                                                       |
+|-------|-----------------------------------------------------------------|-------------------------------------------------------------------------|
+| **1** | [Enable KV Secrets Engine](./enable-kv-secrets-engine.md)       | Enable and configure the KV secrets engine (version 1 or version 2)    |
+| **2** | [Create ACL Policy](./create-acl-policy.md)                     | Create ACL policy with KV permissions for CZERTAINLY                   |
+| **3** | [Enable Authentication Methods](./enable-auth-methods.md)       | Enable authentication methods that can be used                         |
