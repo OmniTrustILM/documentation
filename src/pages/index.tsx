@@ -15,7 +15,7 @@ function HomepageHeader() {
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className="container">
         <img
-          src={useBaseUrl("img/ilm-logo-white.svg")}
+          src={useBaseUrl("img/ot-logo-white.svg")}
           className={styles.introImage}
         />
         <br />

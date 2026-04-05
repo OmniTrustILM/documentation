@@ -1,8 +1,8 @@
 const lightCodeTheme = require('prism-react-renderer').themes.github;
 const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
-const apiVersion = '2.16.1';
-const chartVersion = '2.16.2';
+const apiVersion = '2.17.0';
+const chartVersion = '2.17.0';
 const cscVersion = '1.5.0';
 
 import remarkFindReplacePlugin from './src/plugins/remarkFindReplacePlugin.mjs';
@@ -17,7 +17,7 @@ const config = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/ilm-sign-color.svg',
+  favicon: 'img/ot-sign-color.svg',
   organizationName: 'CZERTAINLY', // Usually your GitHub org/user name.
   projectName: 'CZERTAINLY-Documentation', // Usually your repo name.
   trailingSlash: false,
@@ -233,6 +233,11 @@ const config = {
             route: '/api/core-scheduler/',
           },
           {
+            id: 'core-secret',
+            spec: 'https://api.otilm.com/'+apiVersion+'/doc-openapi-core-secret.yaml',
+            route: '/api/core-secret/',
+          },
+          {
             id: 'core-token',
             spec: 'https://api.otilm.com/'+apiVersion+'/doc-openapi-core-token.yaml',
             route: '/api/core-token/',
@@ -241,6 +246,16 @@ const config = {
             id: 'core-token-profile',
             spec: 'https://api.otilm.com/'+apiVersion+'/doc-openapi-core-token-profile.yaml',
             route: '/api/core-token-profile/',
+          },
+          {
+            id: 'core-vault-profile',
+            spec: 'https://api.otilm.com/'+apiVersion+'/doc-openapi-core-vault-profile.yaml',
+            route: '/api/core-vault-profile/',
+          },
+          {
+            id: 'core-vault',
+            spec: 'https://api.otilm.com/'+apiVersion+'/doc-openapi-core-vault.yaml',
+            route: '/api/core-vault/',
           },
           {
             id: 'core-workflows',
@@ -294,6 +309,11 @@ const config = {
             spec: 'https://api.otilm.com/'+apiVersion+'/doc-openapi-connector-notification-provider.yaml',
             route: '/api/connector-notification-provider/',
           },
+          {
+            id: 'connector-secret-provider',
+            spec: 'https://api.otilm.com/'+apiVersion+'/doc-openapi-connector-secret-provider.yaml',
+            route: '/api/connector-secret-provider/',
+          },
 
           {
             id: 'protocol-acme',
@@ -320,7 +340,7 @@ const config = {
           /**
            * Highlight color for docs
            */
-          primaryColor: '#0072CF',
+          primaryColor: '#0073CF',
           /**
            * Options to pass to redoc
            * @see https://github.com/redocly/redoc#redoc-options-object
@@ -343,8 +363,8 @@ const config = {
           title: 'ILM Documentation',
           logo: {
             alt: 'ILM Logo',
-            src: 'img/ilm-sign-color.svg',
-            srcDark: 'img/ilm-sign-white.svg',
+            src: 'img/ot-sign-color.svg',
+            srcDark: 'img/ot-sign-white.svg',
           },
           items: [
             // {
@@ -460,12 +480,24 @@ const config = {
                   to: '/api/core-scheduler/',
                 },
                 {
+                  label: 'Secret',
+                  to: '/api/core-secret/',
+                },
+                {
                   label: 'Token',
                   to: '/api/core-token/',
                 },
                 {
                   label: 'Token Profile',
                   to: '/api/core-token-profile/',
+                },
+                {
+                  label: 'Vault',
+                  to: '/api/core-vault/',
+                },
+                {
+                  label: 'Vault Profile',
+                  to: '/api/core-vault-profile/',
                 },
                 {
                   label: 'Workflows',
@@ -512,6 +544,10 @@ const config = {
                 {
                   label: 'Notification Provider',
                   to: '/api/connector-notification-provider/',
+                },
+                {
+                  label: 'Secret Provider',
+                  to: '/api/connector-secret-provider/',
                 },
               ],
             },
