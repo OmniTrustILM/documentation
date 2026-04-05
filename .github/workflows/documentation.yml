@@ -53,7 +53,7 @@ jobs:
           yarn install --frozen-lockfile
           yarn build
       - name: Upload Build Artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: build
       - name: Deploy to GitHub Pages
