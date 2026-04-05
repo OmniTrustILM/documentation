@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.x
       - name: Test build
         env:
           NODE_OPTIONS: "--max_old_space_size=8192"
@@ -45,7 +45,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.x
       - name: Build website
         env:
           NODE_OPTIONS: "--max_old_space_size=8192"

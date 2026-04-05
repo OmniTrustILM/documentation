@@ -52,7 +52,7 @@ spec:
 
 You should adjust this manifest according to your specific Kubernetes cluster. If the CZERTAINLY access point is using TLS certificate issued from private certification authority, you should include the CA certificate in `cert-manager` configuration, otherwise it will reject communication.
 
-When you are ready, you can apply the manifest. This will start the communication with the ACME server and register the ACME client. You can check if the registration of ACME client was successful by [listing all ACME Clients](/api/core-acme/#operation/listAcmeAccount) in the platform and checking the state of the `ClusterIssuer`:
+When you are ready, you can apply the manifest. This will start the communication with the ACME server and register the ACME client. You can check if the registration of ACME client was successful by [listing all ACME Clients](/api/core-acme#tag/ACME-Account-Management/operation/listAcmeAccounts) in the platform and checking the state of the `ClusterIssuer`:
 ```bash
 kubectl describe -n cert-manager clusterissuers.cert-manager.io clusterissuer-czertainly-acme
 ```

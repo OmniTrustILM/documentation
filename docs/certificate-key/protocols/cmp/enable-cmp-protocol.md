@@ -71,7 +71,7 @@ You should receive `204` HTTP response when the `CMP Profile` is successfully en
 Once the `CMP Profile` is configured and enabled, we can enable CMP protocol for the `RA Profile` with name `czertainly`. For that purpose, we will use the [`Core RA Profile API`](/api/core-ra-profile/#operation/activateCmpForRaProfile). We will need to configure `Attributes` to issue certificates, if there are any available and supported in the `RA Profile`. These `Attributes` will be statically attached to all requests coming from the CMP client.
 
 You can get the list of `Attributes` using the following APIs:
-- [Get issue Attributes](/api/core-ra-profile/#operation/listIssueCertificateAttributes)
+- [Get issue Attributes](/api/core-ra-profile#tag/RA-Profile-Management/operation/listRaProfileIssueCertificateAttributes)
 
 We will enable CMP protocol for `czertainly` `RA Profile`:
 ```bash
