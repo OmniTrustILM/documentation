@@ -56,8 +56,8 @@ When the `ACME Profile` is successfully created, its `uuid` is sent back:
 Once the `ACME Profile` is ready, we can enable ACME protocol for the `RA Profile` with name `czertainly`. For that purpose, we will use the [`Core RA Profile API`](/api/core-ra-profile/#operation/activateAcmeForRaProfile). We will need to configure `Attributes` to issue and revoke certificates, if there are any available and supported in the `RA Profile`. These `Attributes` will be statically attached to all ACME requests that are processed.
 
 You can get the list of `Attributes` using the following APIs:
-- [Get issue Attributes](/api/core-ra-profile/#operation/listIssueCertificateAttributes)
-- [Get revocation Attributes](/api/core-ra-profile/#operation/listRevokeCertificateAttributes)
+- [Get issue Attributes](/api/core-ra-profile#tag/RA-Profile-Management/operation/listRaProfileIssueCertificateAttributes)
+- [Get revocation Attributes](/api/core-ra-profile#tag/RA-Profile-Management/operation/listRaProfileRevokeCertificateAttributes)
 
 We will enable ACME for `czertainly` `RA Profile`:
 ```bash
