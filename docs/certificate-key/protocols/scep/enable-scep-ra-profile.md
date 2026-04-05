@@ -47,7 +47,7 @@ When the `SCEP Profile` is successfully created, its `uuid` is sent back:
 Once the `SCEP Profile` is configured and enabled, we can enable SCEP protocol for the `RA Profile` with name `czertainly`. For that purpose, we will use the [`Core RA Profile API`](/api/core-ra-profile/#operation/activateScepForRaProfile). We will need to configure `Attributes` to issue certificates, if there are any available and supported in the `RA Profile`. These `Attributes` will be statically attached to all requests coming from the SCEP client.
 
 You can get the list of `Attributes` using the following APIs:
-- [Get issue Attributes](/api/core-ra-profile/#operation/listIssueCertificateAttributes)
+- [Get issue Attributes](/api/core-ra-profile#tag/RA-Profile-Management/operation/listRaProfileIssueCertificateAttributes)
 
 We will enable SCEP protocol for `czertainly` `RA Profile`:
 ```bash
