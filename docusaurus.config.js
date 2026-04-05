@@ -16,7 +16,6 @@ const config = {
   url: 'https://docs.otilm.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/ot-sign-color.svg',
   organizationName: 'CZERTAINLY', // Usually your GitHub org/user name.
   projectName: 'CZERTAINLY-Documentation', // Usually your repo name.
@@ -27,6 +26,9 @@ const config = {
       comments: false,
       admonitions: false,
       headingIds: false,
+    },
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
     },
   },
 
