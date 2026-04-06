@@ -51,6 +51,7 @@ The platform consists of the following components:
 | **[Key](core-components/key.md)**                               | Cryptographic key object that can be managed and contains relevant information about its lifecycle.                             |
 | **[Token Profile](core-components/token-profile.md)**           | Token Profile abstracts the configuration of cryptographic service for the Clients to request cryptographic operations.         |
 | **[Notification](./core-components/notification.md)**           | Notification instance representing access to specific notification technology.                                                  |
+| **[CBOM](core-components/cbom.md)**                             | Cryptographic Bill of Materials providing inventory and management of cryptographic assets based on CycloneDX specification.    |
 
 ### Modules
 
