@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # Attributes
 
-Attribute, specifically its type, is used to control different behaviour of the content and values in the platform. Some attributes defined the data that are exchanged between technologies, some of them may represent read-only information, and some of them may contain additional attributes that are grouped together or work as a wizard.
+Attribute, specifically its type, is used to control different behaviour of the content and values in the platform. Some attributes define the data that are exchanged between technologies, some of them may represent read-only information, and some of them may contain additional attributes that are grouped together or work as a wizard.
 
 ## Attribute properties
 
@@ -22,15 +22,15 @@ The following is a list of properties that can be used to define the behaviour o
 
 ## Attribute Types
 
-Based on the usage and specific behaviour you want to provide, `Attribute` can be one of the following defined types in [AttributeType](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/AttributeType.java):
+Based on the usage and specific behaviour you want to provide, `Attribute` can be one of the following defined types in [`AttributeType`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/AttributeType.java):
 
 | `AttributeType` | Class v2                                                                                                                                                                     | Class v3                                                                                                                                                                     | Short description                                                                                                                                                                     |
 |-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `DATA`          | [`DataAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/DataAttributeV2.java)         | [`DataAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/DataAttributeV3.java)         | Full fledged data carriers used by in the platform for information exchange                                                                                                           |
+| `DATA`          | [`DataAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/DataAttributeV2.java)         | [`DataAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/DataAttributeV3.java)         | Full fledged data carriers used in the platform for information exchange                                                                                                           |
 | `INFO`          | [`InfoAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/InfoAttributeV2.java)         | [`InfoAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/InfoAttributeV3.java)         | Information carriers whose primary responsibility is to provide additional helper information. The content of this attribute is not sent back to the platform, it is just informative |
 | `GROUP`         | [`GroupAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/GroupAttributeV2.java)       | [`GroupAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/GroupAttributeV3.java)       | Advanced type of attribute that can group multiple attributes. Main use is when the attributes are dependent on the content selected from other attributes                            |
 | `META`          | [`MetadataAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/MetadataAttributeV2.java) | [`MetadataAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/MetadataAttributeV3.java) | Metadata representation that can be exchanged between the platform and connectors                                                                                                     |
-| `CUSTOM`        | [`CustomAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/CustomAttributeV2.java)     | [`CustomAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/CustomAttributeV3.java)     | Used defined attributes for storing additional information about the objects supported in the platform                                                                                |
+| `CUSTOM`        | [`CustomAttributeV2`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v2/CustomAttributeV2.java)     | [`CustomAttributeV3`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/CustomAttributeV3.java)     | User defined attributes for storing additional information about the objects supported in the platform                                                                                |
 
 ## Attribute properties and types
 
@@ -49,6 +49,10 @@ The following matrix shows which `Attribute` properties are supported for each `
 
 ## Attribute structure samples
 
+:::warning[Use V3 for new implementations]
+V2 attributes are deprecated. New connector implementations should use V3. V2 samples are provided for reference when maintaining existing connectors.
+:::
+
 The following samples show how the `Attribute` can be defined in the platform for different types:
 
 ```mdx-code-block
@@ -60,8 +64,8 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "certificateTemplate",
-  "label": "Certificate Template",
   "type": "data",
+  "version": 2,
   "contentType": "string",
   "content": [
     {
@@ -78,6 +82,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
     }
   ],
   "properties": {
+    "label": "Certificate Template",
     "required": true,
     "readOnly": false,
     "visible": true,
@@ -107,8 +112,9 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "certificateTemplate",
-  "label": "Certificate Template",
   "type": "data",
+  "version": 3,
+  "schemaVersion": "v3",
   "contentType": "string",
   "content": [
     {
@@ -128,6 +134,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
     }
   ],
   "properties": {
+    "label": "Certificate Template",
     "required": true,
     "readOnly": false,
     "visible": true,
@@ -157,8 +164,8 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "certificateTemplate",
-  "label": "Certificate Template",
   "type": "info",
+  "version": 2,
   "contentType": "string",
   "content": [
     {
@@ -167,6 +174,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
     }
   ],
   "properties": {
+    "label": "Certificate Template",
     "readOnly": false,
     "visible": true,
     "group": "Certificate Configuration"
@@ -185,8 +193,9 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "certificateTemplate",
-  "label": "Certificate Template",
   "type": "info",
+  "version": 3,
+  "schemaVersion": "v3",
   "contentType": "string",
   "content": [
     {
@@ -196,6 +205,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
     }
   ],
   "properties": {
+    "label": "Certificate Template",
     "readOnly": false,
     "visible": true,
     "group": "Certificate Configuration"
@@ -214,14 +224,14 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "group1",
-  "label": "Option A Attributes",
   "type": "group",
+  "version": 2,
   "content": [
     {
       "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
       "name": "certificateTemplate",
-      "label": "Certificate Template",
       "type": "data",
+      "version": 2,
       "contentType": "string",
       "content": [
         {
@@ -238,6 +248,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
         }
       ],
       "properties": {
+        "label": "Certificate Template",
         "required": true,
         "readOnly": false,
         "visible": true,
@@ -270,14 +281,16 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "group1",
-  "label": "Option A Attributes",
   "type": "group",
+  "version": 3,
+  "schemaVersion": "v3",
   "content": [
     {
       "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
       "name": "certificateTemplate",
-      "label": "Certificate Template",
       "type": "data",
+      "version": 3,
+      "schemaVersion": "v3",
       "contentType": "string",
       "content": [
         {
@@ -297,6 +310,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
         }
       ],
       "properties": {
+        "label": "Certificate Template",
         "required": true,
         "readOnly": false,
         "visible": true,
@@ -329,8 +343,8 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "discoverySource",
-  "label": "Discovery Source",
   "type": "meta",
+  "version": 2,
   "contentType": "string",
   "content": [
     {
@@ -339,6 +353,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
     }
   ],
   "properties": {
+    "label": "Discovery Source",
     "readOnly": false,
     "visible": true,
     "global": true,
@@ -359,8 +374,9 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "discoverySource",
-  "label": "Discovery Source",
   "type": "meta",
+  "version": 3,
+  "schemaVersion": "v3",
   "contentType": "string",
   "content": [
     {
@@ -370,6 +386,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
     }
   ],
   "properties": {
+    "label": "Discovery Source",
     "readOnly": false,
     "visible": true,
     "global": true,
@@ -389,8 +406,8 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "purpose",
-  "label": "Purpose",
   "type": "custom",
+  "version": 2,
   "contentType": "string",
   "content": [
     {
@@ -399,6 +416,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
     }
   ],
   "properties": {
+    "label": "Purpose",
     "required": true,
     "readOnly": false,
     "visible": true,
@@ -420,8 +438,9 @@ The following samples show how the `Attribute` can be defined in the platform fo
 {
   "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
   "name": "purpose",
-  "label": "Purpose",
   "type": "custom",
+  "version": 3,
+  "schemaVersion": "v3",
   "contentType": "string",
   "content": [
     {
@@ -431,6 +450,7 @@ The following samples show how the `Attribute` can be defined in the platform fo
     }
   ],
   "properties": {
+    "label": "Purpose",
     "required": true,
     "readOnly": false,
     "visible": true,
@@ -444,7 +464,51 @@ The following samples show how the `Attribute` can be defined in the platform fo
 
 ```mdx-code-block
 </TabItem>
+
+<TabItem value="resource-v3" label="RESOURCE OBJECT (v3)">
+```
+
+:::info[V3-only content type]
+`RESOURCE OBJECT` is available only in V3 attributes. It replaces the V2-only `SECRET` and `CREDENTIAL` content types.
+:::
+
+```json
+{
+  "uuid": "c7a8f8f0-f8f8-4f8f-8f8f-f8f8f8f8f8f8",
+  "name": "credentialAttribute",
+  "type": "data",
+  "version": 3,
+  "schemaVersion": "v3",
+  "contentType": "resource",
+  "content": [
+    {
+      "reference": "My Credential",
+      "data": {
+        "uuid": "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+        "name": "My Credential",
+        "resource": "credentials"
+      },
+      "contentType": "resource"
+    }
+  ],
+  "properties": {
+    "label": "Credential",
+    "required": true,
+    "readOnly": false,
+    "visible": true,
+    "list": true,
+    "multiSelect": false,
+    "group": "Authentication",
+    "resource": "credentials"
+  },
+  "description": "Select a credential to use"
+}
+```
+
+```mdx-code-block
+</TabItem>
 </Tabs>
+```
 
 
 The following diagram represents the `Attribute` model inherited from the `AbstractBaseAttribute`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute).

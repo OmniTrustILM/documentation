@@ -63,9 +63,9 @@ Use this constraint when the content needs to be validated against a regular exp
 ```
 
 ```java
-AttributeConstraint constraint = new RegexpAttributeConstraint()
-constraint.setDescription("Alphanumeric Regex Constraint")
-constraint.setErrorMessage("Only alphanumeric characters are allowed")
+RegexpAttributeConstraint constraint = new RegexpAttributeConstraint();
+constraint.setDescription("Alphanumeric Regex Constraint");
+constraint.setErrorMessage("Only alphanumeric characters are allowed");
 constraint.setData("^[a-zA-Z0-9]*$");
 constraint.setType(AttributeConstraintType.REGEXP);
 ```
@@ -188,5 +188,5 @@ The following diagram represents the constraint model inherited from the `Attrib
     BaseAttributeConstraint <-- RegexpAttributeConstraint : extends
     
     DateTimeAttributeConstraint <-- DateTimeAttributeConstraintData
-    RegexpAttributeConstraint <-- RangeAttributeConstraintData
+    RangeAttributeConstraint <-- RangeAttributeConstraintData
 ```

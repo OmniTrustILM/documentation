@@ -30,6 +30,10 @@ The content has the following properties defined and inherited from `BaseAttribu
 
 ## Supported content types
 
+:::warning[Use V3 content classes]
+V2 content classes are deprecated. New implementations should use V3 content classes (e.g., `StringAttributeContentV3` instead of `StringAttributeContentV2`). The V2-only content types `SECRET` and `CREDENTIAL` are replaced by `RESOURCE OBJECT` in V3.
+:::
+
 Supported content types are defined in [`AttributeContentType`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/content/AttributeContentType.java).
 The following content types are available and supported:
 
@@ -61,14 +65,14 @@ The table below shows the `AttributeContentType` and the sample for each type an
 <table>
 
 <tr>
-<th> 
+<th>
 
 `AttributeContentType`
 
 </th>
 <th>
 
-Associated `content` field v2
+Content samples
 
 </th>
 </tr>
@@ -169,6 +173,10 @@ Associated `content` field v2
 }
 ```
 </details>
+:::warning[V2-only]
+`SECRET` is V2-only. In V3, use `RESOURCE OBJECT` with `AttributeResource.SECRET` instead.
+:::
+
 `SECRET` is handled by the platform securely, and its value will never be presented to a client once defined.
 
 </td>
@@ -295,6 +303,10 @@ Associated `content` field v2
 ```
 
 </details>
+
+:::warning[V2-only]
+`CREDENTIAL` is V2-only. In V3, use `RESOURCE OBJECT` with `AttributeResource.CREDENTIAL` instead.
+:::
 
 `CREDENTIAL` is a special purpose type that is handled by the platform for `Connectors` that needs to use the credential for authentication and authorization to technology, for example, API Key, username/password, and any other `Credential`.
 
@@ -653,36 +665,31 @@ you would send the following content
 {
   "content": [
     {
-      "reference": "secretPassword",
+      "reference": "My Credential",
       "data": {
         "uuid": "c18e6466-e435-4fdd-97e4-02f4f2c6ceee",
-        "name": "secretPassword",
-        "type": "basicAuth",
-        "content": {
-          "username": "username",
-          "password": "password"
-        }
-        
+        "name": "My Credential",
+        "resource": "credentials"
       },
-      "contentType": "resourceObject"
+      "contentType": "resource"
     }
   ]
 }
 ```
 </details>
 
-`RESOURCE OBJECT` content type is used to retrieve data of resource objects saved in Core for a `Connector`. Can also be used in place of `Credential` and `Secret` content types.
+`RESOURCE OBJECT` is a V3-only content type used to reference platform resource objects (e.g., `Credential`, `Certificate`, `Authority`). It replaces the V2-only `SECRET` and `CREDENTIAL` content types.
 The following resources are supported:
 | Resource | Data |
 |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `Certificate` | [`ResourceCertificateContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceCertificateContentData.java)
 | `Credential`  | [`ResourceSimpleContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)       
-| `Authority`   | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)   
-| `Entity`      | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)   
-| `Location`    | [ `ResourceSimpleContentData` ]( https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)     
+| `Authority`   | [`ResourceSimpleContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)
+| `Entity`      | [`ResourceSimpleContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)
+| `Location`    | [`ResourceSimpleContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSimpleContentData.java)     
 | `Secret`      | [`ResourceSecretContentData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/v3/content/data/ResourceSecretContentData.java)
 
-Attribute with `RESOURCE OBJECT` then also must have the resource of the object to retrieve as `resource` in its properties and define corresponding [callback](./callbacks#supported-special-purpose-callbacks).
+An `Attribute` with `RESOURCE OBJECT` content type must also specify the `resource` property in its [`properties`](./properties.md) and define a corresponding [Resource Callback](./callbacks.mdx#supported-special-purpose-callbacks).
 </td>
 </tr>
 
@@ -690,7 +697,7 @@ Attribute with `RESOURCE OBJECT` then also must have the resource of the object 
 
 ## Content model
 
-The following diagram represents the content model inherited from the `AttributeContent`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/v2/content). 
+The following diagram represents the content model inherited from the `AttributeContent`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute).
 
 ```plantuml
 @startuml
@@ -698,43 +705,95 @@ The following diagram represents the content model inherited from the `Attribute
     left to right direction
 
     abstract AttributeContent
-    
-    class BaseAttributeContent
-    class BooleanAttributeContent
-    class CredentialAttributeContent
-    class DateAttributeContent
-    class DateTimeAttributeContent
-    class FileAttributeContent
-    class FloatAttributeContent
-    class IntegerAttributeContent
-    class ObjectAttributeContent
-    class SecretAttributeContent
-    class StringAttributeContent
-    class TextAttributeContent
-    class TimeAttributeContent
-    class CodeBlockAttributeContent
-    
-    class FileAttributeContentData
-    class SecretAttributeContentData
-    class ProtectionLevel
-  
-    AttributeContent <-right- BaseAttributeContent : extends
-    BaseAttributeContent <-- BooleanAttributeContent : extends
-    BaseAttributeContent <-- CredentialAttributeContent : extends
-    BaseAttributeContent <-- DateAttributeContent : extends
-    BaseAttributeContent <-- DateTimeAttributeContent : extends
-    BaseAttributeContent <-- FileAttributeContent : extends
-    BaseAttributeContent <-- FloatAttributeContent : extends
-    BaseAttributeContent <-- IntegerAttributeContent : extends
-    BaseAttributeContent <-- ObjectAttributeContent : extends
-    BaseAttributeContent <-- SecretAttributeContent : extends
-    BaseAttributeContent <-- StringAttributeContent : extends
-    BaseAttributeContent <-- TextAttributeContent : extends
-    BaseAttributeContent <-- TimeAttributeContent : extends
-    BaseAttributeContent <-- CodeBlockAttributeContent : extends
-    
-    FileAttributeContent <-- FileAttributeContentData
-    CodeBlockAttributeContent <-- CodeBlockAttributeContentData
-    SecretAttributeContent <-- SecretAttributeContentData
-    SecretAttributeContentData <-- ProtectionLevel
+
+    package "V2 Content" {
+        class BaseAttributeContentV2
+
+        class BooleanAttributeContentV2
+        class StringAttributeContentV2
+        class IntegerAttributeContentV2
+        class FloatAttributeContentV2
+        class TextAttributeContentV2
+        class DateAttributeContentV2
+        class DateTimeAttributeContentV2
+        class TimeAttributeContentV2
+        class FileAttributeContentV2
+        class ObjectAttributeContentV2
+        class CodeBlockAttributeContentV2
+        class SecretAttributeContentV2 #LightCoral
+        class CredentialAttributeContentV2 #LightCoral
+    }
+
+    package "V3 Content" {
+        class BaseAttributeContentV3
+
+        class BooleanAttributeContentV3
+        class StringAttributeContentV3
+        class IntegerAttributeContentV3
+        class FloatAttributeContentV3
+        class TextAttributeContentV3
+        class DateAttributeContentV3
+        class DateTimeAttributeContentV3
+        class TimeAttributeContentV3
+        class FileAttributeContentV3
+        class ObjectAttributeContentV3
+        class CodeBlockAttributeContentV3
+        class ResourceObjectContent #LightGreen
+    }
+
+    package "Content Data" {
+        class FileAttributeContentData
+        class CodeBlockAttributeContentData
+        class SecretAttributeContentData
+        class CredentialAttributeContentData
+        class ResourceObjectContentData
+        class ResourceSimpleContentData
+        class ResourceCertificateContentData
+        class ResourceSecretContentData
+    }
+
+    AttributeContent <-- BaseAttributeContentV2 : extends
+    AttributeContent <-- BaseAttributeContentV3 : extends
+
+    BaseAttributeContentV2 <-- BooleanAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- StringAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- IntegerAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- FloatAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- TextAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- DateAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- DateTimeAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- TimeAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- FileAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- ObjectAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- CodeBlockAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- SecretAttributeContentV2 : extends
+    BaseAttributeContentV2 <-- CredentialAttributeContentV2 : extends
+
+    BaseAttributeContentV3 <-- BooleanAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- StringAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- IntegerAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- FloatAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- TextAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- DateAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- DateTimeAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- TimeAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- FileAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- ObjectAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- CodeBlockAttributeContentV3 : extends
+    BaseAttributeContentV3 <-- ResourceObjectContent : extends
+
+    FileAttributeContentV2 *-- FileAttributeContentData
+    FileAttributeContentV3 *-- FileAttributeContentData
+    CodeBlockAttributeContentV2 *-- CodeBlockAttributeContentData
+    CodeBlockAttributeContentV3 *-- CodeBlockAttributeContentData
+    SecretAttributeContentV2 *-- SecretAttributeContentData
+    CredentialAttributeContentV2 *-- CredentialAttributeContentData
+    ResourceObjectContent *-- ResourceObjectContentData
+    ResourceObjectContentData <-- ResourceSimpleContentData : extends
+    ResourceObjectContentData <-- ResourceCertificateContentData : extends
+    ResourceObjectContentData <-- ResourceSecretContentData : extends
 ```
+
+:::info[Version-specific content types]
+Content types highlighted in red (`SecretAttributeContentV2`, `CredentialAttributeContentV2`) are **V2-only**. The type highlighted in green (`ResourceObjectContent`) is **V3-only** and replaces the V2 `SECRET` and `CREDENTIAL` content types. All other content types exist in both V2 and V3.
+:::

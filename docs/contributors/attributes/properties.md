@@ -20,7 +20,8 @@ The following is a complete list of supported and available properties:
 | `overwrite`       | `boolean`                                                                                                                                                                           | Boolean determining if updating the `Attribute` content for object overwrite (replace) existing content or appends it which is default behaviour |
 | `protectionLevel` | [`ProtectionLevel`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/ProtectionLevel.java) | Protection level of the attribute content. If protection level is `encrypted`, then the content of `Attribute` is encrypted in the database.     |
 | `extensibleList`  | `boolean`                                                                                                                                                                           | Boolean determining if a list `Attribute` can have values other than predefined options in the content of definition.                            |
-| `resource`        | [`AttributeResource`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/core/auth/AttributeResource.java)                        | Resource of content. Applicable only to `Attribute` with `Resource Object` content type.                                                         |
+| `resource`        | [`AttributeResource`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/core/auth/AttributeResource.java)                        | Resource of content. Applicable only to V3 `Attribute` with `RESOURCE OBJECT` content type.                                                      |
+
 ## Properties and Attribute types
 
 Not every property is mandatory and applicable for every `Attribute` type. The following matrix shows which properties are supported for each `Attribute` type:
@@ -50,7 +51,7 @@ For more details about `Attribute` types, see [Attributes](attributes.mdx).
 
 ## Properties model
 
-The following diagram represents the Properties model inherited from the `AbstractBaseAttribute`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/properties).
+The following diagram represents the Properties model inherited from the `BaseAttributeProperties`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/properties).
 
 ```plantuml
 @startuml

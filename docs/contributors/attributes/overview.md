@@ -6,7 +6,7 @@ import DocCardList from '@theme/DocCardList';
 
 # Overview
 
-Although the CZERTAINLY platform is technology independent, each technology have its own specifics that the users should be able to use properly.
+Although the CZERTAINLY platform is technology independent, each technology has its own specifics that the users should be able to use properly.
 
 CZERTAINLY uses `Attribute` to control such specific behaviour of different technologies, like certification authorities, credential providers, discovery of certificates, etc. So called `Attributes` are used in almost every `Connector` and developer must understand them in order to implement custom behaviour or extend the functionality of the platform.
 
@@ -37,11 +37,19 @@ Implementation of some specific `Connector` must be able to define and properly 
     @enduml
 ```
 
-Because the communication is controlled by the platform, it ensures the consistency and security of the `Attributes` that are exchanged between the `Client` and the `Connector`. and eventually applied in the target technology.
+Because the communication is controlled by the platform, it ensures the consistency and security of the `Attributes` that are exchanged between the `Client` and the `Connector`, and eventually applied in the target technology.
 
 ## `BaseAttribute`
 
-The `BaseAttribute` is the base class for all `Attributes`. It contains the basic properties that are common for all `Attributes` and uses the generic type `T` to define the `content`. Attributes are available in two versions – V2 and V3. The basic functionality of both versions is the same.
+The `BaseAttribute` is the base class for all `Attributes`. It contains the basic properties that are common for all `Attributes` and uses the generic type `T` to define the `content`. Attributes are available in two versions — **V2** and **V3**. The basic functionality of both versions is the same. The key differences in V3 are:
+
+- Required `schemaVersion` field (value `"v3"`)
+- Each content item includes an explicit `contentType` field
+- New `RESOURCE OBJECT` content type for referencing platform resources (replaces V2-only `SECRET` and `CREDENTIAL` content types)
+
+:::warning[V2 is deprecated]
+**V2 attributes are deprecated.** All new connector implementations should use **V3** attribute classes. V2 is maintained for backward compatibility with existing connectors but will not receive new features. Existing connectors are encouraged to migrate to V3.
+:::
 
 You can find specification of the `BaseAttribute` in the [CZERTAINLY Interfaces repository](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces).
 
@@ -55,6 +63,7 @@ Table below describes the properties of the `BaseAttribute`:
 | `type`        | [`AttributeType`](./attributes.mdx#attribute-types) | Type of the `Attribute`                                                                                                                             | <span class="badge badge--success">Yes</span> |
 | `content`     | [`AttributeContent`](./content.md)                  | Content of the `Attribute` based on the [`AttributeContentType`](./content.md#supported-content-types)                                              | <span class="badge badge--danger">No</span>   |
 | `version`     | `integer`                                           | Version of the `Attribute`. Supported versions are `2` and `3`, where `2` is currently the default version.                                         | <span class="badge badge--success">Yes</span> |
+| `schemaVersion` | [`AttributeVersion`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/AttributeVersion.java) | Schema version of the `Attribute`. **Required for V3** (value `"v3"`), not applicable to V2. | <span class="badge badge--success">Yes (V3)</span> |
 
 ## `Attribute` building blocks:
 

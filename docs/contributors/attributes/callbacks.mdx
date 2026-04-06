@@ -52,9 +52,9 @@ Mappings have various options how to include the data from other `Attributes` an
 
 CZERTAINLY defines special purpose callbacks that are used for specific treatment of the `Attribute` content.
 
-A typical example is the `DataAttribute` with the content type `CREDENTIAL`. Working with the credentials, a typical use case is to push the credentials to the `Connector` that should be authenticated and authorized based on selected credential to specific technology. However, we do not want to reveal the secret and sensitive value of the credential to the `Client`.
+A typical example is the `DataAttribute` with the content type `CREDENTIAL` (V2) or `RESOURCE OBJECT` (V3). Working with the credentials, a typical use case is to push the credentials to the `Connector` that should be authenticated and authorized based on selected credential to specific technology. However, we do not want to reveal the secret and sensitive value of the credential to the `Client`.
 
-For that purpose we have a special callback interface that will give the `Client` credentials with the specific kind, however not the content. The content is protected by the platform.
+For that purpose we have special callback interfaces that will give the `Client` credentials with the specific kind, however not the content. The content is protected by the platform.
 
 ## Supported special purpose callbacks
 
@@ -90,6 +90,10 @@ For that purpose we have a special callback interface that will give the `Client
 ```
 This callback allows to get the list of `Credentials` protecting its sensitive data. The list will contain only UUID and name of the `Credentials` that have the required `kind`.
 
+:::warning[V2-only]
+`coreGetCredentials` is applicable only for V2 attributes with `CREDENTIAL` content type. In V3, use the **Resource Callback** with `RESOURCE OBJECT` content type instead.
+:::
+
 </td>
 </tr>
 
@@ -114,15 +118,14 @@ Resource Callback
   ]
 }
 ```
-This callback is used to retrieve resource objects for attributes with `Resource Object` content type. The context and method do not have to be specified, since this callback is called based on the content type.
-In this case, mappings serve to filter resource objects, which will be retrieved from Core database, identified by their name and UUID. 
-Formatting of a mapping is as follows:
- - "to" - is of format `{fieldIdentifier}.{operator}`, the values of the identifier and operator for a specific resource can be retrieved by calling API endpoint which lists the searchable information (`/v1/{resource}/search`). 
- The fieldIdentifier must be of field source `PROPERTY`.
- - "targets" - must contain "filter"
- - "value" - value to filter by
+This callback is used to retrieve resource objects for attributes with `RESOURCE OBJECT` content type. The `callbackContext` and `callbackMethod` do not have to be specified, since this callback is called based on the content type.
 
- If the mapping contains field "from", then the value of filter can be retrieved from other attribute and field "value" can be omitted.
+Mappings serve to filter the resource objects retrieved from the Core database. Each mapping has the following format:
+
+- `to` — filter expression in the format `{fieldIdentifier}.{operator}`. The available identifiers and operators for a specific resource can be retrieved by calling the API endpoint `/v1/{resource}/search`. The `fieldIdentifier` must be of field source `PROPERTY`.
+- `targets` — must contain `"filter"`
+- `value` — the value to filter by (can be omitted if `from` is specified)
+- `from` — *(optional)* name of another attribute whose value should be used as the filter value instead of a static `value`
 
 </td>
 </tr>
@@ -147,10 +150,10 @@ listValuesForAttributeTwoCallback.setCallbackMethod("POST");
 Set<AttributeCallbackMapping> mappings = new HashSet<>();
 mappings.add(new AttributeCallbackMapping(
         "attributeOne",
-        "selectedObject"
+        "selectedObject",
         AttributeValueTarget.BODY));
 listValuesForAttributeTwoCallback.setMappings(mappings);
-attributeTwo.setAttributeCallback(listCredentialCallback);
+attributeTwo.setAttributeCallback(listValuesForAttributeTwoCallback);
 ```
 
 ```mdx-code-block
@@ -175,16 +178,16 @@ listValuesForAttributeTwoCallback.setCallbackMethod("GET");
 Set<AttributeCallbackMapping> mappings = new HashSet<>();
 mappings.add(new AttributeCallbackMapping(
         "attributeOne",
-        "authorityId"
+        "authorityId",
         AttributeValueTarget.PATH_VARIABLE));
-        
-// map the field custom from the selected object to callback and put it into path variable variable with name customField
+
+// map the field custom from the selected object to callback and put it into path variable with name customField
 mappings.add(new AttributeCallbackMapping(
         "attributeOne.data.custom",
-        "customField"
+        "customField",
         AttributeValueTarget.PATH_VARIABLE));
 listValuesForAttributeTwoCallback.setMappings(mappings);
-attributeTwo.setAttributeCallback(listCredentialCallback);
+attributeTwo.setAttributeCallback(listValuesForAttributeTwoCallback);
 ```
 
 ```mdx-code-block
@@ -202,8 +205,11 @@ The following diagram represents the callbacks model. Details can be found in th
     left to right direction
 
     class AttributeCallback
-    
+
     class AttributeCallbackMapping
-  
-    AttributeCallback <-- AttributeCallbackMapping : extends
+
+    class AttributeValueTarget
+
+    AttributeCallback *-- AttributeCallbackMapping : mappings
+    AttributeCallbackMapping *-- AttributeValueTarget : targets
 ```
