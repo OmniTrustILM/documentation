@@ -4,150 +4,104 @@ sidebar_position: 23
 
 # CBOM
 
-**CBOM (Cryptographic Bill of Materials)** is a comprehensive inventory document that describes all cryptographic assets and materials within a system, application, or organization. It provides transparency and visibility into cryptographic usage and assets, enabling better security management, compliance, and risk assessment.
+`CBOM` (Cryptographic Bill of Materials) is a standardized inventory of cryptographic assets based on the [CycloneDX](https://cyclonedx.org) specification. The Platform supports [CycloneDX v1.6](https://cyclonedx.org/docs/1.6/json/) and provides inventory, management, and visualization of CBOM documents containing cryptographic assets such as certificates, keys, algorithms, protocols, and secrets.
 
-CBOM is based on the international standard ECMA-424, *The International Standard for Bill of Materials*, a specification maintained by the OWASP Foundation and Ecma International Technical Committee 54 (TC54) on Software & System Transparency. See [CycloneDX](https://cyclonedx.org).
-CBOMs are essential for:
-- **Security auditing** - identifying weak or outdated cryptographic algorithms
-- **Compliance** - meeting regulatory requirements for cryptographic asset tracking
-- **Risk management** - understanding cryptographic dependencies and vulnerabilities
-- **Post-quantum readiness** - preparing for quantum-safe cryptography migration
-- **Lifecycle management** - tracking expiration and rotation of cryptographic materials
+## CBOM Properties
 
-## CBOM Structure
+Each `CBOM` document in the Platform is tracked with the following properties:
 
-A CBOM document follows a standardized structure containing metadata and asset information. As the specification evolves, several versions exist. Platform supports [CycloneDX v1.6](https://cyclonedx.org/docs/1.6/json/)
+| Property | Description |
+|----------|-------------|
+| Serial Number | Unique identifier of the CBOM document (URN) |
+| Version | Version number of the CBOM document |
+| Spec Version | Version of the CycloneDX specification |
+| Source | Origin of the CBOM (e.g., name of the tool that generated it) |
+| Timestamp | Timestamp from the CBOM document metadata |
+| Certificates | Number of certificate assets |
+| Algorithms | Number of algorithm assets |
+| Protocols | Number of protocol assets |
+| Crypto Material | Number of related cryptographic material items |
+| Total Assets | Total number of all cryptographic assets |
 
-### Basic details
+Multiple versions of the same `CBOM` (identified by serial number) are tracked, allowing historical comparison of cryptographic asset changes over time.
 
-| Attribute | Field | Description | Example |
-|-----------|-------|-------------|---------|
-| **Serial Number** | `serialNumber` | Unique identifier for the CBOM document | urn:uuid:6d9a8d9e-5c2f-4d56-9d2d-1d1c7b8b7a11 |
-| **Version** | `version` | Version number of this CBOM document | 10 |
-| **Spec version** | `specVersion` | Version of the CBOM specification | 1.6 |
-| **Source** | `metadata.component.name` | Optional component name | example-payment-service |
-| **Total assets** | N/A | Total number of cryptographic assets found | 8 |
+## CBOM Sources
 
-### Asset Types
+CBOMs can be ingested into the Platform through the following methods:
 
-A CBOM can contain various types of cryptographic assets:
+### CBOM Repository synchronization
 
-#### 1. Certificates
-X.509 certificates used for authentication, encryption, and digital signatures.
+The Platform periodically synchronizes with a CBOM Repository to pull new or updated CBOM documents. A scheduled job queries the repository for entries created since the last synchronization and stores their metadata. Synchronization can also be triggered manually.
 
-**Properties:**
-- Subject Distinguished Name (DN)
-- Issuer Distinguished Name
-- Serial Number
-- Validity period (Not Before, Not After)
-- Public key algorithm and parameters
-- Signature algorithm
-- Key usage and extended key usage
-- Certificate fingerprints (SHA-1, SHA-256)
-- Certificate state and validation status
+The CBOM Repository URL must be configured in [Platform Settings](../../settings/platform.md) to enable synchronization.
 
-#### 2. Cryptographic Keys
-Public and private keys used in cryptographic operations.
+### Manual upload
 
-**Properties:**
-- Key algorithm (RSA, ECDSA, EdDSA, etc.)
-- Key size/curve
-- Key usage (signing, encryption, key agreement)
-- Key format (PKCS#8, PKCS#12, JWK)
-- Key location (HSM, software, cloud KMS)
-- Key state and lifecycle status
+CBOM documents in CycloneDX JSON format can be uploaded through the Platform UI or REST API. Uploaded documents are forwarded to the CBOM Repository for storage and versioning.
 
-#### 3. Algorithms
-Cryptographic algorithms in use within the system.
+### Discovery
 
-**Properties:**
-- Algorithm name (e.g., RSA, AES, SHA-256)
-- Algorithm type (signing, encryption, hashing, key agreement)
-- Algorithm parameters (key size, mode, padding)
-- Security strength level
-- Quantum-safe status
+Cryptographic assets can be automatically discovered using connectors implementing the `Discovery Provider` `Function Group`. Discovered CBOM documents are stored in the CBOM Repository and synchronized with the Platform.
 
-#### 4. Protocols
-Cryptographic protocols and their configurations.
+[CBOM Lens](https://github.com/CZERTAINLY/CBOM-Lens) is a scanning tool that can discover cryptographic assets in filesystems, container images, and network endpoints.
 
-**Properties:**
-- Protocol name (TLS, SSH)
-- Protocol version
-- Supported cipher suites
-- Authentication methods
-- Key exchange mechanisms
+## Integration with CBOM Repository
 
-#### 5. Secrets
-Various secrets found on a system like:
+The [CBOM Repository](https://github.com/CZERTAINLY/CBOM-Repository) is a service that provides centralized storage and versioning of CBOM documents. It serves as the single source of truth for all CBOM content.
 
-- Passwords
-- API Keys
-- Client IDs and Client secrets
-- Access Tokens
+The Platform stores `CBOM` metadata locally for listing and search. When full CBOM content is needed (e.g., for the detail view or export), it is fetched on demand from the CBOM Repository.
 
-## CBOM in Platform
-
-Platform generates and maintains CBOMs for all cryptographic assets. The platform:
-
-- **Automatically discovers** cryptographic assets from various sources via the connectors implementing *Discovery* protocol such as CBOM Lens.
-- **Manual uploads** CBOMs can be manually uploaded using REST API or Platform's UI.
-- **Continuously synchronizes** CBOM documents that are regularly pulled from the CBOM repository
-- **Visualizes** CBOM data for compliance
-- **Exports** raw CBOM in JSON format
-
-## Integration with CBOM Repository Service
-
-Following diagram illustrates:
-
-**Pull Mode:**
-- Scheduled job initiates the sync
-- Queries CBOM repository for entries after last sync timestamp
-- Iterates through entries and stores them in the database
-- Updates the sync timestamp for the next run
-
-**Push Mode:**
-- User uploads CBOM via REST API
-- API stores it in CBOM repository
-- Repository assigns/reuses serialNumber and version
-- Returns the CBOM details to the user
+The following diagram illustrates the integration between the Platform, CBOM Repository, and discovery tools:
 
 ```plantuml
-@startuml CBOM Synchronization
+@startuml CBOM Integration
 
-title CBOM Synchronization
+title CBOM Integration
 
-participant "Scheduled Job" as scheduler
-database "Platform\nDatabase" as db
-participant "CBOM Repository" as repo
+actor "User" as user
+participant "Platform" as core
+database "CBOM\nRepository" as repo
+participant "CBOM Lens" as lens
 
-== Pull Mode ==
+== Discovery ==
 
-activate scheduler
-scheduler -> scheduler: Start sync job
-scheduler -> scheduler: Get last sync timestamp
-
-scheduler -> repo: GET /api/v1/cbom?after={timestamp}
+lens -> lens: Scan sources
+lens -> repo: Upload CBOM
 activate repo
-repo --> scheduler: Return CBOM entries\n(created after timestamp)
+repo --> lens: Stored
 deactivate repo
 
-loop For each CBOM entry
-    scheduler -> db: Store CBOM record
-    activate db
-    db --> scheduler: Confirm stored
-    deactivate db
-end
+== Manual Upload ==
 
-scheduler -> db: Update last sync timestamp
-scheduler -> scheduler: Schedule next run
-deactivate scheduler
+user -> core: Upload CBOM
+core -> repo: Forward CBOM
+activate repo
+repo --> core: Stored
+deactivate repo
+core -> core: Store metadata
+
+== Synchronization (Pull) ==
+
+core -> repo: Get new entries\nsince last sync
+activate repo
+repo --> core: CBOM entries
+deactivate repo
+core -> core: Store metadata
+
+== Detail / Export ==
+
+user -> core: View CBOM detail
+core -> repo: Get full CBOM content
+activate repo
+repo --> core: CBOM JSON
+deactivate repo
+core --> user: CBOM detail
 
 @enduml
 ```
 
 ## See Also
 
-- [CycloneDX v1.6 reference](https://cyclonedx.org/docs/1.6/json/)
+- [CycloneDX v1.6 specification](https://cyclonedx.org/docs/1.6/json/)
 - [Certificate](certificate.md)
 - [Key](key.md)
-- [Compliance Profile](compliance-profile.md)
