@@ -1,5 +1,5 @@
 ---
-sidebar_position: 14
+sidebar_position: 1
 ---
 
 # Authority Provider v2
@@ -17,7 +17,7 @@ Authority Provider v2 provides the ability to communicate with different types a
 
 ## Provider objects
 
-[`Authority`](../concept-design/core-components/authority.md) objects are managed in the platform through the Authority Provider v2 implementation.
+[`Authority`](../../concept-design/core-components/authority.md) objects are managed in the platform through the Authority Provider v2 implementation.
 
 ## Processes
 
@@ -154,7 +154,7 @@ Sections below represents the list of processes involved in managing the certifi
 
 ## Specification and example
 
-The Authority Provider v2 implements [Common Interfaces](common-interfaces/overview.md) and the following additional interfaces:
+The Authority Provider v2 implements [Common Interfaces](../common-interfaces/overview.md) and the following additional interfaces:
 - [Authority Management](/api/connector-authority-provider-v2/#tag/Authority-Management)
 - [Certificate Management](/api/connector-authority-provider-v2/#tag/Certificate-Management)
 
