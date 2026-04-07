@@ -13,7 +13,7 @@ When an ILM service returns an error, the response body includes a `type` field 
 
 Problem types are grouped by category:
 
-- **[Common](common/)** — General errors that can occur in any ILM service or connector.
+- **Common** — General errors that can occur in any ILM service or connector.
 - **Connector** — Connector-specific errors (defined per connector).
 
 ## Example response
@@ -33,4 +33,4 @@ Problem types are grouped by category:
 }
 ```
 
-For a full description of the error response format, see [Error Handling](/docs/certificate-key/connectors/common-interfaces/error-handling).
+For a full description of the error response format, see [Error Handling](/docs/certificate-key/connectors/error-handling).
