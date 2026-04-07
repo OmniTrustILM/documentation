@@ -4,7 +4,7 @@ sidebar_position: 25
 
 # Secret Provider
 
-The secret provider is provider interface responsible for fetching and managing secrets from various secret management systems. It abstracts the underlying implementation details and provides a consistent API for accessing secrets.
+The Secret Provider is a provider interface responsible for fetching and managing secrets from various secret management systems. It abstracts the underlying implementation details and provides a consistent API for accessing secrets.
 
 ## Vault Management
 ### Create `Vault` Instance
@@ -13,7 +13,7 @@ The secret provider is provider interface responsible for fetching and managing 
     @startuml
     autonumber
     skinparam topurl https://docs.czertainly.com/api/
-        Client -> Core [[core-authority/#tag/Authority-Management/operation/createAuthorityInstance]]: Add Vault Instance
+        Client -> Core [[core-vault/#tag/Vault-Instance-Management/operation/createVaultInstance]]: Add Vault Instance
         Core->Core: Check existence of Connector and Vault by Name
         Core -> Connector : Get Vault Attributes
         Connector --> Core: Vault Attributes
@@ -35,14 +35,14 @@ The secret provider is provider interface responsible for fetching and managing 
     autonumber
     skinparam maxMessageSize 200
     skinparam topurl https://docs.czertainly.com/api/
-        Client -> Core [[core-key/#tag/Secret-Management/operation/createSecret]]: Create new Secret
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getCreateSecretAttributes]]: Get Secret Attributes
+        Client -> Core [[core-secret/#tag/Secret-Management/operation/createSecret]]: Create new Secret
+        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getSecretAttributes]]: Get Secret Attributes
         Connector --> Core: Secret Attributes
-        Core -> Core : Validate Secret Attributes 
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getCreateSecretAttributes]]: Get Vault Attributes
+        Core -> Core : Validate Secret Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Vault-Management/operation/listVaultAttributes]]: Get Vault Attributes
         Connector --> Core: Vault Attributes
-        Core -> Core : Validate Vault Attributes 
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/createKey]]: Create new Secret
+        Core -> Core : Validate Vault Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/createSecret]]: Create new Secret
         Connector -> Connector: Create new Secret
         note over Connector
         The secret is created within a Vault
@@ -60,19 +60,19 @@ The secret provider is provider interface responsible for fetching and managing 
     autonumber
     skinparam maxMessageSize 200
     skinparam topurl https://docs.czertainly.com/api/
-        Client -> Core [[core-secret/#tag/Secret-Management/operation/createSecret]]: Update Secret
+        Client -> Core [[core-secret/#tag/Secret-Management/operation/updateSecret]]: Update Secret
         Core -> Core : Check if the content of secret has changed
         Core -> Core : Create new Secret Version
         note right Core
         Repeat for each connector containing the secret
         end note
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getCreateSecretAttributes]]: Get Secret Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getSecretAttributes]]: Get Secret Attributes
         Connector --> Core: Secret Attributes
-        Core -> Core : Validate Secret Attributes 
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getCreateSecretAttributes]]: Get Vault Attributes
+        Core -> Core : Validate Secret Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Vault-Management/operation/listVaultAttributes]]: Get Vault Attributes
         Connector --> Core: Vault Attributes
-        Core -> Core : Validate Vault Attributes 
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/createKey]]: Update Secret
+        Core -> Core : Validate Vault Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/updateSecret]]: Update Secret
         Connector -> Connector: Update Secret
         note over Connector
         The secret is updated within a Vault
@@ -90,17 +90,17 @@ The secret provider is provider interface responsible for fetching and managing 
     autonumber
     skinparam maxMessageSize 200
     skinparam topurl https://docs.czertainly.com/api/
-        Client -> Core [[core-secret/#tag/Secret-Management/operation/createSecret]]: Delete Secret
+        Client -> Core [[core-secret/#tag/Secret-Management/operation/deleteSecret]]: Delete Secret
         note right Core
         Repeat for each connector containing the secret
         end note
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getCreateSecretAttributes]]: Get Secret Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getSecretAttributes]]: Get Secret Attributes
         Connector --> Core: Secret Attributes
-        Core -> Core : Validate Secret Attributes 
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getCreateSecretAttributes]]: Get Vault Attributes
+        Core -> Core : Validate Secret Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Vault-Management/operation/listVaultAttributes]]: Get Vault Attributes
         Connector --> Core: Vault Attributes
-        Core -> Core : Validate Vault Attributes 
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/createKey]]: Delete Secret
+        Core -> Core : Validate Vault Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/deleteSecret]]: Delete Secret
         Connector -> Connector: Delete Secret
         note over Connector
         The secret is deleted in a Vault
@@ -117,15 +117,23 @@ The secret provider is provider interface responsible for fetching and managing 
     autonumber
     skinparam maxMessageSize 200
     skinparam topurl https://docs.czertainly.com/api/
-        Client -> Core [[core-secret/#tag/Secret-Management/operation/createSecret]]: Get Secret Content
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getCreateSecretAttributes]]: Get Secret Attributes
+        Client -> Core [[core-secret/#tag/Secret-Management/operation/getSecretContent]]: Get Secret Content
+        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getSecretAttributes]]: Get Secret Attributes
         Connector --> Core: Secret Attributes
-        Core -> Core : Validate Secret Attributes 
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getCreateSecretAttributes]]: Get Vault Attributes
+        Core -> Core : Validate Secret Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Vault-Management/operation/listVaultAttributes]]: Get Vault Attributes
         Connector --> Core: Vault Attributes
-        Core -> Core : Validate Vault Attributes 
-        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/createKey]]: Get Secret Content
-        Connector --> Core: Return Secret Content 
+        Core -> Core : Validate Vault Attributes
+        Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getSecretContent]]: Get Secret Content
+        Connector --> Core: Return Secret Content
         Core --> Client: Return Secret Content
     @enduml
 ```
+
+## Specification and example
+
+The Secret Provider implements [Common Interfaces](common-interfaces/overview.md) and the following additional interfaces:
+- [Secret Management](/api/connector-secret-provider/#tag/Secret-Management)
+- [Vault Management](/api/connector-secret-provider/#tag/Vault-Management)
+
+The OpenAPI specification of the Secret Provider can be found here: [Connector API - Secret Provider](/api/connector-secret-provider/).

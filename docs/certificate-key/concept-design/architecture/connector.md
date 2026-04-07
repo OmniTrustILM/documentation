@@ -30,6 +30,7 @@ The platform supports the following `Connector` `Function Groups`:
 | [`Compliance Provider`](../../connectors/compliance-provider.md)             | Defines compliance rules that can be applied to certificates and validate against                                                                                    | [Compliance Provider API](/api/connector-compliance-provider)             |
 | [`Cryptography Provider`](../../connectors/cryptography-provider.md)         | Provides cryptographic key management and operations using specific technology                                                                                       | [Cryptography Provider API](/api/connector-cryptography-provider)         |
 | [`Notification Provider`](../../connectors/notification-provider.mdx)        | Provides a way to send notifications                                                                                                                                 | [Notification Provider API](/api/connector-notification-provider)         |
+| [`Secret Provider`](../../connectors/secret-provider.md)                     | Provides secret management and retrieval from various secret management systems and vaults                                                                           | [Secret Provider API](/api/connector-secret-provider)                     |
 
 ### `Kind`
 

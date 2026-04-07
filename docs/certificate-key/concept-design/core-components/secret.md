@@ -4,7 +4,7 @@ sidebar_position: 21
 
 # Secret
 
-The entity `Secret` is a representation of a secret stored in a `Vault`. One `Secret` can be used by multiple `Vault`s and they can be managed using a source `Vault Profile`s.
+The entity `Secret` is a representation of a secret stored in a `Vault`. One `Secret` can be used by multiple `Vaults` and they can be managed using a source `Vault Profile`.
 
 ## Secret Content
 The content of a `Secret` is stored in a `Vault` on provider side. 
@@ -26,7 +26,7 @@ The content of a `Secret` is stored in a `Vault` on provider side.
 
 ## Source Vault Profile
 The `Source Vault Profile` and its parent `Vault` are the primary sources for the `Secret`. When a `Secret` is created, it is the vault that creates the secret. 
-`Secret Content` is always retrieved from the source `Vault Profile` and access to `Secret` is evaluated based on the source profile. When a `Source Vault Profile` is changed, the previous souce profile is moved to `Sync Vault Profile`.
+`Secret Content` is always retrieved from the source `Vault Profile` and access to `Secret` is evaluated based on the source profile. When a `Source Vault Profile` is changed, the previous source profile is moved to `Sync Vault Profile`.
 
 ## Sync Vault Profiles
 `Sync Vault Profile` is a profile also associated with `Secret`. When `Secret` is updated or deleted, besides being also updated in the source `Vault Profile`, it is also updated in the `Sync Vault Profile`.
@@ -37,4 +37,4 @@ The `Secret Version` is updated when a change in content is detected or when a s
 
 ## Secret Management
 
-Secrets are managed with [Secret API](/api/secret).
+Secrets are managed with [Secret API](/api/core-secret/).
