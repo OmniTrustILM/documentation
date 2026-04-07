@@ -23,7 +23,7 @@ The information held by the `Authority` varies depending on the `Kind` of CA and
 - One `Connector` can serve for more than one `Authority`.
 - Inputs for the `Connector` to determine the CA are captured and stored in the `Authority`.
 
-For more information, refer to [Authority Provider](../../connectors/authority-provider-v2.md) description.
+For more information, refer to [Authority Provider](../../connectors/provider-interfaces/authority-provider-v2.md) description.
 
 ### `RA Profile`
 

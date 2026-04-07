@@ -48,6 +48,17 @@ For other properties, `Core` will automatically update them in the stored defini
 - If the `Required` property is changed to `True`, be aware that operations on already existing objects may fail if the content for that attribute was not previously required.
 - If the `ReadOnly` property is changed to `True`, operations may fail because the existing content may differ from what is specified in the definition, thus violating the read-only validation rule.
 
+### What about migrating from V2 to V3?
+
+V2 attributes are deprecated and all new implementations should use V3. When migrating existing connector attributes from V2 to V3:
+
+- The `version` field must be set to `3` and `schemaVersion` to `"v3"`
+- Content items must include the `contentType` field
+- If the connector uses `CREDENTIAL` or `SECRET` content types, these must be replaced with the `RESOURCE OBJECT` content type and corresponding [Resource Callback](./callbacks.mdx#supported-special-purpose-callbacks)
+- The attribute `uuid` and `name` should remain the same to preserve compatibility with existing stored definitions and content
+
+Changing only the `version` and `schemaVersion` while keeping the same `uuid` and `name` is the recommended approach. `Core` will update the stored definition accordingly.
+
 ### What is the Best Practice for Attribute Definition?
 
 When specifying an attribute definition, it is important to generate a unique combination of UUID and name. A good practice is to ensure the name is descriptive enough, and if the attribute represents a generic input (e.g., name, URL, type), use a prefix to specify its purpose more accurately. This helps avoid potential collisions or the need to rename attributes when adding new ones with similar purposes.

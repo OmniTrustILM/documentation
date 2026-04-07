@@ -14,7 +14,7 @@ The primary purpose of internal notifications is to ensure that users are prompt
 
 ## External notifications
 
-External notifications, on the other hand, are not obligatory and are dispatched exclusively when specific conditions are met. These notifications are sent out only if corresponding `Notification` instances have been configured and associated with a particular notification type. To gain a comprehensive understanding of how external notifications work, refer to the documentation on the [Notification Provider](../../connectors/notification-provider.mdx).
+External notifications, on the other hand, are not obligatory and are dispatched exclusively when specific conditions are met. These notifications are sent out only if corresponding `Notification` instances have been configured and associated with a particular notification type. To gain a comprehensive understanding of how external notifications work, refer to the documentation on the [Notification Provider](../../connectors/provider-interfaces/notification-provider.mdx).
 
 External notifications offer a more customized approach to notifying users based on their preferences and the specific types of events they wish to be alerted about. Unlike internal notifications, external notifications rely on designated notification providers to facilitate the dissemination of information to users outside the platform environment. This can include communication channels like email, SMS, or other third-party integrations.
 

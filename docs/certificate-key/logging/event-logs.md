@@ -4,7 +4,7 @@ sidebar_position: 9
 
 # Event Logs
 
-Event logs are used to record certificate management, cryptographic key management, and other operation-related events. The event logs are used to reconstruct the complete history of the operations and its source can be user or system itself in case of automatic events. Event logs are essential for monitoring and troubleshooting the platform.
+Event logs are used to record certificate management, cryptographic key management, secret management, and other operation-related events. The event logs are used to reconstruct the complete history of the operations and its source can be user or system itself in case of automatic events. Event logs are essential for monitoring and troubleshooting the platform.
 
 ## Event log structure
 
