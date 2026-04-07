@@ -8,11 +8,11 @@ To enable and configure the PKI secrets engine, follow the official HashiCorp Va
 
 Each PKI secrets engine is mounted at a specific path in the Vault. The path is used as the endpoint for all API requests. The PKI secrets engine can be mounted multiple times at different paths, each with its own configuration.
 
-Although the PKI secrets engine can have multiple issuers, their purpose is to rotate key and certificate. We are using the default issuer for the certificate management.
+Although the PKI secrets engine can have multiple issuers, their purpose is to rotate key and certificate. The platform uses the default issuer for the certificate management.
 
 ## PKI secrets engine roles
 
-The PKI secrets engine generates dynamic X.509 certificates based on configured roles. Role maps a name in Vault to a procedure for generating a certificate. The role contains the parameters that are used to generate the certificate, such as the allowed domains and subdomains, the key type, maximum time-to-live, and more.
+The PKI secrets engine generates dynamic X.509 certificates based on configured roles. A role maps a name in Vault to a procedure for generating a certificate. The role contains the parameters that are used to generate the certificate, such as the allowed domains and subdomains, the key type, maximum time-to-live, and more.
 
 For a complete list of the role parameters, refer to the [Vault PKI secrets engine documentation](https://www.vaultproject.io/docs/secrets/pki).
 
