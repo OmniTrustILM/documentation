@@ -20,8 +20,8 @@ The `Function Group` of a `Connector` describes the functions it can perform. It
 
 The platform supports the following `Connector` `Function Groups`:
 
-| Function Group                                                               | Description                                                                                                                                                          | Interfaces needed to implement                                            |
-|------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| Function Group                                                                                   | Description                                                                                                                                                          | Interfaces needed to implement                                            |
+|--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
 | [`Credential Provider`](../../connectors/provider-interfaces/credential-provider.md)             | `Connector` that provides a specific type of the `Credential` to the platform. `Credential` can be further used by the objects and other `Connector` of the platform | [Credential Provider API](/api/connector-credential-provider)             |
 | [`Discovery Provider`](../../connectors/provider-interfaces/discovery-provider.md)               | Provides an interface to search for a certificates within a specific technology and sources                                                                          | [Discovery Provider API](/api/connector-discovery-provider)               |
 | [`Legacy Authority Provider`](../../connectors/provider-interfaces/authority-provider-legacy.md) | Provides a connection with the certification authority and certificate management functions                                                                          | [Legacy Authority Provider API](/api/connector-authority-provider-legacy) |
@@ -31,7 +31,6 @@ The platform supports the following `Connector` `Function Groups`:
 | [`Cryptography Provider`](../../connectors/provider-interfaces/cryptography-provider.md)         | Provides cryptographic key management and operations using specific technology                                                                                       | [Cryptography Provider API](/api/connector-cryptography-provider)         |
 | [`Notification Provider`](../../connectors/provider-interfaces/notification-provider.mdx)        | Provides a way to send notifications                                                                                                                                 | [Notification Provider API](/api/connector-notification-provider)         |
 | [`Secret Provider`](../../connectors/provider-interfaces/secret-provider.md)                     | Provides secret management and retrieval from various secret management systems and vaults                                                                           | [Secret Provider API](/api/connector-secret-provider)                     |
-
 
 ### `Kind`
 

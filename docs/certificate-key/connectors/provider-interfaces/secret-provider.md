@@ -132,7 +132,7 @@ The Secret Provider is a provider interface responsible for fetching and managin
 
 ## Specification and example
 
-The Secret Provider implements [Common Interfaces](common-interfaces/overview.md) and the following additional interfaces:
+The Secret Provider implements [Common Interfaces](../common-interfaces/overview.md) and the following additional interfaces:
 - [Secret Management](/api/connector-secret-provider/#tag/Secret-Management)
 - [Vault Management](/api/connector-secret-provider/#tag/Vault-Management)
 
