@@ -47,6 +47,39 @@ When a `Secret` is associated with multiple `Vault Profiles`, the platform can s
 
 When a `Secret` is updated or deleted, the operation is performed on the source `Vault Profile` and then propagated to all associated sync `Vault Profiles`.
 
+The following diagram illustrates the synchronization flow when updating a secret that has sync `Vault Profiles` assigned:
+
+```plantuml
+@startuml
+autonumber
+skinparam maxMessageSize 200
+
+Client -> Core: Update Secret
+Core -> Core: Validate custom attributes
+Core -> Core: Calculate content fingerprint
+Core -> Core: Compare fingerprint with latest version
+
+alt Content has changed
+
+    Core -> Core: Load attributes for source Vault Profile
+    Core -> Connector: Update Secret in source Vault
+    Connector --> Core: Return Secret Response
+    Core -> Core: Create new Secret Version
+
+    loop For each sync Vault Profile
+        Core -> Core: Load profile-specific attributes
+        Core -> Connector: Update Secret in sync Vault
+        Connector --> Core: Return Secret Response
+        Core -> Core: Update Secret with sync Vault metadata
+    end
+
+end
+
+Core --> Client: Return updated Secret
+
+@enduml
+```
+
 ## Approval support
 
 Secret operations can be subject to approval workflows. When an `Approval Profile` is configured on the `Vault Profile`, the following operations require approval before execution:
