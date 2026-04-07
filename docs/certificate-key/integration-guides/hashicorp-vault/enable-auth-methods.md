@@ -6,7 +6,7 @@ sidebar_position: 7
 
 To authenticate with the HashiCorp Vault, you need to enable authentication methods that can be used. The authentication methods are used to authenticate users and applications to the Vault.
 
-The following authentication methods are available for the integration with the CZERTAINLY platform:
+The following authentication methods are available for the integration with the platform:
 
 | Method                                                         | Description                                                                                                                                                                                                                                                                                                                                                   | Default mount path: `auth/` |
 |----------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
