@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 6
 ---
 
 # Cryptography Provider
@@ -415,7 +415,7 @@ The following processes are associated with the operations that are performed wi
 
 ## Specification and example
 
-The Cryptography Provider implements [Common Interfaces](common-interfaces/overview.md) and the following additional interfaces:
+The Cryptography Provider implements [Common Interfaces](../common-interfaces/overview.md) and the following additional interfaces:
 - [Token Management](/api/connector-cryptography-provider/#tag/Token-Management)
 - [Key Management](/api/connector-cryptography-provider/#tag/Key-Management)
 - [Cryptographic Operations](/api/connector-cryptography-provider/#tag/Cryptographic-Operations)

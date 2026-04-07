@@ -43,6 +43,7 @@ Module represents part or resource of system related to event. Module can be one
 | `entities`     | Module for entities and locations management                                                      |
 | `keys`         | Cryptographic keys management and operations including tokens and token profiles                  |
 | `protocols`    | Protocols management and operations including protocol profiles                                   |
+| `secrets`      | Secrets management and operations including vaults and vault profiles                             |
 | `scheduler`    | Module for scheduling operations                                                                  |
 | `workflows`    | Module for workflows management and operations                                                    |
 

@@ -16,6 +16,7 @@ Currently there are following platform settings categories:
 | Name                  | Description                            | Required                                             |
 |-----------------------|----------------------------------------|------------------------------------------------------|
 | **Utils Service URL** | URL of the Utils Service, if available | <span class="badge badge--danger" size="s">NO</span> |
+| **CBOM repository URL** | URL of the CBOM repository | <span class="badge badge--danger" size="s">NO</span> |
 
 ## Certificates Settings
 

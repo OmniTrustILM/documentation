@@ -1,5 +1,5 @@
 ---
-sidebar_position: 22
+sidebar_position: 7
 ---
 
 # Discovery Provider
@@ -18,7 +18,7 @@ The history of `Discovery` is maintained in the `Core` for further reference.
 
 ## Provider objects
 
-[`Discovery`](../concept-design/modules/certificate-discovery.md) objects are managed in the platform through the Discovery Provider implementation.
+[`Discovery`](../../concept-design/modules/certificate-discovery.md) objects are managed in the platform through the Discovery Provider implementation.
 Each `Discovery` provides an overview of the configuration and the discovery process, including discovered certificates.
 
 ## Processes
@@ -83,7 +83,7 @@ The following processes are associated with the Discovery Provider and managemen
 
 ## Specification and example
 
-The Discovery Provider implements [Common Interfaces](common-interfaces/overview.md) and the following additional interfaces:
+The Discovery Provider implements [Common Interfaces](../common-interfaces/overview.md) and the following additional interfaces:
 - [Discovery](/api/connector-discovery-provider/#tag/Discovery)
 
 The OpenAPI specification of the Discovery Provider can be found here: [Connector API - Discovery Provider](/api/connector-discovery-provider/).
