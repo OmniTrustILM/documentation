@@ -49,6 +49,15 @@ const config = {
       },
     ],
     [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'problems',
+        path: 'problems',
+        routeBasePath: 'problems',
+        sidebarPath: require.resolve('./sidebarProblems.js'),
+      },
+    ],
+    [
       '@docusaurus/plugin-client-redirects',
       {
         redirects: [
