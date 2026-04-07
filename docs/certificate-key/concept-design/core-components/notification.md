@@ -35,4 +35,4 @@ If the `Notification Provider` requires additional data to process the notificat
 - One `Connector` can serve for more than one `Notification`.
 - Inputs for the `Connector` to determine the notification processing are captured and stored in the `Notification`.
 
-For more information, refer to [Notification Provider](../../connectors/notification-provider.mdx) description.
+For more information, refer to [Notification Provider](../../connectors/provider-interfaces/notification-provider.mdx) description.

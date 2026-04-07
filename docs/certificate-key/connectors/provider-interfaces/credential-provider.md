@@ -1,5 +1,5 @@
 ---
-sidebar_position: 18
+sidebar_position: 5
 ---
 
 # Credential Provider
@@ -14,7 +14,7 @@ The Credential Provider defines specific configuration of the credentials that c
 
 ## Provider objects
 
-[`Credential`](../concept-design/core-components/credential.md) objects are managed in the platform through the Credential Provider implementation.
+[`Credential`](../../concept-design/core-components/credential.md) objects are managed in the platform through the Credential Provider implementation.
 
 ## Processes
 
@@ -95,7 +95,7 @@ The following processes are associated with the Credential Provider and manageme
 
 ## Specification and example
 
-The Credential Provider implements [Common Interfaces](common-interfaces/overview.md).
+The Credential Provider implements [Common Interfaces](../common-interfaces/overview.md).
 There are no additional interfaces needed for the Credential Provider.
 
 The OpenAPI specification of the Credential Provider can be found here: [Connector API - Credential Provider](/api/connector-credential-provider/).
