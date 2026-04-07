@@ -37,4 +37,4 @@ The `Secret Version` is updated when a change in content is detected or when a s
 
 ## Secret Management
 
-Secrets are managed with [Secret API](/api/secret).
+Secrets are managed with the Secret API.
