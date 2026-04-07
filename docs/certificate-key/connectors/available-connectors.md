@@ -6,7 +6,7 @@ sidebar_position: 30
 
 `Connectors` can be developed by anyone. There may be number of `Connectors` driven by the community and also `Connectors` developed for some specific purpose and use case.
 
-Discover more information on [CZERTAINLY GitHub](https://github.com/CZERTAINLY/CZERTAINLY) pages.
+Discover more information on [ILM GitHub](https://github.com/CZERTAINLY/CZERTAINLY) pages.
 
 The following `Connectors` are officially available:
 

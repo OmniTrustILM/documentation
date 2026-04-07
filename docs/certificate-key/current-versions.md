@@ -4,7 +4,7 @@ sidebar_position: 30
 
 # Current Versions
 
-The CZERTAINLY platform consists of several services. This allows you to enable the functionality and integrate with the technology you need.
+The ILM platform consists of several services. This allows you to enable the functionality and integrate with the technology you need.
 
 :::info
 If you do not need to discover certificates, you should not deploy `Discovery Provider` connectors. The same applies for other connectors that are available. You will use only the connectors that integrates with your technology.

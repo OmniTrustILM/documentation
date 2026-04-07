@@ -16,7 +16,7 @@ As an example, `Entity` can be:
 
 `Entity` provides access to the end-user that can be further managed by its [`Locations`](location.md).
 
-The `Entity` is always managed by specific implementation of [`Entity Provider`](../../connectors/entity-provider.md) that is connected with the platform.
+The `Entity` is always managed by specific implementation of [`Entity Provider`](../../connectors/provider-interfaces/entity-provider.md) that is connected with the platform.
 Based on that, we can perform operations with `Entity`, such as:
 - Add, edit, or remove `Entities`
 - Manage state and [`Locations`](location.md)

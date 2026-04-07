@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 2
 ---
 
 # Authority Provider Legacy
@@ -26,7 +26,7 @@ The Authority Provider Legacy interface is designed to work only with the EJBCA.
 
 ## Provider objects
 
-[`Authority`](../concept-design/core-components/authority.md) objects are managed in the platform through the Authority Provider Legacy implementation.
+[`Authority`](../../concept-design/core-components/authority.md) objects are managed in the platform through the Authority Provider Legacy implementation.
 
 ## Processes
 
@@ -144,7 +144,7 @@ Renewal of the certificate is not supported by the Authority Provider Legacy.
 
 ## Specification and example
 
-The Authority Provider Legacy implements [Common Interfaces](common-interfaces/overview.md) and the following additional interfaces:
+The Authority Provider Legacy implements [Common Interfaces](../common-interfaces/overview.md) and the following additional interfaces:
 - [Authority Management](/api/connector-authority-provider-legacy/#tag/Authority-Management)
 - [Certificate Management](/api/connector-authority-provider-legacy/#tag/Certificate-Management)
 - [End Entity Profiles](/api/connector-authority-provider-legacy/#tag/End-Entity-Profiles)

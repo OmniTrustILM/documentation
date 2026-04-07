@@ -20,7 +20,7 @@ The information held by the `Token` varies depending on the `Kind` of the undern
 
 ### `Cryptography Provider`
 
-For more information, refer to [Cryptography Provider](../../connectors/cryptography-provider.md) description.
+For more information, refer to [Cryptography Provider](../../connectors/provider-interfaces/cryptography-provider.md) description.
 
 ### `Token Profile`
 
