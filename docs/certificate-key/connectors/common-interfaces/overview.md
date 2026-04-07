@@ -26,7 +26,7 @@ The following interfaces are mandatory for each Connector NG:
 | [Attributes](attributes-interface.md#connector-ng) | `GET` `/.../{operation}/attributes` | Per-operation attribute definitions without a separate validation endpoint |
 | [Metrics](metrics-interface.md)                    | `GET /v1/metrics`  | Prometheus/OpenMetrics metrics for observability                                          |
 
-Error handling across all Connector NG interfaces follows the [Error Handling](error-handling.md) specification.
+Error handling across all Connector NG interfaces follows the [Error Handling](../error-handling.md) specification.
 
 ## Legacy Connectors
 

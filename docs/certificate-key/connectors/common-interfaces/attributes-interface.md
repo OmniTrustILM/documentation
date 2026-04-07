@@ -39,9 +39,9 @@ Returns the list of `Attributes` required or accepted by the operation. Returns 
 | Response code | Description                                    |
 |---------------|------------------------------------------------|
 | 200           | Attributes returned (empty array if none)      |
-| 400           | Bad request — see [Error Handling](error-handling.md) |
-| 404           | Not found — see [Error Handling](error-handling.md)   |
-| 422           | Validation failed — see [Error Handling](error-handling.md) |
+| 400           | Bad request — see [Error Handling](../error-handling.md) |
+| 404           | Not found — see [Error Handling](../error-handling.md)   |
+| 422           | Validation failed — see [Error Handling](../error-handling.md) |
 
 ### Developer-friendly design
 
