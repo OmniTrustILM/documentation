@@ -8,9 +8,9 @@ sidebar_position: 12
 
 Connector NG exposes a `Metrics` interface that provides standard [Prometheus](https://prometheus.io/docs/instrumenting/exposition_formats/) / [OpenMetrics](https://openmetrics.io/) metrics. These metrics can be scraped by observability solutions and collectors (Prometheus, Grafana Agent, OpenTelemetry Collector, etc.).
 
-This interface is mandatory for all Connector NG implementations.
+This interface is mandatory for all Connector NG implementations. Each connector must support at least one exposition format — Prometheus text, OpenMetrics, or both.
 
-If a connector additionally supports the OpenMetrics exposition format, it should advertise the `openMetrics` [feature flag](info-interface.md#feature-flags) in its `Info` interface response.
+When a connector supports the [OpenMetrics](https://openmetrics.io/) exposition format, it must advertise the `openMetrics` [feature flag](info-interface.md#feature-flags) in its `Info` interface response.
 
 ## Endpoint
 
@@ -18,12 +18,16 @@ If a connector additionally supports the OpenMetrics exposition format, it shoul
 
 ### Content negotiation
 
-The connector supports both the modern OpenMetrics format and the legacy Prometheus text exposition format:
+The connector responds in the format that best matches the client's `Accept` header, limited to the formats it supports.
 
-| Client `Accept` header                                       | Response `Content-Type`                                      |
-|--------------------------------------------------------------|--------------------------------------------------------------|
-| `application/openmetrics-text; version=1.0.0; charset=utf-8` | `application/openmetrics-text; version=1.0.0; charset=utf-8` |
-| `text/plain; version=0.0.4; charset=utf-8`                   | `text/plain; version=0.0.4; charset=utf-8`                   |
+| Client `Accept` header                                        | `openMetrics` feature flag present? | Response `Content-Type`                                       |
+|---------------------------------------------------------------|-------------------------------------|---------------------------------------------------------------|
+| `application/openmetrics-text; version=1.0.0; charset=utf-8` | Yes                                 | `application/openmetrics-text; version=1.0.0; charset=utf-8` |
+| `application/openmetrics-text; version=1.0.0; charset=utf-8` | No                                  | `text/plain; version=0.0.4; charset=utf-8`                   |
+| `text/plain; version=0.0.4; charset=utf-8`                   | Any                                 | `text/plain; version=0.0.4; charset=utf-8`                   |
+| _(none / `*/*`)_                                             | Any                                 | connector's preferred supported format                        |
+
+When a client requests OpenMetrics from a connector that does not advertise the `openMetrics` feature flag, the connector falls back to Prometheus text format instead of returning `406 Not Acceptable`.
 
 ### Response codes
 
