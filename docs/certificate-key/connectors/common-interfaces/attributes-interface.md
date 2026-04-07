@@ -71,7 +71,7 @@ You can find specification and information about the legacy `Attributes` interfa
 
 In Connector NG, the `Attributes` interface is **consolidated and per-operation**. Instead of a single attributes endpoint for the whole connector, each operation endpoint that requires user input exposes a dedicated `/attributes` sub-endpoint directly beneath it.
 
-There is no separate `/validate` endpoint — attribute validation is the responsibility of the `Core` based on the attribute definitions returned by the connector or validation should be part of operation at connector side.
+There is no separate `/validate` endpoint — attribute validation is the responsibility of the `Core` based on the attribute definitions returned by the connector. Validation should be also part of operation at connector side but Core cannot enforce that behavior.
 
 ### Endpoint pattern
 

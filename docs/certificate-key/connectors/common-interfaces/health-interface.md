@@ -219,5 +219,5 @@ The liveness and readiness probes are designed to integrate with Kubernetes:
 ### Specification and example
 
 You can find specification and information about the Connector NG `Health` interface on the following locations:
-- [Core Connector API v2](/api/core-connector-v2/#tag/Connector-Management-v2) — `checkHealthV2`
+- [Core Connector API v2](/api/core-connector/#tag/Connector-Management-v2) — `checkHealthV2`
 - [Secret Provider API](/api/connector-secret-provider/) — connector-side `GET /v2/health` schema
