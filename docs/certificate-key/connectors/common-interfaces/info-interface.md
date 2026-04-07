@@ -170,8 +170,8 @@ The `Core` uses the `/v2/connectors/connect` and `/v2/connectors/{uuid}/reconnec
     autonumber
     skinparam topurl https://docs.otilm.com/api/
         alt requests
-            Client->>Core [[core-connector/#tag/Connector-Management-API/operation/connectToConnectorV2]]: Connect to Connector (v2)
-            Client->>Core [[core-connector/#tag/Connector-Management-API/operation/reconnectConnectorV2]]: Reconnect to Connector (v2)
+            Client->>Core [[core-connector/#tag/Connector-Management-v2/operation/connectV2]]: Connect to Connector (v2)
+            Client->>Core [[core-connector/#tag/Connector-Management-v2/operation/reconnectV2]]: Reconnect to Connector (v2)
         end
         Core->>Connector: GET /v2/info
         Note over Core,Connector: Retrieve connector identity and interfaces
@@ -180,53 +180,11 @@ The `Core` uses the `/v2/connectors/connect` and `/v2/connectors/{uuid}/reconnec
     @enduml
 ```
 
-### Core API — response structures
-
-When the `Core` stores and exposes a Connector NG, several response structures include interface information.
-
-#### `ConnectorDto` (v2)
-
-The `ConnectorDto` (schema name `ConnectorDtoV2`) returned by list and detail endpoints includes:
-
-| Field            | Type                       | Description                                              |
-|------------------|----------------------------|----------------------------------------------------------|
-| `uuid`           | string (UUID)              | Connector UUID in the platform                           |
-| `name`           | string                     | Connector name                                           |
-| `version`        | string (`v1` \| `v2`)      | Connector generation — `v1` for legacy, `v2` for NG     |
-| `url`            | string                     | Connector URL                                            |
-| `status`         | ConnectorStatus            | Registration status (e.g., `CONNECTED`, `WAITING_FOR_APPROVAL`) |
-| `functionGroups` | array of FunctionGroupDto  | Legacy function groups (empty for pure NG connectors)   |
-| `interfaces`     | array of ConnectorInterfaceDto | NG interfaces implemented by the connector           |
-
-#### `ConnectorInterfaceDto`
-
-Each entry in the `interfaces` array of `ConnectorDto` is a `ConnectorInterfaceDto`:
-
-| Field      | Type            | Description                                                             |
-|------------|-----------------|-------------------------------------------------------------------------|
-| `uuid`     | string (UUID)   | Unique identifier of this interface record in the platform              |
-| `code`     | ConnectorInterface | Interface type — see [Interface codes](#interface-codes)             |
-| `version`  | string          | Interface version (e.g., `"2"`)                                         |
-| `features` | array of FeatureFlag | Feature flags for this interface — see [Feature flags](#feature-flags) |
-
-#### `ConnectInfo` — connect and reconnect response
-
-The `/v2/connectors/connect` and `/v2/connectors/{uuid}/reconnect` endpoints return a `ConnectInfo` object. The response type is polymorphic based on the connector version:
-
-**For Connector NG (`version: "v2"`):**
-
-| Field           | Type                          | Description                                              |
-|-----------------|-------------------------------|----------------------------------------------------------|
-| `version`       | string (`v2`)                 | Indicates this is a Connector NG response                |
-| `connectorUuid` | string (UUID), optional       | Present if connector is already registered               |
-| `errorMessage`  | string, optional              | Error description if connection failed                   |
-| `connector`     | ConnectorInfo                 | Connector identity from `/v2/info`                       |
-| `interfaces`    | array of ConnectorInterfaceInfo | Interfaces as reported by `/v2/info`                   |
-
 **For legacy connectors (`version: "v1"`):**
 The response contains `functionGroups` and `kinds` instead of `connector` and `interfaces`.
 
 ### Specification and example
 
 You can find specification and information about the Connector NG `Info` interface on the following locations:
-- [Secret Provider API](/api/connector-secret-provider/)
+- [Core Connector API v2](/api/core-connector/#tag/Connector-Management-v2) — `getInfoV2`, `connectV2`, `reconnectV2`
+- [Secret Provider API](/api/connector-secret-provider/) — connector-side `GET /v2/info` schema

@@ -20,14 +20,10 @@ If a connector additionally supports the OpenMetrics exposition format, it shoul
 
 The connector supports both the modern OpenMetrics format and the legacy Prometheus text exposition format:
 
-| Client `Accept` header                                            | Response `Content-Type`                                           |
-|-------------------------------------------------------------------|-------------------------------------------------------------------|
-| `application/openmetrics-text; version=1.0.0; charset=utf-8`     | `application/openmetrics-text; version=1.0.0; charset=utf-8`     |
-| _(anything else)_                                                 | `text/plain; version=0.0.4; charset=utf-8`                        |
-
-Additional headers:
-- **Compression**: `gzip` is supported if the client sends `Accept-Encoding: gzip`
-- **Caching**: `Cache-Control: no-cache` — metrics must always be fresh
+| Client `Accept` header                                       | Response `Content-Type`                                      |
+|--------------------------------------------------------------|--------------------------------------------------------------|
+| `application/openmetrics-text; version=1.0.0; charset=utf-8` | `application/openmetrics-text; version=1.0.0; charset=utf-8` |
+| `text/plain; version=0.0.4; charset=utf-8`                   | `text/plain; version=0.0.4; charset=utf-8`                   |
 
 ### Response codes
 
