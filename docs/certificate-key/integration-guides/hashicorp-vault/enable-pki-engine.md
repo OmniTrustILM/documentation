@@ -34,4 +34,4 @@ For more information, see [`use_csr_sans`](https://developer.hashicorp.com/vault
 
 The [`no_store`](https://developer.hashicorp.com/vault/api-docs/secret/pki#no_store) parameter can be used to disable storing the certificate in the Vault after they are generated. This can be useful when the certificate is generated for the external service and the Vault is used only for the certificate management.
 
-However, when the `no_store` is enabled, the certificate is not stored in the Vault and certificate issued by that role will not be discoverable by the CZERTAINLY platform.
+However, when the `no_store` is enabled, the certificate is not stored in the Vault and certificate issued by that role will not be discoverable by the platform.
