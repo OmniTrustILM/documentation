@@ -198,6 +198,25 @@ caProvider:
       # Name of the keystore bundle containing the admin certificate and private key
       keystoreBundle: ejbcaAdmin
 
+management:
+  server:
+    port: 9090
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      access: unrestricted
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
 # TLS/mTLS configuration, disabled by default
 server:
   # Configuration of the keystore with server certificate and private key
@@ -275,7 +294,9 @@ spring:
   datasource:
     # JDBC URL of the database
     # for PostgreSQL use: jdbc:postgresql://localhost:5432/cscdb
-    # for MySQL use: jdbc:mysql://localhost:3306/cscdb
+    # for MySQL use: jdbc:mysql://localhost:3306/cscdb?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true
+    # IMPORTANT: connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true is required for MySQL
+    # to prevent timestamp failures during DST transitions
     url: jdbc:postgresql://localhost:5432/cscdb
     # Username to connect to the database
     username: 'cscuser'
@@ -285,6 +306,11 @@ spring:
     # for PostgreSQL use: org.postgresql.Driver
     # for MySQL use: com.mysql.cj.jdbc.Driver
     driver-class-name: 'org.postgresql.Driver'
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
   flyway:
     table: "csc_schema_history"
     schemas: "csc"

@@ -418,6 +418,41 @@ export const data = [
                 </>
             )
     },
+    {
+        property: "EXCLUDE_SKIP_REVOCATION_EXTENSIONS",
+        description:
+            (
+                <>
+                    Comma-separated list of certificate extension OIDs for revocation data check skip that should be excluded.
+                    The following extensions are included by default:
+                    <ul>
+                        <li><span class="badge badge--secondary">0.4.0.194121.2.1</span> - id_etsi_ext_valassured_ST_certs</li>
+                        <li><span class="badge badge--secondary">1.3.6.1.5.5.7.48.1.5</span> - id_pkix_ocsp_nocheck</li>
+                        <li><span class="badge badge--secondary">2.5.29.56</span> - noRevAvail</li>
+                    </ul>
+                    This property allows you to exclude specific extensions from the default list of extensions that are used to skip revocation data check.
+                    This is useful when you want to enforce revocation data check for certificates that contain these extensions.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
 ];
 
 
