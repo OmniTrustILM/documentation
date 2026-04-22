@@ -4,9 +4,9 @@ sidebar_position: 1
 
 # Text-based user interface
 
-CZERTAINLY appliance is using Text-based User Interface (TUI) to ease initialization and operations of the appliance.
+ILM appliance is using Text-based User Interface (TUI) to ease initialization and operations of the appliance.
 
-![CZERTAINLY TUI](../../../../../assets/CZERTAINLY-TUI.png)
+![ILM TUI](../../../../../assets/TUI.png)
 
 TUI consist of main and advanced menus. The first as name suggests offers basic operations with appliance and the second more advanced tasks.
 
