@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Deployment using Virtual Appliance
 
-CZERTAINLY virtual appliance is pre-built image of virtual operating system packed in Open Virtual Appliance (OVA) format for running CZERTAINLY platform.
+ILM virtual appliance is pre-built image of virtual operating system packed in Open Virtual Appliance (OVA) format for running ILM platform.
 It is intended for the environments where no Kubernetes cluster is available or the Kubernetes cluster cannot be used for various reasons.
 
 ## Virtual appliance content
@@ -12,14 +12,14 @@ It is intended for the environments where no Kubernetes cluster is available or 
 Virtual Appliance consist of:
 * **[Debian](https://www.debian.org/)** Linux operating system with amd64 architecture
 * **[RKE2](https://rke2.io)**, also known as RKE Government, which is Rancher's next-generation Kubernetes distribution
-* **[Helm](https://helm.sh/)** package manager for Kubernetes to install and upgrade CZERTAINLY Helm charts
+* **[Helm](https://helm.sh/)** package manager for Kubernetes to install and upgrade Helm charts
 * **[PostgreSQL](https://www.postgresql.org/)** database server to persist platform data
-* **CZERTAINLY Virtual Appliance Tools** as a set of scripts to simplify operations with the virtual appliance
+* **ILM Virtual Appliance Tools** as a set of scripts to simplify operations with the virtual appliance
 * **SSH server** and default system user that can be used to access console and login into virtual appliance
 
-Virtual appliance does not contain CZERTAINLY platform containers by default. Containers are downloaded and deployed after the configuration of the virtual appliance is applied.
+Virtual appliance does not contain ILM platform containers by default. Containers are downloaded and deployed after the configuration of the virtual appliance is applied.
 
-:::info[CZERTAINLY container access]
+:::info[ILM container access]
 Because of different availability and public/private access to containers, the virtual appliance by default does not contain pre-downloaded containers and images. All required and available containers and images are downloaded once the virtual appliance is configured with the repository and access credentials.
 :::
 
@@ -31,10 +31,10 @@ Because of different availability and public/private access to containers, the v
 | RAM      | 16 GB   | 12 GB   |
 | disk     | 50 GB   | 20 GB   |
 
-By *minimum* requirements we mean resources which are needed for CZERTAINLY with all configurable componets and kubernetes installation and for basic evaluation of its features.
+By *minimum* requirements we mean resources which are needed for ILM with all configurable componets and kubernetes installation and for basic evaluation of its features.
 
 :::tip[Resource management]
-Resources can be scaled up or down based on the needs of the platform. The resources needed for the CZERTAINLY platform differs based on the number of managed objects, implemented use-cases, and required connectors.
+Resources can be scaled up or down based on the needs of the platform. The resources needed for the ILM platform differs based on the number of managed objects, implemented use-cases, and required connectors.
 :::
 
 ## Download and import image
