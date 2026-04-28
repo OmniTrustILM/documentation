@@ -8,6 +8,9 @@ When you deploy the platform for the first time, there are no Super Administrato
 
 To register the first Administrator, you need to use `Local API`, which is accessible only from the `localhost` of the `Core` deployment. The `Local API` does not require the X.509 client certificate based authentication.
 
+> [!IMPORTANT]
+> When the platform is deployed using **Docker Compose**, the Core service runs inside a container. The `Local API` is only reachable from within the container — calling it directly from the host machine will return HTTP 401. Use `docker exec` to run the request inside the container (see examples below).
+
 ## Register first Administrator
 You can use any tool or command line utility to access the `Local API` and register the first Administrator.
 
@@ -27,16 +30,25 @@ You need to provide the following information:
 }
 ```
 
-The following example is using `curl`:
+The following example is using `curl` for a **standalone deployment** (Core running directly on the host):
 
 ```bash
 curl -X POST \
  -H 'content-type: application/json' \
  -d @first-admin.json \
- https://localhost:8080/api/v1/local/admins 
+ http://localhost:8080/api/v1/local/admins
 ```
 
-Using the `wget`:
+When running with **Docker Compose**, use `docker exec` to execute the request from inside the Core container:
+
+```bash
+docker exec core curl -X POST \
+ -H 'content-type: application/json' \
+ -d @first-admin.json \
+ http://localhost:8080/api/v1/local/admins
+```
+
+Using `wget` for a **standalone deployment**:
 
 ```bash
 wget -O- --header='Content-Type:application/json' \
