@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Local Environment Setup
 
-This guide walks you through setting up the ILM platform locally using Docker Compose. By the end, you will have a fully running platform with all core services, a registered administrator, and a verified API connection — ready for writing automation tests.
+This guide walks you through setting up the ILM platform locally using Docker Compose. By the end, you will have a fully running platform with all core services, a registered administrator, a working UI at `localhost:5173`, and a verified API connection — ready for writing automation tests.
 
 ## Prerequisites
 
@@ -12,6 +12,7 @@ Make sure the following are installed before you begin:
 
 - **Docker Desktop** — [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/). After installing, start it and wait until the Docker icon in the system tray stops animating.
 - **Git** — verify with `git --version` in the terminal.
+- **Node.js 18+** — verify with `node --version`. Download from [nodejs.org](https://nodejs.org/).
 
 Verify Docker is running:
 
@@ -43,6 +44,12 @@ git clone https://github.com/OmniTrustILM/auth-opa-policies.git CZERTAINLY-Auth-
 git clone https://github.com/OmniTrustILM/scheduler.git CZERTAINLY-Scheduler
 ```
 
+Clone the Administrator frontend:
+
+```bash
+git clone https://github.com/OmniTrustILM/fe-administrator.git
+```
+
 Your directory structure should look like this:
 
 ```
@@ -50,7 +57,8 @@ ilm-local/
 ├── development-environment/
 ├── CZERTAINLY-Auth/
 ├── CZERTAINLY-Auth-OPA-Policies/
-└── CZERTAINLY-Scheduler/
+├── CZERTAINLY-Scheduler/
+└── fe-administrator/
 ```
 
 All other services (Core, RabbitMQ, OPA, PostgreSQL) use pre-built public images and do not require source repositories.
@@ -209,9 +217,70 @@ curl -s http://localhost:8280/api/v1/auth/profile \
 
 A successful response returns your administrator profile with role `superadmin` and a full list of permissions.
 
-## Step 8 — Stop the platform
+## Step 8 — Start the Administrator frontend
+
+The frontend is a separate Vite dev server that proxies API requests to the Core backend.
+
+Install dependencies:
 
 ```bash
+cd ~/ilm-local/fe-administrator
+npm install
+```
+
+Create the proxy configuration file at `src/setupProxy.js`. This tells Vite to forward all `/api` requests to the Core backend and authenticate them with the dummy administrator certificate:
+
+```bash
+curl -s https://raw.githubusercontent.com/OmniTrustILM/helm-charts/main/dummy-certificates/certs/admin.cert.pem \
+  | grep -A 999 "BEGIN CERTIFICATE" | grep -v "BEGIN\|END" | tr -d '\n' \
+  > /tmp/admin_cert_b64.txt
+
+CERT_URL=$(python3 -c "
+import urllib.parse
+print(urllib.parse.quote(open('/tmp/admin_cert_b64.txt').read().strip()))
+")
+
+cat > src/setupProxy.js << EOF
+const proxyConfig = {
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8280',
+                changeOrigin: true,
+                secure: false,
+                headers: {
+                    'ssl-client-cert': '${CERT_URL}',
+                },
+            },
+        },
+    },
+};
+
+export default proxyConfig;
+EOF
+```
+
+Start the frontend:
+
+```bash
+npm start
+```
+
+The browser will open automatically at **http://localhost:5173**. Log in — the dummy administrator certificate is already injected via the proxy, so no login form is required.
+
+:::important
+The `src/setupProxy.js` file is gitignored. Each developer creates their own local copy with their certificate. Do not commit this file.
+:::
+
+## Step 9 — Stop the platform
+
+Stop the frontend with `Ctrl+C` in its terminal.
+
+Stop all backend services:
+
+```bash
+cd ~/ilm-local/development-environment
+
 docker compose -f czertainly-compose.yml -f postgres-compose.yml \
   --profile database --profile core down
 ```
@@ -228,3 +297,5 @@ Data in the database is persisted in the `./data/` directory. To reset the platf
 | Local API returns HTTP 401 from host | Local API is container-only | Use `docker exec core curl ...` instead of calling `localhost:8280` directly |
 | Authentication returns `Wrong format of user authentication certificate` | Certificate not URL-encoded | Use `urllib.parse.quote()` to URL-encode the certificate before sending |
 | `CZERTAINLY_SOURCES_BASE_DIR` not found | Wrong path in `.env` | Set the full absolute path to the directory containing `CZERTAINLY-Auth`, `CZERTAINLY-Auth-OPA-Policies`, `CZERTAINLY-Scheduler` |
+| Frontend shows blank page or API errors | `setupProxy.js` missing or wrong cert | Recreate `src/setupProxy.js` following Step 8 |
+| Frontend port 5173 already in use | Another Vite process running | Kill it with `lsof -ti:5173 \| xargs kill` |
