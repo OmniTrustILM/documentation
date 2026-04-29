@@ -75,6 +75,7 @@ Open `.env` in any text editor and update `CZERTAINLY_SOURCES_BASE_DIR` to point
 ```env
 # macOS:  /Users/yourname/ilm-local
 # Linux:  /home/yourname/ilm-local
+# WSL:    /home/yourname/ilm-local
 CZERTAINLY_SOURCES_BASE_DIR=<absolute path to ilm-local>
 ```
 
