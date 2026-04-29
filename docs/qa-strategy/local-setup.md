@@ -36,7 +36,7 @@ Clone the environment configuration repository:
 git clone https://github.com/OmniTrustILM/development-environment.git
 ```
 
-Clone the three services that are built from source. The folder names must match exactly as shown:
+Clone the three services that are built from source. The folder names must match exactly as shown — the repositories were renamed, but `czertainly-compose.yml` build paths still reference the original `CZERTAINLY-*` names:
 
 ```bash
 git clone https://github.com/OmniTrustILM/auth.git CZERTAINLY-Auth
@@ -73,7 +73,9 @@ cp .env.example .env
 Open `.env` in any text editor and update `CZERTAINLY_SOURCES_BASE_DIR` to point to your working directory:
 
 ```env
-CZERTAINLY_SOURCES_BASE_DIR=/Users/yourname/ilm-local
+# macOS:  /Users/yourname/ilm-local
+# Linux:  /home/yourname/ilm-local
+CZERTAINLY_SOURCES_BASE_DIR=<absolute path to ilm-local>
 ```
 
 All other values can be left at their defaults when using PostgreSQL in Docker.
