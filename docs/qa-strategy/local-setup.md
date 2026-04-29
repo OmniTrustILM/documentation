@@ -212,7 +212,7 @@ Verify authentication:
 
 ```bash
 curl -s http://localhost:8280/api/v1/auth/profile \
-  -H "ssl-client-cert: $CERT_URL" | jq
+  -H "ssl-client-cert: $CERT_URL"
 ```
 
 A successful response returns your administrator profile with role `superadmin` and a full list of permissions.
@@ -292,7 +292,7 @@ Data in the database is persisted in the `./data/` directory. To reset the platf
 | `docker compose up` fails on secrets mount | `secrets/trusted_certificates.pem` does not exist | Run `touch secrets/trusted_certificates.pem` |
 | Auth returns `User client certificate is invalid` | Dummy Root CA not in trusted certs | Add Root CA to `secrets/trusted_certificates.pem` and restart auth: `docker compose ... restart auth` |
 | Local API returns HTTP 401 from host | Port `8280` is the regular API requiring cert auth; Local API is on container-internal port `8080` only | Use `docker exec core curl ...` instead of calling `localhost:8280` directly |
-| Authentication returns `Wrong format of user authentication certificate` | Certificate not URL-encoded | Use `urllib.parse.quote()` to URL-encode the certificate before sending |
+| Authentication returns `Wrong format of user authentication certificate` | Certificate not URL-encoded | Use `node -e "console.log(encodeURIComponent('<base64_cert>'))"` to URL-encode the certificate before sending |
 | `CZERTAINLY_SOURCES_BASE_DIR` not found | Wrong path in `.env` | Set the full absolute path to the directory containing `auth`, `auth-opa-policies`, `scheduler` |
 | Frontend shows blank page or API errors | `setupProxy.js` missing or wrong cert | Recreate `src/setupProxy.js` following Step 8 |
 | Frontend port 5173 already in use | Another Vite process running | Kill it with `lsof -ti:5173 \| xargs kill` |
