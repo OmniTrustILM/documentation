@@ -151,7 +151,7 @@ curl http://localhost:8280/api/v1/health/liveness
 The platform uses X.509 certificate-based authentication. To register the first administrator, use the Local API.
 
 :::important
-The Local API is only accessible from **within the Core container**. Calling it directly from the host machine (e.g. `localhost:8280`) returns HTTP 401. Use `docker exec` as shown below.
+The Local API listens only on the container's internal port `8080` and requires no authentication. The externally-mapped port `8280` exposes the regular API, which requires client-cert auth and returns HTTP 401 without one. Use `docker exec` to call the Local API from inside the container.
 :::
 
 Save the administrator payload to a file:
@@ -205,17 +205,14 @@ The platform authenticates API requests using the `ssl-client-cert` header. The 
 Generate the URL-encoded certificate:
 
 ```bash
-CERT_URL=$(python3 -c "
-import urllib.parse
-print(urllib.parse.quote(open('/tmp/admin_cert_b64.txt').read().strip()))
-")
+CERT_URL=$(node -e "const fs=require('fs');console.log(encodeURIComponent(fs.readFileSync('/tmp/admin_cert_b64.txt','utf8').trim()))")
 ```
 
 Verify authentication:
 
 ```bash
 curl -s http://localhost:8280/api/v1/auth/profile \
-  -H "ssl-client-cert: $CERT_URL" | python3 -m json.tool
+  -H "ssl-client-cert: $CERT_URL" | jq
 ```
 
 A successful response returns your administrator profile with role `superadmin` and a full list of permissions.
@@ -238,10 +235,7 @@ curl -s https://raw.githubusercontent.com/OmniTrustILM/helm-charts/main/dummy-ce
   | grep -A 999 "BEGIN CERTIFICATE" | grep -v "BEGIN\|END" | tr -d '\n' \
   > /tmp/admin_cert_b64.txt
 
-CERT_URL=$(python3 -c "
-import urllib.parse
-print(urllib.parse.quote(open('/tmp/admin_cert_b64.txt').read().strip()))
-")
+CERT_URL=$(node -e "const fs=require('fs');console.log(encodeURIComponent(fs.readFileSync('/tmp/admin_cert_b64.txt','utf8').trim()))")
 
 cat > src/setupProxy.js << EOF
 const proxyConfig = {
@@ -297,7 +291,7 @@ Data in the database is persisted in the `./data/` directory. To reset the platf
 | `docker ps` fails with daemon error | Docker Desktop not started | Start Docker Desktop and wait for the icon to stop animating |
 | `docker compose up` fails on secrets mount | `secrets/trusted_certificates.pem` does not exist | Run `touch secrets/trusted_certificates.pem` |
 | Auth returns `User client certificate is invalid` | Dummy Root CA not in trusted certs | Add Root CA to `secrets/trusted_certificates.pem` and restart auth: `docker compose ... restart auth` |
-| Local API returns HTTP 401 from host | Local API is container-only | Use `docker exec core curl ...` instead of calling `localhost:8280` directly |
+| Local API returns HTTP 401 from host | Port `8280` is the regular API requiring cert auth; Local API is on container-internal port `8080` only | Use `docker exec core curl ...` instead of calling `localhost:8280` directly |
 | Authentication returns `Wrong format of user authentication certificate` | Certificate not URL-encoded | Use `urllib.parse.quote()` to URL-encode the certificate before sending |
 | `CZERTAINLY_SOURCES_BASE_DIR` not found | Wrong path in `.env` | Set the full absolute path to the directory containing `auth`, `auth-opa-policies`, `scheduler` |
 | Frontend shows blank page or API errors | `setupProxy.js` missing or wrong cert | Recreate `src/setupProxy.js` following Step 8 |
