@@ -76,7 +76,7 @@ Open `.env` in any text editor and update `CZERTAINLY_SOURCES_BASE_DIR` to point
 # macOS:  /Users/yourname/ilm-local
 # Linux:  /home/yourname/ilm-local
 # WSL:    /home/yourname/ilm-local
-CZERTAINLY_SOURCES_BASE_DIR=<absolute path to ilm-local>
+CZERTAINLY_SOURCES_BASE_DIR=/Users/yourname/ilm-local
 ```
 
 All other values can be left at their defaults when using PostgreSQL in Docker.
