@@ -36,12 +36,12 @@ Clone the environment configuration repository:
 git clone https://github.com/OmniTrustILM/development-environment.git
 ```
 
-Clone the three services that are built from source. The folder names must match exactly as shown — the repositories were renamed, but `czertainly-compose.yml` build paths still reference the original `CZERTAINLY-*` names:
+Clone the three services that are built from source:
 
 ```bash
-git clone https://github.com/OmniTrustILM/auth.git CZERTAINLY-Auth
-git clone https://github.com/OmniTrustILM/auth-opa-policies.git CZERTAINLY-Auth-OPA-Policies
-git clone https://github.com/OmniTrustILM/scheduler.git CZERTAINLY-Scheduler
+git clone https://github.com/OmniTrustILM/auth.git
+git clone https://github.com/OmniTrustILM/auth-opa-policies.git
+git clone https://github.com/OmniTrustILM/scheduler.git
 ```
 
 Clone the Administrator frontend:
@@ -55,9 +55,9 @@ Your directory structure should look like this:
 ```
 ilm-local/
 ├── development-environment/
-├── CZERTAINLY-Auth/
-├── CZERTAINLY-Auth-OPA-Policies/
-├── CZERTAINLY-Scheduler/
+├── auth/
+├── auth-opa-policies/
+├── scheduler/
 └── fe-administrator/
 ```
 
@@ -299,6 +299,6 @@ Data in the database is persisted in the `./data/` directory. To reset the platf
 | Auth returns `User client certificate is invalid` | Dummy Root CA not in trusted certs | Add Root CA to `secrets/trusted_certificates.pem` and restart auth: `docker compose ... restart auth` |
 | Local API returns HTTP 401 from host | Local API is container-only | Use `docker exec core curl ...` instead of calling `localhost:8280` directly |
 | Authentication returns `Wrong format of user authentication certificate` | Certificate not URL-encoded | Use `urllib.parse.quote()` to URL-encode the certificate before sending |
-| `CZERTAINLY_SOURCES_BASE_DIR` not found | Wrong path in `.env` | Set the full absolute path to the directory containing `CZERTAINLY-Auth`, `CZERTAINLY-Auth-OPA-Policies`, `CZERTAINLY-Scheduler` |
+| `CZERTAINLY_SOURCES_BASE_DIR` not found | Wrong path in `.env` | Set the full absolute path to the directory containing `auth`, `auth-opa-policies`, `scheduler` |
 | Frontend shows blank page or API errors | `setupProxy.js` missing or wrong cert | Recreate `src/setupProxy.js` following Step 8 |
 | Frontend port 5173 already in use | Another Vite process running | Kill it with `lsof -ti:5173 \| xargs kill` |
