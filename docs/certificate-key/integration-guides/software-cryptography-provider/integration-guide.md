@@ -10,23 +10,20 @@ This integration guide is intended for **development and testing purposes**. The
 
 This document outlines the steps to deploy and connect the Software Cryptography Provider to the platform. Once connected, the platform can create and manage cryptographic keys, and perform cryptographic operations such as signing, verification, encryption, and decryption.
 
-This integration guide was tested with:
-- Software Cryptography Provider version 2.x
-
 ## What is Software Cryptography Provider
 
 The Software Cryptography Provider is a Cryptography Provider connector that implements key management and cryptographic operations in software. It is intended for development and testing scenarios where a hardware security module is not available.
 
 Supported key algorithms:
 
-| Algorithm | Type | Supported operations |
-|-----------|------|----------------------|
-| RSA (1024, 2048, 4096-bit) | Classical | Sign, Verify, Encrypt, Decrypt |
-| ECDSA (secp192r1–secp521r1) | Classical | Sign, Verify |
-| ML-DSA / CRYSTALS-Dilithium | Post-quantum | Sign, Verify |
-| SLH-DSA | Post-quantum | Sign, Verify |
-| FALCON 512/1024 | Post-quantum | Sign, Verify |
-| ML-KEM | Post-quantum | Encrypt, Decrypt |
+| Algorithm | Key properties | Supported operations |
+|-----------|---------------|----------------------|
+| RSA | 1024, 2048, 4096-bit | Sign, Verify, Encrypt, Decrypt |
+| ECDSA | secp192r1, secp224r1, secp256r1, secp384r1, secp521r1 | Sign, Verify |
+| ML-DSA | Lattice-based, NIST FIPS 204 | Sign, Verify |
+| SLH-DSA | Hash-based, NIST FIPS 205 | Sign, Verify |
+| FALCON | 512 and 1024 degrees | Sign, Verify |
+| ML-KEM | Lattice-based, NIST FIPS 203 | Encrypt, Decrypt |
 
 :::note[Symmetric keys]
 The Software Cryptography Provider does not support symmetric key algorithms.
@@ -50,7 +47,7 @@ docker run -d \
   -e JDBC_URL=jdbc:postgresql://<host>:<port>/<database> \
   -e JDBC_USERNAME=<db-user> \
   -e JDBC_PASSWORD=<db-password> \
-  docker.io/czertainly/czertainly-software-cryptography-provider:latest
+  docker.io/czertainly/czertainly-software-cryptography-provider:tagname
 ```
 
 Replace the following placeholders:
@@ -62,6 +59,7 @@ Replace the following placeholders:
 | `<database>` | Database name |
 | `<db-user>` | Database username |
 | `<db-password>` | Database password |
+| `tagname` | Connector version tag (see [releases](https://github.com/CZERTAINLY/CZERTAINLY-Software-Cryptography-Provider/releases)) |
 
 Optional environment variables:
 
@@ -70,14 +68,7 @@ Optional environment variables:
 | `DB_SCHEMA` | `softcp` | Database schema name |
 | `PORT` | `8080` | Port the connector listens on |
 | `TOKEN_DELETE_ON_REMOVE` | `false` | Whether to delete all keys when a token is removed |
-
-Verify the connector is running:
-
-```bash
-curl http://localhost:8080/v1/info
-```
-
-The response should return connector metadata including name and version.
+| `JAVA_OPTS` | — | Custom Java system properties |
 
 ## Register connector in the platform
 
@@ -175,10 +166,6 @@ To verify the signature:
 
 Encrypt and Decrypt operations are available through the REST API only and are not exposed in the platform UI.
 
-API endpoints:
-- `POST /v1/operations/tokens/{tokenInstanceUuid}/tokenProfiles/{tokenProfileUuid}/keys/{uuid}/items/{keyItemUuid}/encrypt`
-- `POST /v1/operations/tokens/{tokenInstanceUuid}/tokenProfiles/{tokenProfileUuid}/keys/{uuid}/items/{keyItemUuid}/decrypt`
-
 For API reference, see [Cryptographic Operations API](/api/core-cryptographic-operations).
 
 ## Issue a certificate using a token key
@@ -199,4 +186,3 @@ This allows organizations to issue certificates backed by keys managed in a dedi
 | Symmetric keys not supported | Only asymmetric key algorithms are available |
 | Not suitable for production | Keys are stored in software (PostgreSQL); use an HSM connector for production |
 | Encrypt/Decrypt not available in UI | These operations require direct API calls |
-
