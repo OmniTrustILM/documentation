@@ -50,11 +50,22 @@ const ModuleList: ModuleItem[] = [
             </>
         ),
     },
+    {
+        title: 'Digital Secrets',
+        link: 'docs/certificate-key/introduction',
+        image: 'img/undraw_safe.svg',
+        description: (
+            <>
+                Centralized secret management across various vault technologies with versioning,
+                synchronization, and compliance support.
+            </>
+        ),
+    },
 ];
 
 function Module({title, link, image, description}: ModuleItem) {
   return (
-    <div className={clsx('col col--4', styles.card)}>
+    <div className={clsx('col col--3', styles.card)}>
       <div className="text--center">
         <img className={styles.moduleSvg} alt={title} src={image} />
       </div>

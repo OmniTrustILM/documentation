@@ -1,0 +1,483 @@
+---
+sidebar_position: 2
+---
+
+import {Fragment} from "react";
+
+# Basic Properties
+
+The following properties are common for all AdES Signers. Each AdES Signer may have additional specific set of properties that are described in the subsequent sections.
+
+export const data = [
+    {
+        property: "SIGNATURE_LEVEL",
+        description:
+            (
+                <>
+                    The signature level property specified the desired baseline level of the signature.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    <a href="./tsa-properties">Time Stamping Authority</a>
+                </>
+            ),
+        description:
+            (
+                <>
+                    Time stamping authority to include timestamp.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+
+                </>
+            )
+    },
+    {
+        property: "EMBED_CRL",
+        description:
+            (
+                <>
+                    Embed CRL revocation information from the CRL location defined in the certificate CRL distribution point.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Mandatory for the following profiles:
+                    <ul>
+                        <li><b>BASELINE-LT</b></li>
+                        <li><b>BASELINE-LTA</b></li>
+                    </ul>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "CRL_DATA_LOADER_TIMEOUT_CONNECTION",
+        description:
+            (
+                <>
+                    Timeout in milliseconds for connection to the CRL data loader.
+                    This is the timeout for establishing a connection to the CRL distribution point.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">60000</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "CRL_DATA_LOADER_TIMEOUT_SOCKET",
+        description:
+            (
+                <>
+                    Timeout in milliseconds for socket of the CRL data loader.
+                    This is the timeout for waiting for data after a connection to the CRL distribution point has been established.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">60000</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "EMBED_OCSP_RESPONSE",
+        description:
+            (
+                <>
+                    Embed OCSP response status information from the OCSP URI located in the certificate AIA extension.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Mandatory for the following profiles:
+                    <ul>
+                        <li><b>BASELINE-LT</b></li>
+                        <li><b>BASELINE-LTA</b></li>
+                    </ul>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "OCSP_DATA_LOADER_TIMEOUT_CONNECTION",
+        description:
+            (
+                <>
+                    Timeout in milliseconds for connection to the OCSP data loader.
+                    This is the timeout for establishing a connection to the OCSP URI located in the certificate AIA extension.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">60000</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "OCSP_DATA_LOADER_TIMEOUT_SOCKET",
+        description:
+            (
+                <>
+                    Timeout in milliseconds for socket of the OCSP data loader.
+                    This is the timeout for waiting for data after a connection to the OCSP URI located in the certificate AIA extension has been established.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">60000</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ENCRYPTIONALGORITHM",
+        description:
+            (
+                <>
+                    Encryption algorithm to use with the signature algorithm, for example <b>RSASSA-PSS</b>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    Taken from the Subject Public Key Info of the signing certificate.
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "DIGESTALGORITHM",
+        description:
+            (
+                <>
+                    Digest algorithm to use with the signature algorithm.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">SHA256</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "TRUSTED_CERTIFICATES",
+        description:
+            (
+                <>
+                    Contains list of PEM certificates to use as a trusted sources, additionally to the LOTL and TLs.
+                    This is the place where you need to provide your trusted certificates that are not part of the public trust list.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">LOTL and TLs</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    <a href="./blevel-properties">Signed Attributes</a>
+                </>
+            ),
+        description:
+            (
+                <>
+                    B-level parameters for a signature creation.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+
+                </>
+            )
+    },
+    {
+        property: "METADATA_PROPERTY_OVERRIDE_ALLOWED",
+        description:
+            (
+                <>
+                    Contains list of comma-separated properties that are allowed to be overridden using metadata.
+                    The name of the property should match the name of the property in the configuration.
+                    For the properties that can be overridden, see the specific AdES Signer documentation.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    <a href="./alerts-properties">Alerts Properties</a>
+                </>
+            ),
+        description:
+            (
+                <>
+                    Alerts configuration for signing process. You can configure alerts behavior for different
+                    types of issues and events occurring during the signing process, and how they should be handled.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+
+                </>
+            )
+    },
+    {
+        property: "EXCLUDE_SKIP_REVOCATION_EXTENSIONS",
+        description:
+            (
+                <>
+                    Comma-separated list of certificate extension OIDs for revocation data check skip that should be excluded.
+                    The following extensions are included by default:
+                    <ul>
+                        <li><span class="badge badge--secondary">0.4.0.194121.2.1</span> - id_etsi_ext_valassured_ST_certs</li>
+                        <li><span class="badge badge--secondary">1.3.6.1.5.5.7.48.1.5</span> - id_pkix_ocsp_nocheck</li>
+                        <li><span class="badge badge--secondary">2.5.29.56</span> - noRevAvail</li>
+                    </ul>
+                    This property allows you to exclude specific extensions from the default list of extensions that are used to skip revocation data check.
+                    This is useful when you want to enforce revocation data check for certificates that contain these extensions.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+];
+
+
+export const GenTable = ({data}) => (
+  <Fragment>
+    {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                  <td><b>{dat.property}</b></td>
+                  <td>{dat.description}</td>
+                  <td>{dat.default}</td>
+                  <td>{dat.mandatory}</td>
+                  <td>{dat.metadata}</td>
+                </tr>)
+         })}
+  </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+  <tbody>
+    <GenTable data={data}/>
+  </tbody>
+</table>

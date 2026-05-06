@@ -1,0 +1,8 @@
+{
+  "position": 26,
+  "label": "HashiCorp Vault",
+  "link": {
+    "type": "doc",
+    "id": "overview"
+  }
+}

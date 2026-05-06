@@ -1,0 +1,282 @@
+---
+sidebar_position: 3
+---
+
+import {Fragment} from "react";
+
+# Entrust SAM Crypto Token Properties
+
+`EntrustSAMCryptoToken` implements the Entrust SAM and requires access to the Entrust SAM interface and nShield HSM.
+Once configured, it can be used to create remote signatures on behalf of the users. The `EntrustSAMCryptoToken` can be attached to any `Signer` implementation.
+
+The implementation class of the `EntrustSAMCryptoToken` requires the following properties to be defined:
+
+```
+IMPLEMENTATION_CLASS=com.czertainly.signserver.module.entrustsam.EntrustSAMCryptoWorker
+CRYPTOTOKEN_IMPLEMENTATION_CLASS=com.czertainly.signserver.module.entrustsam.EntrustSAMCryptoToken
+```
+
+The Crypto Token seamlessly integrates with the Entrust SAM interface. The `EntrustSAMCryptoToken` will check the following configuration properties.
+
+export const data = [
+    {
+        property: "ENTRUST_SAM_SERVER",
+        description:
+            (
+                <>
+                    End point to access Entrust SAM service functions.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_TRUST_SELF_SIGNED",
+        description:
+            (
+                <>
+                    True if the self-signed certificate of the Entrust SAM can be trusted.
+                    False otherwise.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_CONNECTION_POOL_SIZE",
+        description:
+            (
+                <>
+                    Number as the maximum size of the pooled connections with the Entrust SAM. This value can be fine-tuned to optimize the performance of the signing process.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">100</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "OTHER_SIGNERS",
+        description:
+            (
+                <>
+                    Sets the reference to the Crypto Token containing the key that is used to authenticate to the Entrust SAM.
+                    Only one value should be specified for this attribute. In case it contains multiple comma separated references to Crypto Token, the first one is taken.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_CLIENT_AUTHENTICATION_KEY_ALIAS",
+        description:
+            (
+                <>
+                    Identification of the key, based on alias, that should be used to authenticate to the Entrust SAM interface.
+                    The key alias is taken from the <b>OTHER_SIGNERS</b> Crypto Token configuration.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "SAD_PROVIDER_IMPLEMENTATION_CLASS",
+        description:
+            (
+                <>
+                    Implementation class for Signature Activation Protocol handling between the Signature Integration Component and the Signature Activation Module. This is the interface for providing the Signature Activation Data to be used in order to execute signing operation.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                    <br/>
+                    See <a href='./sad-providers/overview'>SAD Providers</a> for more information.
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_MAX_CONNECTIONS_PER_ROUTE",
+        description:
+            (
+                <>
+                    Number defining the maximum number of pooled connections per route (per target host). Increasing this value can improve concurrency when multiple requests are executed in parallel.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">80</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_CONNECTION_REQUEST_TIMEOUT",
+        description:
+            (
+                <>
+                    Number (in seconds) defining how long to wait for a connection to become available from the connection pool before timing out.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">5</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_CONNECT_TIMEOUT",
+        description:
+            (
+                <>
+                    Number (in seconds) defining the maximum time to establish a TCP connection. This includes the time to complete the socket handshake.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">10</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_SOCKET_TIMEOUT",
+        description:
+            (
+                <>
+                    Number (in seconds) defining the maximum period of inactivity when waiting for data on an established socket connection.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">30</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ENTRUST_RESPONSE_TIMEOUT",
+        description:
+            (
+                <>
+                    Number (in seconds) defining the maximum total time to wait for the entire HTTP response once the request has been sent.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">30</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+];
+
+export const GenTable = ({data}) => (
+    <Fragment>
+        {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                    <td><b>{dat.property}</b></td>
+                    <td>{dat.description}</td>
+                    <td>{dat.default}</td>
+                    <td>{dat.mandatory}</td>
+                </tr>)
+        })}
+    </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={data}/>
+    </tbody>
+</table>

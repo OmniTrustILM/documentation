@@ -1,0 +1,8 @@
+{
+  "position": 40,
+  "label": "Cert-Manager Issuer",
+  "link": {
+    "type": "doc",
+    "id": "overview"
+  }
+}

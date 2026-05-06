@@ -1,0 +1,107 @@
+---
+sidebar_position: 1
+---
+
+# Register Connectors
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+
+In order to start using the platform with any specific technology, we must register the `Connector`.
+We need two `Connectors`:
+- for basic `Credential` we use the `Common Credential Provider` implementing `Credential Provider` function group
+- for CA `MS ADCS` we use the `MS ADCS Connector` implementing `Authority Provider` function group
+
+## Register `Connectors` using the API
+
+The `Connectors` can be registered using the `Connector` API.
+
+### Register `Common Credential Provider`
+
+```bash
+curl -X POST \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  --data '
+  {
+    "name": "Common Credential Provider",
+    "url", "https://common-credential-provider-service:8080"",
+    "authType": "none"
+  }' \
+  https://[domain]:[port]/api/v1/connectors
+```
+
+When there is no error, `Connector` is successfully registered, and its `uuid` is sent back:
+```json
+{
+  "uuid": "93f74f2d-1bc7-4c15-a33e-0bf773b3955a"
+}
+```
+
+### Register `MS ADCS Connector`
+
+```bash
+curl -X POST \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  --data '
+  {
+    "name": "MS ADCS Connector",
+    "url", "https://ms-adcs-conector-service:8080"",
+    "authType": "none"
+  }' \
+  https://[domain]:[port]/api/v1/connectors
+```
+
+When there is no error, `Connector` is successfully registered, and its `uuid` is sent back:
+```json
+{
+  "uuid": "04cb011f-4497-4e45-b4b9-4975db9df0a0"
+}
+```
+
+## Register `Connectors` using the Web Interface
+
+### Register `Common Credential Provider`
+
+Follow these steps to register new `Common Credential Provider`.
+
+1. Log in to the Administration Interface `https://[domain]:[port]/administrator`
+2. Click **Connectors** in the left menu
+3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+4. Fill the columns with the attributes:
+   - URL: `https://common-credential-provider-service:8080`
+   - Authentication Type: `No Auth`
+5. Click **Connect**
+
+Now you can see the details of the connected `Connector`.
+
+6. Fill in the `Connector` name: `Common Credential Provider`
+7. Click **Create** to make the `Connector` available to other components
+
+You have registered `Common Credential Provider`.
+
+### Register `MS ADCS Connector`
+
+Follow these steps to register new `MS ADCS Connector`. 
+
+1. Log in to the Administration Interface `https://[domain]:[port]/administrator`
+2. Click **Connectors** in the left menu
+3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+4. Fill the columns with the attributes:
+    - URL: `https://ms-adcs-connector-service:8080`
+    - Authentication Type: `No Auth`
+5. Click **Connect**  
+
+Now you can see the details of the connected `Connector`. 
+
+6. Fill in the `Connector` name: `MS ADCS Connector`
+7. Click **Create** to make the `Connector` available to other components
+
+You have registered `MS ADCS Connector`. 

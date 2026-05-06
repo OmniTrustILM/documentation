@@ -1,0 +1,339 @@
+---
+sidebar_position: 2
+---
+
+import {Fragment} from "react";
+
+# XAdES Signer Properties
+
+:::info
+See the [Common Properties](../common-properties/basic-properties.mdx) for configuration options of the AdES Signer.
+:::
+
+The implementation class of the XAdES Signer is:
+
+```
+com.czertainly.signserver.module.xades.signer.XAdESSigner
+```
+
+It contains the integration with the DSS framework and extends the Worker interface of the SignServer. If you want to use the XAdES Signer, you must specify this property. The XAdES Signer will check the following configuration properties.
+
+export const data = [
+    {
+        property: "SIGNATURE_PACKAGING",
+        description:
+            (
+                <>
+                    Sets the signature packaging. Allowed values are:
+                    <ul>
+                        <li>ENVELOPED</li>
+                        <li>ENVELOPING</li>
+                        <li>DETACHED</li>
+                        <li>INTERNALLY-DETACHED</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "EMBED_XML",
+        description:
+            (
+                <>
+                    Sets if the signed content shall be incorporated as XML (used only for <b>ENVELOPING</b> signature packaging).
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "XADES_NAMESPACE_PREFIX",
+        description:
+            (
+                <>
+                    Sets the XAdES namespace prefix.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">xades</span>
+                </>
+            ),
+        mandatory:
+            (
+                <span class="badge badge--danger">NO</span>
+            )
+    },
+    {
+        property: "XADES_NAMESPACE_URI",
+        description:
+            (
+                <>
+                    Sets the XAdES namespace uri.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">http://uri.etsi.org/01903/v1.3.2#</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "XMLDSIG_NAMESPACE_PREFIX",
+        description:
+            (
+                <>
+                    Sets the XMLDSIG namespace prefix.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ds</span>
+                </>
+            ),
+        mandatory:
+            (
+                <span class="badge badge--danger">NO</span>
+            )
+    },
+    {
+        property: "XMLDSIG_NAMESPACE_URI",
+        description:
+            (
+                <>
+                    Sets the XMLDSIG namespace uri.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">http://www.w3.org/2000/09/xmldsig#</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "XADES141_NAMESPACE_PREFIX",
+        description:
+            (
+                <>
+                    Sets the XAdES 1.4.1 namespace prefix.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">xades141</span>
+                </>
+            ),
+        mandatory:
+            (
+                <span class="badge badge--danger">NO</span>
+            )
+    },
+    {
+        property: "XADES141_NAMESPACE_URI",
+        description:
+            (
+                <>
+                    Sets the XAdES 1.4.1 namespace uri.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">http://uri.etsi.org/01903/v1.4.1#</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "PRETTY_PRINT",
+        description:
+            (
+                <>
+                    Sets if the signature shall be pretty-printed.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "SIGNED_PROPS_CANONICALIZATION_METHOD",
+        description:
+            (
+                <>
+                    Set the canonicalization algorithm to be used when dealing with <b>SignedProperties</b>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "SIGNED_INFO_CANONICALIZATION_METHOD",
+        description:
+            (
+                <>
+                    Set the canonicalization algorithm to be used when dealing with <b>SignedInfo</b>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "KEY_INFO_CANONICALIZATION_METHOD",
+        description:
+            (
+                <>
+                    Set the canonicalization algorithm used for dealing with <b>KeyInfo</b>. When used, the <b>KeyInfo</b> element will be signed with its reference included to <b>SignedInfo</b> element.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "VALIDATION_DATA_ENCAPSULATION_STRATEGY",
+        description:
+            (
+                <>
+                    Configuration of the unsigned signature property elements, to be used for validation data (certificate and revocation values) encapsulation. Allowed values are:
+                     <ul>
+                         <li>CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA</li>
+                         <li>CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA</li>
+                         <li>CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED</li>
+                         <li>CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA</li>
+                         <li>ANY_VALIDATION_DATA_ONLY</li>
+                     </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+        }
+];
+
+export const GenTable = ({data}) => (
+  <Fragment>
+    {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                  <td><b>{dat.property}</b></td>
+                  <td>{dat.description}</td>
+                  <td>{dat.default}</td>
+                  <td>{dat.mandatory}</td>
+                </tr>)
+         })}
+  </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+  <tbody>
+    <GenTable data={data}/>
+  </tbody>
+</table>
+
+## Canonicalization methods
+
+The following canonicalization methods are supported:
+
+| Method name               | Value                                                          |
+|---------------------------|----------------------------------------------------------------|
+| `INCLUSIVE`               | `http://www.w3.org/TR/2001/REC-xml-c14n-20010315`              |
+| `EXCLUSIVE`               | `http://www.w3.org/2001/10/xml-exc-c14n#`                      |
+| `INCLUSIVE-WITH-COMMENTS` | `http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments` |
+| `EXCLUSIVE-WITH-COMMENTS` | `http://www.w3.org/2001/10/xml-exc-c14n#WithComments`          |
+| `ENVELOPED`               | `http://www.w3.org/2000/09/xmldsig#enveloped-signature`        |
+| `BASE64`                  | `http://www.w3.org/2000/09/xmldsig#base64`                     |

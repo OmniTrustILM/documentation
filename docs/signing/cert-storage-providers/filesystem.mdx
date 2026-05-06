@@ -1,0 +1,69 @@
+---
+sidebar_position: 3
+---
+
+import {Fragment} from "react";
+
+# File System Certificate Storage Provider
+
+The implementation class of the File System Certificate Storage Provider is:
+
+```
+com.czertainly.trident.provider.certificate.FileSystemCertificateStorage
+```
+
+The following properties can be configured for the File System Certificate Storage Provider:
+
+export const data = [
+    {
+        property: "CERT_STORAGE_BASE_DIR",
+        description:
+            (
+                <>
+                    Absolute path on the file system, where the certificates are store as files.
+                    The file name must follow this rule: <b>[userId]_[keyId]</b>.
+                    Certificates are Base64 encoded.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span className="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span className="badge badge--success">YES</span>
+                </>
+            )
+    }
+];
+
+export const GenTable = ({data}) => (
+    <Fragment>
+        {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                    <td><b>{dat.property}</b></td>
+                    <td>{dat.description}</td>
+                    <td>{dat.default}</td>
+                    <td>{dat.mandatory}</td>
+                </tr>)
+        })}
+    </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={data}/>
+    </tbody>
+</table>
+
+:::warning
+The system user running the SignServer must have RW permission to the `CERT_STORAGE_BASE_DIR`.
+:::

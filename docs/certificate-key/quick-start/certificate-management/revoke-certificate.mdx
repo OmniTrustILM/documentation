@@ -1,0 +1,61 @@
+---
+sidebar_position: 13
+---
+
+# Revoke Certificate
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMinusSquare} from '@fortawesome/free-solid-svg-icons'
+
+`Certificate` can be revoked from various reasons. The `RA Profile` can help us with the revocation as a single point for our certificate management service.
+
+:::info  
+Only the `Certificate` that is bound to `RA Profile` can be revoked.
+:::
+
+## Revoke `Certificate` using the API
+
+`Certificate` can be revoked using the `Client Operations` API. There may be some `Attributes` associated with the revocation of the `Certificate`. These `Attributes` represents requirements by some certification authority technology. We can get the list of `Attributes` for revocation of the `Certificate` using the following request:
+```bash
+curl -X GET \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Accept: application/json" \
+    https://[domain]:[port]/api/v2/operations/authorities/e045a12a-e114-45ed-90b8-bac7e750e803/raProfiles/166b5cf52-63f2-11ec-90d6-0242ac120003/attributes/revoke
+  #https://[domain]:[port]/api/v2/operations//authorities/{authorityUuid}/raProfiles/{raProfileUuid}/attributes/revoke
+```
+
+This returns the list of applicable attributes to revoke `Certificate` using the `RA Profile` service, such as:
+```json
+[] // empty array of Attributes
+```
+
+Knowing the attributes, we can revoke `Certificate` using the following request:
+```bash
+curl -X POST \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  --data '
+  {
+    "reason": "UNSPECIFIED",
+    "attributes": []
+  }' \
+  https://[domain]:[port]/api/v2/operations/authorities/e045a12a-e114-45ed-90b8-bac7e750e803/raProfiles/166b5cf52-63f2-11ec-90d6-0242ac120003/revoke
+  #https://[domain]:[port]/api/v2/operations/authorities/{authorityUuid}/raProfiles{raProfileUuid}/certificates/revoke
+```
+
+## Revoke `Certificate` using the Web Interface
+
+Follow these steps to revoke a `Certificate`:
+
+1. Click **Certificates** in the left menu 
+2. In the **List of Certificates** select the `Certificate` to revoke
+3. Click **Revoke** (symbol <span style={{color: '#eb3349',}}><FontAwesomeIcon icon={faMinusSquare} /></span> )
+4. Select the `Reason for Revocation`
+5. Click **Revoke** 
+
+The `Certificate` has been successfully revoked, information is updated in the inventory. You can check the `Certificate` status.

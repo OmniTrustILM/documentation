@@ -1,0 +1,1358 @@
+---
+sidebar_position: 2
+---
+
+import {Fragment} from "react";
+
+# PAdES Signer Properties
+
+:::info
+See the [Common Properties](../common-properties/basic-properties.mdx) for configuration options of the AdES Signer.
+:::
+
+The implementation class of the PAdES Signer is:
+
+```
+com.czertainly.signserver.module.pades.signer.PAdESSigner
+```
+
+It contains the integration with the DSS framework and extends the Worker interface of the SignServer. If you want to use the PAdES Signer, you must specify this property. The PAdES Signer will check the following configuration properties.
+
+export const data = [
+    {
+        property: "SIGNATURE_SIZE",
+        description:
+            (
+                <>
+                    Configuration option for the signature size in case the default size is not enough for larger PDF files. You can set the custom signature size in bytes.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">18944</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ADD_VISIBLE_SIGNATURE",
+        description:
+            (
+                <>
+                    Include visible signature in the signed PDF file. For more information about the configuration options for visible signatures, see the section <a href="#visible-signature-properties">Visible signature properties</a> below.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "REASON",
+        description:
+            (
+                <>
+                    Sets the reason.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "LOCATION",
+        description:
+            (
+                <>
+                    Sets location (The CPU host name or physical location of the signing).
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "CONTACT_INFO",
+        description:
+            (
+                <>
+                    Sets the contact information.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "SIGNER_NAME",
+        description:
+            (
+                <>
+                    Sets the name of the signed entity.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "CERTIFICATION_PERMISSION",
+        description:
+            (
+                <>
+                    Certification signature creation with one of the following values (see "12.8.2.2 DocMDP" of ISO 32000-1):
+                    <ul>
+                        <li><b>NO_CHANGE_PERMITTED</b> (DocMDP value "1") - No changes to the document are permitted; any change to the document shall invalidate the signature.</li>
+                        <li><b>MINIMAL_CHANGES_PERMITTED</b> (DocMDP value "2") - Permitted changes shall be filling in forms, instantiating page templates, and signing; other changes shall invalidate the signature.</li>
+                        <li><b>CHANGES_PERMITTED</b> (DocMDP value "3") - Permitted changes are the same as for 2, as well as annotation creation, deletion, and modification; other changes shall invalidate the signature.</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    }
+];
+
+export const visible = [
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    IMAGE_BASE64
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the custom image for signature field from Base64 encoded custom data.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    IMAGE_PATH
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the custom image for signature field from path.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    IMAGE_MIME_TYPE
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the MIME type of the custom image used for signature field.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">image/png</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    TEXT
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the text to be displayed in the signature field.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    }
+];
+
+export const position = [
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    ALIGNMENT_HORIZONTAL
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the horizontal alignment of a signature field to a page. Allows the following values:
+                    <ul>
+                        <li><b>NONE</b> - None alignment is applied, coordinates are counted from the left page side</li>
+                        <li><b>LEFT</b> - The signature is aligned to the left side, coordinated are counted from the left page side</li>
+                        <li><b>CENTER</b> - The signature is aligned to the center of the page, coordinates are counted automatically</li>
+                        <li><b>RIGHT</b> - The signature is aligned to the right side, coordinates are counted from the right page side</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    ALIGNMENT_VERTICAL
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the vertical alignment of a signature field to a page. Allows the following values:
+                    <ul>
+                        <li><b>NONE</b> - None alignment is applied, coordinated are counted from the top side of a page</li>
+                        <li><b>TOP</b> - The signature is aligned to a top side, coordinated are counted from the top page side</li>
+                        <li><b>MIDDLE</b> - The signature aligned to a middle of a page, coordinated are counted automatically</li>
+                        <li><b>BOTTOM</b> - The signature is aligned to a bottom side, coordinated are counted from the bottom page side</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    ZOOM
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the zoom of the image. The value is applied to width and height of a signature field.
+                    The value must be defined in percentage.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">100</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    BACKGROUND_COLOR
+                </>
+            ),
+        description:
+            (
+                <>
+                    Specifies the background color of the signature field.
+                    The color is specified in the hexadecimal format <code>#AARRGGBB</code>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    IMAGE_SCALING
+                </>
+            ),
+        description:
+            (
+                <>
+                    Specifies the image scaling behavior within the signature field. Allowed values are:
+                    <ul>
+                        <li><b>STRETCH</b> - Stretches the image in both directions in order to fill the signature field box</li>
+                        <li><b>ZOOM_AND_CENTER</b> - Zooms the image to fill the signature box to the closest side, and centers in another dimension</li>
+                        <li><b>CENTER</b> - Centers the image in both dimensions</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">STRETCH</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    DPI
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets an expected DPI value. If not used, the default dpi of the provided image is applied.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    }
+];
+
+export const visibleField = [
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    FIELD_ID
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets a signature field id/name to place a signature into.
+                    When used, the other field properties are ignored.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    PAGE
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets a page number where the signature field should be placed.
+                    The counting starts from 1 (one) for the first page of the document.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">1</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    ORIGIN_X
+                </>
+            ),
+        description:
+            (
+                <>
+                    Specify a margin between the left page side and a signature field (if no rotation and alignment is applied).
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">10</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    ORIGIN_Y
+                </>
+            ),
+        description:
+            (
+                <>
+                    Specify a margin between the top page side and a signature field (if no rotation and alignment is applied).
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">10</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    WIDTH
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets precise signature field's width in pixels. If not defined, the default image/text width will be used.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    HEIGHT
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets precise signature field's height in pixels. If not defined, the default image/text height will be used.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    ROTATION
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the rotation of the signature field. Allows the following values:
+                    <ul>
+                        <li><b>NONE</b> - No rotation is applied. The origin of coordinates begins from the top left corner of a page</li>
+                        <li><b>AUTOMATIC</b> - Rotates a signature field respectively to the page's rotation. Rotates the signature field on the same value as defined in a PDF page</li>
+                        <li><b>ROTATE_90</b> - Rotates a signature field for a 90 degrees clockwise. Coordinates' origin begins from top right page corner</li>
+                        <li><b>ROTATE_180</b> - Rotates a signature field for a 180 degrees clockwise. Coordinates' origin begins from bottom right page corner</li>
+                        <li><b>ROTATE_270</b> - Rotates a signature field for a 270 degrees clockwise. Coordinates' origin begins from bottom left page corner</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    }
+];
+
+export const visibleText = [
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    TEXT_COLOR
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the color of the text in the signature field.
+                    The color is specified in the hexadecimal format <code>#AARRGGBB</code>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">#00000000</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    TEXT_BACKGROUND_COLOR
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the background color for the area filled out by the text.
+                    The color is specified in the hexadecimal format <code>#AARRGGBB</code>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">#ffffffff</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    PADDING
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the padding in pixels between the text and a border of its bounding area
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">5</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    TEXT_WRAPPING
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the text wrapping behavior within  the signature field. Allowed values are:
+                    <ul>
+                        <li><b>FONT_BASED</b> - The text is computed based on the given font size</li>
+                        <li><b>FILL_BOX</b> - Finds optimal font size to wrap the text to a signature field box</li>
+                        <li><b>FILL_BOX_AND_LINEBREAK</b> - Breaks the words to multiple lines in order to find the biggest possible font size to wrap the text into a signature field box</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">FONT_BASED</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    SIGNER_TEXT_POSITION
+                </>
+            ),
+        description:
+            (
+                <>
+                    Specifies a text position relatively to an image. Applicable only for joint image/text signature field. Allowed values are:
+                    <ul>
+                        <li><b>LEFT</b> - The text will be placed on the left side, and image will be aligned to the right side inside the signature field</li>
+                        <li><b>RIGHT</b> - The text will be placed on the right side, and image will be aligned to the left side inside the signature field</li>
+                        <li><b>TOP</b> - Text is placed above the image</li>
+                        <li><b>BOTTOM</b> - Text is placed below the image</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">LEFT</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    SIGNER_TEXT_HORIZONTAL_ALIGNMENT
+                </>
+            ),
+        description:
+            (
+                <>
+                    Specifies a horizontal alignment of a text with respect to its area. Applicable only for joint image/text signature field. Allowed values are:
+                    <ul>
+                        <li><b>LEFT</b> - Align the text to left</li>
+                        <li><b>RIGHT</b> - Align the text to right</li>
+                        <li><b>CENTER</b> - Center the text</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">LEFT</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    SIGNER_TEXT_VERTICAL_ALIGNMENT
+                </>
+            ),
+        description:
+            (
+                <>
+                    Specifies a vertical alignment of a text block with respect to a signature field area. Applicable only for joint image/text signature field. Allowed values are:
+                    <ul>
+                        <li><b>MIDDLE</b> - Align the text with the center of the picture</li>
+                        <li><b>TOP</b> - Align the text with the top of the picture</li>
+                        <li><b>BOTTOM</b> - Align the text with the bottom of the picture</li>
+                    </ul>
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">MIDDLE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    FONT_BASE64
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the custom font for the text in the signature field from Base64 encoded custom data.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property:
+            (
+                <>
+                    VISIBLE_SIGNATURE_<br/>
+                    FONT_PATH
+                </>
+            ),
+        description:
+            (
+                <>
+                    Sets the custom font for the text in the signature field from path.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    }
+];
+
+export const GenTable = ({data}) => (
+  <Fragment>
+    {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                  <td><b>{dat.property}</b></td>
+                  <td>{dat.description}</td>
+                  <td>{dat.default}</td>
+                  <td>{dat.mandatory}</td>
+                  <td>{dat.metadata}</td>
+                </tr>)
+         })}
+  </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+  <tbody>
+    <GenTable data={data}/>
+  </tbody>
+</table>
+
+## Visible signature properties
+
+Visible signature properties are used to define the appearance of the signature field in the PDF document. They can be used to set the image, text, alignment, and other visual aspects of the signature.
+
+At least image or text must be provided to create a visible signature field:
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+    <tbody>
+    <GenTable data={visible}/>
+    </tbody>
+</table>
+
+You can specify additional properties:
+- [Positioning properties](#positioning-properties) to define the position of the signature field on the page.
+- [Field properties](#field-properties) to define the field where the signature will be placed.
+- [Text properties](#text-properties) to define the text that will be displayed in the signature field.
+
+### Positioning properties:
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+    <tbody>
+    <GenTable data={position}/>
+    </tbody>
+</table>
+
+### Field properties
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+    <tbody>
+    <GenTable data={visibleField}/>
+    </tbody>
+</table>
+
+### Text properties
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+    <tbody>
+    <GenTable data={visibleText}/>
+    </tbody>
+</table>
+
+### Alerts properties
+
+:::info[Common Alerts Properties]
+The AdES Signer supports common alerts properties that can be used to configure alerts behavior for different
+types of issues and events occurring during the signing process, and how they should be handled.
+For more information, refer to the [Alerts Properties](../common-properties/alerts-properties.mdx) section.
+:::
+
+The following properties are available for configuring alerts specific to PAdES signing:
+
+export const alertsAttributes = [
+    {
+        property: "ALERTS_SIGNATUREFIELDOVERLAP",
+        description:
+            (
+                <>
+                    Defines a behavior in case a new signature field overlaps an existing annotations
+                    within PDF document.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_SIGNATUREFIELDOUTSIDEPAGEDIMENSIONS",
+        description:
+            (
+                <>
+                    Defines a behavior in case a new signature field lies outside (full or partially)
+                    of the defined page within the PDF document.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_DOCUMENTREADEXCEPTION",
+        description:
+            (
+                <>
+                    Defines a behavior in case the attempt to read the PDF document properly fails.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "ALERTS_FORBIDDENSIGNATURECREATION",
+        description:
+            (
+                <>
+                    Defines a behavior in case signature creation is forbidden by PDF document policy.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">ERROR</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+];
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+    <tbody>
+    <GenTable data={alertsAttributes}/>
+    </tbody>
+</table>

@@ -1,0 +1,130 @@
+---
+sidebar_position: 2
+---
+
+import {Fragment} from "react";
+
+# Raw Signer Properties
+
+The implementation class of the Raw Signer is:
+
+```
+com.czertainly.signserver.module.raw.RawSigner
+```
+
+The Raw Signer is used to create raw digital signatures for precomputed hashes. It supports the following configuration properties:
+
+export const data = [
+    {
+        property: "ENCRYPTIONALGORITHM",
+        description:
+            (
+                <>
+                    Encryption algorithm to use with the signature algorithm, for example <b>RSASSA-PSS</b>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    Taken from the Subject Public Key Info of the signing certificate.
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "DIGESTALGORITHM",
+        description:
+            (
+                <>
+                    Digest algorithm that was used to compute the hash to be signed.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">SHA-256</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "METADATA_PROPERTY_OVERRIDE_ALLOWED",
+        description:
+            (
+                <>
+                    Contains list of comma-separated properties that are allowed to be overridden using metadata.
+                    The name of the property should match the name of the property in the configuration.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+];
+
+export const GenTable = ({data}) => (
+  <Fragment>
+    {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                  <td><b>{dat.property}</b></td>
+                  <td>{dat.description}</td>
+                  <td>{dat.default}</td>
+                  <td>{dat.mandatory}</td>
+                  <td>{dat.metadata}</td>
+                </tr>)
+         })}
+  </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <th>Metadata Support</th>
+  <tbody>
+    <GenTable data={data}/>
+  </tbody>
+</table>
+
+# Batch Signing with Raw Signer
+
+The Raw Signer supports batch signing operations according to the [Batch Signing](../ades-formats/batch-signing.mdx).

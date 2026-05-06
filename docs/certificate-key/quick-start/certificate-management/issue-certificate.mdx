@@ -1,0 +1,78 @@
+---
+sidebar_position: 9
+---
+
+# Issue Certificate
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faUpload} from '@fortawesome/free-solid-svg-icons'
+
+The `RA Profile` serves as a single point of the particular certificate management service. The `RA Profile` is used to perform operations on top of the certificates.
+
+## Issue new certificate using the API
+
+New `Certificate` can be issued using the `Client Operations` API. There may be some `Attributes` associated with the issuance of the `Certificate`. These `Attributes` represents requirements by some certification authority technology. We can get the list of `Attributes` for issuing of the `Certificate` using the following request:
+```bash
+curl -X GET \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Accept: application/json" \
+  https://[domain]:[port]/api/v2/operations/authorities/e045a12a-e114-45ed-90b8-bac7e750e803/raProfiles/166b5cf52-63f2-11ec-90d6-0242ac120003/attributes/issue
+  #https://[domain]:[port]/api/v2/operations//authorities/{authorityUuid}/raProfiles/{raProfileUuid}/attributes/issue
+```
+
+This returns the list of applicable attributes to issue `Certificate` using the `RA Profile` service, such as:
+```json
+[] // empty array of Attributes
+```
+
+Knowing the attributes, we can issue `Certificate` using the following request:
+```bash
+curl -X POST \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  --data '
+  {
+    "pkcs10": "MIICzTCCAbcCAQAwWjFYMAgGA1UEAwwBeDANBgkqhkiG9w0BCQETADAHBgNVBAsTADAHBgNVBAoTADAHBgNVBAkTADAHBgNVBAcTADAHBgNVBAgTADAHBgNVBBETADAHBgNVBAYTADCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANJ2sKsyNhQWrF3QTgJnL9GO8g4WEiJjlY6Cp6Q5dhUrjv6i2m0pL9uFovopbXkPCW8UuDda5ws79PRhRHEPhuPwdTy/UMXLYoiTnjAYP5jalp4UQ/di7tT5BBUxPPzGAMNWVw0IEKlgJnw67xqYP3nbY9u3LEcbBxfAadLR7RVQNJebyRVXLIWstWGMtuVoDcT+I8pdoLEuSlJE2RXiyPXZSvlm8m2qs5912zNbrA3Mi8b/jU/H+lbS5RZ/sphIhrgWpBH4nq8g95VYwcBNhhmcpyUDeeLDHhWpJwlx8p+g+At6u/PMnEvPfnlQ9MZaFTc6PWTKtGAE+lv0803TZjUCAwEAAaAwMC4GCSqGSIb3DQEJDjEhMB8wHQYDVR0OBBYEFEWyex+1M1ZaTYBL0ERQAnBSnld2MAsGCSqGSIb3DQEBCwOCAQEAWO1hjH5f0BPOnR0zmmmf8riNQGwTs+/ySCn5oMQjzoyNDHOB95ZdhYih7UM5u5LKJxEvrX2AJxeAttYsCZhjwkmUutzg6cWqhmpKTHVeRWpqD00u/FBy6hpUdhRCi4FEYIXTkjFnMzrp+M7bQmjuDKgFVO4NMwophKCJoJifh8JE1Fz2jmO/mixLyUAgFIAuC1Odxakx6wyQnwfwX3Xi2zQtHC/bTH2u8XqpPD+epWUqKK5P02vk2kPq2y6e1BpNl6vdvS6Qy73/qX34vIfwf3guJhp99oESmW4TkR3ccT1Dbv9JJCZoyvJ6RSUi+skz4IGQ6YqVDoRp+qREpW+Dlw==",
+    "attributes": []
+  }' \
+  https://[domain]:[port]/api/v2/operations/authorities/e045a12a-e114-45ed-90b8-bac7e750e803/raProfiles/166b5cf52-63f2-11ec-90d6-0242ac120003/certificates
+  #https://[domain]:[port]/api/v2/operations/authorities/{authorityUuid}/raProfiles{raProfileUuid}/certificates
+```
+
+When the `Certificate` is successfully issued, its content and `uuid` is sent back:
+```json
+{
+  "certificateData": "-----BEGIN CERTIFICATE-----\nMIIFBjCCAu6gAwIBAgITGAAAAQeBixwpO8+33wAAAAABBzANBgkqhkiG9w0BAQ0F\nADA3MRcwFQYDVQQDDA5EZW1vIE1TIFN1YiBDQTEcMBoGA1UECgwTM0tleSBDb21w\nYW55IHMuci5vLjAeFw0yMjAxMDExNTUwNTlaFw0yNDAxMDExNTUwNTlaMAwxCjAI\nBgNVBAMTAXgwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDSdrCrMjYU\nFqxd0E4CZy/RjvIOFhIiY5WOgqekOXYVK47+otptKS/bhaL6KW15DwlvFLg3WucL\nO/T0YURxD4bj8HU8v1DFy2KIk54wGD+Y2paeFEP3Yu7U+QQVMTz8xgDDVlcNCBCp\nYCZ8Ou8amD9522PbtyxHGwcXwGnS0e0VUDSXm8kVVyyFrLVhjLblaA3E/iPKXaCx\nLkpSRNkV4sj12Ur5ZvJtqrOfddszW6wNzIvG/41Px/pW0uUWf7KYSIa4FqQR+J6v\nIPeVWMHATYYZnKclA3niwx4VqScJcfKfoPgLervzzJxLz355UPTGWhU3Oj1kyrRg\nBPpb9PNN02Y1AgMBAAGjggE0MIIBMDAdBgNVHQ4EFgQURbJ7H7UzVlpNgEvQRFAC\ncFKeV3YwHwYDVR0jBBgwFoAUksK831XFwZOFSQf3rMkdC2gBB1EwTQYDVR0fBEYw\nRDBCoECgPoY8aHR0cDovL2xhYjAyLjNrZXkuY29tcGFueS9jcmxzL2RlbW8vRGVt\nbyUyME1TJTIwU3ViJTIwQ0EuY3JsMFcGCCsGAQUFBwEBBEswSTBHBggrBgEFBQcw\nAYY7aHR0cDovL2xhYjAyLjNrZXkuY29tcGFueS9jYXMvZGVtby9EZW1vJTIwTVMl\nMjBTdWIlMjBDQS5jcnQwIQYJKwYBBAGCNxQCBBQeEgBXAGUAYgBTAGUAcgB2AGUA\ncjAOBgNVHQ8BAf8EBAMCBaAwEwYDVR0lBAwwCgYIKwYBBQUHAwEwDQYJKoZIhvcN\nAQENBQADggIBABxK3LssVzwskrz49wjYb7aJ0au8Kp/nPSfHrFPnm0j49CRrzzIH\nEU9p40QfoRRNgcc91103KupdQXzmaGWunbA2P8YFQPAp+m6KfsDFd6kKWDtdVKHq\ncMdmorvysQqDjswG77NF+RbP0+IyyzZlRZ5A8bx3yWUSozvOmaPI6fWW0Jt+CDoW\neByxhHLSO6LmeMJuR2jAOKIujkmGlc7BlFWeEDXWGJVbeLNq0m6Kd+Aqiqy/v+Xy\nK10BRYZIJopA74i4mCwH9VGHJ8JqnvAYEW4WYR+f+N9CmpetuJaLE+MTI+cC1JJ9\ny9s2Bc+5FoasWfmEBowi6vR/DzFqzq0WVvKvthojbfVBwjLpLd5rTCrbQ97HwvFY\nKNySV5aGZR2pozAq1avFLdDXFIZAOw93BI0JWKq8/YL9J/8+f6mVTGdmO0/Odhhl\nWTtuI4GzglI/3xm2rZZ60dSZvbHPNINp3jPSn2Whpp1GNL0Mj8+TOH7d4sAIC4JO\nJxWGVroN593M6axHOQxTMWydyelEuqdKyJK/CiPWRakZYHGaQ5E5Qu9G9dbDJut7\n07A/TGtwQzxdVhVh7F2KE7dSQ1g/pDn00VIGl7xYJdXShO0n2ICBMM7D/f1doyKy\ntOP1yZSGe5fP9o669TLbPQZBn+GLQ7JghsXxCVu5hUTRKj7V9vR6gGeh\n-----END CERTIFICATE-----",
+  "uuid": "1a90cc6c-76e0-48cb-a027-e52a84c071c2"
+}
+```
+
+> upload should not be here, right?
+>
+## Upload existing certificate
+
+Upload the existing certificate to the platform.
+
+
+1. Click **Certificates** in the left menu 
+2. Click **Upload Certificate** (upload symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faUpload} /></span>)
+3. Upload the certificate (CRT file)
+4. Click **Submit** to upload the certificate to the platform
+
+## Create new certificate
+
+Select the correct `RA Profile` and issue a new `Certificate`:
+
+1. Click **Certificates** in the left menu 
+2. Click **Add New Certificate** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+4. Select the `RA Profile`: `ADCS-WebServer`
+5. Upload the certificate request (CSR file)
+6. Click **Create** 
+
+The `Certificate` has been created.

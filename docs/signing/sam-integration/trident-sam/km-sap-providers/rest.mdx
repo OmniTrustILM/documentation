@@ -1,0 +1,210 @@
+---
+sidebar_position: 3
+---
+
+import {Fragment} from "react";
+
+# REST Key Management SAP Provider
+
+The implementation class of the REST Key Management SAP Provider is:
+
+```
+com.czertainly.trident.sam.sap.RestKeyManagementSapProvider
+```
+
+The following properties can be configured for the REST Key Management SAP Provider:
+
+export const data = [
+    {
+        property: "KM_SAP_PROVIDER_URL",
+        description:
+            (
+                <>
+                    URL where is the REST interface implemented for key management. The URL should implement REST interface of this provider, specifically fot activation of the assigned key.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "KM_SAP_PROVIDER_AUTH_TYPE",
+        description:
+            (
+                <>
+                    Authorization type for the REST API. Supported values are:
+                    <ul>
+                        <li>NONE</li>
+                        <li>BASIC</li>
+                    </ul>
+                    See information about the authentication properties below.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    }
+];
+
+export const GenTable = ({data}) => (
+    <Fragment>
+        {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                    <td><b>{dat.property}</b></td>
+                    <td>{dat.description}</td>
+                    <td>{dat.default}</td>
+                    <td>{dat.mandatory}</td>
+                </tr>)
+        })}
+    </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={data}/>
+    </tbody>
+</table>
+
+## Authorization types
+
+### BASIC
+
+`KM_SAP_PROVIDER_AUTH_TYPE = BASIC` needs additional properties to be configured, in particular:
+
+export const basic = [
+    {
+        property: "KM_SAP_PROVIDER_USERNAME",
+        description:
+            (
+                <>
+                    Identification of the user.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Mandatory for <b>KM_SAP_PROVIDER_AUTH_TYPE = BASIC</b>
+                </>
+            )
+    },
+    {
+        property: "KM_SAP_PROVIDER_PASSWORD",
+        description:
+            (
+                <>
+                    Password for the username.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Mandatory for <b>KM_SAP_PROVIDER_AUTH_TYPE = BASIC</b>
+                </>
+            )
+    }
+];
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={basic}/>
+    </tbody>
+</table>
+
+## OpenAPI Definition
+
+```yaml
+openapi: 3.0.3
+info:
+  title: REST Key Management SAP Provider
+  version: v1
+paths:
+  /activateKey:
+    post:
+      operationId: buildActivateKey
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildActivateKeyRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BuildActivateKeyResponseDTO'
+components:
+  schemas:
+    BuildResponseDTO:
+      type: object
+      properties:
+        body:
+          type: array
+          items:
+            type: string
+            format: byte
+        nonce:
+          type: array
+          items:
+            type: string
+            format: byte
+    BuildActivateKeyRequestDTO:
+      type: object
+      properties:
+        userId:
+          type: string
+        keyId:
+          type: string
+    BuildActivateKeyResponseDTO:
+      type: object
+      required:
+        - changeKeyPasswordRequest
+        - changeKeyOperationStateRequest
+      properties:
+        changePukRequest:
+          $ref: '#/components/schemas/BuildResponseDTO'
+        changeKeyPasswordRequest:
+          $ref: '#/components/schemas/BuildResponseDTO'
+        changeKeyOperationStateRequest:
+          $ref: '#/components/schemas/BuildResponseDTO'
+```

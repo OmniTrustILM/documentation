@@ -1,0 +1,243 @@
+---
+sidebar_position: 31
+---
+
+import {Fragment} from "react";
+
+# Batch Signing
+
+Batch signing allows to sign multiple data in one batch (one signing request). Multiple data can be specified in the signing request and multiple signed data will be provided in response.
+
+It is useful when you do not want to sign and approve each data individually, but rather collect all data that should be signed and digitally sign them all with one request. It can save time and effort especially when the workflow cannot support, from whatever reason, simultaneous signing of single data.
+
+:::info
+Batch signing is supported for the signers that are part of the [AdES Signature Formats](./overview.md). Other signer does not support batch signing.
+:::
+
+## Crypto Token support
+
+Batch signing supports all implementations of the Crypto Token. When the Crypto Token implementation does not support batch signing, the signing process will sign each data individually, thus effectively simulating the batch signing transparently from the client.
+
+## Activating batch signing
+
+To activate the batch signing, you need to configure the following properties:
+
+export const data = [
+    {
+        property: "BATCHSIGNING",
+        description:
+            (
+                <>
+                    Batch signing request is expected to be provided as input for the signing process.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ALLOW_BATCHSIGNING_OVERRIDE",
+        description:
+            (
+                <>
+                    Allow client to specify in the <a href="#request-metadata-properties">request metadata</a> if the input data is in the form of batch request and batch signing is requested.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            )
+    },
+    {
+        property: "ACCEPTED_HASH_DIGEST_ALGORITHMS",
+        description:
+            (
+                <>
+                    Comma-separated list of allowed digest algorithms for batch signing.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Mandatory if:
+                    <ul>
+                        <li><b>BATCH_SIGNING</b></li>
+                        <li><b>ALLOW_BATCH_SIGNING_OVERRIDE</b></li>
+                    </ul>
+                </>
+            )
+    }
+];
+
+export const GenTable = ({data}) => (
+    <Fragment>
+        {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                    <td><b>{dat.property}</b></td>
+                    <td>{dat.description}</td>
+                    <td>{dat.default}</td>
+                    <td>{dat.mandatory}</td>
+                </tr>)
+        })}
+    </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Default Value</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenTable data={data}/>
+    </tbody>
+</table>
+
+:::warning
+When you configure both `BATCHSIGNING=true` and `ALLOW_BATCHSIGNING_OVERRIDE=true`, the `BATCHSIGNING` takes precedence and all requests will be considered as batch requests for batch signing. If you want to keep the decision on the client, use only `ALLOW_BATCHSIGNING_OVERRIDE=true`.
+:::
+
+## Request metadata properties
+
+The following metadata should be provided by the client in the signing request when batch signing is activated:
+
+export const requestdata = [
+    {
+        property: "USING_BATCHSIGNING",
+        description:
+            (
+                <>
+                    Specifies if the request should be handled as batch signing or not.
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    Mandatory when <b>ALLOW_BATCH_SIGNING_OVERRIDE=true</b>
+                </>
+            )
+    }
+];
+
+export const GenMetaTable = ({data}) => (
+    <Fragment>
+        {data.map((dat, i) =>{
+            return(
+                <tr key={i}>
+                    <td><b>{dat.property}</b></td>
+                    <td>{dat.description}</td>
+                    <td>{dat.mandatory}</td>
+                </tr>)
+        })}
+    </Fragment>
+);
+
+<table>
+    <th>Property</th>
+    <th>Description</th>
+    <th>Mandatory</th>
+    <tbody>
+    <GenMetaTable data={requestdata}/>
+    </tbody>
+</table>
+
+:::info[Hash and Batch]
+Hash signing and batch signing can be combined. See [Hash signing support](#hash-signing-support) for more information.
+:::
+
+## Batch signing request format
+
+Request for batch signing requires to have `JSON` formatted data in the body of the request.
+The data structure contains array of signature requests with the following fields:
+
+| Field name         | Description                                                                                                                                                                                      | Required                                      |
+|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
+| `data`             | Base64-encoded data that should be processed and signed                                                                                                                                          | <span class="badge badge--success">YES</span> |
+| `hashingAlgorithm` | Specifies the digest algorithm that should be used to digest the data provided for the batch signing or used to digest the data provided for the hash signing (if the hash signing is activated) | <span class="badge badge--danger">NO</span>   |
+| `customIdentifier` | Identifies the signature request. Will be included in the response to map signature with the data                                                                                                | <span class="badge badge--danger">NO</span>   |
+
+The following is a sample batch signing request data:
+```json
+{
+  "signatureRequests": [
+    {
+      "data": "ibi45IZCFGPX4PXK9g+5yzXOFpt25lerIfxNHWsJNgM=",
+      "hashingAlgorithm": "SHA-256",
+      "customIdentifier": "data 1"
+    },
+    {
+      "data": "N2I1Mzg1YWJiNDZmOTIwMzRlOWY5Y2U4NmMwYjIyN2E3MDk0NzNjNGU4YTQ5MDEyMzFlNGJmOTM2MjAxNGRlZjA2N2RiZGVjM2QwODVhMWM4OWRjNzZlYWIwNDFmMTY1",
+      "hashingAlgorithm": "SHA-384",
+      "customIdentifier": "data 2"
+    },
+    ...
+  ]
+}
+```
+
+## Batch signing response format
+
+Response from batch signing contains `JSON` formatted data:
+The data structure contains array of signatures with the following fields:
+
+| Field name         | Description                                                                               | Required                                      |
+|--------------------|-------------------------------------------------------------------------------------------|-----------------------------------------------|
+| `signature`        | Base64-encoded signature of the data, formatted according the signature format configured | <span class="badge badge--success">YES</span> |
+| `hash`             | Digest of the data requested for signature                                                | <span class="badge badge--success">YES</span> |
+| `customIdentifier` | Maps the signature request                                                                | <span class="badge badge--danger">NO</span>   |
+
+The following is a sample batch signing response data:
+```json
+{
+  "signatures": [
+    {
+      "signature": "MIIIjwYJKoZIhvcNAQcCoIIIgDCCCHwCAQExDTALBglghkgBZQMEAgEwCwYJKoZI...",
+      "hash": "s0aux6AH+d1GWI+9ZkqqjGRO4WQfdlzV05szuY4jyxY=",
+      "customIdentifier": "signature 1"
+    },
+    {
+      "signature": "MIII8QYJKoZIhvcNAQcCoIII4jCCCN4CAQExDTALBglghkgBZQMEAgIwCwYJKoZIhvcNAQcBoIIF...",
+      "hash": "GQCAd8CWoSyHAelGDq+lZPtFLzaefBP5V8sW6qTJYu3UDP8IcFeN5h9NqIKpfkSv",
+      "customIdentifier": "signature 2",
+    },
+    ...
+  ]
+}
+```
+
+## Hash signing support
+
+Batch signing supports hash signing, meaning that the pre-computed digests of the data can be provided in the batch signing request. In that case the `data` field for each requested hash signing contains Base64-encoded digests (see input for the [Hash Signing](./hash-signing.mdx)).
+
+The digest algorithm used to digest the data provided for the hash signing is taken from the properties in the following order:
+1. `hashingAlgorithm` in the `JSON` signature request
+2. `CLIENTSIDE_HASHDIGESTALGORITHM` request metadata property
+
+**The `hash` of the data provided in the batch signing response equals the `data` provided in batch signing request.**
+
+:::info
+See [Hash Signing](./hash-signing.mdx) for more information about hash signing.
+:::

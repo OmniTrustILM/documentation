@@ -1,0 +1,171 @@
+---
+sidebar_position: 5
+---
+
+# Create Authority
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+
+In order to establish a connection with MS ADCS, we need to setup the `Authority` instance.
+
+## Create `Authority` instance using the API
+
+`Authority` can be created using the `Authority` API. However, before creating it, we need know the required `Attributes` for the `Authority`.
+We can get that using the following request:
+
+```bash
+curl -X GET \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Accept: application/json" \
+  https://[domain]:[port]/api/v1/connectors/04cb011f-4497-4e45-b4b9-4975db9df0a0/authorityProvider/ADCS/attributes
+  #https://[domain]:[port]/api/v1/connectors/{uuid}/{functionGroup}/{kind}/attributes
+```
+
+This returns the list of applicable attributes for the `Authority`, such as:
+```json
+[
+    {
+        "uuid": "93ca0ba2-3863-4ffa-a469-fd14ab3992bf",
+        "name": "address",
+        "label": "MS-ADCS Address",
+        "type": "STRING",
+        "required": true,
+        "readOnly": false,
+        "visible": true,
+        "list": false,
+        "description": "Address of ADCS server.",
+        "validationRegex": "^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]))$",
+        "multiSelect": false
+    },
+    {
+        "uuid": "d9f79ba6-47e5-437b-a7bc-82dbafa9cf01",
+        "name": "https",
+        "content": {
+            "value": false
+        },
+        "label": "HTTPS Enabled",
+        "type": "BOOLEAN",
+        "required": false,
+        "readOnly": false,
+        "visible": true,
+        "list": false,
+        "description": "Use https for connection with ADCS server.",
+        "multiSelect": false
+    },
+    {
+        "uuid": "9587a320-a487-4084-9645-0b6c24636fa6",
+        "name": "port",
+        "content": {
+            "value": 5985
+        },
+        "label": "Port",
+        "type": "INTEGER",
+        "required": true,
+        "readOnly": false,
+        "visible": true,
+        "list": false,
+        "description": "Define WinRM port, default port for http is 5985 and for https 5986.",
+        "multiSelect": false
+    },
+    {
+        "uuid": "d9f79ba6-47e5-437b-a7bc-82dbafa9cf03",
+        "name": "credential",
+        "label": "Credential",
+        "type": "CREDENTIAL",
+        "required": true,
+        "readOnly": false,
+        "visible": true,
+        "list": true,
+        "description": "Credential for the communication",
+        "attributeCallback": {
+            "callbackContext": "core/getCredentials",
+            "callbackMethod": "GET",
+            "mappings": [
+                {
+                    "to": "credentialKind",
+                    "targets": [
+                        "pathVariable"
+                    ],
+                    "value": "Basic"
+                }
+            ]
+        },
+        "multiSelect": false
+    }
+]
+```
+
+Knowing the attributes, we can create the `Authority` using the following request:
+```bash
+curl -X POST \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  --data '
+  {
+    "name": "MS ADCS Authority",
+    "connectorUuid": "04cb011f-4497-4e45-b4b9-4975db9df0a0",
+    "kind": "ADCS",
+    "attributes": [
+      {
+        "name": "https",
+        "content": {
+          "value": false
+        }
+      },
+      {
+        "name": "port",
+        "content": {
+          "value": 5985
+        }
+      },
+      {
+        "name": "address",
+        "content": {
+          "value": "lab02.3key.company"
+        }
+      },
+      {
+        "name": "credential",
+        "content": {
+          "value": "MS ADCS Basic Credential",
+          "data": {
+            "uuid": "4c59aecd-1edc-47ea-b3cb-96a2468315bc",
+            "name": "MS ADCS Basic Credential"
+          }
+        }
+      }
+    ]
+  }' \
+  https://[domain]:[port]/api/v1/authorities
+```
+
+When the `Authority` is successfully created, its `uuid` is sent back:
+```json
+{
+  "uuid": "83265efb-35a1-4b48-ae6f-1269b7c41668"
+}
+```
+
+## Create `Authority` instance using the Web Interface
+
+Follow these steps to create `Authority` to establish `ADCS` instance connection with provided authentication.
+
+1. Log in to the Administration Interface `https://[domain]:[port]/administrator`
+2. Click **Authorities** in the left menu 
+3. Click **Add New Authority** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+4. Fill the columns with the attributes:
+    - Authority name: `MS ADCS Authority`
+    - Authority Provider: `MS ADCS Connector`
+    - Kind: `ADCS`
+    - MS-ADCS Address: _your MS server address_
+    - Port: `5985`
+    - Credential: `MS ADCS Credential`
+5. Click **Create** 
+
+You have successfully created `MS ADCS Authority`.
