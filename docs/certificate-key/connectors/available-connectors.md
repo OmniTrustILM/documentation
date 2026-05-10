@@ -20,6 +20,7 @@ The following `Connectors` are officially available:
 | EJBCA NG Connector             | <span class="badge">Authority Provider</span>    | <span class="badge">EJBCA</span>                                                                           |
 |                                | <span class="badge">Discovery Provider</span>    | <span class="badge">EJBCA</span> <span class="badge">EJBCA_SCHEDULE</span>                                 |
 | Email Notification Provider    | <span class="badge">Notification Provider</span> | <span class="badge">EMAIL</span>                                                                           |
+| External Authority Provider    | <span class="badge">Authority Provider</span>    | <span class="badge">External</span>                                                                        |
 | Webhook Notification Provider  | <span class="badge">Notification Provider</span> | <span class="badge">WEBHOOK</span>                                                                         |
 | HashiCorp Vault Connector      | <span class="badge">Authority Provider</span>    | <span class="badge">HVault</span>                                                                          |
 |                                | <span class="badge">Discovery Provider</span>    | <span class="badge">HVault</span>                                                                          |

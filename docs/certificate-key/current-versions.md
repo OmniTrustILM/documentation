@@ -46,6 +46,7 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 | PyADCS Connector               | `1.1.5`  | `docker.io/czertainly/czertainly-pyadcs-connector`                         |
 | HashiCorp Vault Connector      | `1.2.0`  | `docker.io/czertainly/czertainly-hashicorp-vault-connector`                |
 | EJBCA Legacy Connector         | `1.5.0`  | `harbor.3key.company/czertainly/czertainly-ejbca-legacy-ca-connector`      |
+| External Authority Provider    | `1.0.0`  | `docker.io/czertainly/czertainly-external-authority-provider`              |
 | Keystore Entity Provider       | `1.4.2`  | `docker.io/czertainly/czertainly-keystore-entity-provider`                 |
 | X.509 Compliance Provider      | `1.3.1`  | `docker.io/czertainly/czertainly-x509-compliance-provider`                 |
 | Software Cryptography Provider | `1.3.1`  | `docker.io/czertainly/czertainly-software-cryptography-provider`           |

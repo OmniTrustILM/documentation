@@ -1,7 +1,7 @@
 const lightCodeTheme = require('prism-react-renderer').themes.github;
 const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
-const apiVersion = '2.17.0';
+const apiVersion = 'main';
 const chartVersion = '2.17.0';
 const cscVersion = '1.6.0';
 
