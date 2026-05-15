@@ -87,22 +87,15 @@ On macOS, files starting with `.` are hidden in Finder. Use `Cmd + Shift + .` to
 
 ## Step 3 — Set up the trusted certificates file
 
-The Docker Compose setup requires this file to exist before starting, even if it is empty:
-
-```bash
-touch secrets/trusted_certificates.pem
-```
-
-For authenticating with the dummy administrator certificate (used in development), add the ILM Dummy Root CA to this file:
+The `development-environment` repository ships with a `secrets/trusted_certificates.pem` file that contains a legacy CZERTAINLY Root CA — this is **not** the CA used to sign the dummy administrator certificate from `OmniTrustILM/helm-charts`. You need to overwrite it with the ILM Dummy Root CA, otherwise the Auth service will reject the dummy administrator certificate with `User client certificate is invalid`.
 
 ```bash
 curl -s https://raw.githubusercontent.com/OmniTrustILM/helm-charts/main/dummy-certificates/certs/root-ca.cert.pem \
-  | grep -A 100 "BEGIN CERTIFICATE" \
-  >> secrets/trusted_certificates.pem
+  > secrets/trusted_certificates.pem
 ```
 
 :::important
-Without the Dummy Root CA in this file, the Auth service will reject the dummy administrator certificate with `User client certificate is invalid`.
+Use `>` (overwrite), not `>>` (append). Appending leaves the legacy CA in the file and produces a malformed PEM concatenation, which breaks authentication later in Step 7.
 :::
 
 ## Step 4 — Start the platform
@@ -290,7 +283,7 @@ Data in the database is persisted in the `./data/` directory. To reset the platf
 |---|---|---|
 | `docker ps` fails with daemon error | Docker Desktop not started | Start Docker Desktop and wait for the icon to stop animating |
 | `docker compose up` fails on secrets mount | `secrets/trusted_certificates.pem` does not exist | Run `touch secrets/trusted_certificates.pem` |
-| Auth returns `User client certificate is invalid` | Dummy Root CA not in trusted certs | Add Root CA to `secrets/trusted_certificates.pem` and restart auth: `docker compose ... restart auth` |
+| Auth returns `User client certificate is invalid` (`unable to get local issuer certificate`) | `secrets/trusted_certificates.pem` does not contain the ILM Dummy Root CA, or was appended to instead of overwritten | Re-run the `curl` from Step 3 with `>` (overwrite). Verify only one cert with `grep -c "BEGIN CERTIFICATE" secrets/trusted_certificates.pem` — should return `1`. Then restart auth: `docker compose ... restart auth` |
 | Local API returns HTTP 401 from host | Port `8280` is the regular API requiring cert auth; Local API is on container-internal port `8080` only | Use `docker exec core curl ...` instead of calling `localhost:8280` directly |
 | Authentication returns `Wrong format of user authentication certificate` | Certificate not URL-encoded | Use `node -e "console.log(encodeURIComponent('<base64_cert>'))"` to URL-encode the certificate before sending |
 | `CZERTAINLY_SOURCES_BASE_DIR` not found | Wrong path in `.env` | Set the full absolute path to the directory containing `auth`, `auth-opa-policies`, `scheduler` |
