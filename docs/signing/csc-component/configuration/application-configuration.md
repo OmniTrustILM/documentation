@@ -38,6 +38,11 @@ csc:
     # Keep the expired credential sessions for the specified time in ISO 8601 duration format
     # See https://en.wikipedia.org/wiki/ISO_8601#Durations for more information
     expiredSessionsKeepTime: PT1H
+    # Maximum lifetime of a session key after it was assigned, in ISO 8601 duration format.
+    # When not set, the session key is cleaned up based on the certificate validity expiry (expiredSessionsKeepTime).
+    # When set, the session key is cleaned up based on whichever comes first: certificate validity expiry or this duration.
+    # See https://en.wikipedia.org/wiki/ISO_8601#Durations for more information
+    #assignedKeyLifetime: PT1H
     # Run cleanup of expired sessions according to the specified cron expression
     # The cron expression is in the UN*X definition format: second, minute, hour, day of month, month, and day of week
     cleanupCronExpression: "0 0 * * * *"
@@ -270,11 +275,14 @@ spring:
         #        type: "PKCS12"
         #        location: /opt/cscapi/management-truststore.p12
         #        password: password
-        idpClient:
-          keystore:
-            type: "PKCS12"
-            location: /opt/cscapi/idp/client-keystore.p12
-            password: password
+        # Uncomment only when idp.client.authType: CERTIFICATE. If declared,
+        # the keystore is loaded at startup regardless of authType and the
+        # application will fail to start if the file is absent.
+        # idpClient:
+        #     keystore:
+        #         type: "PKCS12"
+        #         location: /opt/cscapi/idp/client-keystore.p12
+        #         password: password
         ejbcaAdmin:
           keystore:
             type: "PKCS12"
@@ -323,7 +331,7 @@ spring:
 logging:
   level:
     # Logging level for the CSC API, allowed values: TRACE, DEBUG, INFO, WARN, ERROR
-    com.czertainly.csc: INFO
+    com.otilm.csc: INFO
 
 # Springdoc configuration, DO NOT CHANGE if you are not familiar with Springdoc
 springdoc:
@@ -345,5 +353,6 @@ Active profiles are defined using environment variable `SPRING_PROFILES_ACTIVE` 
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `keys-generator`        | The instance is used to generate short-lived and session keys according to the [Profiles](./profiles-configuration.md) and [Workers](./workers-configuration.md) configuration. It is used to pre-generate keys for the signing services and is not used to sign requests. |
 | `one-time-keys-cleaner` | The instance is used to clean up the short-lived keys that are no longer used and were not successfully destroyed after the signing operation and are no longer needed.                                                                                                    |
+| `session-keys-cleaner`  | The instance is used to clean up the session keys that are expired or should be removed according the configuration. |
 
 Active profiles can be combined, for example, `keys-generator,one-time-keys-cleaner` will run the instance that will generate short-lived and session keys and clean up the short-lived keys that are no longer used.

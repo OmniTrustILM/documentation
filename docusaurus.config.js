@@ -3,7 +3,7 @@ const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
 const apiVersion = '2.17.0';
 const chartVersion = '2.17.0';
-const cscVersion = '1.6.0';
+const cscVersion = '1.7.0';
 
 import remarkFindReplacePlugin from './src/plugins/remarkFindReplacePlugin.mjs';
 import remarkSimplePlantumlPlugin from './src/plugins/remarkSimplePlantumlPlugin.mjs';
@@ -17,8 +17,8 @@ const config = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   favicon: 'img/ot-sign-color.svg',
-  organizationName: 'CZERTAINLY', // Usually your GitHub org/user name.
-  projectName: 'CZERTAINLY-Documentation', // Usually your repo name.
+  organizationName: 'OmniTrustILM', // Usually your GitHub org/user name.
+  projectName: 'documentation', // Usually your repo name.
   trailingSlash: false,
 
   markdown: {
@@ -40,10 +40,10 @@ const config = {
       "docusaurus-plugin-remote-content",
       {
         // options here
-        name: "czertainly-helm-docs", // used by CLI, must be path safe
-        noRuntimeDownloads: true, // disable runtime downloads, use only CLI to download (docusaurus download-remote-czertainly-helm-docs)
+        name: "helm-docs", // used by CLI, must be path safe
+        noRuntimeDownloads: true, // disable runtime downloads, use only CLI to download (docusaurus download-remote-helm-docs)
         performCleanup: false, // do not remove downloaded files on build
-        sourceBaseUrl: "https://raw.githubusercontent.com/CZERTAINLY/CZERTAINLY-Helm-Charts/"+chartVersion+"/charts/czertainly/docs/", // the base url for the markdown (gets prepended to all of the documents when fetching)
+        sourceBaseUrl: "https://raw.githubusercontent.com/OmniTrustILM/helm-charts/"+chartVersion+"/charts/ilm/docs/", // the base url for the markdown (gets prepended to all of the documents when fetching)
         outDir: "docs/certificate-key/installation-guide/deployment/deployment-helm", // the base directory to output to.
         documents: ["configurable-parameters.md", "overview.md", "troubleshooting.md", "upgrading.md"], // the file names to download
       },
@@ -89,7 +89,7 @@ const config = {
           showLastUpdateTime: true,
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: ({versionDocsDirPath, docPath}) =>
-              `https://github.com/CZERTAINLY/CZERTAINLY-Documentation/edit/documentation/${versionDocsDirPath}/${docPath}`,
+              `https://github.com/OmniTrustILM/documentation/edit/documentation/${versionDocsDirPath}/${docPath}`,
           remarkPlugins: [
             [
               remarkFindReplacePlugin,
@@ -586,7 +586,7 @@ const config = {
               to: '/api/csc-component/',
             },
             {
-              href: 'https://github.com/CZERTAINLY/CZERTAINLY/discussions',
+              href: 'https://github.com/OmniTrustILM/ilm/discussions',
               className: 'pseudo-icon github-icon',
               position: 'right',
             },
