@@ -24,8 +24,11 @@ It is especially useful for execution types that are not resource or event speci
 
 Executions can be classified into various types based on the nature of the operation they perform. Each type has specific attributes and behaviors that determine how the execution is processed.
 Currently, there are two supported execution types:
-- `Set Field` - set properties or custom attributes of processed object
-- `Send Notification` - notify users based on notification profile
+- `Set Field` 
+  - set properties or custom attributes of the processed object
+  - the target custom attribute value can be set either from a **static value** or dynamically from another attribute (META, DATA, or CUSTOM), with the source value resolved at trigger evaluation time
+- `Send Notification`
+  - notify users based on notification profile
 
 ## Examples
 
@@ -51,3 +54,10 @@ We would like to illustrate the concept of executions with a few examples:
 - **Execution Name:** Send notification
 - **Description:** This execution sends notification based on notification profile
 - **Notification Profile:** Notification profile to use when processing notification
+
+**Copy metadata value to custom attribute:**
+
+- **Execution Name:** Copy expiry source from metadata
+- **Execution Type:** Set Field
+- **Resource:** Certificate
+- **Execution Items:** `Custom attribute 'Expiry' to Metadata Attribute 'Expiry Source'`
