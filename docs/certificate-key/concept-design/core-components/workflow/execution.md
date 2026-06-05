@@ -26,9 +26,9 @@ Executions can be classified into various types based on the nature of the opera
 Currently, there are two supported execution types:
 - `Set Field`
   - sets a **property** or a **custom attribute** of the processed object
-  - the value can be a **static value** or **mapped from another attribute** — a [metadata](../../../settings/global-metadata.md), data, or [custom attribute](../../../settings/custom-attributes.md) of the processed object, resolved at trigger evaluation time. The source is referenced by field identifier, the same way a [condition](./condition.md) references an attribute.
+  - the value can be a **static value** or **mapped from another attribute** of the processed object — a [metadata](../../../settings/global-metadata.md) attribute, a connector-supplied **data** attribute, or a [custom attribute](../../../settings/custom-attributes.md) — resolved at trigger evaluation time. The source attribute is selected the same way a [condition](./condition.md) references an attribute.
   - mapping from a source attribute is available only when the **target is a custom attribute**; properties can be set from a static value only. The source attribute is **read-only** — its value is copied into the target, and the source itself (for example connector-managed metadata) is never modified.
-  - the source attribute is matched by name and content type; if the object has no matching attribute the value cannot be resolved and the execution item is recorded as failed. Source and target content types must be compatible, as the value is copied unchanged.
+  - the source attribute is matched by name and content type; if the object has no matching attribute, or the copied value is not valid for the target custom attribute, the execution item is recorded as failed.
 - `Send Notification`
   - notify users based on notification profile
 
@@ -62,8 +62,8 @@ We would like to illustrate the concept of executions with a few examples:
 - **Execution Name:** Copy expiry source from metadata
 - **Execution Type:** Set Field
 - **Resource:** Certificate
-- **Execution Items:** `Custom attribute 'Expiry' to Metadata Attribute 'Expiry Source'`
+- **Execution Items:** `Custom attribute 'Expiry' to Metadata attribute 'Expiry Source'`
 
 :::note
-An execution item reads as *target then source*: `Custom attribute 'Expiry' to Metadata Attribute 'Expiry Source'` sets the custom attribute **Expiry** to the value currently held in the metadata attribute **Expiry Source**. The metadata attribute is only read — it is not changed.
+An execution item reads as *target then source*: `Custom attribute 'Expiry' to Metadata attribute 'Expiry Source'` sets the custom attribute **Expiry** to the value currently held in the metadata attribute **Expiry Source**. The metadata attribute is only read — it is not changed.
 :::
