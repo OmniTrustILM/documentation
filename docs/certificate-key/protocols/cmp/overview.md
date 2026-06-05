@@ -27,6 +27,8 @@ The CMP implementation supports the following PKI message types and their associ
 | `kur`        | Key Update Request     | [RFC 4210, section 5.3.5](https://datatracker.ietf.org/doc/html/rfc4210#section-5.3.5)   |
 | `rr`         | Revocation Request     | [RFC 4210, section 5.3.9](https://datatracker.ietf.org/doc/html/rfc4210#section-5.3.9)   |
 | `certConf`   | Certificate Confirm    | [RFC 4210, section 5.3.18](https://datatracker.ietf.org/doc/html/rfc4210#section-5.3.18) |
+| `pollReq`    | Polling Request        | [RFC 4210, section 5.3.22](https://datatracker.ietf.org/doc/html/rfc4210#section-5.3.22) |
+| `pollRep`    | Polling Response       | [RFC 4210, section 5.3.22](https://datatracker.ietf.org/doc/html/rfc4210#section-5.3.22) |
 
 ## Supported request formats
 

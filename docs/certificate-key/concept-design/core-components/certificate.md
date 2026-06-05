@@ -31,16 +31,16 @@ Certificate status represents stage of certificate lifecycle and transition to d
 
 Certificate can be in following states:
 
-| Status                                     | Description                                                              | Transition                                                                                                                                                                         |
-|--------------------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Requested`                                | The `Certificate` is created (requested) and ready to be issued.         | Initial state in case user requests certificate.                                                                                                                                   |
-| `Pending Approval`                         | The `Certificate` action is waiting to be approved.                      | When certificate action needs to be approved.                                                                                                                                      |
-| `Pending Issue` (***Not yet supported***)  | The `Certificate` action is waiting to be issued at authority.           | When certificate is requested to be issued by authority (already approved) and waiting to be approve issuance on authority side.                                                   |
-| `Pending Revoke` (***Not yet supported***) | The `Certificate` action is waiting to be revoked at authority.          | When certificate is requested to be revoked by authority (already approved) and waiting to be approve revocation on authority side.                                                |
-| `Rejected`                                 | The `Certificate` issuance approval request was rejected.                | When approval for certificate issue action was rejected or expired.                                                                                                                |
-| `Failed`                                   | The `Certificate` request issuance failed.                               | When certificate fails to be issued by authority caused by error or invalid request.                                                                                               |
-| `Issued`                                   | The `Certificate` is issued.                                             | Initial state in case certificate is uploaded or discovered.<br />When certificate is successfully issued.<br/> When certificate revocation failed state returns back to `Issued`. |
-| `Revoked`                                  | The `Certificate` is revoked.                                            | When certificate is successfully revoked.                                                                                                                                          |                                                                                                                 |
+| Status             | Description                                                                                                       | Transition                                                                                                                                                                         |
+|--------------------|-------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Requested`        | The `Certificate` is created (requested) and ready to be issued.                                                  | Initial state in case user requests certificate.                                                                                                                                   |
+| `Pending Approval` | The `Certificate` action is waiting to be approved.                                                               | When certificate action needs to be approved.                                                                                                                                      |
+| `Pending Issue`    | The `Certificate` issuance has been accepted but cannot be completed synchronously and is waiting to be finalised. | When the certification authority accepts an issue or renew request but cannot complete it synchronously (see [Asynchronous operations](#asynchronous-operations)).                  |
+| `Pending Revoke`   | The `Certificate` revocation has been accepted but cannot be completed synchronously and is waiting to be confirmed. | When the certification authority accepts a revoke request but cannot complete it synchronously.                                                                                     |
+| `Rejected`         | The `Certificate` issuance approval request was rejected.                                                         | When approval for certificate issue action was rejected or expired.                                                                                                                |
+| `Failed`           | The `Certificate` request issuance failed or the parked issuance was cancelled.                                   | When certificate fails to be issued by authority caused by error or invalid request, or when an operator cancels a `Pending Issue`.                                                |
+| `Issued`           | The `Certificate` is issued.                                                                                      | Initial state in case certificate is uploaded or discovered.<br />When certificate is successfully issued.<br/>When certificate revocation failed state returns back to `Issued`.<br/>When an operator cancels a `Pending Revoke`. |
+| `Revoked`          | The `Certificate` is revoked.                                                                                     | When certificate is successfully revoked.                                                                                                                                          |
 
 Certificate state transition diagram is as follows:
 
@@ -63,10 +63,10 @@ state "Pending Revoke" as PendingRevoke
   PendingApproval --> PendingRevoke
   PendingApproval --> Issued
   PendingApproval --> Revoked
-  PendingIssue --> Failed
-  PendingIssue --> Issued
-  PendingRevoke --> Revoked
-  PendingRevoke --> Issued
+  PendingIssue --> Issued : finalise issue
+  PendingIssue --> Failed : cancel pending\nor connector failure
+  PendingRevoke --> Revoked : confirm revocation
+  PendingRevoke --> Issued : cancel pending
   Issued --> PendingApproval
   Issued --> PendingRevoke
   Issued --> Revoked
@@ -76,6 +76,36 @@ state "Pending Revoke" as PendingRevoke
   Revoked --> [*]
 @enduml
 ```
+
+### Asynchronous operations
+
+Some certification authorities cannot complete `issue`, `renew`, or `revoke` synchronously — for example, manual or air-gapped CAs, CAs that process requests in batches, or authorities where the operation is performed by a human operator out-of-band. In these cases the operation is **parked** and the certificate moves to `Pending Issue` or `Pending Revoke` until it is finalised. There is no platform-level "offline" or "external" flag on `Authority`, `RA Profile`, or anywhere else — behaviour is determined entirely by the certificate state.
+
+#### Finalising a parked operation
+
+Three operator-driven actions move a parked certificate to its terminal state. They are exposed both via the platform UI (inline icon buttons next to the state badge in the certificate inventory and on the certificate detail page) and via the `Core` client API.
+
+| Action             | Applicable state                  | Resulting state                                                            | Description                                                                                                                       |
+|--------------------|-----------------------------------|----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| **Finalise Issue** | `Pending Issue`                   | `Issued`                                                                   | The operator uploads the externally-issued certificate. The platform validates the upload and stores it against the request.      |
+| **Confirm Revoke** | `Pending Revoke`                  | `Revoked`                                                                  | The operator confirms that the revocation has been completed. The preserved revoke attributes and `destroyKey` flag are applied.  |
+| **Cancel Pending** | `Pending Issue` or `Pending Revoke` | `Failed` (from `Pending Issue`) or `Issued` (from `Pending Revoke`) | The operator aborts the parked operation. An optional `reason` is recorded in the certificate event history.                       |
+
+When `Finalise Issue` is invoked, the uploaded certificate's public key must match the public key of the original request (hard check); the subject DN is a soft check (a mismatch is logged in the event history but does not block the upload).
+
+When `Cancel Pending` is invoked, the platform also notifies the underlying authority so it can release any state it tracks for the operation. If the authority cannot abort the operation (for example, the underlying CA does not support aborts), the certificate stays in its pending state and the failure reason is surfaced to the operator.
+
+#### Operations blocked while pending
+
+While a certificate is in `Pending Issue` or `Pending Revoke`, the following actions are blocked:
+
+- Renew
+- Rekey
+- Revoke (when state is `Pending Issue`)
+- Re-issue of the same `Requested` certificate
+- Switch RA profile
+
+The escape hatch from a stuck pending state is `Cancel Pending`.
 
 ### Archived Certificate
 
