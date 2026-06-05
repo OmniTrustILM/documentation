@@ -13,7 +13,7 @@ External authentication can be performed using various mechanisms, including, bu
 - single-sign on using SAML 2.0 or OAuth 2.0
 - OpenID Connect
 
-The identity of authenticated user is forwarded to the identification service.
+The identity of authenticated user is forwarded to the identification service. To keep this hot path fast, `Core` caches successful authentication outcomes; see [Caching](../caching.md).
 
 :::info
 Based on the technology being used for externalized authentication, multi-factor authentication (MFA) or risk-based authentication (RBA), and any other modern authentication methods may be applied.

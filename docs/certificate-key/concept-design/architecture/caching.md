@@ -18,7 +18,7 @@ Caching is transparent to API consumers. A cached result is always equivalent to
 
 ## Authentication cache
 
-Authentication is performed on every API request. Without caching, each request would trigger a round-trip to the authentication service. The authentication cache stores the outcome of a successful authentication so that repeated requests from the same identity are served without contacting the authentication service again.
+Authentication is performed on every API request. Without caching, each request would trigger a round-trip to the authentication service. The authentication cache stores the outcome of a successful authentication so that repeated requests from the same identity are served without contacting the authentication service again. For how authentication itself is performed, see [Externalized authentication](./access-control/externalized-authentication.md).
 
 Authentication results are cached separately per authentication method:
 
@@ -47,7 +47,7 @@ Because a single certificate change can affect many chains — any chain whose p
 
 ## Cryptographic key item cache
 
-`Core` caches cryptographic key items so that frequently accessed key metadata does not have to be reloaded on every use. Entries are keyed by the key item and evicted individually whenever that key item changes.
+`Core` caches cryptographic key items so that frequently accessed key metadata does not have to be reloaded on every use. Entries are keyed by the key item's UUID and evicted individually whenever that key item changes.
 
 ## Connector API client cache
 
