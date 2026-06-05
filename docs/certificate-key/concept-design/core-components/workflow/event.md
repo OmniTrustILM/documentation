@@ -38,11 +38,15 @@ Event triggers are automated mechanisms that respond to specific events within t
 
 ## Certificate Uploaded event
 
-The **Certificate Uploaded** event fires when a certificate is manually uploaded to the platform. It is the entry point for evaluating two types of triggers in sequence:
+The **Certificate Uploaded** event fires when a certificate is manually uploaded to the platform; it does not fire for certificates that enter the inventory through issuance or discovery. It is the entry point for evaluating the platform [triggers](./trigger.md) configured for this event in [Settings → Events](../../../settings/events.md), in two stages:
 
-1. **Ignore triggers** — evaluated first. If a certificate matches an ignore trigger, it is rejected and is **not added to the inventory**.
-2. **Action triggers** — evaluated after ignore triggers pass. Typical use is to categorize the uploaded certificate (e.g., assign groups, RA profiles, or custom attributes).
+1. **Ignore triggers** — evaluated first. If the certificate matches an ignore trigger it is rejected and **not added to the inventory**.
+2. **Action triggers** — evaluated only after the ignore triggers pass, and only for certificates that are kept. They categorize the certificate by setting its properties — Groups, RA profile, and Owner — and its [custom attributes](../../../settings/custom-attributes.md), and may also send notifications through the configured notification profiles.
+
+Custom attributes supplied in the upload request itself take precedence over those set by action triggers: the request values are applied after the triggers run and override any conflicting trigger-set values.
+
+The upload can be processed synchronously or asynchronously. With asynchronous upload the request is accepted immediately and the certificate appears in the inventory once processing — including trigger evaluation — completes.
 
 ### Ignored (rejected) certificates
 
-When a certificate is rejected by an ignore trigger it is excluded from the certificate inventory. However, the upload attempt is still recorded: rejected certificates appear in the **Certificate Uploaded** event history so that administrators can audit what was uploaded and why it was rejected.
+When a certificate is rejected by an ignore trigger it is excluded from the certificate inventory. The rejection is still recorded in the **Certificate Uploaded** event history, including the ignore trigger that matched, so administrators can see that an upload was rejected. The event history does not retain the rejected certificate's own details, however; to identify the specific certificate, consult the [audit logs](../../../logging/audit-logs.md) with verbose logging enabled.
