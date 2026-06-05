@@ -37,11 +37,27 @@ Event triggers are automated mechanisms that respond to specific events within t
 
 ## Event Viewer
 
-The **Event Viewer** provides a historical view of event firings and the trigger evaluations that took place during each firing. It allows administrators to audit how the platform responded to events, inspect which objects were matched or ignored, and diagnose trigger failures.
+The **Event Viewer** provides a historical view of event firings and the trigger evaluations that took place during each firing. It lets administrators audit how the platform responded to events, inspect which objects were matched or ignored, and diagnose [trigger](./trigger.md) failures, including which [conditions](./condition.md) were matched and which [actions](./action.md) ran. It complements the [event logs](../../../logging/event-logs.md), which record the raw event occurrences, by showing the outcome of the triggers evaluated for each firing.
 
 The Event Viewer is available in two places:
 
-- **Settings → Events** — select an event to see all past firings of that event across the platform.
-- **Individual object pages** (Certificate, Discovery, Approval, Scheduled Job) — open the **Event History** tab on the object's detail page to see firings scoped to that specific object.
+- **[Settings → Events](../../../settings/events.md)** — select an event to see all of its past firings across the platform (global event history).
+- **Object detail pages** — open the **Event History** tab on the detail page of a Certificate, Discovery, Cryptographic Key, or Approval to see the firings scoped to that specific object.
 
-Each event firing shows its status, timing, and a summary of how many objects were evaluated, matched by action triggers, or ignored. Selecting a firing opens the per-object breakdown with details about which triggers were evaluated, whether their conditions and actions succeeded, and any error messages.
+### Global event history
+
+Each firing is listed with its status, when it started and finished, the affected resource, and a summary of how many objects were **evaluated**, **matched** (by at least one trigger), and **ignored** (matched by an ignore trigger). A firing has one of three statuses: **In Progress**, **Finished**, or **Failed**.
+
+Expanding a firing reveals the per-object breakdown — the triggers evaluated against each object — and expanding an object shows the individual evaluation records: each condition that was not matched and each action that was not performed, with any error message. The firings list and the per-object list are paginated independently.
+
+### Per-object event history
+
+The **Event History** tab on an object's detail page shows a flat list of the trigger evaluations that involved that object: the event, the trigger, the source object, whether the trigger's conditions matched and its actions were performed, the time it was triggered, and a message. Each row expands into the same evaluation records as the global view. From the **Event** column you can jump to the global event history filtered to that object.
+
+### Notification proof
+
+When a trigger sends a notification, its evaluation record confirms whether the notification was sent. A successful send leaves no error on the record; a failure is recorded together with information about the notification profile and the channel type (internal or external) — providing proof of whether a notification was delivered.
+
+### Trigger history retention
+
+Trigger evaluation records are retained even after the trigger that produced them is deleted, so the event history remains a complete audit trail.
