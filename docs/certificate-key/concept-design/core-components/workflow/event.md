@@ -51,6 +51,6 @@ The upload can be processed synchronously or asynchronously. With asynchronous u
 
 ### Ignored (rejected) certificates
 
-When a certificate is rejected by an ignore trigger it is excluded from the certificate inventory. The rejection is still recorded in the **Certificate Uploaded** event history, including the ignore trigger that matched, so administrators can see that an upload was rejected. The event history itself does not retain the rejected certificate's own details; to identify the specific certificate, consult the [audit logs](../../../logging/audit-logs.md) with verbose logging enabled, or a configured notification, whose message includes the certificate's details.
+When a certificate is rejected by an ignore trigger it is excluded from the certificate inventory. The rejection is still recorded in the **Certificate Uploaded** event history, including the ignore trigger that matched, so administrators can see that an upload was rejected. The event history itself does not retain the rejected certificate's own details; to identify the specific certificate, consult the [audit logs](../../../logging/audit-logs.md) with verbose audit logging enabled in the [logging settings](../../../settings/logging.md), or a configured notification, whose message includes the certificate's details.
 
-A certificate that already exists in the inventory (matched by fingerprint) is not uploaded again; that firing is recorded with the **Failed** status.
+A certificate that already exists in the inventory (matched by fingerprint) is rejected and not uploaded again.
