@@ -85,8 +85,6 @@ additionalEnv:
 
 Because caches are held in memory on each `Core` instance, they are not shared across a high-availability deployment: each instance maintains its own cache, and an entry evicted on one instance remains on the others until it expires or is independently evicted there. Entries also do not survive a restart — caches start empty and warm up as requests arrive.
 
-The time-to-live and maximum size of each cache express a trade-off between freshness and performance. Larger sizes and longer lifetimes reduce recomputation but increase memory use. The defaults are chosen to be safe for typical deployments and can be tuned where needed.
-
 ## Resetting a cache
 
 In normal operation a cache never needs to be reset by hand. Entries are removed automatically whenever the underlying data changes — a single key is evicted when its object changes, and the whole authentication cache is cleared when a role changes — and any entry that is not invalidated expires on its own once its time-to-live elapses (five minutes by default).
