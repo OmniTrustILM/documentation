@@ -24,9 +24,11 @@ It is especially useful for execution types that are not resource or event speci
 
 Executions can be classified into various types based on the nature of the operation they perform. Each type has specific attributes and behaviors that determine how the execution is processed.
 Currently, there are two supported execution types:
-- `Set Field` 
-  - set properties or custom attributes of the processed object
-  - the target custom attribute value can be set either from a **static value** or dynamically from another attribute (META, DATA, or CUSTOM), with the source value resolved at trigger evaluation time
+- `Set Field`
+  - sets a **property** or a **custom attribute** of the processed object
+  - the value can be a **static value** or **mapped from another attribute** — a [metadata](../../../settings/global-metadata.md), data, or [custom attribute](../../../settings/custom-attributes.md) of the processed object, resolved at trigger evaluation time. The source is referenced by field identifier, the same way a [condition](./condition.md) references an attribute.
+  - mapping from a source attribute is available only when the **target is a custom attribute**; properties can be set from a static value only. The source attribute is **read-only** — its value is copied into the target, and the source itself (for example connector-managed metadata) is never modified.
+  - the source attribute is matched by name and content type; if the object has no matching attribute the value cannot be resolved and the execution item is recorded as failed. Source and target content types must be compatible, as the value is copied unchanged.
 - `Send Notification`
   - notify users based on notification profile
 
@@ -61,3 +63,7 @@ We would like to illustrate the concept of executions with a few examples:
 - **Execution Type:** Set Field
 - **Resource:** Certificate
 - **Execution Items:** `Custom attribute 'Expiry' to Metadata Attribute 'Expiry Source'`
+
+:::note
+An execution item reads as *target then source*: `Custom attribute 'Expiry' to Metadata Attribute 'Expiry Source'` sets the custom attribute **Expiry** to the value currently held in the metadata attribute **Expiry Source**. The metadata attribute is only read — it is not changed.
+:::
