@@ -34,3 +34,14 @@ Event triggers are automated mechanisms that respond to specific events within t
 | Approval requested           | Approval      |                   | <span class="badge badge--danger">NO</span>   | Occurs when requesting approval                                                                | [`ApprovalEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/ApprovalEventData.java)                                     |
 | Approval closed              | Approval      |                   | <span class="badge badge--danger">NO</span>   | Occurs after approval was closed                                                               | [`ApprovalEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/ApprovalEventData.java)                                     |
 | Scheduled job finished       | Scheduled job |                   | <span class="badge badge--danger">NO</span>   | Occurs when scheduled job execution finished                                                   | [`ScheduledJobFinishedEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/ScheduledJobFinishedEventData.java)             |
+
+## Event Viewer
+
+The **Event Viewer** provides a historical view of event firings and the trigger evaluations that took place during each firing. It allows administrators to audit how the platform responded to events, inspect which objects were matched or ignored, and diagnose trigger failures.
+
+The Event Viewer is available in two places:
+
+- **Settings → Events** — select an event to see all past firings of that event across the platform.
+- **Individual object pages** (Certificate, Discovery, Approval, Scheduled Job) — open the **Event History** tab on the object's detail page to see firings scoped to that specific object.
+
+Each event firing shows its status, timing, and a summary of how many objects were evaluated, matched by action triggers, or ignored. Selecting a firing opens the per-object breakdown with details about which triggers were evaluated, whether their conditions and actions succeeded, and any error messages.
