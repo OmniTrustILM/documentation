@@ -6,6 +6,10 @@ sidebar_position: 8
 
 To keep request latency low — especially on the authentication hot path, where the same lookups repeat across many requests — `Core` maintains a number of in-memory caches. Each cache holds the result of an operation that is comparatively expensive to recompute (an authentication decision, a resolved certificate chain, a connector lookup) so that subsequent identical requests are served without repeating the work.
 
+:::note
+`Core` maintains further in-memory caches for functionality that is not yet fully released. They are intentionally not described here; this page will be updated once that functionality is generally available.
+:::
+
 All caches share the same foundation:
 
 - **In-memory and per-instance.** Caches live in the memory of each `Core` instance and are not shared between instances. In a high-availability deployment, every instance warms and invalidates its own caches independently.
