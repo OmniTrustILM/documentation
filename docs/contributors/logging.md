@@ -170,9 +170,9 @@ Audit and event logs should follow a structured format. Platform automatically g
 
 ### Useful resources for structured logging
 
-- List of [Modules](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/core/logging/enums/Module.java)
-- List of [Resources](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/core/auth/Resource.java)
-- List of [Operations](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/core/logging/enums/Operation.java)
+- List of [Modules](https://github.com/OmniTrustILM/interfaces/blob/master/src/main/java/com/czertainly/api/model/core/logging/enums/Module.java)
+- List of [Resources](https://github.com/OmniTrustILM/interfaces/blob/master/src/main/java/com/czertainly/api/model/core/auth/Resource.java)
+- List of [Operations](https://github.com/OmniTrustILM/interfaces/blob/master/src/main/java/com/czertainly/api/model/core/logging/enums/Operation.java)
 
 ## Logging Configuration
 
