@@ -4,17 +4,17 @@ sidebar_position: 12
 
 # Events
 
-Events can occur when there is a change in a lifecycle of objects (for example change of state, performed action, etc.).
-In case of so-called monitoring event, it can occur as part of scheduled monitoring of objects that match some state and properties that needs attention of users.
+Events can occur when there is a change in the lifecycle of objects (for example, change of state, performed action, etc.).
+Monitoring events fire as part of scheduled monitoring, when an object's state or properties require user attention.
 
-Events are linked with resource to specify type of objects that are subject of the event (e.g. certificate, discovery, etc.).
+Events are linked to a resource to specify the type of objects that are the subject of the event (e.g. certificate, discovery, etc.).
 
 ## Events automation
 
 The platform provides a sophisticated workflow system that can be utilized for automation.
-Each event can be associated with triggers that are executed when event occurs. That can be configured on [platform settings](../../../settings/events.md) or on overriding resource object.
+Each event can be associated with triggers that are executed when the event occurs. Triggers can be configured in [platform settings](../../../settings/events.md) or on an overriding resource object.
 
-Event triggers are automated mechanisms that respond to specific events within the platform and allows to:
+Event triggers are automated mechanisms that respond to specific events within the platform and allow you to:
 - Automate responses to certificate lifecycle events
 - Implement custom business logic for event handling
 - Create complex workflow automation
@@ -24,40 +24,45 @@ Event triggers are automated mechanisms that respond to specific events within t
 
 ## Supported events
 
-| Event                        | Resource      | Overridden By     | Monitoring                                    | Description                                                                                    | Additional information                                                                                                                                                                                      |
+| Event                        | Resource      | Overridden By     | Monitoring                                    | Description                                                                                    | Event Data                                                                                                                                                                                                  |
 |------------------------------|---------------|-------------------|-----------------------------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Certificate status changed   | Certificate   | RA profile, Group | <span class="badge badge--danger">NO</span>   | Occurs when the certificate validation status change                                           | [`CertificateStatusChangedEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/CertificateStatusChangedEventData.java)     |
-| Certificate action performed | Certificate   | RA profile, Group | <span class="badge badge--danger">NO</span>   | Occurs after certificate operation (e.g.: issue, renew, rekey, revoke, etc.) was completed     | [`CertificateActionPerformedEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/CertificateActionPerformedEventData.java) |
-| Certificate expiring         | Certificate   | RA profile, Group | <span class="badge badge--success">YES</span> | Occurs every hour when there are expiring certificates that does not contain valid replacement | [`CertificateExpiringEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/CertificateExpiringEventData.java)               |
-| Certificate discovered       | Certificate   | Discovery         | <span class="badge badge--danger">NO</span>   | Occurs when the certificate has been newly discovered                                          | [`CertificateDiscoveredEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/CertificateDiscoveredEventData.java)           |
-| Discovery finished           | Discovery     |                   | <span class="badge badge--danger">NO</span>   | Occurs when discovery process has been finished                                                | [`DiscoveryFinishedEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/DiscoveryFinishedEventData.java)                   |
-| Approval requested           | Approval      |                   | <span class="badge badge--danger">NO</span>   | Occurs when requesting approval                                                                | [`ApprovalEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/ApprovalEventData.java)                                     |
-| Approval closed              | Approval      |                   | <span class="badge badge--danger">NO</span>   | Occurs after approval was closed                                                               | [`ApprovalEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/ApprovalEventData.java)                                     |
-| Scheduled job finished       | Scheduled job |                   | <span class="badge badge--danger">NO</span>   | Occurs when scheduled job execution finished                                                   | [`ScheduledJobFinishedEventData`](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/master/src/main/java/com/czertainly/api/model/common/events/data/ScheduledJobFinishedEventData.java)             |
+| Certificate status changed   | Certificate   | RA profile, Group | <span class="badge badge--danger">NO</span>   | Occurs when the certificate validation status changes                                          | [`CertificateStatusChangedEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/CertificateStatusChangedEventData.java)     |
+| Certificate action performed | Certificate   | RA profile, Group | <span class="badge badge--danger">NO</span>   | Occurs after certificate operation (e.g.: issue, renew, rekey, revoke, etc.) was completed     | [`CertificateActionPerformedEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/CertificateActionPerformedEventData.java) |
+| Certificate expiring         | Certificate   | RA profile, Group | <span class="badge badge--success">YES</span> | Occurs every hour when there are expiring certificates that do not contain a valid replacement | [`CertificateExpiringEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/CertificateExpiringEventData.java)               |
+| Certificate discovered       | Certificate   | Discovery         | <span class="badge badge--danger">NO</span>   | Occurs when the certificate has been newly discovered                                          | [`CertificateDiscoveredEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/CertificateDiscoveredEventData.java)           |
+| [Certificate uploaded](#certificate-uploaded-event) | Certificate |                   | <span class="badge badge--danger">NO</span>   | Occurs when a certificate is manually uploaded                                                | [`CertificateEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/CertificateEventData.java)                                                                |
+| Discovery finished           | Discovery     |                   | <span class="badge badge--danger">NO</span>   | Occurs when discovery process has been finished                                                | [`DiscoveryFinishedEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/DiscoveryFinishedEventData.java)                   |
+| Approval requested           | Approval      |                   | <span class="badge badge--danger">NO</span>   | Occurs when requesting approval                                                                | [`ApprovalEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/ApprovalEventData.java)                                     |
+| Approval closed              | Approval      |                   | <span class="badge badge--danger">NO</span>   | Occurs after approval was closed                                                               | [`ApprovalEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/ApprovalEventData.java)                                     |
+| Scheduled job finished       | Scheduled job |                   | <span class="badge badge--danger">NO</span>   | Occurs when scheduled job execution finished                                                   | [`ScheduledJobFinishedEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/ScheduledJobFinishedEventData.java)             |
 
-## Event Viewer
+### Certificate Uploaded event
 
-The **Event Viewer** provides a historical view of event firings and the trigger evaluations that took place during each firing. It lets administrators audit how the platform responded to events, inspect which objects were matched or ignored, and diagnose [trigger](./trigger.md) failures, including which [conditions](./condition.md) were matched and which [actions](./action.md) ran. It complements the [event logs](../../../logging/event-logs.md), which record the raw event occurrences, by showing the outcome of the triggers evaluated for each firing.
+The **Certificate Uploaded** event fires when a certificate is manually uploaded to the platform. It does not fire for certificates that enter the inventory through issuance or discovery — those have their own events.
 
-The Event Viewer is available in two places:
+When the event fires, the platform evaluates the [triggers](./trigger.md) configured for it in [Settings → Events](../../../settings/events.md) in two stages:
 
-- **[Settings → Events](../../../settings/events.md)** — select an event to see all of its past firings across the platform (global event history).
-- **Object detail pages** — open the **Event History** tab on the detail page of a Certificate, Discovery, Cryptographic Key, or Approval to see the firings scoped to that specific object.
+1. **Ignore triggers** are evaluated first. If the certificate matches any ignore trigger, it is rejected and **not added to the inventory**.
+2. **Action triggers** are evaluated for certificates that pass the ignore stage. They categorize the certificate — setting its Groups, RA profile, Owner, and [custom attributes](../../../settings/custom-attributes.md) — and can send notifications through the configured notification profiles.
 
-### Global event history
+Unlike most certificate events, **Certificate Uploaded cannot be overridden per RA profile or Group**. Its triggers are configured only at the platform level.
 
-Each firing is listed with its status, when it started and finished, the affected resource, and a summary of how many objects were **evaluated**, **matched** (by at least one trigger), and **ignored** (matched by an ignore trigger). A firing has one of three statuses: **In Progress**, **Finished**, or **Failed**.
+Custom attribute values supplied in the upload request take precedence: they are applied after the action triggers run and override any conflicting values the triggers set.
 
-Expanding a firing reveals the per-object breakdown — the triggers evaluated against each object — and expanding an object shows the individual evaluation records: each condition that was not matched and each action that was not performed, with any error message. The firings list and the per-object list are paginated independently.
+The upload can be processed synchronously or asynchronously. A synchronous upload returns once the certificate has been processed and added to the inventory. An asynchronous upload returns immediately, and the certificate appears in the inventory once processing — including trigger evaluation — has completed.
 
-### Per-object event history
+#### Rejected uploads
 
-The **Event History** tab on an object's detail page shows a flat list of the trigger evaluations that involved that object: the event, the trigger, the source object, whether the trigger's conditions matched and its actions were performed, the time it was triggered, and a message. Each row expands into the same evaluation records as the global view. From the **Event** column you can jump to the global event history filtered to that object.
+A certificate upload is rejected in either of these cases:
 
-### Notification proof
+- **Ignore trigger match** — the certificate matches one of the configured ignore triggers.
+- **Duplicate** — a certificate with the same fingerprint already exists in the inventory.
 
-When a trigger sends a notification, its evaluation record confirms whether the notification was sent. A successful send leaves no error on the record; a failure is recorded together with information about the notification profile and the channel type (internal or external) — providing proof of whether a notification was delivered.
+In both cases the certificate is not added to the inventory.
 
-### Trigger history retention
+Ignore-trigger rejections are recorded in the **Certificate Uploaded** event history together with the matching ignore trigger, so administrators can see that an upload was rejected. The event history does not retain the rejected certificate's own details. To identify the specific certificate, use one of:
 
-Trigger evaluation records are retained even after the trigger that produced them is deleted, so the event history remains a complete audit trail.
+- The [audit logs](../../../logging/audit-logs.md), with verbose audit logging enabled in the [logging settings](../../../settings/logging.md).
+- The notification message produced by the configured notification profile for this event. The notification carries the event's [`CertificateEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/events/data/CertificateEventData.java) payload, which identifies the certificate but does not include the complete certificate.
+
+Duplicate rejections are detected before the **Certificate Uploaded** event fires and are therefore not recorded in its event history; the duplicate is reported by the upload request itself.
