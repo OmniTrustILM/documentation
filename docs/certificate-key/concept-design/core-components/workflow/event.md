@@ -12,7 +12,7 @@ Events are linked to a resource to specify the type of objects that are the subj
 ## Events automation
 
 The platform provides a sophisticated workflow system that can be utilized for automation.
-Each event can be associated with triggers that are executed when the event occurs. Triggers can be configured in [platform settings](../../../settings/events.md) or on an overriding resource object.
+Each event can be associated with triggers that are executed when the event occurs. Triggers can be configured in [platform settings](../../../settings/events.md) or on an overriding resource object. To inspect what happened when triggers ran, use the [Event Viewer](./event-viewer.md).
 
 Event triggers are automated mechanisms that respond to specific events within the platform and allow you to:
 - Automate responses to certificate lifecycle events
