@@ -15,7 +15,7 @@ For more information about the definition of authorization policies, refer to [C
 | Access Control Enum | Reference                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Resources**       | [Resource enum](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/model/auth/Resource.java)                 |
-| **Actions**         | [ResourceAction enum](https://github.com/CZERTAINLY/CZERTAINLY-Interfaces/blob/main/src/main/java/com/czertainly/core/model/auth/ResourceAction.java) |
+| **Actions**         | [ResourceAction enum](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/core/model/auth/ResourceAction.java) |
 
 The list of available actions for particular resources is dynamically constructed by the `Core` service based on the `@ExternalAuthorization` annotation. Continue reading to get more details.
 
