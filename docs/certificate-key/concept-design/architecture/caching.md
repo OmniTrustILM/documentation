@@ -6,18 +6,14 @@ sidebar_position: 8
 
 To keep request latency low — especially on the authentication hot path, where the same lookups repeat across many requests — `Core` maintains a number of in-memory caches. Each cache holds the result of an operation that is comparatively expensive to recompute (an authentication decision, a resolved certificate chain, a connector lookup) so that subsequent identical requests are served without repeating the work.
 
-:::note
-`Core` maintains further in-memory caches for functionality that is not yet fully released. They are intentionally not described here; this page will be updated once that functionality is generally available.
-:::
-
 All caches share the same foundation:
 
 - **In-memory and per-instance.** Caches live in the memory of each `Core` instance and are not shared between instances. In a high-availability deployment, every instance warms and invalidates its own caches independently.
-- **Bounded.** Each cache is limited both by a time-to-live (an entry expires a fixed time after it is written) and by a maximum number of entries. Both limits are tunable. Caches also record runtime statistics.
+- **Bounded.** Each cache is limited both by a time-to-live (an entry expires a fixed time after it is written, **five minutes by default**) and by a maximum number of entries. Both limits are tunable.
 - **Transaction-safe invalidation.** When a change requires a cached entry to be removed, the eviction is deferred until the surrounding database transaction commits, so a rolled-back change never disturbs the cache. Within a single transaction, repeated full-cache clears are collapsed into one.
 
 :::info
-Caching is transparent to API consumers. A cached result is always equivalent to a freshly computed one; caches affect only how quickly a response is produced, never its content.
+Caching is transparent to API consumers — clients never need to manage or signal cache state. How quickly a change becomes visible across the platform depends on the invalidation rules described below; see [Effective time of changes](#effective-time-of-changes) for the high-availability case.
 :::
 
 ## Authentication cache
@@ -26,21 +22,21 @@ Authentication is performed on every API request. Without caching, each request 
 
 Authentication results are cached separately per authentication method:
 
-- **Client certificate** — keyed by the certificate's fingerprint.
+- **Client certificate** — keyed by the certificate's SHA-256 fingerprint.
 - **Token** — keyed by the token's unique identifier (`jti`).
 - **User UUID** — keyed by the user's identifier.
 - **System user** — for the platform's internal system user.
 
 Some results are deliberately never cached:
 
-- Anonymous outcomes — which include failed authentication, anonymous access, and localhost access — always go through the authentication service.
+- Anonymous outcomes — including failed authentication, anonymous access, and requests originating from within the platform itself — always go through the authentication service.
 - Tokens without a `jti` claim — without a stable identifier they cannot be cached safely, so each such request is authenticated anew.
 
 ### Keeping authentication results fresh
 
 Beyond time-to-live expiry, the authentication cache is invalidated whenever a change could affect an authentication decision. Invalidation happens at two granularities:
 
-- **Per-identity** — the cached entries for a single user are removed when that user's profile is updated, the user's role assignments change, or the user is disabled or deleted; and the cached entry for a certificate is removed when its association to a user changes. The next request from that identity re-authenticates.
+- **Per-identity** — cached entries for a user are removed when that user's profile is updated, role assignments change, or the user is disabled or deleted. The cached entry for a certificate is removed when its user association changes or when the certificate is revoked through the platform. The next request from that identity re-authenticates.
 - **Global** — when a role itself changes (the role is updated or deleted, or its permissions are changed), the entire authentication cache is cleared. Because such a change can affect every user holding that role, clearing all entries is the safe choice; all identities re-authenticate on their next request.
 
 ## Certificate chain cache
@@ -57,37 +53,24 @@ Because a single certificate change can affect many chains — any chain whose p
 
 Calls to connectors rely on connector routing information that would otherwise be looked up repeatedly. `Core` caches this per-connector lookup so connector calls avoid the repeated resolution. The entry for a connector is evicted when that connector is edited or deleted, so configuration changes take effect immediately.
 
-## Configuration
+## Effective time of changes
 
-Every cache is bounded by a **time-to-live** (how long after writing an entry is considered valid) and a **maximum number of entries**. Both are tunable per cache through environment variables; the defaults below are chosen to be safe for typical deployments.
+How quickly a cached value becomes consistent with a fresh recomputation depends on **where** the change is observed:
 
-| Cache | Time-to-live | Maximum entries |
-|:------|:-------------|:----------------|
-| Authentication | `AUTH_CACHE_TTL_MINUTES` (default `5`) | `AUTH_CACHE_MAX_SIZE` (default `500`) |
-| Certificate chain | `CERT_CHAINS_CACHE_TTL_MINUTES` (default `5`) | `CERT_CHAINS_CACHE_MAX_SIZE` (default `1000`) |
-| Cryptographic key item | `CRYPTO_KEYS_CACHE_TTL_MINUTES` (default `5`) | `CRYPTO_KEYS_CACHE_MAX_SIZE` (default `10000`) |
-| Connector API client | `CONNECTORS_CACHE_TTL_MINUTES` (default `5`) | `CONNECTORS_CACHE_MAX_SIZE` (default `100`) |
+- **On the instance that processed the change** — invalidation is immediate. The next request on that instance sees the new value.
+- **On other instances in a high-availability deployment** — those instances did not observe the change. Their cached entries continue to serve the previous value until they expire by time-to-live.
 
-The four authentication sub-caches (client certificate, token, user UUID, system user) share a single set of `AUTH_CACHE_*` values.
+In practice this means:
 
-The time-to-live counts from the moment an entry is **written**, not from its last read — a frequently read entry is still refreshed once its time-to-live elapses. Larger sizes and longer lifetimes reduce recomputation at the cost of memory; lowering the time-to-live bounds how long a stale value can be served when no explicit invalidation occurs (at the default, at most about five minutes).
-
-:::info
-In a Helm deployment these variables are not chart parameters. Set them on the `Core` container through the `additionalEnv.variables` passthrough described in [Configurable parameters](../../installation-guide/deployment/deployment-helm/configurable-parameters.md):
-
-```yaml
-additionalEnv:
-  variables:
-    - name: CERT_CHAINS_CACHE_TTL_MINUTES
-      value: "15"
-    - name: AUTH_CACHE_MAX_SIZE
-      value: "2000"
-```
-:::
+- User-affecting changes (disabling a user, changing role permissions, revoking a user's certificate association) become effective platform-wide **within the time-to-live window** — not instantly.
+- Credentials revoked **outside** of `Core` are not signalled to the cache. This includes JWTs revoked at the identity provider and client certificates revoked at the issuing CA but not yet reflected in `Core`'s own certificate state. The cached authentication outcome remains valid for that credential until its time-to-live elapses.
+- A role change clears the entire authentication cache on the processing instance, so every cached identity there re-authenticates on its next request — briefly raising load on the authentication service.
 
 ## Operational considerations
 
-Because caches are held in memory on each `Core` instance, they are not shared across a high-availability deployment: each instance maintains its own cache, and an entry evicted on one instance remains on the others until it expires or is independently evicted there. Entries also do not survive a restart — caches start empty and warm up as requests arrive.
+Because caches are held in memory on each `Core` instance, they are not shared across a high-availability deployment: each instance maintains its own cache, and an entry evicted on one instance remains on the others until it expires or is independently evicted there.
+
+Entries also do not survive a restart — caches start empty and warm up as requests arrive. The first requests after a restart pay the full uncached cost; subsequent requests benefit from the cached results as each cache reaches steady state.
 
 ## Resetting a cache
 
