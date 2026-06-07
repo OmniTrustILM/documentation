@@ -14,6 +14,71 @@ The following contains important information and instructions about upgrading He
 
 Upgrading Helm chart is done by running the `helm upgrade` command. The command upgrades the platform to the specified version. The command can be used to upgrade the platform to the same version with changed parameters.
 
+## To 2.18.0
+
+This release rebrands the Helm charts from CZERTAINLY to ILM (OmniTrust ILM). The umbrella chart was renamed from `czertainly` to `ilm`, and the library chart from `czertainly-lib` to `ilm-lib`. Container images, registry, database defaults, Keycloak realm, and project URLs were all updated.
+
+### Manual steps required when upgrading from any earlier version
+
+The rebrand changes the rendered values of `app.kubernetes.io/name` (the Deployment selector), `ilm.fullname` (the optional Ingress resource name), and the Keycloak realm/client identifiers. Three constraints make `helm upgrade` fail without manual intervention:
+
+1. **`Deployment.spec.selector` is immutable** — the existing `core-deployment` selector cannot be patched in place.
+2. **The nginx Ingress admission webhook rejects duplicate host/path** — the new Ingress would briefly coexist with the old (renamed) one, both claiming the same host and path.
+3. **Keycloak `--import-realm` fails with a duplicate primary-key error** — the realm in the database has the same UUID as in the new realm JSON but a different name (`CZERTAINLY` vs `ILM`).
+
+:::warning[Order matters]
+Perform the steps below in the order shown. In particular, run the Keycloak migration script BEFORE running `helm upgrade` — the script needs the still-running pre-upgrade Keycloak to be reachable. If you run `helm upgrade` first, the new Keycloak pod will crash on startup and the script will be unable to connect.
+:::
+
+#### 1. Migrate the Keycloak realm
+
+| Deployment                    | Configuration                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Fresh installation            | The new ILM realm is automatically created. No manual changes are required.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Upgrade from previous version | The existing CZERTAINLY realm must be renamed and its clients, default role, audience mapper, and built-in client URLs updated to match the new ILM identifiers in the realm JSON shipped with this release. Use the provided Python script [update_realm_from_2.17.0_to_2.18.0.py](https://github.com/OmniTrustILM/helm-charts/tree/main/charts/keycloak-internal/scripts/update_realm_from_2.17.0_to_2.18.0.py). The script will prompt you for the Keycloak URL, admin username, and password. It is idempotent (safe to run multiple times) and serves as documentation for the necessary changes — every UUID is preserved, only human-readable identifiers and URLs are updated, so existing users, sessions, group memberships, and client secrets are not affected. |
+
+The script connects via the Keycloak Admin REST API, so it works against any Keycloak (chart-managed or external) and does not depend on any specific database access.
+
+:::info[Upgrading from a chart version older than 2.17.0]
+If you are upgrading from a chart version older than 2.17.0, also run the realm-update scripts for each version transition you are crossing, in version order, BEFORE running the rebrand script. Those older scripts target the `CZERTAINLY` realm by name, which only exists until the rebrand-rename completes. The natural order is:
+
+1. [`update_realm_from_2.7.0_to_2.14.0.py`](https://github.com/OmniTrustILM/helm-charts/tree/main/charts/keycloak-internal/scripts/update_realm_from_2.7.0_to_2.14.0.py) — only if upgrading from a chart version earlier than 2.14.0
+2. [`update_realm_from_2.14.0_to_2.17.0.py`](https://github.com/OmniTrustILM/helm-charts/tree/main/charts/keycloak-internal/scripts/update_realm_from_2.14.0_to_2.17.0.py) — only if upgrading from a chart version earlier than 2.17.0
+3. [`update_realm_from_2.17.0_to_2.18.0.py`](https://github.com/OmniTrustILM/helm-charts/tree/main/charts/keycloak-internal/scripts/update_realm_from_2.17.0_to_2.18.0.py) — always, this is the rebrand-rename script
+:::
+
+#### 2. Delete the old core and pg-bouncer deployment
+
+```bash
+kubectl delete deployment core-deployment --namespace <your-ilm-namespace>
+kubectl delete deployment pg-bouncer-deployment --namespace <your-ilm-namespace>
+```
+
+This removes only the Deployment objects; existing data is unaffected (ILM is stateless at this layer). There will be brief downtime while the new core and pg-bouncer pods become ready after the upgrade.
+
+#### 3. Delete the old ingress (only if `ingress.enabled: true`)
+
+List the existing Ingresses to find the one bound to your ILM hostname (the exact name depends on your release name, because the fullname helper drops the chart-name suffix when the release name already contains the chart name):
+
+```bash
+kubectl get ingress --namespace <your-ilm-namespace>
+kubectl delete ingress <existing-ingress-name> --namespace <your-ilm-namespace>
+```
+
+#### 4. Run helm upgrade
+
+After the three cleanups above, run `helm upgrade` as usual. Helm will create the new resources, and the new Keycloak pod will boot cleanly because the realm in the database now matches the new identifiers.
+
+If you apply the rendered manifest out of band (e.g., `helm template ... | kubectl apply -f -`, or via a GitOps tool such as Argo CD or Flux) instead of running `helm upgrade`, the same three cleanups (steps 1–3) are required before re-applying — the constraints are at the Kubernetes API server / Ingress controller / Keycloak layer, not in Helm.
+
+### Stable identifier going forward
+
+The umbrella chart now ships with `nameOverride: platform-core` in its default values, decoupling selectors and fullname-based resources from the chart name. Sub-charts have analogous `nameOverride` defaults set to their respective chart names. Future chart renames will not require similar manual cleanup.
+
+:::warning[Do not override nameOverride]
+Passing `--set nameOverride=...` (or setting `nameOverride` in your custom values) at install or upgrade time will reintroduce the same risk on subsequent upgrades. Leave the default values intact.
+:::
+
 ## To 2.15.0
 
 ### New connector sub-charts
@@ -100,10 +165,10 @@ This version introduced breaking changes in the configuration of OAuth2 provider
 
 The platform now supports multiple configurations of OAuth2 providers. If you are using the internal Keycloak for authentication (`global.keycloak.enabled=true`), a different approach must be applied depending on whether you are deploying the platform for the first time or upgrading from a previous version:
 
-| Deployment                    | Configuration                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Fresh installation            | The OAuth2 `internal` provider is automatically configured. No manual changes are required.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| Upgrade from previous version | The OAuth2 `internal` provider is automatically configured. However, changes to the OAuth2 Keycloak client configuration must be applied manually. For a convenient upgrade, use the provided Python script [update_realm_from_2.7.0_to_2.14.0.py](https://github.com/CZERTAINLY/CZERTAINLY-Helm-Charts/tree/master/charts/keycloak-internal/scripts/update_realm_from_2.7.0_to_2.14.0.py). The script will prompt you for the required parameters and update the Keycloak client configuration. It also serves as a guide and documentation for the necessary changes. |
+| Deployment                    | Configuration                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+|-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Fresh installation            | The OAuth2 `internal` provider is automatically configured. No manual changes are required.                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Upgrade from previous version | The OAuth2 `internal` provider is automatically configured. However, changes to the OAuth2 Keycloak client configuration must be applied manually. For a convenient upgrade, use the provided Python script [update_realm_from_2.7.0_to_2.14.0.py](https://github.com/OmniTrustILM/helm-charts/tree/main/charts/keycloak-internal/scripts/update_realm_from_2.7.0_to_2.14.0.py). The script will prompt you for the required parameters and update the Keycloak client configuration. It also serves as a guide and documentation for the necessary changes. |
 
 ### Logging configuration
 
@@ -114,7 +179,7 @@ It is recommended to create a backup or export of all audit logs you want to kee
 :::
 
 The `logging.audit.enabled` parameter was removed. The audit logs are now configured in the platform.
-For more information on logging and how to configure it, see the [Logging](https://docs.czertainly.com/docs/certificate-key/logging/overview) section in the documentation.
+For more information on logging and how to configure it, see the [Logging](https://docs.otilm.com/docs/certificate-key/logging/overview) section in the documentation.
 
 ### Changed parameters
 
@@ -171,7 +236,7 @@ hashicorpVaultConnector:
   enabled: false
 ```
 
-See the [CZERTAINLY Helm chart 2.11.0-1 release notes](https://github.com/3KeyCompany/CZERTAINLY-Helm-Charts/releases/tag/2.11.0-1) for more information.
+See the [ILM Helm chart 2.11.0-1 release notes](https://github.com/OmniTrustILM/helm-charts/releases/tag/2.11.0-1) for more information.
 
 ## To 2.11.0
 
@@ -186,7 +251,7 @@ pyAdcsConnector:
   enabled: true
 ```
 
-See the [CZERTAINLY Helm chart 2.11.0 release notes](https://github.com/3KeyCompany/CZERTAINLY-Helm-Charts/releases/tag/2.11.0) for more information.
+See the [ILM Helm chart 2.11.0 release notes](https://github.com/OmniTrustILM/helm-charts/releases/tag/2.11.0) for more information.
 
 ## To 2.9.0
 
@@ -210,17 +275,17 @@ This allows to control the repository name using the global configuration, provi
 global:
   image:
     registry: myregistry.com
-    repository: czertainly/project
+    repository: ilm/project
 
 image:
   # default registry name
-  registry: docker.io
-  repository: 3keycompany
-  name: czertainly-core
+  registry: hub.omnitrustregistry.com
+  repository: ilm
+  name: core
   tag: 2.9.0
 ```
 
-will result in the following image name: `myregistry.com/czertainly/project/czertainly-core:2.9.0`.
+will result in the following image name: `myregistry.com/ilm/project/core:2.9.0`.
 
 ### Customization of the deployment
 
@@ -241,7 +306,7 @@ When the parameters are set globally, they are applied to all charts and sub-cha
 
 ## To 2.8.0
 
-Using `NodePort` to access the platform should be configured on API Gateway level, not for the Core service (as a service in `czertainly` chart). The `nodePort` parameter is included for both `admin` and `consumer` service in `api-gateway-kong` sub-chart. The proper way to configure `NodePort` is:
+Using `NodePort` to access the platform should be configured on API Gateway level, not for the Core service (as a service in `ilm` chart). The `nodePort` parameter is included for both `admin` and `consumer` service in `api-gateway-kong` sub-chart. The proper way to configure `NodePort` is:
 
 ```yaml
 ingress:
@@ -260,7 +325,7 @@ apiGateway:
       nodePort: 30081
 ```
 
-See the [CZERTAINLY Helm chart 2.8.0 release notes](https://github.com/3KeyCompany/CZERTAINLY-Helm-Charts/releases/tag/2.8.0) for more information.
+See the [ILM Helm chart 2.8.0 release notes](https://github.com/OmniTrustILM/helm-charts/releases/tag/2.8.0) for more information.
 
 ## To 2.7.1
 
@@ -273,7 +338,7 @@ global:
     enabled: false
 ```
 
-See the [CZERTAINLY Helm chart 2.7.1 release notes](https://github.com/3KeyCompany/CZERTAINLY-Helm-Charts/releases/tag/2.7.1) for more information.
+See the [ILM Helm chart 2.7.1 release notes](https://github.com/OmniTrustILM/helm-charts/releases/tag/2.7.1) for more information.
 
 ## To 2.7.0
 
@@ -350,7 +415,7 @@ utilsService:
   enabled: false
 ```
 
-See the [CZERTAINLY Helm chart 2.7.0 release notes](https://github.com/3KeyCompany/CZERTAINLY-Helm-Charts/releases/tag/2.7.0) for more information.
+See the [ILM Helm chart 2.7.0 release notes](https://github.com/OmniTrustILM/helm-charts/releases/tag/2.7.0) for more information.
 
 ## To 2.6.0
 
@@ -375,7 +440,7 @@ softwareCryptographyProvider:
   enabled: false
 ```
 
-See the [CZERTAINLY Helm chart 2.6.0 release notes](https://github.com/3KeyCompany/CZERTAINLY-Helm-Charts/releases/tag/2.6.0) for more information.
+See the [ILM Helm chart 2.6.0 release notes](https://github.com/OmniTrustILM/helm-charts/releases/tag/2.6.0) for more information.
 
 ## To 2.5.2
 
@@ -387,9 +452,9 @@ Every image that is supported in the umbrella chart or sub-charts now has the fo
 ```yaml
 image:
   # default registry name
-  registry: docker.io
+  registry: hub.omnitrustregistry.com
   # default repository name
-  repository: 3keycompany/czertainly-core
+  repository: ilm/core
   # default image tag
   tag: "2.5.2"
   # the digest to be used instead of the tag, will override tag if specified
@@ -405,7 +470,7 @@ Container registry and image pull secrets can be also configured globally for th
 global:
   image:
     # registry name
-    registry: "harbor.czertainly.online"
+    registry: "harbor.ilm.online"
     # array of secret names
     pullSecrets:
       - harbor-registry-credentials
@@ -431,4 +496,4 @@ keystoreEntityProvider:
   enabled: false
 ```
 
-See the [CZERTAINLY Helm chart 2.5.2 release notes](https://github.com/3KeyCompany/CZERTAINLY-Helm-Charts/releases/tag/2.5.2) for more information.
+See the [ILM Helm chart 2.5.2 release notes](https://github.com/OmniTrustILM/helm-charts/releases/tag/2.5.2) for more information.
