@@ -1,8 +1,8 @@
 const lightCodeTheme = require('prism-react-renderer').themes.github;
 const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
-const apiVersion = '2.17.0';
-const chartVersion = '2.17.0';
+const apiVersion = '2.18.0';
+const chartVersion = '2.18.0';
 const cscVersion = '1.7.0';
 
 import remarkFindReplacePlugin from './src/plugins/remarkFindReplacePlugin.mjs';
