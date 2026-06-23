@@ -9,7 +9,7 @@ CZERTAINLY theme will make the login page for the users to be authenticated by K
 
 The CZERTAINLY Keycloak theme is available:
 - on [GitHub](https://github.com/OmniTrustILM/keycloak-theme) with complete source
-- as docker container on [Docker Hub](https://hub.docker.com/r/3keycompany/czertainly-keycloak-theme)
+- as docker container in the [OmniTrust registry](https://hub.omnitrustregistry.com/ilm/keycloak-theme)
 
 ## Install theme
 
@@ -34,7 +34,7 @@ spec:
     spec:
       initContainers:
         - name: init-theme
-          image: 3keycompany/czertainly-keycloak-theme:0.1.0
+          image: hub.omnitrustregistry.com/ilm/keycloak-theme:0.1.0
           command:
             - /bin/sh
             - -c

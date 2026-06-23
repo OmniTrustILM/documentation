@@ -39,7 +39,7 @@ In case installing behind restrictive HTTP proxy make sure that you enable all h
   * security.debian.org
 * **ILM resources**:
   * deb.czertainly.com
-  * harbor.3key.company
+  * hub.omnitrustregistry.com
 * **Helm**:
   * packages.buildkite.com
   * github.com

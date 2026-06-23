@@ -70,7 +70,7 @@ ILM persists all its data in the Postgres database. The server will be installed
 
 ## Credentials for ILM docker repository (optional)
 
-Credentials for private ILM Docker repository are optional and typically not required. We are providing all necessary Docker containers in the public Docker repository `[https://hub.docker.com/u/czertainly](https://hub.docker.com/u/czertainly)`. Private Docker containers [hosted in a private Docker repository](../../../current-versions.md) `harbor.3key.company` are kept mainly for internal use and legacy purposes.
+Credentials for private ILM Docker repository are optional and typically not required. All necessary container images are published to the public `ilm` project on [hub.omnitrustregistry.com](https://hub.omnitrustregistry.com/ilm). Private container images [hosted in the private `ilm-private` project](../../../current-versions.md) on `hub.omnitrustregistry.com` are kept mainly for internal use and legacy purposes.
 
 The credentials can be used also in case you would like to access your own private Docker repository where you store your own Docker containers.
 

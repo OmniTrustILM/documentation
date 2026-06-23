@@ -33,7 +33,7 @@ Run the following Helm command to upgrade CZERTAINLY:
 ```bash
 helm upgrade --namespace czertainly \
   -f czertainly-values-[new version].yaml czertainly-tlm \
-  oci://harbor.3key.company/czertainly-helm/czertainly \
+  oci://hub.omnitrustregistry.com/ilm-helm/ilm \
   --version [new version]
 ```
 

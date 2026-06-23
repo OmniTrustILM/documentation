@@ -58,7 +58,7 @@ Values you provided in this dialog are stored on the file system in: `/etc/ilm-a
 
 ## Configure Docker repository access credentials
 
-Licensed parts of ILM are hosted on a private Docker repository named `harbor.3key.company`. Use this dialog to provide your *username* and *password* you have received from [support](/docs/feedback-support/).
+Licensed parts of ILM are hosted on a private Docker repository named `hub.omnitrustregistry.com`. Use this dialog to provide your *username* and *password* you have received from [support](/docs/feedback-support/).
 
 Values you provided in this dialog are stored on the file system in: `/etc/ilm-ansible/vars/docker.yml`.
 
@@ -72,7 +72,7 @@ In this dialog window, you can select which version and which components of ILM 
 
 #### Version
 
-List [available versions](https://harbor.3key.company/harbor/projects/8/repositories/czertainly/artifacts-tab). The latest stable version is typically the best choice, and it is pre-selected in the appliance.
+List [available versions](https://hub.omnitrustregistry.com/harbor/projects/8/repositories/czertainly/artifacts-tab). The latest stable version is typically the best choice, and it is pre-selected in the appliance.
 
 #### Components
 

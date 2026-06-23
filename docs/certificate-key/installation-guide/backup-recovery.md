@@ -60,7 +60,7 @@ To restore CZERTAINLY to its previous state:
 ```bash
 helm install --namespace czertainly \
   -f czertainly-values-[current version].yaml czertainly-tlm \
-  oci://harbor.3key.company/czertainly-helm/czertainly \
+  oci://hub.omnitrustregistry.com/ilm-helm/ilm \
   --version [current version]
 ```
 
