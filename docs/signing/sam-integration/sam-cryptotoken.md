@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # SAM Crypto Token
 
-Remote signing using with the SCAL2 and the CZERTAINLY Signing is possible by integrating the SAM and the signing back-end of the remote signing solution. We call it **SAMCryptoToken**. It is a special implementation of the of the CryptoToken for the CZERTAINLY Signing, which contains necessary functions and interfaces to communicate with the SAM and the user’s device.
+Remote signing using with the SCAL2 and ILM Signing is possible by integrating the SAM and the signing back-end of the remote signing solution. We call it **SAMCryptoToken**. It is a special implementation of the of the CryptoToken for the signing component, which contains necessary functions and interfaces to communicate with the SAM and the user’s device.
 
 <div class="text--center">
 
@@ -12,7 +12,7 @@ Remote signing using with the SCAL2 and the CZERTAINLY Signing is possible by in
 
 </div>
 
-What is happening when user would like to sign the data within the context of the CZERTAINLY Signing and SCAL2? The typical signature process is as follows:
+What is happening when user would like to sign the data within the context of the signing component and SCAL2? The typical signature process is as follows:
 
 - Request to sign the data is triggered from the the client
 - Signer prepares the Data To Be Signed and asks the signing back-end to confirm by the user

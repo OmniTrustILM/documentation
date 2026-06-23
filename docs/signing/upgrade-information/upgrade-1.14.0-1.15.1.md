@@ -4,7 +4,7 @@ sidebar_position: 150
 
 # From 1.14.0 To 1.15.1
 
-In release version `1.15.0` the following changes were made as part of the integration efforts with the CZERTAINLY platform:
+In release version `1.15.0` the following changes were made as part of the integration efforts with the ILM platform:
 
 ## TimeMonitor using built-in SNTP in containerized deployments
 
