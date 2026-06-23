@@ -50,4 +50,4 @@ Each `Connector` has to implement at least the following interfaces:
 `Core` interfaces are used by the platform to communicate with `Connector`s and `Client`s.
 
 You can find the description of the `Core` interfaces in the following sections:
-- [Core interfaces](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/interfaces/core)
+- [Core interfaces](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/otilm/api/interfaces/core)

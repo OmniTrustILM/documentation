@@ -25,7 +25,7 @@ The following processes are associated with the Credential Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client->Core [[core-credential/#tag/Credential-Management/operation/createCredential]]: Add Credential
         Note over Client,Core: Add Credential with specific Attributes based on the implementation
         Core->Core: Check existence of Connector and Credential
@@ -41,7 +41,7 @@ The following processes are associated with the Credential Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client->Core [[core-credential/#tag/Credential-Management/operation/getCredential]]: Details of a Credentials
         Core->Core: Process secrets
         Note right of Core: Secrets are securely processed before the Credential is returned
@@ -54,7 +54,7 @@ The following processes are associated with the Credential Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client->Core [[core-credential/#tag/Credential-Management/operation/editCredential]]: Update Credential
         Core->Core: Check existence of Connector and Credential
         Core->Connector [[connector-credential-provider/#tag/Attributes/operation/validateAttributes]]: Validate attributes
@@ -69,7 +69,7 @@ The following processes are associated with the Credential Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client->Core [[core-credential/#tag/Credential-Management/operation/deleteCredential]]: Remove Credential
         Core->Core: Check if the Credential can be removed
         Core->Core: Remove Credential
@@ -82,7 +82,7 @@ The following processes are associated with the Credential Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         alt enable/disable
             Client->Core [[core-credential/#tag/Credential-Management/operation/enableCredential]]: Enable Credential
             Client->Core [[core-credential/#tag/Credential-Management/operation/disableCredential]]: Disable Credential

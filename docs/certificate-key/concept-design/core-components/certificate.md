@@ -23,7 +23,7 @@ In addition to the above details, the following are mapped to the `Certificate` 
 
 ## Hybrid Certificate
 
-In addition to classic X.509 certificates with public key, CZERTAINLY also supports hybrid certificates with alternative extensions. Hybrid certificates are important for migration to post-quantum technology. They contain two public keys - the one with classical public key like RSA or ECDSA and an alternative public key with quantum-safe algorithm. When the hybrid CA signs certificate, the signed certificate will also have corresponding alternative signature extension that is created using corresponding alternative private key. The alternative extensions are specified in [ITU-T X509 (10/2019)](https://www.itu.int/rec/T-REC-X.509-201910-I/en).
+In addition to classic X.509 certificates with public key, the platform also supports hybrid certificates with alternative extensions. Hybrid certificates are important for migration to post-quantum technology. They contain two public keys - the one with classical public key like RSA or ECDSA and an alternative public key with quantum-safe algorithm. When the hybrid CA signs certificate, the signed certificate will also have corresponding alternative signature extension that is created using corresponding alternative private key. The alternative extensions are specified in [ITU-T X509 (10/2019)](https://www.itu.int/rec/T-REC-X.509-201910-I/en).
 
 ## Certificate state
 
@@ -178,7 +178,7 @@ Revoked --> [*]
 Certificate validation is a complex process that ensures the security and trustworthiness of digital certificates in various applications, including secure web browsing, email encryption, and digital signatures.
 It plays a crucial role in establishing secure and authenticated communication over the internet.
 
-In `CZERTAINLY` platform, certificate validation is periodically checked by system scheduled job to keep up-to-date certificate status.
+In the platform, certificate validation is periodically checked by system scheduled job to keep up-to-date certificate status.
 To achieve that, crucial part of validation algorithm is to update and construct certificate chain (path). Currently, only `X.509` certificates are supported.
 Therefore, following description of certificate validation is valid for `X.509` certificate type.
 

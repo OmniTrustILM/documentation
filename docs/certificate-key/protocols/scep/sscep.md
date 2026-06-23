@@ -10,7 +10,7 @@ This guide shows, how to use `SSCEP` to manage certificates using SCEP protocol 
 
 ## Prerequisites
 
-Before you can use `SSCEP` with the CZERTAINLY, you need to have the following:
+Before you can use `SSCEP` with the platform, you need to have the following:
 - `SSCEP` installed and configured
 - Configured at least one `RA Profile` certificate service
 - SCEP protocol enabled according to the [Enable SCEP for RA Profile](./enable-scep-ra-profile.md)
@@ -63,11 +63,11 @@ To obtain the CA certificate run the `getca` command:
 
 ```bash
 ./sscep getca \
-  -u http://[domain]:[port]/api/v1/protocols/scep/raProfile/czertainly/pkiclient.exe \
+  -u http://[domain]:[port]/api/v1/protocols/scep/raProfile/ilm/pkiclient.exe \
   -c ca.crt
 ```
 
-This command will download the CA certificate (or certificates, if the chain is available) from the CZERTAINLY SCEP service and store it in the `ca.crt` file (when the chain is obtained, it will be stored as `ca.crt-0`, `ca.crt-1`, etc.).
+This command will download the CA certificate (or certificates, if the chain is available) from the platform's SCEP service and store it in the `ca.crt` file (when the chain is obtained, it will be stored as `ca.crt-0`, `ca.crt-1`, etc.).
 
 ## Enroll Certificate
 
@@ -89,14 +89,14 @@ Once you have the CA certificate, private key and the certificate signing reques
 
 ```bash
 ./sscep enroll \
-  -u http://[domain]:[port]/api/v1/protocols/scep/czertainly/pkiclient.exe \
+  -u http://[domain]:[port]/api/v1/protocols/scep/ilm/pkiclient.exe \
   -c ca.crt-0 \
   -k test.key \
   -r test.csr \
   -l test.crt
  ```
 
-This will create enrollment request for the SCEP service located on the `http://[domain]:[port]/api/v1/protocols/scep/czertainly/pkiclient.exe` URL,  containing `test.csr` certificate signing request, signed by the `test.key` private key, encrypted with the public key in the `ca.crt-0` certificate, and finally store the enrolled certificate in the `test.crt` file.
+This will create enrollment request for the SCEP service located on the `http://[domain]:[port]/api/v1/protocols/scep/ilm/pkiclient.exe` URL,  containing `test.csr` certificate signing request, signed by the `test.key` private key, encrypted with the public key in the `ca.crt-0` certificate, and finally store the enrolled certificate in the `test.crt` file.
 
 Enrolled certificate is also stored in the certificate inventory of the platform and can be further managed and automated.
 
@@ -108,7 +108,7 @@ Use the following command to renew the certificate:
 
 ```bash
 ./sscep enroll \
-  -u http://[domain]:[port]/api/v1/protocols/scep/czertainly/pkiclient.exe \ 
+  -u http://[domain]:[port]/api/v1/protocols/scep/ilm/pkiclient.exe \
   -c ca.crt \
   -K test.key \
   -O test.crt \
@@ -117,6 +117,6 @@ Use the following command to renew the certificate:
   -l new.crt
 ```
 
-This will create enrollment request for the SCEP service located on the `http://[domain]:[port]/api/v1/protocols/scep/czertainly/pkiclient.exe` URL,  containing `new.csr` certificate signing request, signed by the `new.key` private key, authenticated by the current private key `test.key` and current and valid certificate `test.crt`, encrypted with the public key in the `ca.crt-0` certificate, and finally store the enrolled certificate in the `new.crt` file.
+This will create enrollment request for the SCEP service located on the `http://[domain]:[port]/api/v1/protocols/scep/ilm/pkiclient.exe` URL,  containing `new.csr` certificate signing request, signed by the `new.key` private key, authenticated by the current private key `test.key` and current and valid certificate `test.crt`, encrypted with the public key in the `ca.crt-0` certificate, and finally store the enrolled certificate in the `new.crt` file.
 
 Renewed certificate is included in the certificate inventory of the platform.

@@ -8,9 +8,9 @@ Terraform is an open-source infrastructure as code (IaC) software tool that enab
 
 Declarative configuration of infrastructure allows you to create a blueprint of your infrastructure and version it, enabling you to roll back to a previous version if needed. In most cases, you need to provision and maintain trusted certificates for your infrastructure.
 
-Terraform with integration to CZERTAINLY can be used to automate the process of certificate provisioning and renewal.
+Terraform with integration to ILM can be used to automate the process of certificate provisioning and renewal.
 
-CZERTAINLY platform supports ACME implementation according to the [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555). This guide shows, how you can use Terraform `acme` provider to manage certificates using ACME protocol and certificate management services controlled by the platform.
+The platform supports ACME implementation according to the [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555). This guide shows, how you can use Terraform `acme` provider to manage certificates using ACME protocol and certificate management services controlled by the platform.
 
 For more information about Terraform, refer to the [Terraform documentation](https://www.terraform.io/docs/index.html).
 
@@ -20,7 +20,7 @@ This guide assumes you have at least basic knowledge about Terraform. If you are
 
 ## Prerequisites
 
-Before you can configure Terraform `acme` provider with the CZERTAINLY, you need to have the following:
+Before you can configure Terraform `acme` provider with the platform, you need to have the following:
 - Terraform installed
 - Configured at least one `RA Profile` certificate service
 - Access to HTTP or DNS resources, that will be used to validate ACME challenges
@@ -53,7 +53,7 @@ The configuration of the `acme` provider is done in the `provider` block and req
 
 ```hcl
 provider "acme" {
-  server_url = "https://[domain]:[port]/api/v1/protocols/acme/raProfile/czertainly/directory"
+  server_url = "https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory"
 }
 ```
 
@@ -70,7 +70,7 @@ resource "tls_private_key" "private_key" {
 
 resource "acme_registration" "reg" {
   account_key_pem = tls_private_key.private_key.private_key_pem
-  email_address   = "czertainly-terraform@example.com"
+  email_address   = "ilm-terraform@example.com"
 }
 ```
 
@@ -91,9 +91,9 @@ For the list of all available challenge types and configuration, refer to the [p
 ```hcl
 resource "acme_certificate" "certificate" {
   account_key_pem           = acme_registration.reg.account_key_pem
-  common_name               = "demo.czertainly.test"
+  common_name               = "demo.ilm.test"
   key_type                  = "2048"
-  subject_alternative_names = ["demo.czertainly.test"]
+  subject_alternative_names = ["demo.ilm.test"]
 
   dns_challenge {
     provider = "rfc2136"
@@ -101,7 +101,7 @@ resource "acme_certificate" "certificate" {
     config = {
       RFC2136_NAMESERVER     = "127.0.0.1:53"
       RFC2136_TSIG_ALGORITHM = "hmac-sha512"
-      RFC2136_TSIG_KEY       = "czertainly.test"
+      RFC2136_TSIG_KEY       = "ilm.test"
       RFC2136_TSIG_SECRET    = "OCLSOqzn0LjZfu40cER7tCan1RNx9q/c16kBkfeqUzNMtiwnWD+LgXSepG5tV8KptHsdK8zVQYuGS9aRn/JBig=="
     }
   }
@@ -123,10 +123,10 @@ resource "tls_private_key" "cert_private_key" {
 resource "tls_cert_request" "req" {
   key_algorithm   = "RSA"
   private_key_pem = tls_private_key.cert_private_key.private_key_pem
-  dns_names       = ["demo.czertainly.test"]
+  dns_names       = ["demo.ilm.test"]
 
   subject {
-    common_name = "demo.czertainly.test"
+    common_name = "demo.ilm.test"
   }
 }
 
@@ -140,7 +140,7 @@ resource "acme_certificate" "certificate" {
     config = {
       RFC2136_NAMESERVER     = "127.0.0.1:53"
       RFC2136_TSIG_ALGORITHM = "hmac-sha512"
-      RFC2136_TSIG_KEY       = "czertainly.test"
+      RFC2136_TSIG_KEY       = "ilm.test"
       RFC2136_TSIG_SECRET    = "OCLSOqzn0LjZfu40cER7tCan1RNx9q/c16kBkfeqUzNMtiwnWD+LgXSepG5tV8KptHsdK8zVQYuGS9aRn/JBig=="
     }
   }

@@ -66,5 +66,5 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 
 ## Private repository
 
-Non-public connectors are hosted on internal `harbor.3key.company` which serves as a repository of container images and Helm charts.
-Access to `harbor.3key.company` is provided based on request.
+Non-public connectors are hosted on internal `hub.omnitrustregistry.com` which serves as a repository of container images and Helm charts.
+Access to `hub.omnitrustregistry.com` is provided based on request.

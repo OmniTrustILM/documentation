@@ -1,0 +1,32 @@
+<svg width="255" height="151.251" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" overflow="hidden">
+  <defs>
+    <clipPath id="clip0">
+      <rect x="1760" y="490" width="1283" height="761"/>
+    </clipPath>
+    <clipPath id="clip1">
+      <rect x="1763" y="493" width="758" height="758"/>
+    </clipPath>
+    <clipPath id="clip2">
+      <rect x="1763" y="493" width="758" height="758"/>
+    </clipPath>
+    <clipPath id="clip3">
+      <rect x="1763" y="493" width="758" height="758"/>
+    </clipPath>
+    <linearGradient x1="1969.45" y1="700.455" x2="2313.55" y2="1044.55" gradientUnits="userSpaceOnUse" spreadMethod="pad" id="stroke4">
+      <stop offset="0" stop-color="#0073cf" stop-opacity="1"/>
+      <stop offset="1" stop-color="#0073cf" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <g transform="matrix(0.198752923 0 0 0.198752923 -349.805144 -97.388932)">
+    <g clip-path="url(#clip1)">
+      <g clip-path="url(#clip2)">
+        <g clip-path="url(#clip3)">
+          <path d="M2141.5 700.455C2046.48 700.455 1969.45 777.482 1969.45 872.5 1969.45 967.518 2046.48 1044.55 2141.5 1044.55 2236.52 1044.55 2313.55 967.518 2313.55 872.5 2313.55 777.482 2236.52 700.455 2141.5 700.455" stroke="url(#stroke4)" stroke-width="51.6136" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" fill="none" fill-rule="nonzero"/>
+        </g>
+      </g>
+    </g>
+    <text fill="#000000" fill-opacity="1" font-family="Verdana,Verdana_MSFontService,sans-serif" font-style="normal" font-variant="normal" font-weight="700" font-stretch="normal" font-size="147" text-anchor="start" direction="ltr" writing-mode="lr-tb" unicode-bidi="normal" text-decoration="none" transform="matrix(1 0 0 1 2048.68 930)">A</text>
+    <text fill="#000000" fill-opacity="1" font-family="Verdana,Verdana_MSFontService,sans-serif" font-style="normal" font-variant="normal" font-weight="700" font-stretch="normal" font-size="98" text-anchor="start" direction="ltr" writing-mode="lr-tb" unicode-bidi="normal" text-decoration="none" transform="matrix(1 0 0 1 2162.69 886)">2</text>
+    <text fill="#000000" fill-opacity="1" font-family="Verdana,Verdana_MSFontService,sans-serif" font-style="normal" font-variant="normal" font-weight="700" font-stretch="normal" font-size="128" text-anchor="start" direction="ltr" writing-mode="lr-tb" unicode-bidi="normal" text-decoration="none" transform="matrix(1 0 0 1 2397.1 922)">ENGINE</text>
+  </g>
+</svg>

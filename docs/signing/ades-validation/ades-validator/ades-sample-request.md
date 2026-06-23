@@ -51,11 +51,12 @@ The following is a sample Postman request to validate the PDF document:
       ]
     },
     "url": {
-      "raw": "http://signing.czertainly.com:8080/signserver/process",
+      "raw": "http://signing.ilm.example.com:8080/signserver/process",
       "protocol": "http",
       "host": [
         "signing",
-        "czertainly",
+        "ilm",
+        "example",
         "com"
       ],
       "port": "8080",

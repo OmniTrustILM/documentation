@@ -13,5 +13,5 @@ Added support for configuring revocation data skip certificate extensions OIDs t
 ## Bug Fixes and Minor Improvements
 
 The release includes bug fixing and minor improvements:
-- Switch from CZERTAINLY theme to ILM default theme
+- Switch from the legacy Keycloak theme to the ILM default theme
 - Ensure proper handling of digest algorithm parameters as per RFC 3279 requirements

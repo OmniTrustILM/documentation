@@ -43,11 +43,11 @@ CBOM documents in CycloneDX JSON format can be uploaded through the Platform UI 
 
 Cryptographic assets can be automatically discovered using connectors implementing the `Discovery Provider` `Function Group`. Discovered CBOM documents are stored in the CBOM Repository and synchronized with the Platform.
 
-[CBOM Lens](https://github.com/CZERTAINLY/CBOM-Lens) is a scanning tool that can discover cryptographic assets in filesystems, container images, and network endpoints.
+[CBOM Lens](https://github.com/OmniTrustILM/cbom-lens) is a scanning tool that can discover cryptographic assets in filesystems, container images, and network endpoints.
 
 ## Integration with CBOM Repository
 
-The [CBOM Repository](https://github.com/CZERTAINLY/CBOM-Repository) is a service that provides centralized storage and versioning of CBOM documents. It serves as the single source of truth for all CBOM content.
+The [CBOM Repository](https://github.com/OmniTrustILM/cbom-repository) is a service that provides centralized storage and versioning of CBOM documents. It serves as the single source of truth for all CBOM content.
 
 The Platform stores `CBOM` metadata locally for listing and search. When full CBOM content is needed (e.g., for the detail view or export), it is fetched on demand from the CBOM Repository.
 

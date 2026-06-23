@@ -4,13 +4,13 @@ sidebar_position: 13
 
 # jSCEP
 
-[`jSCEP`](https://github.com/jscep/jscep) is s an open-source Java implementation of the SCEP protocol that works with the CZERTAINLY SCEP service implementation.
+[`jSCEP`](https://github.com/jscep/jscep) is an open-source Java implementation of the SCEP protocol that works with the platform's SCEP service implementation.
 
 This guide shows, how to use `jSCEP` to manage certificates using SCEP protocol and certificate management services controlled by the platform using the Java code.
 
 ## Prerequisites
 
-Before you can use `jSCEP` with the CZERTAINLY, you need to have the following:
+Before you can use `jSCEP` with the platform, you need to have the following:
 - `jSCEP` command line interface or source code available
 - Configured at least one `RA Profile` certificate service
 - SCEP protocol enabled according to the [Enable SCEP for RA Profile](./enable-scep-ra-profile.md)
@@ -24,7 +24,7 @@ For more information about the `jSCEP`, download source code or CLI, refer to of
 To create `Client`, we need to know the SCEP service URL and the `CallbackHandler` that is used to verify the CA certificate being sent by the SCEP server is the expected certificate (see [Creating a Callback Handler](https://github.com/jscep/jscep#creating-a-callback-handler) for more information).
 
 ```java
-URL url = new URL("https://[domain]:[port]/api/v1/protocols/scep/raProfile/czertainly/pkiclient.exe");
+URL url = new URL("https://[domain]:[port]/api/v1/protocols/scep/raProfile/ilm/pkiclient.exe");
 CertificateVerifier verifier = new OptimisticCertificateVerifier();
 CallbackHandler handler = new DefaultCallbackHandler(verifier);
 Client client = new Client(url, handler);

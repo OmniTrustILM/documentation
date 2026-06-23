@@ -11,12 +11,12 @@ For more information on the CMP command, refer to the [OpenSSL CMP Command docum
 This guide will show you how to use the OpenSSL CMP command to interact with a CMP server and request a certificate.
 
 :::warning[OpenSSL CMP implementation]
-The OpenSSL CMP command is implemented according to the [RFC 4210 - Internet X.509 Public Key Infrastructure Certificate Management Protocol (CMP)](https://datatracker.ietf.org/doc/html/rfc4210). When using the OpenSSL CMP command with the CZERTAINLY, make sure that the CMP server is configured according to the RFC 4210 specification to be interoperable with the OpenSSL CMP command.
+The OpenSSL CMP command is implemented according to the [RFC 4210 - Internet X.509 Public Key Infrastructure Certificate Management Protocol (CMP)](https://datatracker.ietf.org/doc/html/rfc4210). When using the OpenSSL CMP command with the platform, make sure that the CMP server is configured according to the RFC 4210 specification to be interoperable with the OpenSSL CMP command.
 :::
 
 ## Prerequisites
 
-Before you can use the OpenSSL CMP command with the CZERTAINLY, you need to have the following:
+Before you can use the OpenSSL CMP command with the platform, you need to have the following:
 - OpenSSL library installed on your system. You can download the library from the [OpenSSL website](https://www.openssl.org/).
 - Configured at least one `RA Profile` certificate service
 - CMP protocol enabled according to the [Enable CMP Protocol](./enable-cmp-protocol.md)
@@ -48,7 +48,7 @@ server = [domain]:[port]
 # -path remote_path
 #   HTTP path at the CMP server (aka CMP alias) to use for POST requests.
 #   Defaults to any path given with -server, else "/".
-path = api/v1/protocols/cmp/raProfile/czertainly
+path = api/v1/protocols/cmp/raProfile/ilm
 
 # Other configuration options that might be applicable
 #   srvcert = 
@@ -122,7 +122,7 @@ If the command is successful, the certificate should be enrolled and saved in th
 
 ```bash
 cmp_main:apps/cmp.c:3225:CMP info: using section(s) 'init,cmp_ir_mac' of OpenSSL configuration file 'openssl.conf'
-setup_client_ctx:apps/cmp.c:2220:CMP info: will contact https://[domain]:[port]/api/v1/protocols/cmp/raProfile/czertainly 
+setup_client_ctx:apps/cmp.c:2220:CMP info: will contact https://[domain]:[port]/api/v1/protocols/cmp/raProfile/ilm 
 CMP DEBUG: Starting new transaction with ID=E0:9B:B4:EF:7E:45:94:BD:72:8F:03:10:E3:E1:E9:65
 CMP info: sending IR
 CMP DEBUG: connecting to CMP server [domain]:[port] using TLS
@@ -168,7 +168,7 @@ If the command is successful, the certificate should be renewed and saved in the
 
 ```bash
 cmp_main:apps/cmp.c:3225:CMP info: using section(s) 'init,cmp_ir_mac' of OpenSSL configuration file 'openssl.conf'
-setup_client_ctx:apps/cmp.c:2220:CMP info: will contact https://[domain]:[port]/api/v1/protocols/cmp/raProfile/czertainly 
+setup_client_ctx:apps/cmp.c:2220:CMP info: will contact https://[domain]:[port]/api/v1/protocols/cmp/raProfile/ilm 
 CMP DEBUG: Starting new transaction with ID=6D:6F:74:44:99:C9:CA:E7:4A:10:29:A6:35:54:EA:C7
 CMP info: sending KUR
 CMP DEBUG: connecting to CMP server [domain]:[port] using TLS
@@ -207,7 +207,7 @@ If the command is successful, the certificate should be revoked. You should see 
 
 ```bash
 cmp_main:apps/cmp.c:3225:CMP info: using section(s) 'init,cmp_ir_mac' of OpenSSL configuration file 'openssl.conf'
-setup_client_ctx:apps/cmp.c:2220:CMP info: will contact https://[domain]:[port]/api/v1/protocols/cmp/raProfile/czertainly 
+setup_client_ctx:apps/cmp.c:2220:CMP info: will contact https://[domain]:[port]/api/v1/protocols/cmp/raProfile/ilm 
 CMP DEBUG: Starting new transaction with ID=D6:1E:2D:AA:33:70:11:D4:CC:FF:1B:33:5B:74:8E:B8
 CMP info: sending RR
 CMP DEBUG: connecting to CMP server [domain]:[port] using TLS

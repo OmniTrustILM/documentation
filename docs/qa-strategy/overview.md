@@ -4,12 +4,12 @@ sidebar_position: 1
 
 # QA Strategy
 
-Ensuring that the CZERTAINLY platform is able to deliver the highest quality is one of success factors of this open source project.
+Ensuring that the ILM platform is able to deliver the highest quality is one of success factors of this open source project.
 The quality of the platform is ensured by the Quality Assurance (QA) strategy.
 
 The QA strategy describes testing approach, procedures and the tools used to ensure the quality of the platform.
 
-The goals of CZERTAINLY QA strategy are:
+The goals of the QA strategy are:
 - meet the industry quality standards and expectations
 - ensure that the platform is able to deliver the highest security, performance and availability
 - identify and fix the issues as early as possible
@@ -19,7 +19,7 @@ The goals of CZERTAINLY QA strategy are:
 
 ## Scope overview
 
-CZERTAINLY platform consists of several components, microservices, that works together to provide the functionality of the platform.
+The platform consists of several components, microservices, that works together to provide the functionality of the platform.
 
 There are number of component that are considered to be part ot the core of the platform. Such components are providing necessary functionality for the platform to work and they are mandatory to be included in the deployment.
 
@@ -56,7 +56,7 @@ The following QA strategy components are involved in the overall QA strategy:
 
 ## Testing principles
 
-The CZERTAINLY platform provides flexibility and open architecture for the integration with other systems. The design of the platform is based on the microservices architecture and the platform is built using the modern technologies and frameworks to comply with the cloud-native principles. For more information about the platform concept, refer to [Concept Overview](../certificate-key/concept-design/overview.md) section.
+The platform provides flexibility and open architecture for the integration with other systems. The design of the platform is based on the microservices architecture and the platform is built using the modern technologies and frameworks to comply with the cloud-native principles. For more information about the platform concept, refer to [Concept Overview](../certificate-key/concept-design/overview.md) section.
 
 The testing approach is based on the following principles:
 - **Test early and often** - the testing is done as early as possible and as often as possible. The testing is done during the development and staging of the platform

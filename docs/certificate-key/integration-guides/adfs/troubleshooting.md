@@ -16,9 +16,9 @@ Logs from AD FS can be helpful to troubleshoot the integration. You can view log
 Set-AdfsProperties -LogLevel Verbose
 ```
 
-## CZERTAINLY
+## ILM
 
-You can enable DEBUG logs in CZERTAINLY to troubleshoot the integration with AD FS. To do so, set environment variable `KONG_LOG_LEVEL` to value `debug` of the API gateway that is handling the OIDC requests. You can enable DEBUG logs using Helm chart by setting `apiGateway.logging.level` to `debug` and redeploying the Helm chart.
+You can enable DEBUG logs in the platform to troubleshoot the integration with AD FS. To do so, set environment variable `KONG_LOG_LEVEL` to value `debug` of the API gateway that is handling the OIDC requests. You can enable DEBUG logs using Helm chart by setting `apiGateway.logging.level` to `debug` and redeploying the Helm chart.
 
 ```JSON
 {
@@ -34,7 +34,7 @@ You can enable DEBUG logs in CZERTAINLY to troubleshoot the integration with AD 
     "user",
     "manager"
   ],
-  "iss": "https://keycloak.example.com/realms/CZERTAINLY",
+  "iss": "https://keycloak.example.com/realms/ILM",
   "aud": "kong",
   "iat": 1712665284,
   "azp": "kong",

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Documentation site for CZERTAINLY/ILM (Identity Lifecycle Management) — an open-source trust lifecycle management platform. Built with **Docusaurus 3.7** and deployed to GitHub Pages at https://docs.otilm.com.
+Documentation site for ILM (Identity Lifecycle Management) — an open-source trust lifecycle management platform. Built with **Docusaurus 3.7** and deployed to GitHub Pages at https://docs.otilm.com.
 
 ## Commands
 
@@ -20,7 +20,7 @@ The build fetches 30+ OpenAPI specs from `https://api.otilm.com/` and renders th
 
 To download remote Helm chart docs:
 ```bash
-yarn docusaurus download-remote-czertainly-helm-docs
+yarn docusaurus download-remote-helm-docs
 ```
 
 ## Architecture

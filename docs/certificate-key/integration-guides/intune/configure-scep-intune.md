@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Configure Intune SCEP Profile
 
-To integrate CZERTAINLY with registered application in [Authorize CZERTAINLY](./authorize-czertainly.md), we need to create `SCEP Profile` that will be used to validate and process Intune requests.
+To integrate ILM with registered application in [Authorize ILM](./authorize-ilm.md), we need to create `SCEP Profile` that will be used to validate and process Intune requests.
 
 Please refer to [`SCEP Profile`](../../protocols/scep/scep-profile.md) documentation for more information and [Configuration of `SCEP Profile`](../../protocols/scep/enable-scep-ra-profile.md#configuration-of-scep-profile).
 

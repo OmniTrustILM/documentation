@@ -78,7 +78,7 @@ This rule will provide claims about the user's email address, given name, and su
 3. Enter the **`Claim rule name`** as `Group membership: admin`. Change the name according to the group you want to send.
 4. Select user's group using **`Browse...`** button.
 5. Select **`Group`** as the **`Outgoing claim type`**.
-6. Select the **`Outgoing claim value`** as the the associated name of the role in the CZERTAINLY platform, for example **`admin`**.
+6. Select the **`Outgoing claim value`** as the associated name of the role in the platform, for example **`admin`**.
 7. Click **`Finish`**.
 
 This rule will provide claims about the user's group membership in the format of the group name.
@@ -92,7 +92,7 @@ This rule will provide claims about the user's group membership in the format of
 </center>
 
 :::info[Group membership]
-The group membership rule will provide claims about the user's group membership only in case the user is a member of the selected group. If you want to provide claims about multiple groups, you need to create a separate rule for each group. The group name should match the role name in the CZERTAINLY platform, or it will be created as a new role, depending on the platform configuration.
+The group membership rule will provide claims about the user's group membership only in case the user is a member of the selected group. If you want to provide claims about multiple groups, you need to create a separate rule for each group. The group name should match the role name in the platform, or it will be created as a new role, depending on the platform configuration.
 :::
 
 ## PowerShell configuration
@@ -101,8 +101,8 @@ You can use PowerShell to automate the configuration of the AD FS relying party 
 
 ```powershell
 # Add new relying party trust
-$metadataUrl = "https://keycloak.example.com/realms/CZERTAINLY/broker/adfs-idp-alias/endpoint/descriptor"
-$relyingPartyName = "CZERTAINLY"
+$metadataUrl = "https://keycloak.example.com/realms/ILM/broker/adfs-idp-alias/endpoint/descriptor"
+$relyingPartyName = "ILM"
 $accessControlPolicyName = "Permit everyone"
 $relyingPartyTrust = Add-AdfsRelyingPartyTrust -MetadataUrl $metadataUrl -Name $relyingPartyName -AccessControlPolicyName $accessControlPolicy
 

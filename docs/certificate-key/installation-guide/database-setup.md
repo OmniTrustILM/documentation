@@ -10,13 +10,13 @@ There are several microservices that are using the database. Although each micro
 
 Typicaly you need to create the database user for the platform:
 ```sql
-CREATE USER czertainlyuser WITH PASSWORD 'your-strong-password';
+CREATE USER ilmuser WITH PASSWORD 'your-strong-password';
 ```
 
 Create the database itself and grant the user full control over it:
 ```sql
-CREATE DATABASE czertainlydb ENCODING 'UTF8' LC_COLLATE='en_US.UTF-8' LC_CTYPE='en_US.UTF-8' TEMPLATE=template0;
-GRANT ALL PRIVILEGES ON DATABASE czertainlydb to czertainlyuser;
+CREATE DATABASE ilmdb ENCODING 'UTF8' LC_COLLATE='en_US.UTF-8' LC_CTYPE='en_US.UTF-8' TEMPLATE=template0;
+GRANT ALL PRIVILEGES ON DATABASE ilmdb to ilmuser;
 ```
 The platform will take care of creating all necesary schemas and tables itself. It will also handle any necessary upgrades.
 
@@ -31,12 +31,12 @@ Some of the migrations are more complex and require migration in the code as wel
 
 Each microservice maintains its own database schema and migrations in the GitHub repository. The location of the schema and migrations depends on technology.
 
-The migrations for the Core microservice are located in the [`db/migration`](https://github.com/CZERTAINLY/CZERTAINLY-Core/tree/master/src/main/resources/db/migration) directory.
+The migrations for the Core microservice are located in the [`db/migration`](https://github.com/OmniTrustILM/core/tree/main/src/main/resources/db/migration) directory.
 Depending on your setup, you might be required to initialize the database manually using following additional steps:
 
 Create the tables using the schema file located in the `db` directory:
 ```bash
-psql -h localhost -U czertainlyuser -d czertainlydb < db/migration/*.sql
+psql -h localhost -U ilmuser -d ilmdb < db/migration/*.sql
 ```
 
 Once the tables and data are created, you can deploy the platform and start using it.

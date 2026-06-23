@@ -55,7 +55,7 @@ An example SAN entry might look like this:
 
 ```json
 {
-  "dNSName": ["czertainly.com", "www.czertainly.com"],
+  "dNSName": ["example.com", "www.example.com"],
   "directoryName": [],
   "ediPartyName": [],
   "iPAddress": ["156.88.27.150"],
@@ -79,17 +79,17 @@ For any empty SAN type, the corresponding value is an empty array (`[]`).
 
 This regular expression ensures that the `registeredID` field does **not** match an empty array (`[]`).
 
-### Example 2: checking if `dNSName` SAN equals `czertainly.com`
+### Example 2: checking if `dNSName` SAN equals `example.com`
 
 For non-empty SAN fields, values are represented as strings in quotes, separated by commas.
 
-- **Condition Name:** Certificate SAN dNSName equals `czertainly.com`  
-- **Description:** Checks whether the SAN of a certificate contains a `dNSName` entry equal to `czertainly.com`
+- **Condition Name:** Certificate SAN dNSName equals `example.com`  
+- **Description:** Checks whether the SAN of a certificate contains a `dNSName` entry equal to `example.com`
 - **Condition Type:** Check Field  
 - **Resource:** Certificate  
-- **Condition Items:** `Property 'Subject Alternative Name' matches regex '"dNSName"\s*:\s*\[[^\]]*"\s*czertainly\.com\s*"[^]]*\]'`
+- **Condition Items:** `Property 'Subject Alternative Name' matches regex '"dNSName"\s*:\s*\[[^\]]*"\s*example\.com\s*"[^]]*\]'`
 
-This regular expression matches any SAN JSON that includes `czertainly.com` as one of the `dNSName` values.
+This regular expression matches any SAN JSON that includes `example.com` as one of the `dNSName` values.
 
 > **Note:**  
 > The same principles that apply to the `matches regex` operator in condition items also apply to the `matches regex` operator in search filters.

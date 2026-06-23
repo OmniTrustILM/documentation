@@ -4,10 +4,10 @@ sidebar_position: 7
 
 # Create User and Login
 
-Create user in the CZERTAINLY realm following steps described in the [Creating users](https://www.keycloak.org/docs/latest/server_admin/#proc-creating-user_server_administration_guide) section of the Keycloak documentation, with these attributes:
+Create user in the ILM realm following steps described in the [Creating users](https://www.keycloak.org/docs/latest/server_admin/#proc-creating-user_server_administration_guide) section of the Keycloak documentation, with these attributes:
 - Username: **admin**
-- Email: **admin@czertainly.local**
-- First name: **CZERTAINLY**
+- Email: **admin@ilm.local**
+- First name: **ILM**
 - Last name: **Administrator**
 
 You can use the attributes mapping to define roles for the user. For that purpose, set the user attributes according to [Configuring user attributes](https://www.keycloak.org/docs/latest/server_admin/#proc-configuring-user-attributes_server_administration_guide):
@@ -22,12 +22,12 @@ This will map the `groups` attribute to the `roles` attribute in the token of th
   ],
   "username": "admin",
   "sub": "5560f639-8067-415d-85ae-809b06e48d19",
-  "given_name": "CZERTAINLY",
+  "given_name": "ILM",
   "family_name": "Administrator",
-  "email": "admin@czertainly.local",
+  "email": "admin@ilm.local",
   "id": "5560f639-8067-415d-85ae-809b06e48d19",
   "preferred_username": "admin",
-  "name": "CZERTAINLY Administrator"
+  "name": "ILM Administrator"
 }
 ```
 
@@ -42,6 +42,6 @@ authService:
 
 ## Login
 
-You can login to CZERTAINLY with configured user:
-- Open the CZERTAINLY login page: `https://<CZERTAINLY_DOMAIN>/login?redirect=%2Fadministrator%2F`
+You can login to ILM with configured user:
+- Open the ILM login page: `https://<PLATFORM_DOMAIN>/login?redirect=%2Fadministrator%2F`
 - Login with username `admin`

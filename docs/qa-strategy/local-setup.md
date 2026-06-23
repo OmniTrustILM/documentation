@@ -70,13 +70,13 @@ cd ~/ilm-local/development-environment
 cp .env.example .env
 ```
 
-Open `.env` in any text editor and update `CZERTAINLY_SOURCES_BASE_DIR` to point to your working directory:
+Open `.env` in any text editor and update `ILM_SOURCES_BASE_DIR` to point to your working directory:
 
 ```env
 # macOS:  /Users/yourname/ilm-local
 # Linux:  /home/yourname/ilm-local
 # WSL:    /home/yourname/ilm-local
-CZERTAINLY_SOURCES_BASE_DIR=/Users/yourname/ilm-local
+ILM_SOURCES_BASE_DIR=/Users/yourname/ilm-local
 ```
 
 All other values can be left at their defaults when using PostgreSQL in Docker.
@@ -87,7 +87,7 @@ On macOS, files starting with `.` are hidden in Finder. Use `Cmd + Shift + .` to
 
 ## Step 3 — Set up the trusted certificates file
 
-The `development-environment` repository ships with a `secrets/trusted_certificates.pem` file that contains a legacy CZERTAINLY Root CA — this is **not** the CA used to sign the dummy administrator certificate from `OmniTrustILM/helm-charts`. You need to overwrite it with the ILM Dummy Root CA, otherwise the Auth service will reject the dummy administrator certificate with `User client certificate is invalid`.
+The `development-environment` repository ships with a `secrets/trusted_certificates.pem` file that contains a legacy Root CA — this is **not** the CA used to sign the dummy administrator certificate from `OmniTrustILM/helm-charts`. You need to overwrite it with the ILM Dummy Root CA, otherwise the Auth service will reject the dummy administrator certificate with `User client certificate is invalid`.
 
 ```bash
 curl -s https://raw.githubusercontent.com/OmniTrustILM/helm-charts/main/dummy-certificates/certs/root-ca.cert.pem \
@@ -101,7 +101,7 @@ Use `>` (overwrite), not `>>` (append). Appending leaves the legacy CA in the fi
 ## Step 4 — Start the platform
 
 ```bash
-docker compose -f czertainly-compose.yml -f postgres-compose.yml \
+docker compose -f ilm-compose.yml -f postgres-compose.yml \
   --profile database --profile core up --build
 ```
 
@@ -110,14 +110,14 @@ The `--build` flag tells Docker to build the three source-based services on firs
 To run in the background (detached mode):
 
 ```bash
-docker compose -f czertainly-compose.yml -f postgres-compose.yml \
+docker compose -f ilm-compose.yml -f postgres-compose.yml \
   --profile database --profile core up --build -d
 ```
 
 ## Step 5 — Verify all services are running
 
 ```bash
-docker compose -f czertainly-compose.yml -f postgres-compose.yml ps
+docker compose -f ilm-compose.yml -f postgres-compose.yml ps
 ```
 
 All services should show status `healthy` or `Up`:
@@ -271,7 +271,7 @@ Stop all backend services:
 ```bash
 cd ~/ilm-local/development-environment
 
-docker compose -f czertainly-compose.yml -f postgres-compose.yml \
+docker compose -f ilm-compose.yml -f postgres-compose.yml \
   --profile database --profile core down
 ```
 
@@ -286,6 +286,6 @@ Data in the database is persisted in the `./data/` directory. To reset the platf
 | Auth returns `User client certificate is invalid` (`unable to get local issuer certificate`) | `secrets/trusted_certificates.pem` does not contain the ILM Dummy Root CA, or was appended to instead of overwritten | Re-run the `curl` from Step 3 with `>` (overwrite). Verify only one cert with `grep -c "BEGIN CERTIFICATE" secrets/trusted_certificates.pem` — should return `1`. Then restart auth: `docker compose ... restart auth` |
 | Local API returns HTTP 401 from host | Port `8280` is the regular API requiring cert auth; Local API is on container-internal port `8080` only | Use `docker exec core curl ...` instead of calling `localhost:8280` directly |
 | Authentication returns `Wrong format of user authentication certificate` | Certificate not URL-encoded | Use `node -e "console.log(encodeURIComponent('<base64_cert>'))"` to URL-encode the certificate before sending |
-| `CZERTAINLY_SOURCES_BASE_DIR` not found | Wrong path in `.env` | Set the full absolute path to the directory containing `auth`, `auth-opa-policies`, `scheduler` |
+| `ILM_SOURCES_BASE_DIR` not found | Wrong path in `.env` | Set the full absolute path to the directory containing `auth`, `auth-opa-policies`, `scheduler` |
 | Frontend shows blank page or API errors | `setupProxy.js` missing or wrong cert | Recreate `src/setupProxy.js` following Step 8 |
 | Frontend port 5173 already in use | Another Vite process running | Kill it with `lsof -ti:5173 \| xargs kill` |

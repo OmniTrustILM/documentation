@@ -128,7 +128,7 @@ Under the service configuration, negotiation authentication needs to be enabled.
 
 ## CredSSP configuration
 
-Enable CredSSP authentication on the server (that CZERTAINLY is going to connect to) by running the following command:
+Enable CredSSP authentication on the server (that the platform is going to connect to) by running the following command:
 
 ```powershell
 Enable-WSManCredSSP -Role Server

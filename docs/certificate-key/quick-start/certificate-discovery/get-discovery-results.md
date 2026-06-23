@@ -24,14 +24,14 @@ This will give us the details about the `Discovery` including its status:
 ```json
 {
   "uuid": "c0aaafda-a731-4175-8ec4-2cdcd06015fa",
-  "name": "CZERTAINLY Hostname Discovery",
+  "name": "ILM Hostname Discovery",
   "kind": "IP-Hostname",
   "status": "completed",
   ...
   "certificate": [
     {
       "uuid": "1257542a-02b9-4917-9193-df565c484ee3",
-      "commonName": "docs.czertainly.com",
+      "commonName": "docs.otilm.com",
       "serialNumber": "44fc8548df494ccfe04ba62f33f7ee52229",
       "issuerCommonName": "R3",
       "notBefore": "2021-12-11T19:08:00.000+00:00",
@@ -54,5 +54,5 @@ Steps to get `Discovery` results:
 
 1. Log in to the Operator Interface `https://[domain]:[port]/operator`
 2. Click **Discovery** in the left menu to display the **Discovery Store**
-3. You can find `Discovery` easily by name `CZERTAINLY Hostname Discovery`
-4. Click `CZERTAINLY Hostname Discovery` for display the `Discovery` detail and results
+3. You can find `Discovery` easily by name `ILM Hostname Discovery`
+4. Click `ILM Hostname Discovery` for display the `Discovery` detail and results

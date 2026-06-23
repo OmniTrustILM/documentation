@@ -8,13 +8,13 @@ sidebar_position: 13
 
 For more information about `Certbot`, refer to the [Certbot documentation](https://eff-certbot.readthedocs.io/en/stable/).
 
-CZERTAINLY platform supports ACME implementation according to the [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555). This guide shows, how you can use `Certbot` to manage certificates using ACME protocol and certificate management services controlled by the platform.
+The platform supports ACME implementation according to the [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555). This guide shows, how you can use `Certbot` to manage certificates using ACME protocol and certificate management services controlled by the platform.
 
 ## Prerequisites
 
-Before configuring `Certbot` with CZERTAINLY, you need to have the following:
+Before configuring `Certbot` with the platform, you need to have the following:
 - Certbot installed in the host server
-- Configured at least one `RA Profile` certificate service in CZERTAINLY
+- Configured at least one `RA Profile` certificate service in the platform
 - Access to HTTP or DNS resources, that will be used to validate ACME challenges
 - ACME protocol enabled according to the [Enable ACME](enable-acme.md)
 
@@ -29,10 +29,10 @@ Once the `Apache` server is ready, you can use the following command to request 
 ```bash
 certbot -n --apache ** \
   -d www.example.com \
-  --server https://[domain]:[port]/api/v1/protocols/acme/raProfile/czertainly/directory
+  --server https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory
 ```
 
-In the example above, we are asking the ACME server represented by CZERTAINLY platform to issue SSL/TLS certificate for the domain `www.example.com`. Once the certificate is successfully downloaded, `Certbot` will automatically assign it to the `Apache` configuration.
+In the example above, we are asking the ACME server represented by the platform to issue SSL/TLS certificate for the domain `www.example.com`. Once the certificate is successfully downloaded, `Certbot` will automatically assign it to the `Apache` configuration.
 
 More command line options can be found in the [Certbot documentation](https://eff-certbot.readthedocs.io/en/stable/using.html#certbot-command-line-options).
 
@@ -68,7 +68,7 @@ certbot certonly -n \
   -d www.example.com \
   --dns-rfc2136 \
   --dns-rfc2136-credentials dns.ini \
-  --server https://[domain]:[port]/api/v1/protocols/acme/raProfile/czertainly/directory
+  --server https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory
 ```
 
 The issued certificate is also included in the certificate inventory of the platform. From now on, the `Certbot` will renew the certificate automatically.
@@ -80,7 +80,7 @@ Certificate can be revoked using the `Certbot`. To revoke certificate, run the f
 ```bash
 certbot revoke \
   --cert-name www.example.com  \
-  --server https://[domain]:[port]/api/v1/protocols/acme/raProfile/czertainly/directory
+  --server https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory
 ```
 
 You can check the certificate status also in the certificate inventory of the platform, after it was successfully revoked.

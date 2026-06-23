@@ -62,7 +62,7 @@ Access to the web interface of ILM is authenticated by default by a client certi
 There are various options for configuring access control for the platform. See [Access control](../../../concept-design/architecture/access-control/overview) for more information.
 :::
 
-For testing purposes, you can use preconfigured [Dummy CA certificate](https://github.com/OmniTrustILM/helm-charts/blob/master/dummy-certificates/certs/root-ca.cert.pem). In production system, you will need to replace this list with your own trusted CA certificates. To do this, select **Main menu -> [Configure custom trusted certificates](./TUI/main-menu.md#configure-custom-trusted-certificates)**.
+For testing purposes, you can use preconfigured [Dummy CA certificate](https://github.com/OmniTrustILM/helm-charts/blob/main/dummy-certificates/certs/root-ca.cert.pem). In production system, you will need to replace this list with your own trusted CA certificates. To do this, select **Main menu -> [Configure custom trusted certificates](./TUI/main-menu.md#configure-custom-trusted-certificates)**.
 
 ## Database
 
@@ -70,7 +70,7 @@ ILM persists all its data in the Postgres database. The server will be installed
 
 ## Credentials for ILM docker repository (optional)
 
-Credentials for private ILM Docker repository are optional and typically not required. We are providing all necessary Docker containers in the public Docker repository `[https://hub.docker.com/u/czertainly](https://hub.docker.com/u/czertainly)`. Private Docker containers [hosted in a private Docker repository](../../../current-versions.md) `harbor.3key.company` are kept mainly for internal use and legacy purposes.
+Credentials for private ILM Docker repository are optional and typically not required. All necessary container images are published to the public `ilm` project on [hub.omnitrustregistry.com](https://hub.omnitrustregistry.com/ilm). Private container images [hosted in the private `ilm-private` project](../../../current-versions.md) on `hub.omnitrustregistry.com` are kept mainly for internal use and legacy purposes.
 
 The credentials can be used also in case you would like to access your own private Docker repository where you store your own Docker containers.
 
@@ -97,5 +97,5 @@ After successful installation, the administrator web interface is available at t
 https://[hostname]/administrator/
 ```
 where `hostname` is the value configured in the previous step. For logging into the web interface you can use:
-  * the [dummy administrator certificate](https://github.com/OmniTrustILM/helm-charts/blob/master/dummy-certificates/private/admin.p12) which is preconfigured for testing purposes, it has password `00000000` or,
+  * the [dummy administrator certificate](https://github.com/OmniTrustILM/helm-charts/blob/main/dummy-certificates/private/admin.p12) which is preconfigured for testing purposes, it has password `00000000` or,
   * the username / password provided at the beginning of the page (if you installed Keycloak).

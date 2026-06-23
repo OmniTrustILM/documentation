@@ -10,7 +10,7 @@ The design of the Entrust SAM is based on the Trustworthy Systems Supporting Ser
 
 The cryptographic module used with the Entrust SAM module is the Entrust nShield Connect XC CC eIDAS HSM, which is Common Criteria certified for CEN EN 419 221-5 and FIPS 140-2 L3.
 
-CZERTAINLY Signing solution acts as a server signing application that interacts with the Entrust SAM and provides a simple interface to consume the SAM services.
+ILM Signing acts as a server signing application that interacts with the Entrust SAM and provides a simple interface to consume the SAM services.
 
 :::info
 For more information about the Entrust SAM, please refer to official vendor's site and materials: [Entrust Signature Activation Module](https://www.entrust.com/digital-security/certificate-solutions/products/digital-signing/entrust-signature-activation-module)
@@ -18,7 +18,7 @@ For more information about the Entrust SAM, please refer to official vendor's si
 
 ## Entrust SAM Crypto Token vs Crypto Worker
 
-The CZERTAINLY Signing acts as a Signing Service Privileged User (SSPU) and can invoke service function of the SAM administratively. 
+The signing component acts as a Signing Service Privileged User (SSPU) and can invoke service function of the SAM administratively. 
 
 The implementation of [Entrust SAM Crypto Token](./properties.mdx) contains all required attributes to establish connection with the Entrust SAM interface and start consuming the SAM services.
 

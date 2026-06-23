@@ -10,11 +10,11 @@ One of the most common use cases for ACME is to manage certificates for containe
 
 For more information about `cert-manager`, refer to the [cert-manager documentation](https://cert-manager.io/docs/).
 
-CZERTAINLY platform supports ACME implementation according to the [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555). This guide shows, how you can use `cert-manager` to manage certificates using ACME protocol and certificate management services controlled by the platform. In this combination, `cert-manager` can manage certificates provided by literally any certification authority.
+The platform supports ACME implementation according to the [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555). This guide shows, how you can use `cert-manager` to manage certificates using ACME protocol and certificate management services controlled by the platform. In this combination, `cert-manager` can manage certificates provided by literally any certification authority.
 
 ## Prerequisites
 
-Before you can configure `cert-manager` with the CZERTAINLY, you need to have the following:
+Before you can configure `cert-manager` with the platform, you need to have the following:
 - Kubernetes cluster with `cert-manager` installed
 - Configured at least one `RA Profile` certificate service
 - Access to HTTP or DNS resources, that will be used to validate ACME challenges
@@ -31,16 +31,16 @@ In case you do not have the `cert-manager` installed, follow the [installation i
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: clusterissuer-czertainly-acme
+  name: clusterissuer-ilm-acme
   #namespace: default
 spec:
   acme:
-    server: https://[domain]:[port]/api/v1/protocols/acme/raProfile/czertainly/directory
+    server: https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory
     # Email address used for ACME registration
     email: www@example.com
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: issuer-czertainly-acme-secret
+      name: issuer-ilm-acme-secret
     # Enable HTTP01 validations
     solvers:
     # An empty 'selector' means that this solver matches all domains
@@ -50,11 +50,11 @@ spec:
           class: public
 ```
 
-You should adjust this manifest according to your specific Kubernetes cluster. If the CZERTAINLY access point is using TLS certificate issued from private certification authority, you should include the CA certificate in `cert-manager` configuration, otherwise it will reject communication.
+You should adjust this manifest according to your specific Kubernetes cluster. If the platform's access point is using TLS certificate issued from private certification authority, you should include the CA certificate in `cert-manager` configuration, otherwise it will reject communication.
 
 When you are ready, you can apply the manifest. This will start the communication with the ACME server and register the ACME client. You can check if the registration of ACME client was successful by [listing all ACME Clients](/api/core-acme#tag/ACME-Account-Management/operation/listAcmeAccounts) in the platform and checking the state of the `ClusterIssuer`:
 ```bash
-kubectl describe -n cert-manager clusterissuers.cert-manager.io clusterissuer-czertainly-acme
+kubectl describe -n cert-manager clusterissuers.cert-manager.io clusterissuer-ilm-acme
 ```
 
 You should see the status of the `ClusterIssuer` indicating `ACMEAccountRegistered`:
@@ -89,7 +89,7 @@ spec:
   secretName: cert-secret-www-example-com
   renewBefore: 365h # 15d
   issuerRef:
-    name: clusterissuer-czertainly-acme
+    name: clusterissuer-ilm-acme
     kind: ClusterIssuer
   commonName: www.example.com
   dnsNames:

@@ -32,7 +32,7 @@ The following processes are associated with the Authority Provider v2 and manage
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-authority/#tag/Authority-Management/operation/createAuthorityInstance]]: Add Authority Instance
         Core->Core: Check existence of Connector and Authority
         Core -> Connector : Validate Attributes
@@ -51,7 +51,7 @@ The following processes are associated with the Authority Provider v2 and manage
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-authority/#tag/Authority-Management/operation/getAuthorityInstance]]: Details of an Authority instance
         Core -> Connector [[connector-authority-provider-v2/#tag/Authority-Management/operation/getAuthorityInstance]]: Get an Authority instance
         note right of Core: Details of the Authority instance is processed and combined with Authority Instance Reference from core
@@ -65,7 +65,7 @@ The following processes are associated with the Authority Provider v2 and manage
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-authority/#tag/Authority-Management/operation/editAuthorityInstance]]: Update Authority instance
         Core -> Connector : Validate Attributes
         Connector --> Core: Result of Attribute validation
@@ -85,7 +85,7 @@ The below diagram shows the sequence of messages that are exchanged between the 
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-authority/#tag/Authority-Management/operation/deleteAuthorityInstance]]: Remove Authority instance
         Core -> Core : Check dependencies
         Core -> Connector [[connector-authority-provider-v2/#tag/Authority-Management/operation/removeAuthorityInstance]]: Remove Authority instance
@@ -103,7 +103,7 @@ Sections below represents the list of processes involved in managing the certifi
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/v2-Client-Operations/operation/issueCertificate]]: Issue Certificate
         Core -> Connector [[connector-authority-provider-v2/#tag/Certificate-Management/operation/validateIssueCertificateAttributes]]: Validate Attributes
         Connector --> Core: Result of Attribute validation
@@ -122,7 +122,7 @@ Sections below represents the list of processes involved in managing the certifi
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/v2-Client-Operations/operation/renewCertificate]]: Renew Certificate
         Core -> Core: Get Attributes from parent Certificate
         note right Core: Attributes for renewal are taken from parent Certificate
@@ -141,7 +141,7 @@ Sections below represents the list of processes involved in managing the certifi
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/v2-Client-Operations/operation/revokeCertificate]]: Revoke Certificate
         Core -> Connector [[connector-authority-provider-v2/#tag/Certificate-Management/operation/validateRevokeCertificateAttributes]]: Validate Attributes
         Connector --> Core: Result of Attribute validation
@@ -200,7 +200,7 @@ Sync-only connectors are never asked: Core only invokes these four endpoints aga
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/v2-Client-Operations/operation/issueCertificate]]: Issue Certificate
         Core -> Connector [[connector-authority-provider-v2/#tag/Certificate-Management/operation/issueCertificate]]: Issue Certificate
         Connector -> CA: Submit issue request
@@ -219,7 +219,7 @@ The same flow applies to `renewCertificate` — the new certificate ends in `Pen
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/v2-Client-Operations/operation/revokeCertificate]]: Revoke Certificate
         Core -> Connector [[connector-authority-provider-v2/#tag/Certificate-Management/operation/revokeCertificate]]: Revoke Certificate
         Connector -> CA: Submit revoke request
@@ -240,7 +240,7 @@ When an operator uploads the externally-issued certificate, Core verifies the up
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/v2-Client-Operations/operation/manuallyIssueCertificate]]: Manual Finalise Issue
         Core -> Core : Validate upload (public key match)
         Core -> Connector [[connector-authority-provider-v2/#tag/Certificate-Management/operation/identifyCertificate]]: Identify Certificate
@@ -258,7 +258,7 @@ Used when the revocation has been completed externally and the operator confirms
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/v2-Client-Operations/operation/manuallyConfirmRevoke]]: Manual Confirm Revoke
         Core -> Core : Apply preserved revoke attributes
         Core -> Core : Destroy key if requested
@@ -274,7 +274,7 @@ Used when the parked operation is no longer wanted. Core dispatches to the appro
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/v2-Client-Operations/operation/cancelPendingCertificateOperation]]: Cancel Pending Operation
         alt state is Pending Issue
             Core -> Connector [[connector-authority-provider-v2/#tag/Certificate-Management/operation/cancelIssueCertificate]]: Cancel Issue

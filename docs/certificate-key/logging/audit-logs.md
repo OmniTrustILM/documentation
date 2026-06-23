@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Audit Logs
 
-Audit log records all activities and operations in CZERTAINLY initiated by some user. It can be used to reconstruct any event in case of investigation. It also proves the compliance with the various standards and regulations, such as PCI DSS, ISO 27k, GDPR, WebTrust, etc.
+Audit log records all activities and operations in the platform initiated by some user. It can be used to reconstruct any event in case of investigation. It also proves the compliance with the various standards and regulations, such as PCI DSS, ISO 27k, GDPR, WebTrust, etc.
 
 ## Audit log structure
 

@@ -23,7 +23,7 @@ This will give us the details about the `Discovery` including its status:
 ```json
 {
     "uuid": "c0aaafda-a731-4175-8ec4-2cdcd06015fa",
-    "name": "CZERTAINLY Hostname Discovery",
+    "name": "ILM Hostname Discovery",
     "kind": "IP-Hostname",
     "status": "completed",
     ...
@@ -43,7 +43,7 @@ Steps for checking `Discovery` status:
 
 1. Log in to the Operator Interface `https://[domain]:[port]/operator`
 2. Click **Discovery** in the left menu to display the **Discovery Store**
-3. You can find `Discovery` easily by name `CZERTAINLY Hostname Discovery`
-4. Click on the **CZERTAINLY Hostname Discovery** to see the `Discovery` status and details
+3. You can find `Discovery` easily by name `ILM Hostname Discovery`
+4. Click on the **ILM Hostname Discovery** to see the `Discovery` status and details
 
 Once the discovery process has finished, the Status becomes Completed, and Total Certificates will be displayed.

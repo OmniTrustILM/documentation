@@ -470,11 +470,10 @@ Container registry and image pull secrets can be also configured globally for th
 global:
   image:
     # registry name
-    registry: "harbor.ilm.online"
+    registry: "hub.omnitrustregistry.com"
     # array of secret names
     pullSecrets:
-      - harbor-registry-credentials
-      - dockerhub-registry-credentials
+      - registry-credentials
 ```
 
 ### Additional connector sub-charts

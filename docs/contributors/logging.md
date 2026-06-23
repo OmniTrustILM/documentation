@@ -4,15 +4,15 @@ sidebar_position: 10
 
 # Logging
 
-Proper logging is essential for effective debugging, monitoring, and auditing. This guide outlines best practices for implementing logging in the CZERTAINLY codebase. Adhering to these practices ensures consistency and helps maintain high code quality.
+Proper logging is essential for effective debugging, monitoring, and auditing. This guide outlines best practices for implementing logging in the platform codebase. Adhering to these practices ensures consistency and helps maintain high code quality.
 
-:::info[Logging in CZERTAINLY services]
-CZERTAINLY is a microservices-based platform, meaning that each service can have its own logging configuration, specific to its requirements. The logging configuration is managed centrally by the Core of the platform. Connectors and other services can implement their own logging configuration, but they should adhere to the guidelines outlined in this document, adjusted to their specific needs and language.
+:::info[Logging in platform services]
+The platform is a microservices-based system, meaning that each service can have its own logging configuration, specific to its requirements. The logging configuration is managed centrally by the Core of the platform. Connectors and other services can implement their own logging configuration, but they should adhere to the guidelines outlined in this document, adjusted to their specific needs and language.
 :::
 
 ## Logging information
 
-CZERTAINLY uses the system, audit, or event logs for all logging activities. Contributors must follow the standard logging structure as outlined in the [Logging Documentation](../certificate-key/logging/overview.md).
+The platform uses the system, audit, or event logs for all logging activities. Contributors must follow the standard logging structure as outlined in the [Logging Documentation](../certificate-key/logging/overview.md).
 
 ## Logging levels
 
@@ -146,7 +146,7 @@ public CertificateResponseDto listCertificates(SearchRequestDto request) throws 
 }
 ```
 
-See [`AuditLogged`](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/aop/AuditLogged.java) annotation definition for more details.
+See [`AuditLogged`](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/aop/AuditLogged.java) annotation definition for more details.
 
 ### Event logging
 
@@ -156,7 +156,7 @@ Event logs are used to record operation-related events. The event logs are not n
 private static final LoggerWrapper logger = new LoggerWrapper(UserManagementServiceImpl.class, Module.AUTH, Resource.USER);
 ```
 
-The [`LoggerWrapper`](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/logging/LoggerWrapper.java) class is a wrapper around the `Logger` class and provides additional methods to log events.
+The [`LoggerWrapper`](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/logging/LoggerWrapper.java) class is a wrapper around the `Logger` class and provides additional methods to log events.
 
 In the example above, the `LoggerWrapper` is initialized for the `UserManagementServiceImpl` class, with module `AUTH` and resource `USER` parameters. This configuration ensures will log all events related to user management, for example when the user is successfully created:
 
@@ -170,9 +170,9 @@ Audit and event logs should follow a structured format. Platform automatically g
 
 ### Useful resources for structured logging
 
-- List of [Modules](https://github.com/OmniTrustILM/interfaces/blob/master/src/main/java/com/czertainly/api/model/core/logging/enums/Module.java)
-- List of [Resources](https://github.com/OmniTrustILM/interfaces/blob/master/src/main/java/com/czertainly/api/model/core/auth/Resource.java)
-- List of [Operations](https://github.com/OmniTrustILM/interfaces/blob/master/src/main/java/com/czertainly/api/model/core/logging/enums/Operation.java)
+- List of [Modules](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/core/logging/enums/Module.java)
+- List of [Resources](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/core/auth/Resource.java)
+- List of [Operations](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/core/logging/enums/Operation.java)
 
 ## Logging Configuration
 
