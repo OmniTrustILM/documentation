@@ -662,7 +662,7 @@ const config = {
           appId: '9LVBEQBLSX',
           // Public API key: it is safe to commit it
           apiKey: 'e5c6094c457339acfcd8114bef0f509a',
-          indexName: 'czertainly',
+          indexName: 'ilm',
           // Optional: see doc section below
           contextualSearch: true,
         },
