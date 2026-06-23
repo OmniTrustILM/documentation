@@ -42,7 +42,7 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-compliance-v2/#tag/Compliance-Profile-Management-v2/operation/getComplianceGroupsV2]]: Get Compliance Groups from provider
         Core -> Core: Determine API version of selected compliance provider
         Core -> Connector [[connector-compliance-provider-v2/#tag/Compliance-Rules/operation/getGroups]]: Request to retrieve groups from provider
@@ -61,7 +61,7 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-compliance-v2/#tag/Compliance-Profile-Management-v2/operation/getComplianceProfileV2]]: Get detail of Compliance Profile
         Core -> Core: Retrieve Compliance Profile and its associated rules and groups
         Core -> Connector [[connector-compliance-provider-v2/#tag/Compliance-Rules/operation/getRulesBatch]]: Construct batch request to retrieve rules and groups from provider
@@ -77,7 +77,7 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-compliance-v2/#tag/Compliance-Management-v2/operation/checkResourceObjectComplianceV2]]: Initiate Compliance Check
         Core --> Client: Return Async response
         Core -> Core: Get Compliance Profile of the object

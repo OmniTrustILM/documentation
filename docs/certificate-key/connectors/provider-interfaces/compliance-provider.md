@@ -31,7 +31,7 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-connector/#tag/Connector-Management/operation/createConnector]]: Create a new Connector
         Core -> Connector [[connector-compliance-provider/#tag/Info/operation/listSupportedFunctions]]: List supported functions of the connector
         Connector --> Core: Function Group and Kind
@@ -49,7 +49,7 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-certificate/#tag/Certificate-Inventory/operation/checkCompliance]]: Initiate Certificate Compliance Check
         Core --> Client: Return Async response
         Core -> Core: Get Compliance Profile of the Certificate

@@ -12,7 +12,7 @@ The Secret Provider is a provider interface responsible for fetching and managin
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-vault/#tag/Vault-Instance-Management/operation/createVaultInstance]]: Add Vault Instance
         Core->Core: Check existence of Connector and Vault by Name
         Core -> Connector : Get Vault Attributes
@@ -34,7 +34,7 @@ The Secret Provider is a provider interface responsible for fetching and managin
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-secret/#tag/Secret-Management/operation/createSecret]]: Create new Secret
         Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getSecretAttributes]]: Get Secret Attributes
         Connector --> Core: Secret Attributes
@@ -59,7 +59,7 @@ The Secret Provider is a provider interface responsible for fetching and managin
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-secret/#tag/Secret-Management/operation/updateSecret]]: Update Secret
         Core -> Core : Check if the content of secret has changed
         Core -> Core : Create new Secret Version
@@ -89,7 +89,7 @@ The Secret Provider is a provider interface responsible for fetching and managin
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-secret/#tag/Secret-Management/operation/deleteSecret]]: Delete Secret
         note right Core
         Repeat for each connector containing the secret
@@ -116,7 +116,7 @@ The Secret Provider is a provider interface responsible for fetching and managin
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-secret/#tag/Secret-Management/operation/getSecretContent]]: Get Secret Content
         Core -> Connector [[connector-secret-provider/#tag/Secret-Management/operation/getSecretAttributes]]: Get Secret Attributes
         Connector --> Core: Secret Attributes

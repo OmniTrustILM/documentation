@@ -30,7 +30,7 @@ The following processes are associated with the Discovery Provider and managemen
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-discovery/#tag/Discovery-Management/operation/createDiscovery]]: Create Discovery
         note over Client: Create Discovery with specific Attributes from Connector
         Core->Core: Check existence of Connector
@@ -59,7 +59,7 @@ The following processes are associated with the Discovery Provider and managemen
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-discovery/#tag/Discovery-Management/operation/getDiscovery]]: Discovery Details
         Core -> Core: Formulate Discovery details
         Core -> Client: Return Discovery details
@@ -72,7 +72,7 @@ The following processes are associated with the Discovery Provider and managemen
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-discovery/#tag/Discovery-Management/operation/deleteDiscovery]]: Remove Discovery
         Core -> Connector [[connector-discovery-provider/#tag/Discovery/operation/deleteDiscovery]]: Delete Discovery
         Connector --> Core: Discovery removed

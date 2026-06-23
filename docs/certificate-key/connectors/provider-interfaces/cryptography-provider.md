@@ -115,7 +115,7 @@ The following processes are associated with the Cryptography Provider and manage
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptography/#tag/Token-Management/operation/createTokenInstance]]: Add Token instance
         Core->Core: Check existence of Connector and Token
         Core -> Connector : Validate Attributes
@@ -138,7 +138,7 @@ The following processes are associated with the Cryptography Provider and manage
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptography/#tag/Token-Management/operation/getTokenInstance]]: Details of Token instance
         Core -> Connector [[connector-cryptography-provider/#tag/Token-Management/operation/getTokenInstance]]: Get Token instance
         Connector --> Core: Return Token instance details
@@ -157,7 +157,7 @@ The following processes are associated with the Cryptography Provider and manage
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptography/#tag/Token-Management/operation/updateTokenInstance]]: Update Token instance
         Core -> Connector : Validate Attributes
         Connector --> Core: Result of Attribute validation
@@ -181,7 +181,7 @@ When the `Token` is removed, it does not necessarily mean that it was removed fr
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptography/#tag/Token-Management/operation/removeTokenInstance]]: Remove Token instance
         Core -> Core : Check dependencies
         Core -> Connector [[connector-cryptography-provider/#tag/Token-Management/operation/removeTokenInstance]]: Remove Token instance
@@ -199,7 +199,7 @@ Status of the `Token` can be regularly checked by the platform. See the [list of
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptography/#tag/Token-Management/operation/getTokenInstanceStatus]]: Get Token instance status
         Core->Core: Check existence of the Token instance
         Core -> Connector [[connector-cryptography-provider/#tag/Token-Management/operation/getTokenInstanceStatus]]: Request Token instance status
@@ -222,7 +222,7 @@ Status of the `Token` can be regularly checked by the platform. See the [list of
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptography/#tag/Token-Management/operation/activateTokenInstance]]: Activate Token instance
         Core->Core: Check existence of the Token instance
         Core -> Connector [[connector-cryptography-provider/#tag/Key-Management/operation/validateTokenInstanceActivationAttributes]]: Validate activation Attributes
@@ -240,7 +240,7 @@ Status of the `Token` can be regularly checked by the platform. See the [list of
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptography/#tag/Token-Management/operation/deactivateTokenInstance]]: Deactivate Token instance
         Core->Core: Check existence of the Token instance
         Core -> Connector : Validate deactivation Attributes
@@ -262,7 +262,7 @@ Following are supported processes for key management operations.
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-key/#tag/Key-Management/operation/createKey]]: Create new Key
         Core -> Core: Validate Token instance
         Core -> Connector [[connector-cryptography-provider/#tag/Key-Management/operation/validateCreateKeyAttributes]]: Validate create Key Attributes
@@ -286,7 +286,7 @@ Following are supported processes for key management operations.
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-key/#tag/Key-Management/operation/destroyKey]]: Destroy Key
         Core -> Core: Get Key Attributes
         note over Core: Attributes that are required for the Key destruction
@@ -317,7 +317,7 @@ The following processes are associated with the operations that are performed wi
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptographic-operations/#tag/Cryptographic-Operations/operation/encryptData]]: Encrypt data
         Core -> Connector [[connector-cryptography-provider/#tag/Key-Management/operation/encryptData]]: Encrypt data with Key
         Connector -> Connector: Apply encryption with the Key on data 
@@ -337,7 +337,7 @@ The following processes are associated with the operations that are performed wi
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptographic-operations/#tag/Cryptographic-Operations/operation/decryptData]]: Decrypt data
         Core -> Connector [[connector-cryptography-provider/#tag/Key-Management/operation/decryptData]]: Decrypt data with Key
         Connector -> Connector: Apply decryption with the Key on data 
@@ -357,7 +357,7 @@ The following processes are associated with the operations that are performed wi
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptographic-operations/#tag/Cryptographic-Operations/operation/signData]]: Sign data
         Core -> Connector [[connector-cryptography-provider/#tag/Key-Management/operation/signData]]: Sign data with Key
         Connector -> Connector: Apply signing with the Key on data 
@@ -377,7 +377,7 @@ The following processes are associated with the operations that are performed wi
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptographic-operations/#tag/Cryptographic-Operations/operation/verifyData]]: Verify data
         Core -> Connector [[connector-cryptography-provider/#tag/Key-Management/operation/verifyData]]: Verify data with Key
         Connector -> Connector: Apply verifying with the Key on data 
@@ -397,7 +397,7 @@ The following processes are associated with the operations that are performed wi
     @startuml
     autonumber
     skinparam maxMessageSize 200
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-cryptographic-operations/#tag/Cryptographic-Operations/operation/randomData]]: Generate random data
         Core -> Core: Validate Token instance
         Core -> Connector [[connector-cryptography-provider/#tag/Cryptographic-Operations/operation/validateRandomAttributes]]: Validate random generator Attributes

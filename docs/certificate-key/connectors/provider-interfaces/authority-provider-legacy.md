@@ -39,7 +39,7 @@ The following processes are associated with the Authority Provider Legacy and ma
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-authority/#tag/Authority-Management/operation/createAuthorityInstance]]: Add Authority Instance
         Core->Core: Check existence of Connector and Authority
         Core -> Connector : Validate Attributes
@@ -58,7 +58,7 @@ The following processes are associated with the Authority Provider Legacy and ma
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-authority/#tag/Authority-Management/operation/getAuthorityInstance]]: Details of an Authority instance
         Core -> Connector [[connector-authority-provider-v2/#tag/Authority-Management/operation/getAuthorityInstance]]: Get an Authority instance
         note right of Core: Details of the Authority instance is processed and combined with Authority Instance Reference from core
@@ -72,7 +72,7 @@ The following processes are associated with the Authority Provider Legacy and ma
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-authority/#tag/Authority-Management/operation/editAuthorityInstance]]: Update Authority instance
         Core -> Connector : Validate Attributes
         Connector --> Core: Result of Attribute validation
@@ -92,7 +92,7 @@ The below diagram shows the sequence of messages that are exchanged between the 
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-authority/#tag/Authority-Management/operation/deleteAuthorityInstance]]: Remove Authority instance
         Core -> Core : Check dependencies
         Core -> Connector [[connector-authority-provider-v2/#tag/Authority-Management/operation/removeAuthorityInstance]]: Remove Authority instance
@@ -109,7 +109,7 @@ The below diagram shows the sequence of messages that are exchanged between the 
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/Legacy-Client-Operations/operation/issueCertificate_1]]: Issue Certificate
         note over Client,Core: Issue Certificate with required Attributes and RA Profile data
         Core -> Connector [[connector-authority-provider-legacy/#tag/Certificate-Management/operation/issueCertificate]]: Issue Certificate
@@ -131,7 +131,7 @@ Renewal of the certificate is not supported by the Authority Provider Legacy.
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-client-operations/#tag/Legacy-Client-Operations/operation/revokeCertificate_1]]: Revoke Certificate
         Core -> Connector [[connector-authority-provider-legacy/#tag/Certificate-Management/operation/revokeCertificate]]: Revoke Certificate
         Connector -> CA: Revoke Certificate

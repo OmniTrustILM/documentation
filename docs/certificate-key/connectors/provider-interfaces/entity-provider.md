@@ -80,7 +80,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-Entity/#tag/Entity-Management/operation/createEntityInstance]]: Add Entity instance
         note over Client,Core: Update Existing Entity with Attributes from the connector
         Core->Core: Check existence of Connector and Entity
@@ -100,7 +100,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-Entity/#tag/Entity-Management/operation/getEntityInstance]]: Get Entity instance details
         Core -> Connector [[core-Entity/#tag/Entity-Management/operation/getEntityInstance]]: Get Entity instance details
         Connector --> Core: Entity details
@@ -113,7 +113,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-Entity/#tag/Entity-Management/operation/editEntityInstance]]: Update Entity instance
         note over Client,Core: Update Existing Entity with Attributes from the connector
         Core -> Connector [[core-Entity/#tag/Entity-Management/operation/validateLocationAttributes]]: Validate Attributes
@@ -133,7 +133,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-Entity/#tag/Entity-Management/operation/deleteEntityInstance]]: Remove Entity instance
         Core -> Core: Check for dependent objects
         Core -> Connector [[core-Entity/#tag/Entity-Management/operation/removeEntityInstance]]: Remove Entity instance
@@ -152,7 +152,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core: List Entities
         Core --> Client: List Entities
         Client -> Core [[core-location/#tag/Location-Management/operation/addLocation]]: Add Location
@@ -175,7 +175,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-location/#tag/Location-Management/operation/getLocation]]: Get Location Details
         Core -> Core: Process location details
         Core --> Client: Location details
@@ -187,7 +187,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-location/#tag/Location-Management/operation/editLocation]]: Edit Location
         Core -> Connector [[connector-entity-provider/#tag/Entity-Management/operation/validateLocationAttributes]]: Validate Attributes
         Connector --> Core: Result of attribute validation
@@ -201,7 +201,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-location/#tag/Location-Management/operation/deleteLocation]]: Remove Location
         Core -> Core: Check for dependent objects
         Core -> Core: Remove Location
@@ -214,7 +214,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         alt enable/disable
             Client -> Core [[core-location/#tag/Location-Management/operation/enableLocation]]: Enable Location
             Client -> Core [[core-location/#tag/Location-Management/operation/disableLocation]]: Disable Location
@@ -228,7 +228,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-location/#tag/Location-Management/operation/issueCertificate]]: Issue Certificate to Location
         Core -> Core: Perform Pre Checks for Certificate Issuance
         Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/validateGenerateCsrAttributes]]: Validate CSR Attributes
@@ -253,7 +253,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-location/#tag/Location-Management/operation/renewCertificateInLocation]]: Renew Certificate in Location
         Core -> Core: Perform Pre Checks for Certificate Renewal
         Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/validateGenerateCsrAttributes]]: Validate CSR Attributes
@@ -278,7 +278,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-location/#tag/Location-Management/operation/pushCertificate]]: Push Certificate to Location
         Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/validatePushCertificateAttributes]]: Validate Push Certificate Attributes
         Connector --> Core: Result of Push Attribute validation
@@ -294,7 +294,7 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.czertainly.com/api/
+    skinparam topurl https://docs.otilm.com/api/
         Client -> Core [[core-location/#tag/Location-Management/operation/removeCertificate]]: Remove Certificate from Location
         Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/removeCertificateFromLocation]]: Remove Certificate
         Connector --> Core: Result of Certificate deletion
