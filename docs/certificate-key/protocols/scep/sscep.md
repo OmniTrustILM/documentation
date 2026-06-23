@@ -108,7 +108,7 @@ Use the following command to renew the certificate:
 
 ```bash
 ./sscep enroll \
-  -u http://[domain]:[port]/api/v1/protocols/scep/ilm/pkiclient.exe \ 
+  -u http://[domain]:[port]/api/v1/protocols/scep/ilm/pkiclient.exe \
   -c ca.crt \
   -K test.key \
   -O test.crt \

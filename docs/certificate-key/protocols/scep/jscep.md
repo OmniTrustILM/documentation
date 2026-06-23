@@ -4,7 +4,7 @@ sidebar_position: 13
 
 # jSCEP
 
-[`jSCEP`](https://github.com/jscep/jscep) is s an open-source Java implementation of the SCEP protocol that works with the platform's SCEP service implementation.
+[`jSCEP`](https://github.com/jscep/jscep) is an open-source Java implementation of the SCEP protocol that works with the platform's SCEP service implementation.
 
 This guide shows, how to use `jSCEP` to manage certificates using SCEP protocol and certificate management services controlled by the platform using the Java code.
 

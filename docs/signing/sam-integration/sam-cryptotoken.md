@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # SAM Crypto Token
 
-Remote signing using with the SCAL2 and ILM Signing is possible by integrating the SAM and the signing back-end of the remote signing solution. We call it **SAMCryptoToken**. It is a special implementation of the of the CryptoToken for the signing component, which contains necessary functions and interfaces to communicate with the SAM and the user’s device.
+Remote signing using the SCAL2 and ILM Signing is possible by integrating the SAM and the signing back-end of the remote signing solution. We call it **SAMCryptoToken**. It is a special implementation of the CryptoToken for the signing component, which contains necessary functions and interfaces to communicate with the SAM and the user’s device.
 
 <div class="text--center">
 

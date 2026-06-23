@@ -26,7 +26,7 @@ For this guide, we will use `http-01` challenge validation, but the `dns-01` can
 
 ## Configuration of `win-acme`
 
-`win-acme` client is designed to be primary used as ACMEv2 client for Let's Encrypt Certification Authority and other ACME compliant servers. Before the first use we need to configure `win-amce` client to connect to the ILM platform instead of Let's Encrypt CA that is the default server. To achieve this, we need to set up correct endpoints in `win-acme` configuration file *`settings.json`*. Edit the *`settings.json`* file located in the root of `win-acme` directory with your preferred text editor and change the following lines:
+`win-acme` client is designed to be primary used as ACMEv2 client for Let's Encrypt Certification Authority and other ACME compliant servers. Before the first use we need to configure `win-acme` client to connect to the ILM platform instead of Let's Encrypt CA that is the default server. To achieve this, we need to set up correct endpoints in `win-acme` configuration file *`settings.json`*. Edit the *`settings.json`* file located in the root of `win-acme` directory with your preferred text editor and change the following lines:
 
 | Line                     | Value                                                                          |
 |--------------------------|--------------------------------------------------------------------------------|
