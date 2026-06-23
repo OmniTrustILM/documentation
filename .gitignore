@@ -31,3 +31,6 @@ target/
 # Emacs
 *~
 .claude/settings.local.json
+
+# Local planning artifacts (not documentation content)
+/superpowers
