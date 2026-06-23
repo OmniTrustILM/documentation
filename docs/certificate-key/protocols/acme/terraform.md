@@ -8,9 +8,9 @@ Terraform is an open-source infrastructure as code (IaC) software tool that enab
 
 Declarative configuration of infrastructure allows you to create a blueprint of your infrastructure and version it, enabling you to roll back to a previous version if needed. In most cases, you need to provision and maintain trusted certificates for your infrastructure.
 
-Terraform with integration to CZERTAINLY can be used to automate the process of certificate provisioning and renewal.
+Terraform with integration to ILM can be used to automate the process of certificate provisioning and renewal.
 
-CZERTAINLY platform supports ACME implementation according to the [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555). This guide shows, how you can use Terraform `acme` provider to manage certificates using ACME protocol and certificate management services controlled by the platform.
+The platform supports ACME implementation according to the [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555). This guide shows, how you can use Terraform `acme` provider to manage certificates using ACME protocol and certificate management services controlled by the platform.
 
 For more information about Terraform, refer to the [Terraform documentation](https://www.terraform.io/docs/index.html).
 
@@ -20,7 +20,7 @@ This guide assumes you have at least basic knowledge about Terraform. If you are
 
 ## Prerequisites
 
-Before you can configure Terraform `acme` provider with the CZERTAINLY, you need to have the following:
+Before you can configure Terraform `acme` provider with the platform, you need to have the following:
 - Terraform installed
 - Configured at least one `RA Profile` certificate service
 - Access to HTTP or DNS resources, that will be used to validate ACME challenges

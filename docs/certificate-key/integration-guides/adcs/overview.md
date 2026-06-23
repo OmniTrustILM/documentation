@@ -44,7 +44,7 @@ PowerShell remoting can be facilitated using the following protocols:
 
 ## Integration
 
-The following steps should be done to successfully integrate ADCS with CZERTAINLY:
+The following steps should be done to successfully integrate ADCS with the platform:
 
 | #     | Reference                                             | Short description                            |
 |-------|-------------------------------------------------------|----------------------------------------------|

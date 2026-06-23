@@ -10,7 +10,7 @@ This guide shows, how to use `SSCEP` to manage certificates using SCEP protocol 
 
 ## Prerequisites
 
-Before you can use `SSCEP` with the CZERTAINLY, you need to have the following:
+Before you can use `SSCEP` with the platform, you need to have the following:
 - `SSCEP` installed and configured
 - Configured at least one `RA Profile` certificate service
 - SCEP protocol enabled according to the [Enable SCEP for RA Profile](./enable-scep-ra-profile.md)
@@ -67,7 +67,7 @@ To obtain the CA certificate run the `getca` command:
   -c ca.crt
 ```
 
-This command will download the CA certificate (or certificates, if the chain is available) from the CZERTAINLY SCEP service and store it in the `ca.crt` file (when the chain is obtained, it will be stored as `ca.crt-0`, `ca.crt-1`, etc.).
+This command will download the CA certificate (or certificates, if the chain is available) from the platform's SCEP service and store it in the `ca.crt` file (when the chain is obtained, it will be stored as `ca.crt-0`, `ca.crt-1`, etc.).
 
 ## Enroll Certificate
 

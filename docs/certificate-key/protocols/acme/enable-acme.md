@@ -20,7 +20,7 @@ First step is to configure the [`ACME Profile`](acme-profile.md). It will create
 
 We do not need to configure default `RA Profile`, we will enable ACME protocol for a specific `RA Profile` with name `czertainly`. Let's do this in `czertainly` `RA Profile` configuration.
 
-We will create `ACME Profile` named `ACME CZERTAINLY Profile` using the [Core ACME API](/api/core-acme/#operation/createAcmeProfile):
+We will create `ACME Profile` named `ACME ILM Profile` using the [Core ACME API](/api/core-acme/#operation/createAcmeProfile):
 ```bash
 curl -X POST \
   --cacert [ca-cert] \
@@ -30,7 +30,7 @@ curl -X POST \
   -H "Accept: application/json" \
   --data '
   {
-    "name": "ACME CZERTAINLY Profile",
+    "name": "ACME ILM Profile",
     "description": "Sample ACME Profile",
     "termsOfServiceUrl": "https://www.example.com/termsOfService",
     "websiteUrl": "https://www.example.com",
@@ -80,7 +80,7 @@ When succeed, we will receive in the response ACME server directory endpoint to 
 ```json
 {
     "uuid": "b6be5014-b8f8-4b4f-b96d-a54c38f54b48",
-    "name": "ACME CZERTAINLY Profile",
+    "name": "ACME ILM Profile",
     "directoryUrl": "https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory",
     "issueCertificateAttributes": [],
     "revokeCertificateAttributes": [],
@@ -88,4 +88,4 @@ When succeed, we will receive in the response ACME server directory endpoint to 
 }
 ```
 
-Now we have the ACME protocol enabled for `RA Profile` with name `czertainly`, based on the `ACME Profile` with name `ACME CZERTAINLY Profile`.
+Now we have the ACME protocol enabled for `RA Profile` with name `czertainly`, based on the `ACME Profile` with name `ACME ILM Profile`.

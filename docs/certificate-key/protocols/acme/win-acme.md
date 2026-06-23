@@ -14,7 +14,7 @@ For more information about `win-acme`, refer to the [win-acme documentation](htt
 
 ## Prerequisites
 
-Before configuring `win-acme` with CZERTAINLY, you need to have the following:
+Before configuring `win-acme` with the platform, you need to have the following:
 - `win-acme` installed in the host server. You can download the installation file from [win-acme installation](https://www.win-acme.com) download section
 - Configured at least one `RA Profile`
 - Properly configured DNS records for the hostname you are trying to obtain the certificate for (for HTTP validation, the machine that `win-acme` is running on must have the correct common name configured in DNS)
@@ -26,7 +26,7 @@ For this guide, we will use `http-01` challenge validation, but the `dns-01` can
 
 ## Configuration of `win-acme`
 
-`win-acme` client is designed to be primary used as ACMEv2 client for Let's Encrypt Certification Authority and other ACME compliant servers. Before the first use we need to configure `win-amce` client to connect to CZERTAINLY platform instead of Let's Encrypt CA that is the default server. To achieve this, we need to set up correct endpoints in `win-acme` configuration file *`settings.json`*. Edit the *`settings.json`* file located in the root of `win-acme` directory with your preferred text editor and change the following lines:
+`win-acme` client is designed to be primary used as ACMEv2 client for Let's Encrypt Certification Authority and other ACME compliant servers. Before the first use we need to configure `win-amce` client to connect to the ILM platform instead of Let's Encrypt CA that is the default server. To achieve this, we need to set up correct endpoints in `win-acme` configuration file *`settings.json`*. Edit the *`settings.json`* file located in the root of `win-acme` directory with your preferred text editor and change the following lines:
 
 | Line                     | Value                                                                          |
 |--------------------------|--------------------------------------------------------------------------------|
@@ -55,7 +55,7 @@ Once each pre-requisite and configuration are set up, you can run `win-acme` exe
 - Upon successfully challenge validation, `win-acme` will create the HTTPS bindings in the `IIS` automatically
 
 :::warning
-Make sure that the web server is reachable on the specified port number with the domain name you selected for the certificate from CZERTAINLY platform to validate the challenge. If the server is not accessible for the CZERTAINLY, it will not be able to validate the challenge and the process will fail.
+Make sure that the web server is reachable on the specified port number with the domain name you selected for the certificate from the platform to validate the challenge. If the server is not accessible for the platform, it will not be able to validate the challenge and the process will fail.
 :::
 
 ### Unattended mode

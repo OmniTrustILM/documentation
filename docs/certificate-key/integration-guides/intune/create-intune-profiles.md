@@ -27,7 +27,7 @@ Selected SCEP CA certificate in `SCEP profile` has to be issued by same CA as de
 
 For devices to use SCEP certificate profile, they must trust your Trusted Root Certification Authority (CA) by deploying a trusted certificate profile to the same group that receives the SCEP certificate profile.
 
-Following [Create a SCEP certificate profile](https://learn.microsoft.com/en-us/mem/intune/protect/certificates-profile-scep#create-a-scep-certificate-profile), create SCEP certificate profile with the following configuration specific to CZERTAINLY SCEP service:
+Following [Create a SCEP certificate profile](https://learn.microsoft.com/en-us/mem/intune/protect/certificates-profile-scep#create-a-scep-certificate-profile), create SCEP certificate profile with the following configuration specific to the platform's SCEP service:
 - **Root Certificate** - select trusted certificate profile representing issuing CA certificate
 - **SCEP Server URLs** - specify URL found in detail page of `SCEP Profile` without `pkiclient.exe`
 

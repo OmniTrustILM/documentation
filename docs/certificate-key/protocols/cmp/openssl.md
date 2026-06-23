@@ -11,12 +11,12 @@ For more information on the CMP command, refer to the [OpenSSL CMP Command docum
 This guide will show you how to use the OpenSSL CMP command to interact with a CMP server and request a certificate.
 
 :::warning[OpenSSL CMP implementation]
-The OpenSSL CMP command is implemented according to the [RFC 4210 - Internet X.509 Public Key Infrastructure Certificate Management Protocol (CMP)](https://datatracker.ietf.org/doc/html/rfc4210). When using the OpenSSL CMP command with the CZERTAINLY, make sure that the CMP server is configured according to the RFC 4210 specification to be interoperable with the OpenSSL CMP command.
+The OpenSSL CMP command is implemented according to the [RFC 4210 - Internet X.509 Public Key Infrastructure Certificate Management Protocol (CMP)](https://datatracker.ietf.org/doc/html/rfc4210). When using the OpenSSL CMP command with the platform, make sure that the CMP server is configured according to the RFC 4210 specification to be interoperable with the OpenSSL CMP command.
 :::
 
 ## Prerequisites
 
-Before you can use the OpenSSL CMP command with the CZERTAINLY, you need to have the following:
+Before you can use the OpenSSL CMP command with the platform, you need to have the following:
 - OpenSSL library installed on your system. You can download the library from the [OpenSSL website](https://www.openssl.org/).
 - Configured at least one `RA Profile` certificate service
 - CMP protocol enabled according to the [Enable CMP Protocol](./enable-cmp-protocol.md)

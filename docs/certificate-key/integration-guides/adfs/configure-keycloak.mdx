@@ -6,7 +6,7 @@ sidebar_position: 20
 
 We need to create a new Identity Provider in Keycloak and configure Mappers. This will allow us to authenticate users against AD FS.
 
-Login to your Keycloak instance as an administrator, where you have CZERTAINLY realm configured and follow the steps below:
+Login to your Keycloak instance as an administrator, where you have the ILM realm configured and follow the steps below:
 
 1. From the menu, select **`Identity Providers`** and add new **`SAML v2.0`** identity provider.
 2. Insert **`alias`** and **`Display name`** of your choice. We are going to use **`adfs-idp-alias`** and **`AD FS`** respectively in this guide.
@@ -177,7 +177,7 @@ The following JSON configuration can be used to create the Identity Provider in 
     "hideOnLoginPage": "false",
     "signingCertificate": "MIIC4DCC...",
     "nameIDPolicyFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName",
-    "entityId": "https://keycloak.example.com/realms/CZERTAINLY",
+    "entityId": "https://keycloak.example.com/realms/ILM",
     "signSpMetadata": "false",
     "signatureAlgorithm": "RSA_SHA256",
     "wantAssertionsEncrypted": "false",

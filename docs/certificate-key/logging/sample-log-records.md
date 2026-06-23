@@ -4,7 +4,7 @@ sidebar_position: 99
 
 # Sample Log Records
 
-The following are sample logs for different operations in the CZERTAINLY platform in JSON format.
+The following are sample logs for different operations in the platform in JSON format.
 
 ## Edit group
 

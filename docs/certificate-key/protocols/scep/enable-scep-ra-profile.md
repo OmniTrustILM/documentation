@@ -18,7 +18,7 @@ First step is to configure the [`SCEP Profile`](./scep-profile.md). It will crea
 
 Configuration of the default `RA Profile` is optional, we will enable SCEP protocol for a specific `RA Profile` instead of it with name `czertainly`. Let's do this in `czertainly` `RA Profile` configuration.
 
-We will create `SCEP Profile` named `SCEP CZERTAINLY Profile` using the [Core SCEP API](/api/core-scep):
+We will create `SCEP Profile` named `SCEP ILM Profile` using the [Core SCEP API](/api/core-scep):
 ```bash
 curl -X POST \
   --cacert [ca-cert] \
@@ -28,7 +28,7 @@ curl -X POST \
   -H "Accept: application/json" \
   --data '
   {
-    "name": "SCEP CZERTAINLY Profile",
+    "name": "SCEP ILM Profile",
     "description": "Sample SCEP Profile",
     "caCertificateUuid": "72d7d882-9336-8a77-aa54-8d2fd83f7c37"
   }' \
@@ -69,11 +69,11 @@ When succeed, we will receive in the response SCEP server directory endpoint to 
 ```json
 {
     "uuid": "06d287f5-2b03-42a6-b40e-b98707ba4851",
-    "name": "SCEP CZERTAINLY Profile",
+    "name": "SCEP ILM Profile",
     "scepAvailable": true,
     "url": "https://[domain]:[port]/api/v1/protocols/scep/raProfile/ilm/pkiclient.exe",
     "issueCertificateAttributes": []
 }
 ```
 
-Now we have the SCEP protocol enabled for `RA Profile` with name `czertainly`, based on the `SCEP Profile` with name `SCEP CZERTAINLY Profile`.
+Now we have the SCEP protocol enabled for `RA Profile` with name `czertainly`, based on the `SCEP Profile` with name `SCEP ILM Profile`.

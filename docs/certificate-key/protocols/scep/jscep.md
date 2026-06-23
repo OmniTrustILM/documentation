@@ -4,13 +4,13 @@ sidebar_position: 13
 
 # jSCEP
 
-[`jSCEP`](https://github.com/jscep/jscep) is s an open-source Java implementation of the SCEP protocol that works with the CZERTAINLY SCEP service implementation.
+[`jSCEP`](https://github.com/jscep/jscep) is s an open-source Java implementation of the SCEP protocol that works with the platform's SCEP service implementation.
 
 This guide shows, how to use `jSCEP` to manage certificates using SCEP protocol and certificate management services controlled by the platform using the Java code.
 
 ## Prerequisites
 
-Before you can use `jSCEP` with the CZERTAINLY, you need to have the following:
+Before you can use `jSCEP` with the platform, you need to have the following:
 - `jSCEP` command line interface or source code available
 - Configured at least one `RA Profile` certificate service
 - SCEP protocol enabled according to the [Enable SCEP for RA Profile](./enable-scep-ra-profile.md)

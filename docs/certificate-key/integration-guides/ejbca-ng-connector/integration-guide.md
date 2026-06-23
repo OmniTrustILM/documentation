@@ -5,7 +5,7 @@ sidebar_position: 4
 # Integration Guide
 
 :::info
-This integration guide assumes at least basic knowledge and experience to install and configure EJBCA. It is focused on specific steps that should be done to connect EJBCA with CZERTAINLY for the certificate management.
+This integration guide assumes at least basic knowledge and experience to install and configure EJBCA. It is focused on specific steps that should be done to connect EJBCA with ILM for the certificate management.
 :::
 
 This document outlines the steps necessary to be taken on the EJBCA before the connector can be configured.
@@ -32,7 +32,7 @@ For more details, refer to [EJBCA installation](https://docs.keyfactor.com/ejbca
 You can skip this step in case you already have administrator certificate or using certificates for authentication and authorization issued by external certification authority not EJBCA.
 :::
 
-The certificate for the administrator is used to authenticate and authorize requests coming from the CZERTAINLY.
+The certificate for the administrator is used to authenticate and authorize requests coming from the platform.
 
 You can enroll and request the certificate for the administrator usign the following steps:
 - Login to EJBCA RA Web
@@ -42,33 +42,33 @@ You can enroll and request the certificate for the administrator usign the follo
 - CA should be pre-filled as `ManagementCA`
 - Select **Key-pair generation** as **By the CA**
 - Select the key algorithm and provide request information according to your administrator profiles
-- In the **Provide User Credentials** section, use **czertainly** as **Username** and provide your own password as **Enrollment code**
+- In the **Provide User Credentials** section, use **ilm** as **Username** and provide your own password as **Enrollment code**
 - Click on **Download PKCS#12** button to issue and download certificate file
 
 The **Enrollment code** will be used to protect the private key in the PKCS#12 file.
 
 For more information, refer to [EJCBA end entities](https://docs.keyfactor.com/ejbca/latest/ejbca-operations/ejbca-operations-guide/ca-operations-guide/end-entities).
 
-## Configure CZERTAINLY role
+## Configure the platform role
 
-The CZERTAINLY role in the EJBCA represents the access rule and permissions that are allowed for a given user within the EJBCA.
+The platform role in the EJBCA represents the access rule and permissions that are allowed for a given user within the EJBCA.
 
-Follow these steps to create the CZERTAINLY role:
+Follow these steps to create the platform role:
 - Login to the EJBCA Admin Web
 - Under System Functions, click on **Roles and Access Rules**
 - Click on **Add** button
-- Under the **Role name**, input CZERTAINLY and click on **Add** button
+- Under the **Role name**, input ILM and click on **Add** button
 - When the role is created, click on **Access Rules**
-- Configure access rules for the CZERTAINLY, which resources it should have access to (see [Access rules template](#access-rules-template))
+- Configure access rules for the platform role, which resources it should have access to (see [Access rules template](#access-rules-template))
 - Click on **Save** button. The permission will be applied
 - Click on the **Members**
-- Add the **czertainly** administrator to the members of the role **CZERTAINLY** (based on how you would like to validate the certificate, for example serial number, or common name)
+- Add the **ilm** administrator to the members of the role **ILM** (based on how you would like to validate the certificate, for example serial number, or common name)
 
 For more details, refer to [EJBCA roles and access rules](https://docs.keyfactor.com/ejbca/latest/ejbca-operations/ejbca-ca-concept-guide/roles-and-access-rules).
 
 ### Access rules template
 
-The following access rules should be allowed for the CZERTAINLY role:
+The following access rules should be allowed for the platform role:
 
 ```
 /administrator
@@ -86,7 +86,7 @@ The following access rules should be allowed for the CZERTAINLY role:
 
 ## Configure protocols
 
-CZERTAINLY works with the EJBCA through the Web Service and REST API.
+The platform works with the EJBCA through the Web Service and REST API.
 The following protocols should be therefore enabled and allowed in the EJBCA:
 - Web Service
 - REST Certificate Management V2

@@ -24,11 +24,11 @@ cp ilm-values-[current version].yaml ilm-values-[new version].yaml
 
 Update the new file `ilm-values-[new version].yaml` with the required changes and save the updated file.
 
-## Upgrade CZERTAINLY
+## Upgrade the platform
 
 Once backups are secured and the Helm chart values are updated, proceed with the upgrade.
 
-Run the following Helm command to upgrade CZERTAINLY:
+Run the following Helm command to upgrade the platform:
 
 ```bash
 helm upgrade --namespace ilm \

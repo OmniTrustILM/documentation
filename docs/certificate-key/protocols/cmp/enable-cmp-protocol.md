@@ -18,7 +18,7 @@ First step is to configure the [`CMP Profile`](./cmp-profile.md). It will create
 
 Configuration of the default `RA Profile` is optional, we will enable CMP protocol for a specific `RA Profile` with name `czertainly`. Let's do this in `czertainly` `RA Profile` configuration.
 
-We will create `CMP Profile` named `CMP-CZERTAINLY` using the [Core CMP API](/api/core-cmp/#operation/createCmpProfile):
+We will create `CMP Profile` named `CMP-ILM` using the [Core CMP API](/api/core-cmp/#operation/createCmpProfile):
 ```bash
 curl -X POST \
   --cacert [ca-cert] \
@@ -28,7 +28,7 @@ curl -X POST \
   -H "Accept: application/json" \
   --data '
   {
-    "name": "CMP-CZERTAINLY",
+    "name": "CMP-ILM",
     "description": "Sample CMP Profile",
     "variant": "v2",
     "requestProtectionMethod": "sharedSecret",
@@ -42,7 +42,7 @@ When the `CMP Profile` is successfully created, its `uuid` is sent back, for exa
 ```json
 {
   "uuid": "94720dc8-6d94-488b-9949-5dac0485c375",
-  "name": "CMP-CZERTAINLY",
+  "name": "CMP-ILM",
   "enabled": false,
   "variant": "v2",
   "description": "Sample CMP Profile",
@@ -94,7 +94,7 @@ When succeed, we will receive in the response CMP server endpoint to use:
 ```json
 {
   "uuid": "94720dc8-6d94-488b-9949-5dac0485c375",
-  "name": "CMP-CZERTAINLY",
+  "name": "CMP-ILM",
   "cmpAvailable": true,
   "cmpUrl": "https://[domain]:[port]/api/v1/protocols/cmp/raProfile/ilm",
   "issueCertificateAttributes": [],
@@ -102,4 +102,4 @@ When succeed, we will receive in the response CMP server endpoint to use:
 }
 ```
 
-Now we have the CMP protocol enabled for `RA Profile` with name `czertainly`, based on the `CMP Profile` with name `CMP-CZERTAINLY`.
+Now we have the CMP protocol enabled for `RA Profile` with name `czertainly`, based on the `CMP Profile` with name `CMP-ILM`.

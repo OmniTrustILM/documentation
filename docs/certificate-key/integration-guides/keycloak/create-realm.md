@@ -8,10 +8,10 @@ sidebar_position: 3
 Based on your Keycloak version, steps to create realm and OIDC client may differ. Refer to the Keycloak documentation specific for your Keycloak version.
 :::
 
-Keycloak realm provides a management space where you can create users and give them permissions to use CZERTAINLY.
-CZERTAINLY realm can be considered as a kind of isolation you want to have for your users and applications using the platform.
+Keycloak realm provides a management space where you can create users and give them permissions to use the platform.
+The ILM realm can be considered as a kind of isolation you want to have for your users and applications using the platform.
 
-You can create multiple realms in Keycloak for more granular isolation of use-cases related to the platform. For the purpose of this guide, we will create one new realm for CZERTAINLY.
+You can create multiple realms in Keycloak for more granular isolation of use-cases related to the platform. For the purpose of this guide, we will create one new realm for ILM.
 
 To protect using OpenID connect protocol, we will need to create an OIDC client in the respective realm.
 
@@ -19,7 +19,7 @@ To protect using OpenID connect protocol, we will need to create an OIDC client 
 
 To create a new realm, follow steps in [Creating a realm](https://www.keycloak.org/docs/latest/server_admin/#proc-creating-a-realm_server_administration_guide) with the following attributes:
 
-- Realm name: **CZERTAINLY**
+- Realm name: **ILM**
 
 ## Create OIDC Client
 
@@ -29,7 +29,7 @@ To create new OIDC client, follow steps described in [Creating an OpenID Connect
 - Client ID: **ilm**
 - Name: **ilm**
 - Client authentication: **On**
-- Root URL: **https://\<ILM_DOMAIN>**, where `<ILM_DOMAIN>` is the domain of your CZERTAINLY instance. This serves as an access point to your deployment
+- Root URL: **https://\<ILM_DOMAIN>**, where `<ILM_DOMAIN>` is the domain of your ILM instance. This serves as an access point to your deployment
 - Valid redirect URIs: URI pointing to redirect in Core after login via Keycloak, must contain `https://<ILM_DOMAIN>/api/login/oauth2/code/<oauth2ProviderName>`, where `oauth2ProviderName` is the `providerName` of OAuth2 Provider configured in platform [settings](/api/core-other#tag/Settings/operation/updateOAuth2ProviderSettings)
 - Valid post logout redirect URIs: list of valid post logout redirect URIs, for example `https://<ILM_DOMAIN>/administrator/`
 
@@ -37,7 +37,7 @@ To create new OIDC client, follow steps described in [Creating an OpenID Connect
 Valid URIs and web origins should be properly configured to avoid any security related issues, for example Cross-origin resource sharing (CORS) issues.
 :::
 
-### Configure CZERTAINLY dedicated scope
+### Configure the dedicated scope
 
 The user in the platform is identified using JWT Access Token as described in the [Identification](../../concept-design/architecture/access-control/identification#json-web-token-jwt) part of the access control.
 

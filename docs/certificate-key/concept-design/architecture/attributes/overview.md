@@ -6,8 +6,8 @@ sidebar_position: 0
 
 ![A^2 engine](../../../../assets/a2-engine.png)
 
-Although the CZERTAINLY platform is technology independent, each technology have its own specifics that the users should be able to use properly. Due to the dynamic nature of CZERTAINLY, required input data should be represented generally, in concise and accurate structure.
-CZERTAINLY uses `Attribute` to require input and/or store import information identified by attribute name, type and content type.
+Although the ILM platform is technology independent, each technology have its own specifics that the users should be able to use properly. Due to the dynamic nature of the platform, required input data should be represented generally, in concise and accurate structure.
+The platform uses `Attribute` to require input and/or store import information identified by attribute name, type and content type.
 
 From the standpoint of attribute definition source, we can split attributes to two separate groups.
 
@@ -23,7 +23,7 @@ For more information on how to work with attributes, see [Using Attributes](../.
 
 ### Custom attributes
 
-Custom attributes are defined and managed by the users of CZERTAINLY platform. It allows user to add custom information to individual objects / resources that are part of platform.
+Custom attributes are defined and managed by the users of the platform. It allows user to add custom information to individual objects / resources that are part of platform.
 
 This way, user can individually categorize, mark objects or create hierarchy and relationships between objects.
 
@@ -42,11 +42,11 @@ Metadata attributes are typically managed by the connector.
 Metadata attribute can be marked as `global` to make it available between various connectors. For more information, see [Global Metadata](./global-metadata.md).
 
 :::info
-For more information about the concept behind the `Connector`, `Attributes`, `Callbacks`, etc, see the [CZERTAINLY platform overview](../../../concept-design/overview.md).
+For more information about the concept behind the `Connector`, `Attributes`, `Callbacks`, etc, see the [platform overview](../../../concept-design/overview.md).
 :::
 
 ## Attributes management
-Since functionality in CZERTAINLY is heavily based on attributes and its data, attribute engine also provides layer for management of attributes and their content. Attribute engine is responsible for
+Since functionality in the platform is heavily based on attributes and its data, attribute engine also provides layer for management of attributes and their content. Attribute engine is responsible for
 - registration, validation and management of attributes definitions
 - validation of attribute content for individual objects (user input)
 - retrieving object attributes based on type and/or operation

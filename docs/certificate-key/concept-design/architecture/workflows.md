@@ -9,7 +9,7 @@ Workflows are a series of tasks executed in a specific sequence to automate proc
 Workflows can be triggered manually, automatically, or by events such as the completion of a task or the creation of a new certificate. The primary goal of workflows is to automate and orchestrate tasks within a broader process, minimizing manual intervention and errors.
 
 :::info[Workflow support]
-The CZERTAINLY platform supports workflows starting from version 2.12.0. The current implementation includes a specific set of rules and actions that can be triggered for newly discovered certificates. The platform is designed to be extensible, with plans to add more rules, actions, and triggers in future releases.
+The platform supports workflows starting from version 2.12.0. The current implementation includes a specific set of rules and actions that can be triggered for newly discovered certificates. The platform is designed to be extensible, with plans to add more rules, actions, and triggers in future releases.
 :::
 
 ## Workflow components

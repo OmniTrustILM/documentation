@@ -51,11 +51,11 @@ psql -h localhost -p 5432 \
   -W ilmdb < [date]_ilmdb_backup_[comment].sql &> psql_log
 ```
 
-## Restore CZERTAINLY
+## Restore the platform
 
-To restore CZERTAINLY to its previous state:
+To restore the platform to its previous state:
 1. Use the original Helm chart values (backed up earlier).
-2. Install the previous version of CZERTAINLY using Helm:
+2. Install the previous version of the platform using Helm:
 
 ```bash
 helm install --namespace ilm \
