@@ -2,18 +2,18 @@
 sidebar_position: 9
 ---
 
-# Add CZERTAINLY Theme
+# Add the ILM theme
 
-Optionally, you can apply custom CZERTAINLY theme to Keycloak.
-CZERTAINLY theme will make the login page for the users to be authenticated by Keycloak look like the login page for the users to be authenticated by the built-in authentication server.
+Optionally, you can apply a custom ILM theme to Keycloak.
+The ILM theme will make the login page for the users to be authenticated by Keycloak look like the login page for the users to be authenticated by the built-in authentication server.
 
-The CZERTAINLY Keycloak theme is available:
+The ILM Keycloak theme is available:
 - on [GitHub](https://github.com/OmniTrustILM/keycloak-theme) with complete source
 - as docker container in the [OmniTrust registry](https://hub.omnitrustregistry.com/ilm/keycloak-theme)
 
 ## Install theme
 
-Assuming using the official Keycloak container images `quay.io/keycloak/keycloak`, the CZERTAINLY Keycloak theme can be installed in the Kubernetes environment using `initContainers` that will make it available to Keycloak during boot, for example:
+Assuming using the official Keycloak container images `quay.io/keycloak/keycloak`, the ILM Keycloak theme can be installed in the Kubernetes environment using `initContainers` that will make it available to Keycloak during boot, for example:
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -65,7 +65,7 @@ spec:
 
 ## Apply theme
 
-Once the theme is installed, it can be applied to the CZERTAINLY client by setting the **Login theme** to `ilm`, see [Login settings](https://www.keycloak.org/docs/latest/server_admin/#login-settings) in the Keycloak documentation.
+Once the theme is installed, it can be applied to the ILM client by setting the **Login theme** to `ilm`, see [Login settings](https://www.keycloak.org/docs/latest/server_admin/#login-settings) in the Keycloak documentation.
 
 :::info[Keycloak themes]
 For more information about custom themes, refer to [Keycloak Themes](https://www.keycloak.org/docs/latest/server_development/#_themes) documentation.

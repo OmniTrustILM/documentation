@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Authorize CZERTAINLY
+# Authorize ILM
 
 To allow a third-party SCEP server to run custom challenge validation with Intune, create an app in Azure AD. This app gives delegated rights to Intune to validate SCEP requests.
 
