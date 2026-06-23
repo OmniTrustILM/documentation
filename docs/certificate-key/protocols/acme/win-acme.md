@@ -34,7 +34,7 @@ For this guide, we will use `http-01` challenge validation, but the `dns-01` can
 | **DefaultBaseUriTest**   | `https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory` |
 | **DefaultBaseUriImport** | `https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory` |
 
-With these parameters, we are directly connecting to the already configured `RA Profile` with name `czertainly` that has ACME enabled. 
+With these parameters, we are directly connecting to the already configured `RA Profile` with name `ilm` that has ACME enabled. 
 For more information follow [win-acme settings](https://www.win-acme.com/reference/settings#acme).
 
 :::note[`win-acme` Plugin support]

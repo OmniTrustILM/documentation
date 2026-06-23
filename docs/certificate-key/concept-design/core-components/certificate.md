@@ -23,7 +23,7 @@ In addition to the above details, the following are mapped to the `Certificate` 
 
 ## Hybrid Certificate
 
-In addition to classic X.509 certificates with public key, The platform also supports hybrid certificates with alternative extensions. Hybrid certificates are important for migration to post-quantum technology. They contain two public keys - the one with classical public key like RSA or ECDSA and an alternative public key with quantum-safe algorithm. When the hybrid CA signs certificate, the signed certificate will also have corresponding alternative signature extension that is created using corresponding alternative private key. The alternative extensions are specified in [ITU-T X509 (10/2019)](https://www.itu.int/rec/T-REC-X.509-201910-I/en).
+In addition to classic X.509 certificates with public key, the platform also supports hybrid certificates with alternative extensions. Hybrid certificates are important for migration to post-quantum technology. They contain two public keys - the one with classical public key like RSA or ECDSA and an alternative public key with quantum-safe algorithm. When the hybrid CA signs certificate, the signed certificate will also have corresponding alternative signature extension that is created using corresponding alternative private key. The alternative extensions are specified in [ITU-T X509 (10/2019)](https://www.itu.int/rec/T-REC-X.509-201910-I/en).
 
 ## Certificate state
 
