@@ -29,9 +29,9 @@ To create new OIDC client, follow steps described in [Creating an OpenID Connect
 - Client ID: **ilm**
 - Name: **ilm**
 - Client authentication: **On**
-- Root URL: **https://\<ILM_DOMAIN>**, where `<ILM_DOMAIN>` is the domain of your ILM instance. This serves as an access point to your deployment
-- Valid redirect URIs: URI pointing to redirect in Core after login via Keycloak, must contain `https://<ILM_DOMAIN>/api/login/oauth2/code/<oauth2ProviderName>`, where `oauth2ProviderName` is the `providerName` of OAuth2 Provider configured in platform [settings](/api/core-other#tag/Settings/operation/updateOAuth2ProviderSettings)
-- Valid post logout redirect URIs: list of valid post logout redirect URIs, for example `https://<ILM_DOMAIN>/administrator/`
+- Root URL: **https://\<PLATFORM_DOMAIN>**, where `<PLATFORM_DOMAIN>` is the domain of your ILM instance. This serves as an access point to your deployment
+- Valid redirect URIs: URI pointing to redirect in Core after login via Keycloak, must contain `https://<PLATFORM_DOMAIN>/api/login/oauth2/code/<oauth2ProviderName>`, where `oauth2ProviderName` is the `providerName` of OAuth2 Provider configured in platform [settings](/api/core-other#tag/Settings/operation/updateOAuth2ProviderSettings)
+- Valid post logout redirect URIs: list of valid post logout redirect URIs, for example `https://<PLATFORM_DOMAIN>/administrator/`
 
 :::warning[URIs and origins]
 Valid URIs and web origins should be properly configured to avoid any security related issues, for example Cross-origin resource sharing (CORS) issues.

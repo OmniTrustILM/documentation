@@ -85,7 +85,7 @@ metadata:
   name: ilm-clusterissuer
 spec:
   authSecretName: "ilm-credentials"
-  apiUrl: "https://<ILM_HOSTNAME>/api"
+  apiUrl: "https://<PLATFORM_HOSTNAME>/api"
   raProfileUuid: "9cb76b6a-c291-4e23-b11a-bb3da76adbc6"
 ```
 
@@ -101,7 +101,7 @@ metadata:
   namespace: default
 spec:
   authSecretName: "ilm-credentials"
-  apiUrl: "https://<ILM_HOSTNAME>/api"
+  apiUrl: "https://<PLATFORM_HOSTNAME>/api"
   raProfileUuid: "9cb76b6a-c291-4e23-b11a-bb3da76adbc6"
   raProfileName: "My RA Profile"
   caBundleSecretName: "issuer-ilm-ca-bundle"

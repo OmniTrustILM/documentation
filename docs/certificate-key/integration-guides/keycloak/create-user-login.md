@@ -43,5 +43,5 @@ authService:
 ## Login
 
 You can login to ILM with configured user:
-- Open the ILM login page: `https://<ILM_DOMAIN>/login?redirect=%2Fadministrator%2F`
+- Open the ILM login page: `https://<PLATFORM_DOMAIN>/login?redirect=%2Fadministrator%2F`
 - Login with username `admin`

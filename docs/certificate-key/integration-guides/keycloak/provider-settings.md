@@ -32,7 +32,7 @@ To create such provider, a request to the [Update OAuth2 Provider settings API](
     "jwkSetUrl": "https://<KEYCLOAK_DOMAIN>/realms/ILM/protocol/openid-connect/certs",
     "scope": ["openid"],
     "logoutUrl": "https://<KEYCLOAK_DOMAIN>/realms/ILM/protocol/openid-connect/logout",
-    "postLogoutUrl": "https://<ILM_DOMAIN>/administrator/",
+    "postLogoutUrl": "https://<PLATFORM_DOMAIN>/administrator/",
     "audiences": ["ilm"],
     "sessionMaxInactiveInterval": 600
 }
