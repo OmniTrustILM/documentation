@@ -31,7 +31,7 @@ The following steps should be done to integrate Keycloak with the platform:
 | **1** | [Create Realm and Client](create-realm.md)                 | Create and configure new Keycloak Realm and Client               |
 | **2** | [Configure OAuth2 Provider](provider-settings.md)          | Add Keycloak provider to the platform OAuth2 provider settings   |
 | **3** | [Create User and Login](create-user-login.md)              | Create new Keycloak user and login                               |
-| **4** | **(Optional)** [Add ILM Theme](czertainly-theme.md)        | Add the ILM custom theme to Keycloak and realm                   |
+| **4** | **(Optional)** [Add ILM Theme](theme.md)        | Add the ILM custom theme to Keycloak and realm                   |
 
 ## Identity providers
 

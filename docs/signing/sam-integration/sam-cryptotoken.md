@@ -8,7 +8,7 @@ Remote signing using with the SCAL2 and ILM Signing is possible by integrating t
 
 <div class="text--center">
 
-![SCAL-CZERTAINLY](../../assets/sam-integration/SCAL-CZERTAINLY.png "SCAL-CZERTAINLY")
+![SCAL-ILM](../../assets/sam-integration/SCAL-ILM.png "SCAL-ILM")
 
 </div>
 

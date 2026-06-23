@@ -65,6 +65,11 @@ const config = {
             to: '/docs',
             from: '/test',
           },
+          { to: '/docs/certificate-key/integration-guides/cert-manager-issuer/create-issuer', from: '/docs/certificate-key/integration-guides/cert-manager-issuer/create-czertainly-issuer' },
+          { to: '/docs/certificate-key/integration-guides/cert-manager-issuer/install-issuer', from: '/docs/certificate-key/integration-guides/cert-manager-issuer/install-czertainly-issuer' },
+          { to: '/docs/certificate-key/integration-guides/adfs/configure-ilm', from: '/docs/certificate-key/integration-guides/adfs/configure-czertainly' },
+          { to: '/docs/certificate-key/integration-guides/intune/authorize-ilm', from: '/docs/certificate-key/integration-guides/intune/authorize-czertainly' },
+          { to: '/docs/certificate-key/integration-guides/keycloak/theme', from: '/docs/certificate-key/integration-guides/keycloak/czertainly-theme' },
         ],
         createRedirects: function (existingPath) {
           // do not redirect root

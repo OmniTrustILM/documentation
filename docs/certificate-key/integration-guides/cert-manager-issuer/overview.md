@@ -24,8 +24,8 @@ The following steps should be done to successfully integrate with cert-manager:
 
 | #     | Reference                                                   | Short description                                              |
 |-------|-------------------------------------------------------------|----------------------------------------------------------------|
-| **1** | [Install the cert-manager issuer](./install-czertainly-issuer.md) | Install the cert-manager issuer controller in the Kubernetes cluster |
-| **2** | [Create the issuer resource](./create-czertainly-issuer.md)       | Create the issuer resource                                           |
+| **1** | [Install the cert-manager issuer](./install-issuer.md) | Install the cert-manager issuer controller in the Kubernetes cluster |
+| **2** | [Create the issuer resource](./create-issuer.md)       | Create the issuer resource                                           |
 | **3** | [Create Certificate](./create-certificate.md)                     | Create a certificate using the issuer                                |
 
 ## Useful resources

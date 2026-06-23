@@ -22,7 +22,7 @@ In order to use ILM as a SCEP service for Intune, you need to follow these steps
 
 | # | Step                                                        | Description                                                                                                            |
 |---|-------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| 1 | [Authorize the platform](./authorize-czertainly.md)         | Setup integration and authorization between Intune and the platform by creating an application in Azure Active Directory |
+| 1 | [Authorize the platform](./authorize-ilm.md)         | Setup integration and authorization between Intune and the platform by creating an application in Azure Active Directory |
 | 2 | [Configure Intune SCEP Profile](./configure-scep-intune.md) | Create `SCEP Profile` with enabled Intune request validation support                                                   |
 | 3 | [Create Intune Profiles](./create-intune-profiles.md)       | Create Intune configuration profiles holding the trusted CA certificates and SCEP configuration                        |
 | 4 | [Enroll Device](./enroll-device.md)                         | Enroll device with Intune                                                                                              |
