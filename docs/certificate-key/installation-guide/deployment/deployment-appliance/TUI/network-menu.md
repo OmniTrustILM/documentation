@@ -46,10 +46,7 @@ In case installing behind restrictive HTTP proxy make sure that you enable all h
   * release-assets.githubusercontent.com
   * cloudfront.net
 * **Docker images**:
-  * index.docker.io
-  * auth.docker.io
-  * production.cloudflare.docker.com
-  * registry-1.docker.io
+  * hub.omnitrustregistry.com
 * **RKE2**:
   * get.rke2.io
   * update.rke2.io

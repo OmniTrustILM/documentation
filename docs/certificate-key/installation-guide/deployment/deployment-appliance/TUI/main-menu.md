@@ -72,7 +72,7 @@ In this dialog window, you can select which version and which components of ILM 
 
 #### Version
 
-List [available versions](https://hub.omnitrustregistry.com/harbor/projects/8/repositories/czertainly/artifacts-tab). The latest stable version is typically the best choice, and it is pre-selected in the appliance.
+List [available versions](https://hub.omnitrustregistry.com). The latest stable version is typically the best choice, and it is pre-selected in the appliance.
 
 #### Components
 
