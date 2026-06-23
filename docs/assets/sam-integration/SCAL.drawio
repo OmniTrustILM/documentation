@@ -294,7 +294,7 @@
         <mxCell id="GNmD8T8C6FAYGLhFfTcm-5" value="SIC&lt;br&gt;(Signer Interaction Component)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Arial;fontColor=#FFFFFF;verticalAlign=middle;strokeColor=none;fillColor=#2B7934;gradientColor=#0C4770;gradientDirection=west;fontStyle=1" parent="GNmD8T8C6FAYGLhFfTcm-1" vertex="1">
           <mxGeometry x="200" y="398" width="125" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="GNmD8T8C6FAYGLhFfTcm-7" value="CZERTAINLY&lt;br&gt;Signing" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Arial;fontColor=#2b2a29;verticalAlign=top;strokeColor=none;fillColor=#F7F7F7;fontStyle=1" parent="GNmD8T8C6FAYGLhFfTcm-1" vertex="1">
+        <mxCell id="GNmD8T8C6FAYGLhFfTcm-7" value="ILM&lt;br&gt;Signing" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Arial;fontColor=#2b2a29;verticalAlign=top;strokeColor=none;fillColor=#F7F7F7;fontStyle=1" parent="GNmD8T8C6FAYGLhFfTcm-1" vertex="1">
           <mxGeometry x="505" y="170" width="130" height="320" as="geometry" />
         </mxCell>
         <mxCell id="GNmD8T8C6FAYGLhFfTcm-9" value="SAM&lt;br&gt;(Signature Activation Module)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Arial;fontColor=#2b2a29;verticalAlign=top;strokeColor=none;fillColor=#F7F7F7;fontStyle=1" parent="GNmD8T8C6FAYGLhFfTcm-1" vertex="1">
@@ -412,7 +412,7 @@
         <mxCell id="_BLCU2sOW8qs4PmeLs73-1" value="User interface" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Arial;fontColor=#2b2a29;verticalAlign=top;strokeColor=none;fillColor=#F7F7F7;fontStyle=1" vertex="1" parent="x03vIz2jsFo9anoP_jei-1">
           <mxGeometry x="195" y="170" width="130" height="320" as="geometry" />
         </mxCell>
-        <mxCell id="_BLCU2sOW8qs4PmeLs73-3" value="CZERTAINLY&lt;br&gt;Signing" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Arial;fontColor=#2b2a29;verticalAlign=top;strokeColor=none;fillColor=#F7F7F7;fontStyle=1" vertex="1" parent="x03vIz2jsFo9anoP_jei-1">
+        <mxCell id="_BLCU2sOW8qs4PmeLs73-3" value="ILM&lt;br&gt;Signing" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Arial;fontColor=#2b2a29;verticalAlign=top;strokeColor=none;fillColor=#F7F7F7;fontStyle=1" vertex="1" parent="x03vIz2jsFo9anoP_jei-1">
           <mxGeometry x="505" y="170" width="130" height="320" as="geometry" />
         </mxCell>
         <mxCell id="_BLCU2sOW8qs4PmeLs73-4" value="HSM / QSCD&lt;br&gt;(Hardware Security Module)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Arial;fontColor=#2b2a29;verticalAlign=top;strokeColor=none;fillColor=#F7F7F7;fontStyle=1" vertex="1" parent="x03vIz2jsFo9anoP_jei-1">
