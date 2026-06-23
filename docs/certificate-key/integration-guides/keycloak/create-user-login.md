@@ -43,5 +43,5 @@ authService:
 ## Login
 
 You can login to CZERTAINLY with configured user:
-- Open the CZERTAINLY login page: `https://<CZERTAINLY_DOMAIN>/login?redirect=%2Fadministrator%2F`
+- Open the CZERTAINLY login page: `https://<ILM_DOMAIN>/login?redirect=%2Fadministrator%2F`
 - Login with username `admin`

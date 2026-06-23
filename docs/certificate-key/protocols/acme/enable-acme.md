@@ -81,7 +81,7 @@ When succeed, we will receive in the response ACME server directory endpoint to 
 {
     "uuid": "b6be5014-b8f8-4b4f-b96d-a54c38f54b48",
     "name": "ACME CZERTAINLY Profile",
-    "directoryUrl": "https://[domain]:[port]/api/v1/protocols/acme/raProfile/czertainly/directory",
+    "directoryUrl": "https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory",
     "issueCertificateAttributes": [],
     "revokeCertificateAttributes": [],
     "acmeAvailable": true

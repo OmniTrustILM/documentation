@@ -96,7 +96,7 @@ When succeed, we will receive in the response CMP server endpoint to use:
   "uuid": "94720dc8-6d94-488b-9949-5dac0485c375",
   "name": "CMP-CZERTAINLY",
   "cmpAvailable": true,
-  "cmpUrl": "https://[domain]:[port]/api/v1/protocols/cmp/raProfile/czertainly",
+  "cmpUrl": "https://[domain]:[port]/api/v1/protocols/cmp/raProfile/ilm",
   "issueCertificateAttributes": [],
   "revokeCertificateAttributes": []
 }

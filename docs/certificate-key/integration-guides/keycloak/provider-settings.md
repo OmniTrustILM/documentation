@@ -32,7 +32,7 @@ To create such provider, a request to the [Update OAuth2 Provider settings API](
     "jwkSetUrl": "https://<KEYCLOAK_DOMAIN>/realms/CZERTAINLY/protocol/openid-connect/certs",
     "scope": ["openid"],
     "logoutUrl": "https://<KEYCLOAK_DOMAIN>/realms/CZERTAINLY/protocol/openid-connect/logout",
-    "postLogoutUrl": "https://<CZERTAINLY_DOMAIN>/administrator/",
+    "postLogoutUrl": "https://<ILM_DOMAIN>/administrator/",
     "audiences": ["ilm"],
     "sessionMaxInactiveInterval": 600
 }

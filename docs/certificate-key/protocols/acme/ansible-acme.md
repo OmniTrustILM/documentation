@@ -56,7 +56,7 @@ At the beginning of the playbook file, we define default values that are used ac
   tasks:
     - name: Set vars
       ansible.builtin.set_fact:
-        acme_directory: "https://[domain]:[port]/api/v1/protocols/acme/czertainly/directory"
+        acme_directory: "https://[domain]:[port]/api/v1/protocols/acme/ilm/directory"
         acme_version: 2
         acme_register_account: true
         acme_web_dir: "/var/www/html"

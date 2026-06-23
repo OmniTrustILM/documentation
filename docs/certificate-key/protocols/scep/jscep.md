@@ -24,7 +24,7 @@ For more information about the `jSCEP`, download source code or CLI, refer to of
 To create `Client`, we need to know the SCEP service URL and the `CallbackHandler` that is used to verify the CA certificate being sent by the SCEP server is the expected certificate (see [Creating a Callback Handler](https://github.com/jscep/jscep#creating-a-callback-handler) for more information).
 
 ```java
-URL url = new URL("https://[domain]:[port]/api/v1/protocols/scep/raProfile/czertainly/pkiclient.exe");
+URL url = new URL("https://[domain]:[port]/api/v1/protocols/scep/raProfile/ilm/pkiclient.exe");
 CertificateVerifier verifier = new OptimisticCertificateVerifier();
 CallbackHandler handler = new DefaultCallbackHandler(verifier);
 Client client = new Client(url, handler);

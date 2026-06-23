@@ -71,7 +71,7 @@ When succeed, we will receive in the response SCEP server directory endpoint to 
     "uuid": "06d287f5-2b03-42a6-b40e-b98707ba4851",
     "name": "SCEP CZERTAINLY Profile",
     "scepAvailable": true,
-    "url": "https://[domain]:[port]/api/v1/protocols/scep/raProfile/czertainly/pkiclient.exe",
+    "url": "https://[domain]:[port]/api/v1/protocols/scep/raProfile/ilm/pkiclient.exe",
     "issueCertificateAttributes": []
 }
 ```

@@ -35,7 +35,7 @@ metadata:
   #namespace: default
 spec:
   acme:
-    server: https://[domain]:[port]/api/v1/protocols/acme/raProfile/czertainly/directory
+    server: https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory
     # Email address used for ACME registration
     email: www@example.com
     # Name of a secret used to store the ACME account private key

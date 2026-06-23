@@ -53,7 +53,7 @@ The configuration of the `acme` provider is done in the `provider` block and req
 
 ```hcl
 provider "acme" {
-  server_url = "https://[domain]:[port]/api/v1/protocols/acme/raProfile/czertainly/directory"
+  server_url = "https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory"
 }
 ```
 
