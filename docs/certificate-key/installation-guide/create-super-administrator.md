@@ -21,7 +21,7 @@ You need to provide the following information:
    "username":"adminadmin",
    "firstname":"admin",
    "lastname":"admin",
-   "email":"admin@czertainly.com",
+   "email":"admin@example.com",
    "enabled":"true",
    "description": "First Administrator"
 }
@@ -48,7 +48,7 @@ In this example, the Administrator with the following attributes will be registe
 - **Firstname:** admin
 - **Lastname:** admin
 - **Username:** adminadmin
-- **Email:** admin@czertainly.com
+- **Email:** admin@example.com
 - **Role:** `SUPERADMINISTRATOR`
 - **Description:** First Administrator
 - <span class="badge badge--success">ENABLED</span>

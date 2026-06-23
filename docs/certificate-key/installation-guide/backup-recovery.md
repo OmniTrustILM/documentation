@@ -12,22 +12,22 @@ The first step is to back up the current database. Use the `pg_dump` command or 
 
 ```bash
 pg_dump -h localhost -p 5432 \
-  -d czertainlydb \
-  -U czertainlyuser \
-  -W > [date]_czertainlydb_backup_[comment].sql
+  -d ilmdb \
+  -U ilmuser \
+  -W > [date]_ilmdb_backup_[comment].sql
 ```
 
-The backup file will be created as `[date]_czertainlydb_backup_[comment].sql`. Store this file safely.
+The backup file will be created as `[date]_ilmdb_backup_[comment].sql`. Store this file safely.
 
 ## Backup current Helm chart values
 
 Helm chart values are crucial for the recovery process in case the upgrade fails. If you do not already have the values file saved, you can retrieve the current Helm values using:
 
 ```bash
-helm get values czertainly -n czertainly-tlm > czertainly-values-[current version].yaml
+helm get values ilm -n ilm > ilm-values-[current version].yaml
 ```
 
-This will output the Helm values to `czertainly-values-[current version].yaml`. Store this file alongside the database backup.
+This will output the Helm values to `ilm-values-[current version].yaml`. Store this file alongside the database backup.
 
 For further details, refer to the [Helm documentation on `helm get values`](https://helm.sh/docs/helm/helm_get_values/).
 
@@ -38,17 +38,17 @@ If an upgrade failure occurs, start by restoring the database.
 Create a new database:
 
 ```bash
-CREATE DATABASE czertainlydb ENCODING 'UTF8' LC_COLLATE='en_US.UTF-8' LC_CTYPE='en_US.UTF-8' TEMPLATE=template0;
-GRANT ALL PRIVILEGES ON DATABASE czertainlydb to czertainlyuser;
+CREATE DATABASE ilmdb ENCODING 'UTF8' LC_COLLATE='en_US.UTF-8' LC_CTYPE='en_US.UTF-8' TEMPLATE=template0;
+GRANT ALL PRIVILEGES ON DATABASE ilmdb to ilmuser;
 ```
 
 Restore the backup using the `psql` command:
 
 ```bash
 psql -h localhost -p 5432 \
-  -d czertainlydb \
-  -U czertainlyuser \
-  -W czertainlydb < [date]_czertainlydb_backup_[comment].sql &> psql_log
+  -d ilmdb \
+  -U ilmuser \
+  -W ilmdb < [date]_ilmdb_backup_[comment].sql &> psql_log
 ```
 
 ## Restore CZERTAINLY
@@ -58,8 +58,8 @@ To restore CZERTAINLY to its previous state:
 2. Install the previous version of CZERTAINLY using Helm:
 
 ```bash
-helm install --namespace czertainly \
-  -f czertainly-values-[current version].yaml czertainly-tlm \
+helm install --namespace ilm \
+  -f ilm-values-[current version].yaml ilm \
   oci://hub.omnitrustregistry.com/ilm-helm/ilm \
   --version [current version]
 ```

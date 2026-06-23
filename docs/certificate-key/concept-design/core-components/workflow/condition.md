@@ -55,7 +55,7 @@ An example SAN entry might look like this:
 
 ```json
 {
-  "dNSName": ["czertainly.com", "www.czertainly.com"],
+  "dNSName": ["example.com", "www.example.com"],
   "directoryName": [],
   "ediPartyName": [],
   "iPAddress": ["156.88.27.150"],

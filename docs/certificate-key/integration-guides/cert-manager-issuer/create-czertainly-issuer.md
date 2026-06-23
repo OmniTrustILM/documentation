@@ -21,13 +21,13 @@ The CZERTAINLY Issuer uses the `authSecretName` referenced secret to authenticat
 - a `kubernetes.io/tls` to establish mutual TLS connection with the CZERTAINLY platform;
 - or an `Opaque` secret containing the OAuth 2.0 client credentials to authenticate with the CZERTAINLY platform.
 
-The secret with the name `czertainly-credentials` is created and can be used as the `authSecretName` in the CZERTAINLY Issuer.
+The secret with the name `ilm-credentials` is created and can be used as the `authSecretName` in the CZERTAINLY Issuer.
 
 ### mTLS authentication
 
 To create the [`kubernetes.io/tls`](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) secret, you can use your existing certificate and key pair and create the secret with the following command:
 ```bash
-kubectl create secret tls czertainly-credentials \
+kubectl create secret tls ilm-credentials \
   --namespace czertainly-issuer \
   --cert=<path to cert file> \
   --key=<path to key file>
@@ -37,7 +37,7 @@ kubectl create secret tls czertainly-credentials \
 
 To create the [`Opaque`](https://kubernetes.io/docs/concepts/configuration/secret/#opaque-secrets) secret for OAuth 2.0 client credentials, you can use the following command:
 ```bash
-kubectl create secret generic czertainly-credentials \
+kubectl create secret generic ilm-credentials \
   --namespace czertainly-issuer \
   --from-literal=client_id=<your client id> \
   --from-literal=client_secret=<your client secret> \
@@ -51,7 +51,7 @@ The CZERTAINLY Issuer uses the `caBundleSecretName` referenced secret to verify 
 
 You can create `generic` secret with trusted certificates with the following command:
 ```bash
-kubectl create secret generic issuer-czertainly-ca-bundle \
+kubectl create secret generic issuer-ilm-ca-bundle \
   --namespace czertainly-issuer \
   --from-file=ca.crt=<path-to-ca-bundle-file>
 ```
@@ -81,11 +81,11 @@ apiVersion: czertainly-issuer.czertainly.com/v1alpha1
 kind: CzertainlyClusterIssuer
 metadata:
   labels:
-    app.kubernetes.io/name: czertainly-clusterissuer
-  name: czertainly-clusterissuer
+    app.kubernetes.io/name: ilm-clusterissuer
+  name: ilm-clusterissuer
 spec:
-  authSecretName: "czertainly-credentials"
-  apiUrl: "https://my.czertainly.com/api"
+  authSecretName: "ilm-credentials"
+  apiUrl: "https://<ILM_HOSTNAME>/api"
   raProfileUuid: "9cb76b6a-c291-4e23-b11a-bb3da76adbc6"
 ```
 
@@ -96,20 +96,20 @@ apiVersion: czertainly-issuer.czertainly.com/v1alpha1
 kind: CzertainlyIssuer
 metadata:
   labels:
-    app.kubernetes.io/name: czertainly-issuer
-  name: czertainly-issuer
+    app.kubernetes.io/name: ilm-issuer
+  name: ilm-issuer
   namespace: default
 spec:
-  authSecretName: "czertainly-credentials"
-  apiUrl: "https://my.czertainly.com/api"
+  authSecretName: "ilm-credentials"
+  apiUrl: "https://<ILM_HOSTNAME>/api"
   raProfileUuid: "9cb76b6a-c291-4e23-b11a-bb3da76adbc6"
   raProfileName: "My RA Profile"
-  caBundleSecretName: "issuer-czertainly-ca-bundle"
+  caBundleSecretName: "issuer-ilm-ca-bundle"
 ```
 
 To create the `CzertainlyClusterIssuer` or `CzertainlyIssuer`, save the resource definition to a file and apply it to the Kubernetes cluster:
 ```bash
-kubectl apply -f czertainly-issuer.yaml
+kubectl apply -f ilm-issuer.yaml
 ```
 
 You can get all available `CzertainlyClusterIssuer` or `CzertainlyIssuer` resources by running:
@@ -121,18 +121,18 @@ kubectl get czertainlyissuers.czertainly-issuer.czertainly.com \
 
 To validate the `CzertainlyClusterIssuer` or `CzertainlyIssuer` resource, you can describe the resource:
 ```bash
-kubectl describe czertainlyclusterissuers.czertainly-issuer.czertainly.com czertainly-clusterissuer
-kubectl describe czertainlyissuers.czertainly-issuer.czertainly.com czertainly-issuer \
+kubectl describe czertainlyclusterissuers.czertainly-issuer.czertainly.com ilm-clusterissuer
+kubectl describe czertainlyissuers.czertainly-issuer.czertainly.com ilm-issuer \
   --namespace <namespace>
 ```
 
 The status conditions of the resource will be updated once the CZERTAINLY Issuer is ready:
 
 ```bash
-kubectl get czertainlyclusterissuers.czertainly-issuer.czertainly.com czertainly-issuer \
+kubectl get czertainlyclusterissuers.czertainly-issuer.czertainly.com ilm-clusterissuer \
   -o json \
   | jq .status.conditions
-kubectl get czertainlyissuers.czertainly-issuer.czertainly.com czertainly-issuer \
+kubectl get czertainlyissuers.czertainly-issuer.czertainly.com ilm-issuer \
   --namespace <namespace> \
   -o json \
   | jq .status.conditions

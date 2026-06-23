@@ -19,10 +19,10 @@ Before upgrading, follow these steps to back up the database and Helm chart valu
 Review the release notes of the new version for any necessary changes to Helm chart values. Create a copy of the current values:
 
 ```bash
-cp czertainly-values-[current version].yaml czertainly-values-[new version].yaml
+cp ilm-values-[current version].yaml ilm-values-[new version].yaml
 ```
 
-Update the new file `czertainly-values-[new version].yaml` with the required changes and save the updated file.
+Update the new file `ilm-values-[new version].yaml` with the required changes and save the updated file.
 
 ## Upgrade CZERTAINLY
 
@@ -31,8 +31,8 @@ Once backups are secured and the Helm chart values are updated, proceed with the
 Run the following Helm command to upgrade CZERTAINLY:
 
 ```bash
-helm upgrade --namespace czertainly \
-  -f czertainly-values-[new version].yaml czertainly-tlm \
+helm upgrade --namespace ilm \
+  -f ilm-values-[new version].yaml ilm \
   oci://hub.omnitrustregistry.com/ilm-helm/ilm \
   --version [new version]
 ```

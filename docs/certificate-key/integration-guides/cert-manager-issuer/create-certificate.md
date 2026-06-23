@@ -18,21 +18,21 @@ The following is an example of the `Certificate` resource:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: czertainly-crt
+  name: ilm-crt
 spec:
-  secretName: czertainly-crt-secret
+  secretName: ilm-crt-secret
   dnsNames:
   - foo.example.com
   - bar.example.com
   issuerRef:
-    name: czertainly-issuer
+    name: ilm-issuer
     kind: CzertainlyIssuer
     group: czertainly-issuer.czertainly.com
 ```
 
 To create the `Certificate`, save the resource definition to a file and apply it to the Kubernetes cluster:
 ```bash
-kubectl apply -f czertainly-crt.yaml
+kubectl apply -f ilm-crt.yaml
 ```
 
 You can get all available CZERTAINLY `Certificate` resources by running:
@@ -44,5 +44,5 @@ To list all the certificates issued by the CZERTAINLY Issuer, you can run:
 ```bash
 kubectl get certificates.cert-manager.io \
   -o json \
-  | jq '.items[] | select(.spec.issuerRef.name == "czertainly-issuer")'
+  | jq '.items[] | select(.spec.issuerRef.name == "ilm-issuer")'
 ```

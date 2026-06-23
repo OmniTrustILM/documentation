@@ -6,7 +6,7 @@ sidebar_position: 7
 
 Create user in the CZERTAINLY realm following steps described in the [Creating users](https://www.keycloak.org/docs/latest/server_admin/#proc-creating-user_server_administration_guide) section of the Keycloak documentation, with these attributes:
 - Username: **admin**
-- Email: **admin@czertainly.local**
+- Email: **admin@ilm.local**
 - First name: **CZERTAINLY**
 - Last name: **Administrator**
 
@@ -24,7 +24,7 @@ This will map the `groups` attribute to the `roles` attribute in the token of th
   "sub": "5560f639-8067-415d-85ae-809b06e48d19",
   "given_name": "CZERTAINLY",
   "family_name": "Administrator",
-  "email": "admin@czertainly.local",
+  "email": "admin@ilm.local",
   "id": "5560f639-8067-415d-85ae-809b06e48d19",
   "preferred_username": "admin",
   "name": "CZERTAINLY Administrator"

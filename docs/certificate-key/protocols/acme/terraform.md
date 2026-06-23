@@ -70,7 +70,7 @@ resource "tls_private_key" "private_key" {
 
 resource "acme_registration" "reg" {
   account_key_pem = tls_private_key.private_key.private_key_pem
-  email_address   = "czertainly-terraform@example.com"
+  email_address   = "ilm-terraform@example.com"
 }
 ```
 
@@ -91,9 +91,9 @@ For the list of all available challenge types and configuration, refer to the [p
 ```hcl
 resource "acme_certificate" "certificate" {
   account_key_pem           = acme_registration.reg.account_key_pem
-  common_name               = "demo.czertainly.test"
+  common_name               = "demo.ilm.test"
   key_type                  = "2048"
-  subject_alternative_names = ["demo.czertainly.test"]
+  subject_alternative_names = ["demo.ilm.test"]
 
   dns_challenge {
     provider = "rfc2136"
@@ -101,7 +101,7 @@ resource "acme_certificate" "certificate" {
     config = {
       RFC2136_NAMESERVER     = "127.0.0.1:53"
       RFC2136_TSIG_ALGORITHM = "hmac-sha512"
-      RFC2136_TSIG_KEY       = "czertainly.test"
+      RFC2136_TSIG_KEY       = "ilm.test"
       RFC2136_TSIG_SECRET    = "OCLSOqzn0LjZfu40cER7tCan1RNx9q/c16kBkfeqUzNMtiwnWD+LgXSepG5tV8KptHsdK8zVQYuGS9aRn/JBig=="
     }
   }
@@ -123,10 +123,10 @@ resource "tls_private_key" "cert_private_key" {
 resource "tls_cert_request" "req" {
   key_algorithm   = "RSA"
   private_key_pem = tls_private_key.cert_private_key.private_key_pem
-  dns_names       = ["demo.czertainly.test"]
+  dns_names       = ["demo.ilm.test"]
 
   subject {
-    common_name = "demo.czertainly.test"
+    common_name = "demo.ilm.test"
   }
 }
 
@@ -140,7 +140,7 @@ resource "acme_certificate" "certificate" {
     config = {
       RFC2136_NAMESERVER     = "127.0.0.1:53"
       RFC2136_TSIG_ALGORITHM = "hmac-sha512"
-      RFC2136_TSIG_KEY       = "czertainly.test"
+      RFC2136_TSIG_KEY       = "ilm.test"
       RFC2136_TSIG_SECRET    = "OCLSOqzn0LjZfu40cER7tCan1RNx9q/c16kBkfeqUzNMtiwnWD+LgXSepG5tV8KptHsdK8zVQYuGS9aRn/JBig=="
     }
   }

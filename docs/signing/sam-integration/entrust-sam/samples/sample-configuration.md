@@ -29,7 +29,7 @@ WORKERGENID1.ENTRUST_CONNECTION_POOL_SIZE=20
 
 # Service to authenticate signing requests
 WORKERGENID1.SAD_PROVIDER_IMPLEMENTATION_CLASS=com.czertainly.signserver.module.entrustsam.sad.RestSAMSadProvider
-WORKERGENID1.SAD_PROVIDER_URL=https://entrustsam-simulator.czertainly.com
+WORKERGENID1.SAD_PROVIDER_URL=https://entrustsam-simulator.ilm.example.com
 WORKERGENID1.SAD_PROVIDER_AUTH_TYPE=BASIC
 WORKERGENID1.SAD_PROVIDER_USERNAME=******
 WORKERGENID1.SAD_PROVIDER_PASSWORD=******

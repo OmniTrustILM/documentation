@@ -101,7 +101,7 @@ Use `>` (overwrite), not `>>` (append). Appending leaves the legacy CA in the fi
 ## Step 4 — Start the platform
 
 ```bash
-docker compose -f czertainly-compose.yml -f postgres-compose.yml \
+docker compose -f ilm-compose.yml -f postgres-compose.yml \
   --profile database --profile core up --build
 ```
 
@@ -110,14 +110,14 @@ The `--build` flag tells Docker to build the three source-based services on firs
 To run in the background (detached mode):
 
 ```bash
-docker compose -f czertainly-compose.yml -f postgres-compose.yml \
+docker compose -f ilm-compose.yml -f postgres-compose.yml \
   --profile database --profile core up --build -d
 ```
 
 ## Step 5 — Verify all services are running
 
 ```bash
-docker compose -f czertainly-compose.yml -f postgres-compose.yml ps
+docker compose -f ilm-compose.yml -f postgres-compose.yml ps
 ```
 
 All services should show status `healthy` or `Up`:
@@ -271,7 +271,7 @@ Stop all backend services:
 ```bash
 cd ~/ilm-local/development-environment
 
-docker compose -f czertainly-compose.yml -f postgres-compose.yml \
+docker compose -f ilm-compose.yml -f postgres-compose.yml \
   --profile database --profile core down
 ```
 

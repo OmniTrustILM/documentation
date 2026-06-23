@@ -31,7 +31,7 @@ In case you do not have the `cert-manager` installed, follow the [installation i
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: clusterissuer-czertainly-acme
+  name: clusterissuer-ilm-acme
   #namespace: default
 spec:
   acme:
@@ -40,7 +40,7 @@ spec:
     email: www@example.com
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: issuer-czertainly-acme-secret
+      name: issuer-ilm-acme-secret
     # Enable HTTP01 validations
     solvers:
     # An empty 'selector' means that this solver matches all domains
@@ -54,7 +54,7 @@ You should adjust this manifest according to your specific Kubernetes cluster. I
 
 When you are ready, you can apply the manifest. This will start the communication with the ACME server and register the ACME client. You can check if the registration of ACME client was successful by [listing all ACME Clients](/api/core-acme#tag/ACME-Account-Management/operation/listAcmeAccounts) in the platform and checking the state of the `ClusterIssuer`:
 ```bash
-kubectl describe -n cert-manager clusterissuers.cert-manager.io clusterissuer-czertainly-acme
+kubectl describe -n cert-manager clusterissuers.cert-manager.io clusterissuer-ilm-acme
 ```
 
 You should see the status of the `ClusterIssuer` indicating `ACMEAccountRegistered`:
@@ -89,7 +89,7 @@ spec:
   secretName: cert-secret-www-example-com
   renewBefore: 365h # 15d
   issuerRef:
-    name: clusterissuer-czertainly-acme
+    name: clusterissuer-ilm-acme
     kind: ClusterIssuer
   commonName: www.example.com
   dnsNames:

@@ -26,8 +26,8 @@ To create a new realm, follow steps in [Creating a realm](https://www.keycloak.o
 To create new OIDC client, follow steps described in [Creating an OpenID Connect client](https://www.keycloak.org/docs/latest/server_admin/#proc-creating-oidc-client_server_administration_guide) with the following attributes:
 
 - Client type: **OpenID Connect**
-- Client ID: **czertainly**
-- Name: **czertainly**
+- Client ID: **ilm**
+- Name: **ilm**
 - Client authentication: **On**
 - Root URL: **https://\<CZERTAINLY_DOMAIN>**, where `<CZERTAINLY_DOMAIN>` is the domain of your CZERTAINLY instance. This serves as an access point to your deployment
 - Valid redirect URIs: URI pointing to redirect in Core after login via Keycloak, must contain `https://<CZERTAINLY_DOMAIN>/api/login/oauth2/code/<oauth2ProviderName>`, where `oauth2ProviderName` is the `providerName` of OAuth2 Provider configured in platform [settings](/api/core-other#tag/Settings/operation/updateOAuth2ProviderSettings)
@@ -44,7 +44,7 @@ The user in the platform is identified using JWT Access Token as described in th
 Based on the attributes coming from the configuration of the identity provider, proper mappers for the dedicated scope should be created.
 For more information, see [OIDC token and SAML assertion mappings](https://www.keycloak.org/docs/latest/server_admin/#_protocol-mappers) in the Keycloak documentation.
 
-As an example, for situation you are going to use manual user management in Keycloak, you need to create mapper that will map `groups` attributes to array of `roles` in the JWT Claims Set. After adding **czertainly** client, click on **Client scopes tab**, select **czertainly-dedicated** and add following mappers:
+As an example, for situation you are going to use manual user management in Keycloak, you need to create mapper that will map `groups` attributes to array of `roles` in the JWT Claims Set. After adding **ilm** client, click on **Client scopes tab**, select **ilm-dedicated** and add following mappers:
 
 #### Groups Mapper
 - Mapper type: **User Attribute**
@@ -63,7 +63,7 @@ As an example, for situation you are going to use manual user management in Keyc
 #### Audience Mapper
 - Mapper type: **Audience**
 - Name: **Audience**
-- Included Client Audience: **czertainly**
+- Included Client Audience: **ilm**
 - Included Custom Audience: **empty**
 - Add to ID token: **On**
 - Add to access token: **On**

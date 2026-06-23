@@ -65,7 +65,7 @@ spec:
 
 ## Apply theme
 
-Once the theme is installed, it can be applied to the CZERTAINLY client by setting the **Login theme** to `czertainly`, see [Login settings](https://www.keycloak.org/docs/latest/server_admin/#login-settings) in the Keycloak documentation.
+Once the theme is installed, it can be applied to the CZERTAINLY client by setting the **Login theme** to `ilm`, see [Login settings](https://www.keycloak.org/docs/latest/server_admin/#login-settings) in the Keycloak documentation.
 
 :::info[Keycloak themes]
 For more information about custom themes, refer to [Keycloak Themes](https://www.keycloak.org/docs/latest/server_development/#_themes) documentation.
