@@ -4,15 +4,15 @@ sidebar_position: 10
 
 # Logging
 
-Proper logging is essential for effective debugging, monitoring, and auditing. This guide outlines best practices for implementing logging in the CZERTAINLY codebase. Adhering to these practices ensures consistency and helps maintain high code quality.
+Proper logging is essential for effective debugging, monitoring, and auditing. This guide outlines best practices for implementing logging in the platform codebase. Adhering to these practices ensures consistency and helps maintain high code quality.
 
-:::info[Logging in CZERTAINLY services]
-CZERTAINLY is a microservices-based platform, meaning that each service can have its own logging configuration, specific to its requirements. The logging configuration is managed centrally by the Core of the platform. Connectors and other services can implement their own logging configuration, but they should adhere to the guidelines outlined in this document, adjusted to their specific needs and language.
+:::info[Logging in platform services]
+The platform is a microservices-based system, meaning that each service can have its own logging configuration, specific to its requirements. The logging configuration is managed centrally by the Core of the platform. Connectors and other services can implement their own logging configuration, but they should adhere to the guidelines outlined in this document, adjusted to their specific needs and language.
 :::
 
 ## Logging information
 
-CZERTAINLY uses the system, audit, or event logs for all logging activities. Contributors must follow the standard logging structure as outlined in the [Logging Documentation](../certificate-key/logging/overview.md).
+The platform uses the system, audit, or event logs for all logging activities. Contributors must follow the standard logging structure as outlined in the [Logging Documentation](../certificate-key/logging/overview.md).
 
 ## Logging levels
 

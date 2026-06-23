@@ -6,33 +6,33 @@ import DocCardList from '@theme/DocCardList';
 
 # Overview
 
-Although the CZERTAINLY platform is technology independent, each technology has its own specifics that the users should be able to use properly.
+Although the ILM platform is technology independent, each technology has its own specifics that the users should be able to use properly.
 
-CZERTAINLY uses `Attribute` to control such specific behaviour of different technologies, like certification authorities, credential providers, discovery of certificates, etc. So called `Attributes` are used in almost every `Connector` and developer must understand them in order to implement custom behaviour or extend the functionality of the platform.
+The platform uses `Attribute` to control such specific behaviour of different technologies, like certification authorities, credential providers, discovery of certificates, etc. So called `Attributes` are used in almost every `Connector` and developer must understand them in order to implement custom behaviour or extend the functionality of the platform.
 
 :::info
-For more information about the concept behind the `Connector`, `Attributes`, `Callbacks`, etc, see the [CZERTAINLY platform overview](../../certificate-key/concept-design/overview.md).
+For more information about the concept behind the `Connector`, `Attributes`, `Callbacks`, etc, see the [platform overview](../../certificate-key/concept-design/overview.md).
 :::
 
 Now let's take a look on what exactly is an `Attribute` and how it can be used.
 
 ## It is all about the `Attributes`
 
-The concept works on the principle of exchanging and validation of `Attributes` between the `Client`, `Connector` and CZERTAINLY platform.
+The concept works on the principle of exchanging and validation of `Attributes` between the `Client`, `Connector` and the platform.
 Implementation of some specific `Connector` must be able to define and properly handle its specific `Attributes`. The definition is then exchanged with the `Client` and the platform validates it consistency and mediate the flow and logic between them:
 
 ```plantuml
     @startuml
-        Client ->> CZERTAINLY: list available Attributes
-        CZERTAINLY ->> CZERTAINLY: check and validate request
-        CZERTAINLY ->> Connector: get Attributes for the Client
+        Client ->> Platform: list available Attributes
+        Platform ->> Platform: check and validate request
+        Platform ->> Connector: get Attributes for the Client
         Connector <<->> Technology: get technology data
-        Connector ->> CZERTAINLY: Attributes definition
-        CZERTAINLY ->> CZERTAINLY: validate Attributes definition
-        CZERTAINLY ->> Client: Attributes definition
-        Client ->> CZERTAINLY: set Attributes
-        CZERTAINLY ->> CZERTAINLY: validate and merge Attributes
-        CZERTAINLY ->> Connector: request with the content of Attributes
+        Connector ->> Platform: Attributes definition
+        Platform ->> Platform: validate Attributes definition
+        Platform ->> Client: Attributes definition
+        Client ->> Platform: set Attributes
+        Platform ->> Platform: validate and merge Attributes
+        Platform ->> Connector: request with the content of Attributes
         Connector <<->> Technology: use Attributes and process request
     @enduml
 ```
@@ -51,7 +51,7 @@ The `BaseAttribute` is the base class for all `Attributes`. It contains the basi
 **V2 attributes are deprecated.** All new connector implementations should use **V3** attribute classes. V2 is maintained for backward compatibility with existing connectors but will not receive new features. Existing connectors are encouraged to migrate to V3.
 :::
 
-You can find specification of the `BaseAttribute` in the [CZERTAINLY Interfaces repository](https://github.com/OmniTrustILM/interfaces).
+You can find specification of the `BaseAttribute` in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces).
 
 Table below describes the properties of the `BaseAttribute`:
 

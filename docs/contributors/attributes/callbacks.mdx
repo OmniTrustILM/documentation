@@ -50,7 +50,7 @@ Mappings have various options how to include the data from other `Attributes` an
 
 ## Special purpose callbacks
 
-CZERTAINLY defines special purpose callbacks that are used for specific treatment of the `Attribute` content.
+The platform defines special purpose callbacks that are used for specific treatment of the `Attribute` content.
 
 A typical example is the `DataAttribute` with the content type `CREDENTIAL` (V2) or `RESOURCE OBJECT` (V3). Working with the credentials, a typical use case is to push the credentials to the `Connector` that should be authenticated and authorized based on selected credential to specific technology. However, we do not want to reveal the secret and sensitive value of the credential to the `Client`.
 
@@ -197,7 +197,7 @@ attributeTwo.setAttributeCallback(listValuesForAttributeTwoCallback);
 
 ## Callbacks model
 
-The following diagram represents the callbacks model. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/callback).
+The following diagram represents the callbacks model. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/callback).
 
 ```plantuml
 @startuml

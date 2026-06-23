@@ -4,9 +4,9 @@ sidebar_position: 8
 
 # Access control
 
-Authorization is an integral part of CZERTAINLY platform. Each authenticated user and their permissions are represented by internal authorization token which is evaluated using [Open Policy Agent](https://www.openpolicyagent.org/) (OPA) and pre-defined policies. For more information, refer to [Access Control](../certificate-key/concept-design/architecture/access-control/overview).
+Authorization is an integral part of the ILM platform. Each authenticated user and their permissions are represented by internal authorization token which is evaluated using [Open Policy Agent](https://www.openpolicyagent.org/) (OPA) and pre-defined policies. For more information, refer to [Access Control](../certificate-key/concept-design/architecture/access-control/overview).
 
-For more information about the definition of authorization policies, refer to [CZERTAINLY Auth OPA Policies](https://github.com/OmniTrustILM/auth-opa-policies) repository. Individual permissions are set for roles existing in `Auth` service which can then be assigned to users.
+For more information about the definition of authorization policies, refer to [Auth OPA Policies](https://github.com/OmniTrustILM/auth-opa-policies) repository. Individual permissions are set for roles existing in `Auth` service which can then be assigned to users.
 
 ## Resources and actions
 

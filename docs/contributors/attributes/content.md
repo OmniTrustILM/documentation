@@ -697,7 +697,7 @@ An `Attribute` with `RESOURCE OBJECT` content type must also specify the `resour
 
 ## Content model
 
-The following diagram represents the content model inherited from the `AttributeContent`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute).
+The following diagram represents the content model inherited from the `AttributeContent`. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute).
 
 ```plantuml
 @startuml

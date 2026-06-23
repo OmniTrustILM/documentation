@@ -51,7 +51,7 @@ For more details about `Attribute` types, see [Attributes](attributes.mdx).
 
 ## Properties model
 
-The following diagram represents the Properties model inherited from the `BaseAttributeProperties`. Details can be found in the [CZERTAINLY Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/properties).
+The following diagram represents the Properties model inherited from the `BaseAttributeProperties`. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/properties).
 
 ```plantuml
 @startuml

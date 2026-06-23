@@ -1,13 +1,13 @@
-# CZERTAINLY Documentation
+# ILM Documentation
 
-> This repository is part of the open source project CZERTAINLY. You can find more information about the project at [CZERTAINLY](https://github.com/OmniTrustILM/ilm) repository, including the contribution guide.
+> This repository is part of the open source project ILM. You can find more information about the project at [ILM](https://github.com/OmniTrustILM/ilm) repository, including the contribution guide.
 
-CZERTAINLY documentation is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+ILM documentation is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
 ## How to contribute
 
 The contribution is easy, fork the repository and make a pull request with your changes.
-For the contribution guide to the CZERTAINLY, refer to [CZERTAINLY](https://github.com/OmniTrustILM/ilm) repository.
+For the contribution guide to ILM, refer to [ILM](https://github.com/OmniTrustILM/ilm) repository.
 
 To learn how to work with Docusaurus, refer to the [Docusaurus documentation](https://docusaurus.io/docs/).
 
@@ -24,8 +24,8 @@ To learn how to work with Docusaurus, refer to the [Docusaurus documentation](ht
 - Use `yarn build` for building the documentation. This command generates static content into the `build` directory.
 
 > [!NOTE]  
-> You can use `npm` instead of `yarn` for the same purpose. The `yarn` is a package manager that doubles as project manager. It is a good alternative to `npm` and it is recommended to use it for the development of the CZERTAINLY documentation.
+> You can use `npm` instead of `yarn` for the same purpose. The `yarn` is a package manager that doubles as project manager. It is a good alternative to `npm` and it is recommended to use it for the development of the ILM documentation.
 
 ## How to deploy the documentation
 
-The CZERTAINLY documentation is deployed to the GitHub pages. The deployment is done automatically by the GitHub Actions when the changes are merged to the `gh-pages` branch.
+The ILM documentation is deployed to the GitHub pages. The deployment is done automatically by the GitHub Actions when the changes are merged to the `gh-pages` branch.
