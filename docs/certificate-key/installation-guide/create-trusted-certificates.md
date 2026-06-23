@@ -20,7 +20,7 @@ Trusted certificates are configured in the platform through the list of PEM-enco
 - in `Connectors` to establish trust with the technology
 
 :::info[Different set of trusted certificates for different services]
-The list of trusted certificates is globally applied to all services that supports custom trust lists. However, it is possible to apply different sets of trusted certificates to different services. In such case, the trusted certificates should not be configured as a global parameter for the Helm chart, but instead included as a parameter for each particular chart and sub-chart. See [CZERTAINLY-Helm-Charts](https://github.com/CZERTAINLY/CZERTAINLY-Helm-Charts) for more information.
+The list of trusted certificates is globally applied to all services that supports custom trust lists. However, it is possible to apply different sets of trusted certificates to different services. In such case, the trusted certificates should not be configured as a global parameter for the Helm chart, but instead included as a parameter for each particular chart and sub-chart. See [CZERTAINLY-Helm-Charts](https://github.com/OmniTrustILM/helm-charts) for more information.
 :::
 
 ## Mandatory certificates in the list

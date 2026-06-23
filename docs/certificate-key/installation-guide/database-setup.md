@@ -31,7 +31,7 @@ Some of the migrations are more complex and require migration in the code as wel
 
 Each microservice maintains its own database schema and migrations in the GitHub repository. The location of the schema and migrations depends on technology.
 
-The migrations for the Core microservice are located in the [`db/migration`](https://github.com/CZERTAINLY/CZERTAINLY-Core/tree/master/src/main/resources/db/migration) directory.
+The migrations for the Core microservice are located in the [`db/migration`](https://github.com/OmniTrustILM/core/tree/master/src/main/resources/db/migration) directory.
 Depending on your setup, you might be required to initialize the database manually using following additional steps:
 
 Create the tables using the schema file located in the `db` directory:

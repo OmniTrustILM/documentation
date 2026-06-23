@@ -29,7 +29,7 @@ Core --> API: 200 / 403
 @enduml
 ```
 
-For more information about the authorization policies, refer to [CZERTAINLY Auth OPA Policies](https://github.com/CZERTAINLY/CZERTAINLY-Auth-OPA-Policies).
+For more information about the authorization policies, refer to [CZERTAINLY Auth OPA Policies](https://github.com/OmniTrustILM/auth-opa-policies).
 
 ## Object access level based on its associations
 

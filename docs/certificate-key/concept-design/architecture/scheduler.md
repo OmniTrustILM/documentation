@@ -21,9 +21,9 @@ The Scheduler supports a range of task types, catering to various aspects of the
 
 | Task type                         | Description                                                      | Reference                                                                                                                                                                       |
 |-----------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Certificate discovery             | Initiates the certificate discovery process based on definitions | [DiscoveryCertificateTask](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/tasks/DiscoveryCertificateTask.java)                     |
-| Certificate status update         | Update certificate status, validation, and compliance            | [UpdateCertificateStatusTask](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/tasks/UpdateCertificateStatusTask.java)               |
-| Update Intune revocation requests | Manages updates of revocation requests in Intune                 | [UpdateIntuneRevocationRequestsTask](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/tasks/UpdateIntuneRevocationRequestsTask.java) |
+| Certificate discovery             | Initiates the certificate discovery process based on definitions | [DiscoveryCertificateTask](https://github.com/OmniTrustILM/core/blob/master/src/main/java/com/czertainly/core/tasks/DiscoveryCertificateTask.java)                     |
+| Certificate status update         | Update certificate status, validation, and compliance            | [UpdateCertificateStatusTask](https://github.com/OmniTrustILM/core/blob/master/src/main/java/com/czertainly/core/tasks/UpdateCertificateStatusTask.java)               |
+| Update Intune revocation requests | Manages updates of revocation requests in Intune                 | [UpdateIntuneRevocationRequestsTask](https://github.com/OmniTrustILM/core/blob/master/src/main/java/com/czertainly/core/tasks/UpdateIntuneRevocationRequestsTask.java) |
 
 ## Task execution mechanism
 

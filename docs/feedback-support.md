@@ -8,4 +8,4 @@ We value the cooperation and collaboration to enhance features and functions of 
 
 For any kind of feedback, use the [Support Email](mailto:support@czertainly.com) or use the [Support Portal](https://czertainly.atlassian.net/servicedesk/customer/portal/1).
 
-You can also follow us on [GitHub](https://github.com/3KeyCompany/CZERTAINLY), where you can open discussions about the platform and the development, or any related topics.
+You can also follow us on [GitHub](https://github.com/OmniTrustILM/ilm), where you can open discussions about the platform and the development, or any related topics.

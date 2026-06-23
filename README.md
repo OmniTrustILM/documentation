@@ -1,13 +1,13 @@
 # CZERTAINLY Documentation
 
-> This repository is part of the open source project CZERTAINLY. You can find more information about the project at [CZERTAINLY](https://github.com/3KeyCompany/CZERTAINLY) repository, including the contribution guide.
+> This repository is part of the open source project CZERTAINLY. You can find more information about the project at [CZERTAINLY](https://github.com/OmniTrustILM/ilm) repository, including the contribution guide.
 
 CZERTAINLY documentation is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
 ## How to contribute
 
 The contribution is easy, fork the repository and make a pull request with your changes.
-For the contribution guide to the CZERTAINLY, refer to [CZERTAINLY](https://github.com/3KeyCompany/CZERTAINLY) repository.
+For the contribution guide to the CZERTAINLY, refer to [CZERTAINLY](https://github.com/OmniTrustILM/ilm) repository.
 
 To learn how to work with Docusaurus, refer to the [Docusaurus documentation](https://docusaurus.io/docs/).
 

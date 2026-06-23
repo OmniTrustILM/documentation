@@ -8,7 +8,7 @@ Optionally, you can apply custom CZERTAINLY theme to Keycloak.
 CZERTAINLY theme will make the login page for the users to be authenticated by Keycloak look like the login page for the users to be authenticated by the built-in authentication server.
 
 The CZERTAINLY Keycloak theme is available:
-- on [GitHub](https://github.com/3KeyCompany/CZERTAINLY-Keycloak-Theme) with complete source
+- on [GitHub](https://github.com/OmniTrustILM/keycloak-theme) with complete source
 - as docker container on [Docker Hub](https://hub.docker.com/r/3keycompany/czertainly-keycloak-theme)
 
 ## Install theme

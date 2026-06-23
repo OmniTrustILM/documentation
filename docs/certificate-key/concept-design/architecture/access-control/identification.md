@@ -9,7 +9,7 @@ Each user is identified by one of the supported methods listed below:
 - X.509 certificate
 - JWT
 
-Identification is performed by the [CZERTAINLY Auth Service](https://github.com/CZERTAINLY/CZERTAINLY-Auth).
+Identification is performed by the [CZERTAINLY Auth Service](https://github.com/OmniTrustILM/auth).
 
 ## X.509 certificate
 

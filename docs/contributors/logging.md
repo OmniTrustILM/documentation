@@ -146,7 +146,7 @@ public CertificateResponseDto listCertificates(SearchRequestDto request) throws 
 }
 ```
 
-See [`AuditLogged`](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/aop/AuditLogged.java) annotation definition for more details.
+See [`AuditLogged`](https://github.com/OmniTrustILM/core/blob/master/src/main/java/com/czertainly/core/aop/AuditLogged.java) annotation definition for more details.
 
 ### Event logging
 
@@ -156,7 +156,7 @@ Event logs are used to record operation-related events. The event logs are not n
 private static final LoggerWrapper logger = new LoggerWrapper(UserManagementServiceImpl.class, Module.AUTH, Resource.USER);
 ```
 
-The [`LoggerWrapper`](https://github.com/CZERTAINLY/CZERTAINLY-Core/blob/master/src/main/java/com/czertainly/core/logging/LoggerWrapper.java) class is a wrapper around the `Logger` class and provides additional methods to log events.
+The [`LoggerWrapper`](https://github.com/OmniTrustILM/core/blob/master/src/main/java/com/czertainly/core/logging/LoggerWrapper.java) class is a wrapper around the `Logger` class and provides additional methods to log events.
 
 In the example above, the `LoggerWrapper` is initialized for the `UserManagementServiceImpl` class, with module `AUTH` and resource `USER` parameters. This configuration ensures will log all events related to user management, for example when the user is successfully created:
 
