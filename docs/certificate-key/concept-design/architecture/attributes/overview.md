@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # Overview of A<sup>2</sup> engine
 
-![A^2 engine](../../../../assets/a2-engine.png)
+![A^2 engine](../../../../assets/a2-engine.svg)
 
 Although the ILM platform is technology independent, each technology have its own specifics that the users should be able to use properly. Due to the dynamic nature of the platform, required input data should be represented generally, in concise and accurate structure.
 The platform uses `Attribute` to require input and/or store import information identified by attribute name, type and content type.
