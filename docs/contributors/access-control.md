@@ -14,8 +14,8 @@ For more information about the definition of authorization policies, refer to [A
 
 | Access Control Enum | Reference                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Resources**       | [Resource enum](https://github.com/OmniTrustILM/core/blob/master/src/main/java/com/czertainly/core/model/auth/Resource.java)                 |
-| **Actions**         | [ResourceAction enum](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/core/model/auth/ResourceAction.java) |
+| **Resources**       | [Resource enum](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/model/auth/Resource.java)                 |
+| **Actions**         | [ResourceAction enum](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/core/model/auth/ResourceAction.java) |
 
 The list of available actions for particular resources is dynamically constructed by the `Core` service based on the `@ExternalAuthorization` annotation. Continue reading to get more details.
 
@@ -24,8 +24,8 @@ The list of available actions for particular resources is dynamically constructe
 The permissions object represents set of actions performed on resources that need to be evaluated. It conforms with the JSON data structure and is constructed by the `Auth` service and evaluated by the `OPA` service.
 
 Individual permissions can be evaluated on two levels (represented by different OPA policies), generally if an action is allowed / denied on:
-- resource level ([Method policy](https://github.com/OmniTrustILM/auth-opa-policies/blob/master/policies/method_policy.rego)), or
-- on object level for specific object UUID. ([Objects policy](https://github.com/OmniTrustILM/auth-opa-policies/blob/master/policies/objects_policy.rego))
+- resource level ([Method policy](https://github.com/OmniTrustILM/auth-opa-policies/blob/main/policies/method_policy.rego)), or
+- on object level for specific object UUID. ([Objects policy](https://github.com/OmniTrustILM/auth-opa-policies/blob/main/policies/objects_policy.rego))
 
 Example of permissions objects for some resource can be seen on following excerpt from authorization token:
 
@@ -65,12 +65,12 @@ In this example there are permissions defined for two resources:
   For `certificates` resource all actions are allowed and for `raProfiles` detail and list action on any RA Profile except RA Profile named *NG-RA-Profile1* where detail action is denied.
 
 :::info[OPA evaluation input]
-You can see [`input.json`](https://github.com/OmniTrustILM/auth-opa-policies/blob/master/samples/input.json) for a complete input sample for OPA evaluation.
+You can see [`input.json`](https://github.com/OmniTrustILM/auth-opa-policies/blob/main/samples/input.json) for a complete input sample for OPA evaluation.
 :::
 
 ## `@ExternalAuthorization` annotation
 
-Authorization process is triggered by accessing methods annotated with [`@ExternalAuthorization` annotation](https://github.com/OmniTrustILM/core/blob/master/src/main/java/com/czertainly/core/security/authz/ExternalAuthorization.java). Typically, public methods of service implementations are annotated with this annotation, to require authorization if service is called from anywhere across `Core` service.
+Authorization process is triggered by accessing methods annotated with [`@ExternalAuthorization` annotation](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/security/authz/ExternalAuthorization.java). Typically, public methods of service implementations are annotated with this annotation, to require authorization if service is called from anywhere across `Core` service.
 
 Authorization mechanism itself is driven by [Spring framework](https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html) security layer and custom implementations of `AccessDecisionVoter`.
 
@@ -158,7 +158,7 @@ This way, `Core` and `Auth` services are in sync and permissions can refer to al
 
 ## `@AuthEndpoint` annotation
 
-In addition, you can mark resources to allow adding permissions on object access level. It can be achieved by annotating listing endpoint in the corresponding **controller** that can be used to list objects. The [annotation `@AuthEndpoint`](https://github.com/OmniTrustILM/core/blob/master/src/main/java/com/czertainly/core/auth/AuthEndpoint.java) is used to set object listing endpoint path for a resource which can be later used in permissions editor to dynamically retrieve available objects of that resource.
+In addition, you can mark resources to allow adding permissions on object access level. It can be achieved by annotating listing endpoint in the corresponding **controller** that can be used to list objects. The [annotation `@AuthEndpoint`](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/auth/AuthEndpoint.java) is used to set object listing endpoint path for a resource which can be later used in permissions editor to dynamically retrieve available objects of that resource.
 
 Example of using `@AuthEndpoint` annotation to mark RA profile resource to have object access level permissions:
 

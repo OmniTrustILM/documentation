@@ -18,9 +18,9 @@ The following is a complete list of supported and available properties:
 | `group`           | `string`                                                                                                                                                                            | Name of the group `Attribute` belong to. It can be used for logical grouping of multiple `Attributes`                                            |
 | `global`          | `boolean`                                                                                                                                                                           | Boolean determining if the `Attribute` is global. Global mean that two `Attributes` with the same definition cannot exist                        |
 | `overwrite`       | `boolean`                                                                                                                                                                           | Boolean determining if updating the `Attribute` content for object overwrite (replace) existing content or appends it which is default behaviour |
-| `protectionLevel` | [`ProtectionLevel`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/content/data/ProtectionLevel.java) | Protection level of the attribute content. If protection level is `encrypted`, then the content of `Attribute` is encrypted in the database.     |
+| `protectionLevel` | [`ProtectionLevel`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/content/data/ProtectionLevel.java) | Protection level of the attribute content. If protection level is `encrypted`, then the content of `Attribute` is encrypted in the database.     |
 | `extensibleList`  | `boolean`                                                                                                                                                                           | Boolean determining if a list `Attribute` can have values other than predefined options in the content of definition.                            |
-| `resource`        | [`AttributeResource`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/core/auth/AttributeResource.java)                        | Resource of content. Applicable only to V3 `Attribute` with `RESOURCE OBJECT` content type.                                                      |
+| `resource`        | [`AttributeResource`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/core/auth/AttributeResource.java)                        | Resource of content. Applicable only to V3 `Attribute` with `RESOURCE OBJECT` content type.                                                      |
 
 ## Properties and Attribute types
 
@@ -51,7 +51,7 @@ For more details about `Attribute` types, see [Attributes](attributes.mdx).
 
 ## Properties model
 
-The following diagram represents the Properties model inherited from the `BaseAttributeProperties`. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/properties).
+The following diagram represents the Properties model inherited from the `BaseAttributeProperties`. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/otilm/api/model/common/attribute/common/properties).
 
 ```plantuml
 @startuml

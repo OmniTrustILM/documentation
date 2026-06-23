@@ -63,7 +63,7 @@ Table below describes the properties of the `BaseAttribute`:
 | `type`        | [`AttributeType`](./attributes.mdx#attribute-types) | Type of the `Attribute`                                                                                                                             | <span class="badge badge--success">Yes</span> |
 | `content`     | [`AttributeContent`](./content.md)                  | Content of the `Attribute` based on the [`AttributeContentType`](./content.md#supported-content-types)                                              | <span class="badge badge--danger">No</span>   |
 | `version`     | `integer`                                           | Version of the `Attribute`. Supported versions are `2` and `3`, where `2` is currently the default version.                                         | <span class="badge badge--success">Yes</span> |
-| `schemaVersion` | [`AttributeVersion`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/AttributeVersion.java) | Schema version of the `Attribute`. **Required for V3** (value `"v3"`), not applicable to V2. | <span class="badge badge--success">Yes (V3)</span> |
+| `schemaVersion` | [`AttributeVersion`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/AttributeVersion.java) | Schema version of the `Attribute`. **Required for V3** (value `"v3"`), not applicable to V2. | <span class="badge badge--success">Yes (V3)</span> |
 
 ## `Attribute` building blocks:
 

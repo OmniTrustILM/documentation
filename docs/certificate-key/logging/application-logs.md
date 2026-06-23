@@ -18,7 +18,7 @@ The application logs are non-structured logs, which means that the logs are not 
 The following is an example of the application log:
 
 ```plaintext
-[2024-11-25 08:00:22.467] ERROR [rabbit-simple-14] [com.czertainly.core.service.impl.CrlServiceImpl - 66]: Failed to read CRL content from URL: http://pki.example.com/crls/demo/democlientsubca.crl, http://pki.example.com/crls/demo/democlientsubca.crl
-[2024-11-25 08:22:54.666] INFO  [tomcat-handler-29568] [com.czertainly.core.config.ProtocolValidationFilter - 49]: ACME Request from 185.24.21.241 for /api/v1/protocols/acme/acmetest/directory
-[2024-11-25 08:22:54.700] DEBUG [tomcat-handler-29568] [com.czertainly.core.service.acme.impl.AcmeServiceImpl - 158]: Gathering Directory information for ACME: acmetest
+[2024-11-25 08:00:22.467] ERROR [rabbit-simple-14] [com.otilm.core.service.impl.CrlServiceImpl - 66]: Failed to read CRL content from URL: http://pki.example.com/crls/demo/democlientsubca.crl, http://pki.example.com/crls/demo/democlientsubca.crl
+[2024-11-25 08:22:54.666] INFO  [tomcat-handler-29568] [com.otilm.core.config.ProtocolValidationFilter - 49]: ACME Request from 185.24.21.241 for /api/v1/protocols/acme/acmetest/directory
+[2024-11-25 08:22:54.700] DEBUG [tomcat-handler-29568] [com.otilm.core.service.acme.impl.AcmeServiceImpl - 158]: Gathering Directory information for ACME: acmetest
 ```

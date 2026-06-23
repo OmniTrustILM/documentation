@@ -17,13 +17,13 @@ For more information about `Attribute` and `attributeCallback` property, see [At
 
 ## Callback properties
 
-The [`AttributeCallback`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/callback/AttributeCallback.java) contains the following properties:
+The [`AttributeCallback`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/callback/AttributeCallback.java) contains the following properties:
 
 | Property          | Type                                                                                                                                                                                                       | Short description                                                                                                                               | Required                                      |
 |-------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
 | `callbackContext` | `string`                                                                                                                                                                                                   | Context part of callback URL that should be used.                                                                                               | <span class="badge badge--danger">No</span>   |
 | `callbackMethod`  | `string`                                                                                                                                                                                                   | HTTP method of the callback URL that should be used.                                                                                            | <span class="badge badge--danger">No</span>   |
-| `mappings`        | set of [`AttributeCallbackMapping`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/callback/AttributeCallbackMapping.java) | Mappings for the callback method, which defines how to use the data in context of the request path variables, query parameter, or body payload. | <span class="badge badge--success">Yes</span> |
+| `mappings`        | set of [`AttributeCallbackMapping`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/callback/AttributeCallbackMapping.java) | Mappings for the callback method, which defines how to use the data in context of the request path variables, query parameter, or body payload. | <span class="badge badge--success">Yes</span> |
 
 The complex structure, such as objects, arrays, etc., can be mapped only into the body payload of the callback. If the complex structure will be mapped as path variable or query parameter, only its `value` content property will be used.
 
@@ -45,7 +45,7 @@ The following is the sample `AttributeCallback` structure:
 }
 ```
 :::info
-Mappings have various options how to include the data from other `Attributes` and request additional action based on them. See the available options in [AttributeCallbackMapping](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/callback/AttributeCallbackMapping.java).
+Mappings have various options how to include the data from other `Attributes` and request additional action based on them. See the available options in [AttributeCallbackMapping](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/callback/AttributeCallbackMapping.java).
 :::
 
 ## Special purpose callbacks
@@ -197,7 +197,7 @@ attributeTwo.setAttributeCallback(listValuesForAttributeTwoCallback);
 
 ## Callbacks model
 
-The following diagram represents the callbacks model. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/callback).
+The following diagram represents the callbacks model. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/otilm/api/model/common/attribute/common/callback).
 
 ```plantuml
 @startuml

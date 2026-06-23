@@ -46,7 +46,7 @@ SQL migrations must comply with the following naming pattern:
 The schema of the database is managed by the configuration of the Flyway and JPA.
 You should not include the database schema in the migration scripts.
 
-Database schema can be configured by the `DB_SCHEMA` environment variable. Default value is `core`. See the [Core properties](https://github.com/OmniTrustILM/core/blob/master/src/main/resources/application.properties).
+Database schema can be configured by the `DB_SCHEMA` environment variable. Default value is `core`. See the [Core properties](https://github.com/OmniTrustILM/core/blob/main/src/main/resources/application.yml).
 
 ## Complex migrations using Java
 

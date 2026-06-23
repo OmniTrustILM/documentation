@@ -15,7 +15,7 @@ For more information about `Attribute` types that support constraints, see [Attr
 
 ## Constraint properties
 
-Every constraint is extended from the base class of [`BaseAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/constraint/BaseAttributeConstraint.java) which is abstracted from [`AttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/constraint/AttributeConstraint.java).
+Every constraint is extended from the base class of [`BaseAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/BaseAttributeConstraint.java) which is abstracted from [`AttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/AttributeConstraint.java).
 
 The constraint has the following properties defined and inherited from the `BaseAttributeConstraint`:
 
@@ -28,13 +28,13 @@ The constraint has the following properties defined and inherited from the `Base
 
 ## Supported constraints types
 
-Supported constraint types are defined in the [`AttributeConstraintType`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/constraint/AttributeConstraintType.java). The following constraint types are available and supported:
+Supported constraint types are defined in the [`AttributeConstraintType`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/AttributeConstraintType.java). The following constraint types are available and supported:
 
 | `AttributeConstraintType` | Class                                                                                                                                                                                                       | Data                                                                                                                                                                                                                     |
 |---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `REGEXP`                  | [`RegexpAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/constraint/RegexpAttributeConstraint.java)     | `string`                                                                                                                                                                                                                 |
-| `RANGE`                   | [`RangeAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/constraint/RangeAttributeConstraint.java)       | [`RangeAttributeConstraintData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/constraint/data/RangeAttributeConstraintData.java)       |
-| `DATETIME`                | [`DateTimeAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/constraint/DateTimeAttributeConstraint.java) | [`DateTimeAttributeConstraintData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/czertainly/api/model/common/attribute/common/constraint/data/DateTimeAttributeConstraintData.java) |
+| `REGEXP`                  | [`RegexpAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/RegexpAttributeConstraint.java)     | `string`                                                                                                                                                                                                                 |
+| `RANGE`                   | [`RangeAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/RangeAttributeConstraint.java)       | [`RangeAttributeConstraintData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/data/RangeAttributeConstraintData.java)       |
+| `DATETIME`                | [`DateTimeAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/DateTimeAttributeConstraint.java) | [`DateTimeAttributeConstraintData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/data/DateTimeAttributeConstraintData.java) |
 
 ## Constraint type description and samples
 
@@ -165,7 +165,7 @@ constraint.setType(AttributeConstraintType.DATETIME);
 
 ## Constraint model
 
-The following diagram represents the constraint model inherited from the `AttributeConstraint`. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/czertainly/api/model/common/attribute/common/constraint).
+The following diagram represents the constraint model inherited from the `AttributeConstraint`. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint).
 
 ```plantuml
 @startuml
