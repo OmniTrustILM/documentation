@@ -10,7 +10,7 @@ Each component and each part of the platform is a microservice. Using that appro
 ## Architecture diagram
 
 
-![Czertainly ingredients](../../../assets/platform-ingredients.png)
+![ILM ingredients](../../../assets/platform-ingredients.png)
 
 The above diagram explains briefly the architecture of the platform. The platform provides client interfaces to communicate with the `Core`.
 

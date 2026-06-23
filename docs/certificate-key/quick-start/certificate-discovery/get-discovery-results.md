@@ -31,7 +31,7 @@ This will give us the details about the `Discovery` including its status:
   "certificate": [
     {
       "uuid": "1257542a-02b9-4917-9193-df565c484ee3",
-      "commonName": "docs.czertainly.com",
+      "commonName": "docs.otilm.com",
       "serialNumber": "44fc8548df494ccfe04ba62f33f7ee52229",
       "issuerCommonName": "R3",
       "notBefore": "2021-12-11T19:08:00.000+00:00",
