@@ -53,6 +53,46 @@ Because a single certificate change can affect many chains — any chain whose p
 
 Calls to connectors rely on connector routing information that would otherwise be looked up repeatedly. `Core` caches this per-connector lookup so connector calls avoid the repeated resolution. The entry for a connector is evicted when that connector is edited or deleted, so configuration changes take effect immediately.
 
+## Credential verification cache
+
+TSP requests use HTTP Basic authentication. Verifying a credential is comparatively expensive — it involves a secret lookup and an HMAC computation — so successful verifications are cached to keep the timestamping hot path fast.
+
+The cache stores **positive results only**. A failed credential check is never cached; it always goes through the full verification path. The cache key is `HMAC-SHA-256(pepper, secretUuid:password)`, which means the raw password is never stored or recoverable from cache state.
+
+The HMAC pepper is a random value generated at startup and never persisted. Because the pepper changes on every restart, no entry from a previous run can be verified against the new pepper, so the cache is effectively invalidated across restarts — consistent with the general principle that cached entries do not survive a restart.
+
+Beyond time-to-live expiry, the cache is evicted per-secret: when a credential is deleted, rotated, or its mapped-user assignment changes, all cache entries associated with that secret UUID are removed immediately. This is implemented through a secret-reference reverse index that maps each secret UUID to the set of HMAC keys it has contributed; `evictBySecretUuid` drains that set and evicts each entry in one call.
+
+One accepted trade-off: account-level changes that do not touch the credential itself — notably disabling or deprovisioning the mapped user — do not trigger an eviction. The cached positive result remains valid until it expires by time-to-live. This is a deliberate performance decision: a per-request liveness check on the signing hot path is not affordable, and user-disable events are rare enough that the TTL window is an acceptable bound. As with all caches on this page, see [Effective time of changes](#effective-time-of-changes) for how this plays out across instances.
+
+## Signing profile cache
+
+`Core` caches `SigningProfileModel` objects so that the signing and timestamping pipeline can resolve a profile by name without reloading it from the database on every request. The cache key is the profile's name.
+
+Eviction is deferred to `afterCommit` via the shared `CacheEvictor`, so a rolled-back change never disturbs the cache. A cached entry is evicted when the profile is updated, deleted, enabled, or disabled. On a rename, both the old name and the new name are evicted so neither access path serves stale data. When the profile's TSP protocol activation changes — a TSP profile is linked or unlinked — the entry is also evicted, and the TSP profile cache is bulk-cleared (see below).
+
+Staleness beyond a single instance follows the pattern described in [Effective time of changes](#effective-time-of-changes): the instance that processed the change invalidates immediately; other instances continue to serve the previous value until their entry expires by time-to-live.
+
+## TSP profile cache
+
+`Core` caches `TspProfileModel` objects so that both the TSP protocol path (which resolves a profile by name) and the signing-profile path (which resolves by UUID) avoid repeated database lookups. Each profile is cached under **two keys** — its name and its UUID — so a single profile occupies up to two entries. The effective profile capacity of the cache is therefore up to half its configured entry limit.
+
+Eviction follows the same deferred `afterCommit` pattern as the signing profile cache. Both keys are evicted together on every mutation — update, delete, enable, or disable — so neither access path can serve stale data independently.
+
+The TSP profile cache is also **bulk-cleared** whenever a signing profile is mutated (updated, deleted, enabled, disabled, or its TSP activation changed). This is because a TSP profile model embeds references to its default signing profile; a signing profile change can affect every TSP profile that references it, so clearing the whole TSP profile cache is the safe choice.
+
+Staleness beyond the processing instance is bounded by the time-to-live, as described in [Effective time of changes](#effective-time-of-changes).
+
+## Time quality configuration cache
+
+`Core` caches `TimeQualityConfigurationModel` objects, keyed by UUID, so that the signing pipeline can resolve a time-quality configuration without a database round-trip on each request.
+
+Eviction is deferred to `afterCommit` via the shared `CacheEvictor`. The single entry for a configuration is evicted when that configuration is created, updated, or deleted.
+
+In addition to cache eviction, any change to a configuration also publishes a `TimeQualityConfigChangedEvent`; deletion additionally publishes a `TimeQualityConfigDeletedEvent`. These events drive downstream behaviour — for example, notifying the time-quality monitor that its configuration has changed — and are distinct from the cache eviction: the cache entry is removed so the next load reads fresh data from the database, while the events allow other components to react to the change independently.
+
+Staleness beyond the processing instance is bounded by the time-to-live, as described in [Effective time of changes](#effective-time-of-changes).
+
 ## Effective time of changes
 
 How quickly a cached value becomes consistent with a fresh recomputation depends on **where** the change is observed:
