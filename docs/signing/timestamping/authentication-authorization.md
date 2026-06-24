@@ -12,21 +12,21 @@ For the full request sequence from HTTP arrival to RFC 3161 response, see [Times
 
 ## Authentication
 
-Authentication is enforced by `TspAuthenticationFilter`, a Spring `OncePerRequestFilter` registered exclusively on the `/v1/protocols/tsp/**` security filter chain. The filter orchestrates three collaborators:
+Authentication is enforced before any business logic, on every `/v1/protocols/tsp/**` request. Three things happen in order:
 
-1. **TspRouteResolver** — resolves the TSP Profile from the request path. If no matching profile is found, the request is rejected with HTTP 401 before any credential is examined.
-2. **TspAuthenticator strategies** — each strategy handles exactly one authentication method. The filter runs them in fixed priority order; the first whose `canHandle()` returns `true` claims the request. If the selected method is not listed in the TSP Profile's `allowedAuthenticationMethods`, the request is rejected with HTTP 401. Selection does not fall through: if the matched method is rejected or fails, the request is not retried with another method.
-3. **TspChallengeWriter** — on any failure, writes HTTP 401 with a `WWW-Authenticate` header listing the `Basic` and `Bearer` schemes the profile accepts (where applicable). If the profile allows only `CLIENT_CERTIFICATE`, or if the profile cannot be resolved, no `WWW-Authenticate` header is sent.
+1. **Route resolution** — the TSP Profile is resolved from the request path. If no matching profile is found, the request is rejected with HTTP 401 before any credential is examined.
+2. **Method selection** — each authentication method is tried in fixed priority order; the first that matches the request claims it. If the selected method is not listed in the TSP Profile's `allowedAuthenticationMethods`, the request is rejected with HTTP 401. Selection does not fall through: if the matched method is rejected or fails, the request is not retried with another method.
+3. **Challenge** — on any failure, an HTTP 401 is returned with a `WWW-Authenticate` header listing the `Basic` and `Bearer` schemes the profile accepts (where applicable). If the profile allows only `CLIENT_CERTIFICATE`, or if the profile cannot be resolved, no `WWW-Authenticate` header is sent.
 
 ### Method detection and priority
 
-The authenticator priority order is fixed:
+The priority order is fixed:
 
-1. `ClientCertificateAuthenticator` — detected when the configured certificate header (default: `ssl-client-cert`) is present
-2. `BearerTokenAuthenticator` — detected when the `Authorization` header begins with `Bearer `
-3. `BasicPasswordAuthenticator` — detected when the `Authorization` header begins with `Basic `
+1. **Client certificate** — detected when the configured certificate header (default: `ssl-client-cert`) is present
+2. **Bearer token** — detected when the `Authorization` header begins with `Bearer `
+3. **Basic password** — detected when the `Authorization` header begins with `Basic `
 
-A request that presents both a client-certificate header and an `Authorization` header is handled exclusively by the certificate authenticator.
+A request that presents both a client-certificate header and an `Authorization` header is handled exclusively by the certificate method.
 
 ---
 
@@ -38,7 +38,7 @@ A request that presents both a client-certificate header and an `Authorization` 
 
 **How the credential is validated:**
 
-`ClientCertificateAuthenticator` reads the header, URL-decodes it, normalizes PEM formatting, and derives the certificate's SHA-256 thumbprint. It then delegates to `PlatformAuthenticationClient.authenticateByCertificate()`, which resolves the platform identity mapped to that certificate. A successful lookup writes a `PlatformAuthenticationToken` to the `SecurityContext` via `TspSecurityContextWriter`.
+The certificate is read from the header, URL-decoded, PEM-normalized, and reduced to its SHA-256 thumbprint. That thumbprint is resolved to the platform identity mapped to the certificate, through the platform's certificate authentication subsystem; a successful lookup establishes the principal for the request.
 
 **Configuration on the TSP Profile:**
 
@@ -52,7 +52,7 @@ The method must be listed in `allowedAuthenticationMethods` as `CLIENT_CERTIFICA
 
 **How the credential is validated:**
 
-`BearerTokenAuthenticator` extracts the JWT string, decodes and validates it with `PlatformJwtDecoder`, and passes the verified claims to `PlatformAuthenticationClient.authenticateByToken()`. The client resolves the platform identity and the result is written to the `SecurityContext`.
+The JWT is extracted, decoded, and validated, and its verified claims are resolved to a platform identity that becomes the request principal. The JWT is validated against the platform's configured OAuth2 issuer.
 
 **Configuration on the TSP Profile:**
 
@@ -66,12 +66,12 @@ The method must be listed in `allowedAuthenticationMethods` as `BEARER_TOKEN`. N
 
 **How the credential is validated:**
 
-`BasicPasswordAuthenticator` decodes the Base64 value and splits on the first `:` to recover the username and password. It then:
+The Base64 value is decoded and split on the first `:` into username and password. Then:
 
-1. Looks up a `TspProfileBasicCredential` record on the profile whose `username` matches the presented username. If none is found, a fingerprint is computed and discarded (constant-time dummy work to prevent timing side-channel attacks) and the attempt is rejected.
-2. Checks `CredentialVerificationCache` for a cached positive result keyed on `(secretUuid, password)`. On a cache hit the principal is established immediately without repeating the fingerprint check.
-3. On a cache miss, computes a fingerprint from the presented credentials using `SecretsUtil.calculateSecretContentFingerprint()` and compares it against the stored `fingerprint` field using `MessageDigest.isEqual()` (constant-time comparison).
-4. On a match, stores the positive result in the cache and establishes the principal as the `mappedUserUuid` on the credential record.
+1. A `TspProfileBasicCredential` record on the profile whose `username` matches the presented username is looked up. If none is found, a fingerprint is still computed and discarded (constant-time dummy work to prevent a timing side-channel) and the attempt is rejected.
+2. The credential verification cache is checked for a cached positive result keyed on `(secretUuid, password)`. On a cache hit the principal is established immediately, without repeating the fingerprint check.
+3. On a cache miss, a fingerprint is computed from the presented credentials and compared against the stored `fingerprint` using a constant-time comparison.
+4. On a match, the positive result is cached and the principal is established as the credential's `mappedUserUuid`.
 
 **Configuration on the TSP Profile:**
 
@@ -92,10 +92,10 @@ For a complete description of the `allowedAuthenticationMethods` field and the c
 
 ## `allowedAuthenticationMethods` enforcement
 
-`allowedAuthenticationMethods` is a list field on the TSP Profile that declares which authentication methods the endpoint will accept. The filter enforces it strictly:
+`allowedAuthenticationMethods` is a list field on the TSP Profile that declares which authentication methods the endpoint will accept. The endpoint enforces it strictly:
 
 - If the presented method is not in the list, the request is rejected with HTTP 401 even if the credential would otherwise be valid.
-- Multiple methods may be listed; the filter accepts any request that satisfies one of them.
+- Multiple methods may be listed; the endpoint accepts any request that satisfies one of them.
 - At least one method must be configured for the endpoint to be functional.
 
 The `WWW-Authenticate` response on a 401 advertises only the HTTP-level schemes (`Basic`, `Bearer`) that the profile lists. `CLIENT_CERTIFICATE` is not advertised because there is no HTTP challenge mechanism for mTLS.

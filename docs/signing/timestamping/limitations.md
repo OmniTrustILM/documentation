@@ -4,13 +4,13 @@ sidebar_position: 9
 
 # Limitations
 
-This page covers two categories of operational limits: the throughput and longevity constraints imposed by the Snowflake serial-number generator, and the cascade behaviour that occurs when dependent resources are deleted while a Signing Profile still references them.
+This page covers two categories of operational limits: the throughput and longevity constraints imposed by the serial-number generator, and the cascade behaviour that occurs when dependent resources are deleted while a Signing Profile still references them.
 
 ---
 
 ## Serial-number generation
 
-Every RFC 3161 timestamp token requires a unique serial number. ILM generates these timestamp-token serial numbers using a Snowflake/Sonyflake-style 64-bit generator (`SnowflakeSerialNumberGenerator`) that produces monotonically increasing, structurally unique identifiers without coordination between instances.
+Every RFC 3161 timestamp token requires a unique serial number. ILM generates these timestamp-token serial numbers using a Snowflake/Sonyflake-style 64-bit generator that produces monotonically increasing, structurally unique identifiers without coordination between instances.
 
 ### Bit layout
 
@@ -32,8 +32,8 @@ The 8-bit sequence counter allows up to 256 serial numbers per 10 ms tick, givin
 The generator protects against three failure modes:
 
 - **Sequence overflow** — when the 8-bit counter exhausts within a single 10 ms tick, the generator spin-waits for the next tick (maximum 10 ms). This wait is negligible relative to a typical timestamp request round-trip.
-- **Backward clock jump** — if the system clock regresses, the generator spin-waits for the clock to catch up. If the regression exceeds **100 ms**, the generator rejects the request with a `ClockDriftException` rather than waiting indefinitely. No serial numbers are issued during the wait period.
-- **Timestamp overflow** — if the 40-bit tick counter would overflow (would occur in approximately year 2374), the generator rejects the request with a `SerialNumberGenerationException`.
+- **Backward clock jump** — if the system clock regresses, the generator spin-waits for the clock to catch up. If the regression exceeds **100 ms**, the request is rejected with `timeNotAvailable` rather than waiting indefinitely. No serial numbers are issued during the wait period.
+- **Timestamp overflow** — if the 40-bit tick counter would overflow (would occur in approximately year 2374), the request is rejected with `systemFailure`.
 
 ### Year ceiling
 

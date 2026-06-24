@@ -4,13 +4,13 @@ sidebar_position: 3
 
 # Timestamping Request Flow
 
-This page documents the end-to-end path of a managed static-key RFC 3161 timestamp request through ILM Core. Only the **TIMESTAMPING × MANAGED (static key)** combination is engine-implemented; all other workflow/scheme cells exist as model types but have no engine wiring (see [Timestamping Overview](./overview.md)).
+This page documents the end-to-end path of a managed static-key RFC 3161 timestamp request through ILM Core. Only the **TIMESTAMPING × MANAGED (static key)** combination is available today (see [Timestamping Overview](./overview.md)).
 
 ---
 
 ## Sequence diagram
 
-The diagram below shows every stage a request passes through, from the moment it arrives at the TSP endpoint to the moment the RFC 3161 response is returned to the caller. Authentication is folded into the sequence because it happens in the HTTP filter layer — before any business logic runs.
+The diagram below shows every stage a request passes through, from the moment it arrives at the TSP endpoint to the moment the RFC 3161 response is returned to the caller. Authentication is folded into the sequence because it happens before any business logic runs.
 
 ```plantuml
 @startuml
@@ -39,11 +39,11 @@ Core -> Core: Parse request
 Core -> Profiles: Look up & authorize\nTSP + Signing Profile
 Core -> Profiles: Validate request\n(hash alg, policy OID)
 Core -> Profiles: Resolve profile\n(cert, key, chain, connector)
-Core -> TQ: getStatus()
-TQ --> Core: OK / DEGRADED
+Core -> TQ: get time-quality status
+TQ --> Core: OK / not OK
 Core -> Cert: validate certificate
 Cert --> Core: OK / NOK
-Core -> Serial: generate()
+Core -> Serial: generate serial
 Serial --> Core: serial number
 Core -> Core: Capture genTime
 Core -> Fmt: formatDtbs()
@@ -52,7 +52,7 @@ Core -> Token: sign(DTBS)
 Token --> Core: signature
 Core -> Fmt: formatSigningResponse()
 Fmt --> Core: TimeStampToken
-Core -> Rec: recordSigning()
+Core -> Rec: record signing
 Rec --> Core: written (per policy)
 Core --> Client: TimeStampResp\n(granted / rejection)
 @enduml
@@ -62,103 +62,86 @@ Core --> Client: TimeStampResp\n(granted / rejection)
 
 ## Stage-by-stage walkthrough
 
-### 1. Authentication (TspAuthenticationFilter)
+### 1. Authentication
 
-Authentication is enforced by `TspAuthenticationFilter` — a Spring `OncePerRequestFilter` registered exclusively on the `/v1/protocols/tsp/**` security filter chain before any business-layer code runs. The filter orchestrates three collaborators:
+Every `/v1/protocols/tsp/**` request is authenticated before any business logic runs:
 
-- **TspRouteResolver** resolves the TSP Profile from the URL path. If no matching profile is found, the request is rejected with HTTP 401 before any credential is examined.
-- **TspAuthenticator strategies** run in fixed priority order: `ClientCertificateAuthenticator` (mTLS, checked first), `BearerTokenAuthenticator` (JWT Bearer), `BasicPasswordAuthenticator` (HTTP Basic). The first authenticator whose `canHandle()` returns `true` claims the request. If the selected method is not listed in the TSP Profile's `allowedAuthenticationMethods`, the request is rejected with HTTP 401.
-- **TspChallengeWriter** writes the `WWW-Authenticate` response header listing the methods the profile accepts.
+- The TSP Profile is resolved from the URL path. If no profile matches, the request is rejected with HTTP 401 before any credential is examined.
+- Authentication methods are tried in fixed priority order — client certificate (mTLS), then Bearer token, then Basic password. The first method that matches the request claims it; if that method is not listed in the TSP Profile's `allowedAuthenticationMethods`, the request is rejected with HTTP 401. Selection does not fall through to a second method.
+- On rejection, a `WWW-Authenticate` response header lists the HTTP-level methods the profile accepts.
 
-`BasicPasswordAuthenticator` uses `CredentialVerificationCache` to skip the fingerprint comparison on hot-path repeat requests. A detailed treatment of the three credential types, the credential cache, and the secret-mapping model is covered in [Authentication & Authorization](./authentication-authorization.md).
+Repeat Basic-password requests are served from the credential verification cache, so the fingerprint comparison is not redone on every call. The three credential types, the credential cache, and the secret-mapping model are covered in [Authentication and Authorization](./authentication-authorization.md).
 
-### 2. Request parsing and TSP/Signing Profile lookup (TspControllerImpl → TsaServiceImpl)
+### 2. Request parsing and profile lookup
 
-`TspControllerImpl.timestamp()` passes the raw `byte[]` body to `TspRequestParser.parse()`, which decodes the ASN.1 `TimeStampReq` into a `TspRequest` value object (hash algorithm, hashed message, optional nonce, optional policy OID, `includeSignerCertificate` flag, and any request extensions).
+The raw request body is decoded from its ASN.1 `TimeStampReq` form into its fields: hash algorithm, hashed message, optional nonce, optional policy OID, the include-signer-certificate flag, and any request extensions. Core then:
 
-`TsaServiceImpl.processTspRequestForTspProfile()` then:
-1. Looks up the `TspProfileModel` by name and logs the profile reference.
-2. Calls `permissionEvaluator.tspProfileTimestamping()` — an OPA policy check that verifies the authenticated principal has the TIMESTAMP action on the TSP Profile resource. An `AccessDeniedException` is caught in the controller and rendered as the same generic `BAD_REQUEST` rejection as a non-existent profile (enumeration defence: callers cannot distinguish missing from forbidden).
-3. Fetches the linked `SigningProfileModel`, verifies it is enabled and has the TSP protocol active, and fetches its TSP profile.
+1. Looks up the TSP Profile by name.
+2. Authorizes the request — an OPA policy check verifies the authenticated principal holds the `timestamp` action on the TSP Profile. A denial is rendered as the same generic `badRequest` rejection as a non-existent profile, so callers cannot distinguish missing from forbidden (enumeration defence).
+3. Fetches the linked Signing Profile and verifies it is enabled and has the TSP protocol active.
 
-### 3. Request validation (TspRequestValidator)
+### 3. Request validation
 
-`TspRequestValidator.validate()` enforces the workflow-level rules declared on the `ManagedTimestampingWorkflow`:
+The request is validated against the rules declared on the signing profile's workflow:
 
-- **Hash algorithm** — if `allowedDigestAlgorithms` is non-empty, the request's hash algorithm must be in the set; otherwise rejects with `BAD_ALG`.
-- **Policy OID** — if `allowedPolicyIds` is non-empty and the request specifies a policy OID, it must match one of the allowed OIDs; otherwise rejects with `UNACCEPTED_POLICY`.
+- **Hash algorithm** — if `allowedDigestAlgorithms` is set, the request's hash algorithm must be in the list; otherwise the request is rejected with `badAlg`.
+- **Policy OID** — if `allowedPolicyIds` is set and the request specifies a policy OID, it must match one of the allowed OIDs; otherwise the request is rejected with `unacceptedPolicy`.
 
-### 4. Profile resolution (StaticKeyManagedTimestampingResolver)
+### 4. Profile resolution
 
-`SigningProfileResolverFactory.resolve()` selects `StaticKeyManagedTimestampingResolver` (the only resolver whose `supports()` returns `true` for a `ManagedTimestampingWorkflow`). The resolver dereferences all UUIDs stored on the profile model at request time — the resolved form is never cached:
+The profile's stored references are dereferenced at request time (the resolved form is never cached):
 
-- **Signing certificate and chain** — retrieved via `CertificateService`; the chain is decoded into a `CertificateChain` value object.
-- **Key items** — retrieved via `CryptographicKeyService`.
-- **Time Quality Configuration** — retrieved via `TimeQualityConfigurationService`; if none is configured, `LocalClockTimeQualityConfiguration.INSTANCE` is used (always reports `OK`).
-- **Signature Formatter Connector** — retrieved via `ConnectorService`.
+- **Signing certificate and chain**
+- **Key items**
+- **Time Quality Configuration** — if none is configured, a local-clock configuration is used, which always reports `OK`.
+- **Signature Formatter Connector**
 
-The result is a `ResolvedManagedTimestampingProfile` consumed by `ManagedTimestampEngine`.
+### 5. Time quality check
 
-### 5. Time quality check (TimeQualityRegister)
+The timestamping engine's first step is to read the current time-quality status for the profile's Time Quality Configuration:
 
-`ManagedTimestampEngine.process()` is the core orchestrator. Its first action is to call `timeQualityRegister.getStatus(timeQualityConfiguration)`.
+- With no explicit configuration (local clock), the status is always `OK`.
+- With an explicit configuration, the status is `OK` only when a result is present for the configuration, that result is not stale (age ≤ `accuracy`), the monitor-reported status is `OK`, and the leap-second and drift guards are not triggered.
 
-`TimeQualityRegisterImpl.getStatus()` branches on the configuration type:
+If the status is anything other than `OK`, the engine returns a `timeNotAvailable` rejection and no token is assembled. The monitor that populates this status is documented on the [Time Quality Monitor](./time-quality-monitor.md) page.
 
-- **LocalClockTimeQualityConfiguration** — always returns `OK` (no external NTP reference required).
-- **ExplicitTimeQualityConfiguration** — checks four conditions in order: the register must have a result for the configuration UUID; the result must not be stale (age ≤ `accuracy`); the TQM-reported status must be `OK`; and optionally the leap-second guard and monotonic drift detector must not be triggered.
+### 6. Signing certificate validation
 
-If the status is anything other than `OK`, the engine immediately returns a `TspResponse.rejected(TIME_NOT_AVAILABLE, …)` and no token is assembled. The Time Quality Monitor that populates this register is documented in the [Time Quality Monitor](./time-quality-monitor.md) page.
+The signing certificate is checked against the timestamping eligibility rules (extended key usage, key usage, validity) for the configured qualification level (qualified or non-qualified). A failure returns a `systemFailure` rejection.
 
-### 6. Signing certificate validation (StaticKeyManagedSigningCertificateValidator)
+### 7. Serial number generation
 
-`SigningCertificateValidatorFactory.getValidator()` selects `StaticKeyManagedSigningCertificateValidator`. Its `validate()` call checks that the signing certificate satisfies the TIMESTAMPING eligibility rules (extended key usage, validity, key usage) for the configured qualification level (qualified or non-qualified). An `NOK` result returns `TspResponse.rejected(SYSTEM_FAILURE, …)`.
+A unique serial number is generated for the token. The generator is coordination-free and has a throughput ceiling of 25,600 tokens per second per instance; it protects against sequence overflow and backward clock jumps, rejecting with `timeNotAvailable` if the clock regresses by more than 100 ms. Serial numbers stay within the 160-bit field limit mandated by RFC 5280 and referenced by RFC 3161. The scheme's operational limits are covered on the [Limitations](./limitations.md) page.
 
-### 7. Serial number generation (SnowflakeSerialNumberGenerator)
+The generation time (`genTime`) is captured immediately after the serial number is issued, so both reflect the same clock sample.
 
-`serialNumberGenerator.generate()` produces a unique `BigInteger` using the Snowflake/Sonyflake layout:
+### 8. Formatter phase 1 — build the data to be signed
 
-- 40-bit 10 ms tick since a fixed epoch
-- 16-bit instance ID (lower 16 bits of the container's private IPv4, or an explicit override)
-- 8-bit per-tick sequence counter
+Token assembly is a two-phase exchange with the Signature Formatter Connector. In phase 1, Core sends the request fields (hash, nonce, policy OID, extensions, serial number, `genTime`, accuracy, certificate chain, signature algorithm, formatter attributes) to the connector. The connector encodes the CMS signed attributes computed over the `TSTInfo` and returns the DER bytes — the exact data to be signed. The connector and its two-phase calling convention are described on the [Timestamp Formatter Connector](./timestamp-formatter-connector.md) page.
 
-Throughput ceiling is 25,600 tokens per second per instance. The generator protects against sequence overflow (waits up to 10 ms for the next tick) and backward clock jumps (rejects if the measured drift exceeds 100 ms, surfaced as `ClockDriftException` → `TIME_NOT_AVAILABLE`). Serial numbers conform to the 160-bit RFC 3161 field limit. Limitations of this scheme are covered in the [Limitations](./limitations.md) page.
+### 9. Signing
 
-`clockSource.wallTimeInstant()` captures `genTime` immediately after the serial number is issued, ensuring both values reflect the same clock sample.
+Core signs the returned bytes with the profile's managed key through the configured cryptographic token. The managed key never leaves the token; Core receives only the raw signature bytes. The signature algorithm is determined before phase 1 so the same algorithm is supplied to both formatter calls.
 
-### 8. Formatter phase 1 — formatDtbs (TimestampingConnectorSignatureFormatterClient)
+### 10. Formatter phase 2 — assemble the token
 
-`StaticKeyManagedTimestampTokenGenerator.generate()` handles the two-phase token assembly. Phase 1 calls `formatter.formatDtbs()`, which delegates to `TimestampingConnectorSignatureFormatterClient`. This class builds a `TimestampingFormatDtbsRequestDto` from the request fields (hash, nonce, policy OID, extensions, serial number, genTime, accuracy, certificate chain, signature algorithm, formatter attributes) and sends it to the configured Signature Formatter Connector over HTTP.
+In phase 2, Core sends the data-to-be-signed and the raw signature back to the connector, which injects the signature into the CMS structure and returns the fully assembled RFC 3161 `TimeStampToken`. If `validateTokenSignature` is set on the profile, Core verifies the token signature against the signing certificate before proceeding; a verification failure returns a `systemFailure` rejection.
 
-The connector encodes the CMS `SignedAttributes` (computed over the `TSTInfo`) and returns the DER bytes — the exact data to be signed. The connector and its two-phase calling convention are described on the [Timestamp Formatter Connector](./timestamp-formatter-connector.md) page.
+### 11. Signing record
 
-### 9. Signing (CryptographicOperationServiceSigner)
+Depending on the profile's record policy, a signing record is written. The record write never affects the response — a failure is logged and the token is still returned. The persistence mode selects how the record is written:
 
-`signerFactory.create()` resolves a `CryptographicOperationServiceSigner` pre-loaded with the key item UUID, token instance UUID, token profile UUID, and signing operation attributes. `signer.sign(dtbs)` calls `CryptographicOperationInternalService.signDataWithoutEventHistory()`, which routes the signing operation to the cryptographic token provider. The managed key never leaves the token; Core receives only the raw signature bytes.
-
-`signer.getSignatureAlgorithm()` is called before phase 1 so the same algorithm is supplied to both formatter calls.
-
-### 10. Formatter phase 2 — formatSigningResponse
-
-`formatter.formatSigningResponse()` sends the DTBS bytes and the raw signature to the Signature Formatter Connector. The connector replays the `TSTInfo` encoding, injects the real signature into the CMS `SignedData` structure, and returns the fully assembled `TimeStampToken` bytes.
-
-The engine parses these bytes into a `TimeStampToken` object (via BouncyCastle `CMSSignedData`). If `validateTokenSignature` is set on the profile, the engine verifies the signature against the signing certificate using `JcaSimpleSignerInfoVerifierBuilder` before proceeding. A verification failure returns `TspResponse.rejected(SYSTEM_FAILURE, …)`.
-
-### 11. Signing record (SigningRecordStrategyFactory)
-
-`recordSigning()` wraps the record write in a try/catch: a failure is logged but does not affect the response. The `SigningProfileModel`'s record policy determines which `SigningRecordStrategy` the factory selects:
-
-- **IMMEDIATE** — synchronous write on the request thread before returning.
-- **DEFERRED_DURABLE** — written to a durable outbox (AMQP-backed) and drained asynchronously.
+- **IMMEDIATE** — synchronous write before the response is returned.
+- **DEFERRED_DURABLE** — staged to a durable outbox and drained asynchronously.
 - **BEST_EFFORT** — enqueued in an in-memory queue; dropped under backpressure.
 
 The [Signing Records](./signing-records.md) page covers the record schema, retrieval API, and retention policy.
 
 ### 12. Response
 
-`TspControllerImpl` calls `TspResponseBuilder.fromEngineResponse()` to encode the `TspResponse` into a `TimeStampResp` byte array and returns it as `HTTP 200 application/timestamp-reply`. RFC 3161 status codes (granted, rejection, waiting) are carried inside the response body — the HTTP status code is always 200 for any conforming TSP exchange.
+Core encodes the result into an RFC 3161 `TimeStampResp` and returns it as `HTTP 200 application/timestamp-reply`. RFC 3161 status codes (granted, rejection, waiting) are carried inside the response body — the HTTP status code is always 200 for any conforming TSP exchange.
 
-Authorization denials and resource-not-found errors are both mapped to `TspFailureInfo.BAD_REQUEST` with a generic message so callers cannot distinguish a missing profile from a forbidden one.
+Authorization denials and resource-not-found errors are both mapped to a generic `badRequest` rejection so callers cannot distinguish a missing profile from a forbidden one.
 
 ---
 
@@ -168,17 +151,19 @@ Authorization denials and resource-not-found errors are both mapped to `TspFailu
 |---|---|---|
 | Authentication | Method not allowed, bad credentials | HTTP 401 (before RFC 3161 encoding) |
 | Authorization | OPA denial | `badRequest` (enumeration defence) |
-| TSP/Signing Profile not found or disabled | `NotFoundException` / disabled check | `badRequest` |
+| TSP/Signing Profile not found or disabled | Profile missing or disabled | `badRequest` |
 | Request validation | Bad hash algorithm | `badAlg` |
 | Request validation | Disallowed policy OID | `unacceptedPolicy` |
 | Profile resolution | Certificate/key/connector not found | `systemFailure` |
-| Time quality | Status is DEGRADED | `timeNotAvailable` |
+| Time quality | Status not OK (see note) | `timeNotAvailable` |
 | Certificate validation | Eligibility check failed | `systemFailure` |
 | Serial number | Clock drift > 100 ms | `timeNotAvailable` |
 | Serial number | Tick overflow | `systemFailure` |
 | Formatter (either phase) | Connector communication error | `systemFailure` |
 | Token signature verification | Verification failure | `systemFailure` |
 | Signing record | Write failure | (not propagated — token already granted) |
+
+The time-quality check rejects for more than a `DEGRADED` status alone — a stale result, excessive clock drift, or a leap-second conflict each resolve to a not-OK status. See [Time Quality Configuration](./profiles/time-quality-configuration.md) for the full set of rejection causes.
 
 ---
 

@@ -54,9 +54,9 @@ ILM-native timestamping speaks the IETF RFC 3161 Time-Stamp Protocol (TSP). A TS
 
 ## Time quality
 
-A timestamp is only meaningful if the TSA's clock is demonstrably accurate. ILM supports this through the **Time Quality Monitor (TQM)** — a lightweight sidecar service that polls a set of NTP servers on a configurable interval and publishes the result back to Core via the message broker (AMQP). Time-quality enforcement is **opt-in**: when a Signing Profile is associated with a Time Quality Configuration, Core consults the Time Quality Register before issuing a timestamp token, and rejects the request with `timeNotAvailable` if the registered status is anything other than `OK`. A profile with no Time Quality Configuration does not perform this check.
+A timestamp is only meaningful if the TSA's clock is demonstrably accurate. ILM supports this through the **Time Quality Monitor (TQM)** — a lightweight sidecar service that polls a set of NTP servers on a configurable interval and publishes the result back to Core via the message broker (AMQP). Time-quality enforcement is **opt-in**: when a Signing Profile is associated with a Time Quality Configuration, Core checks the current time-quality status before issuing a timestamp token, and rejects the request with `timeNotAvailable` if that status is anything other than `OK`. A profile with no Time Quality Configuration does not perform this check.
 
-Detailed operator guidance is available in the operations track, and the message contract between Core and TQM is covered in the integration track.
+Monitor setup is covered on the [Time Quality Monitor](./time-quality-monitor.md) page, and the message contract between Core and the monitor on the [Time Quality Messaging](./time-quality-messaging.md) page.
 
 ---
 
@@ -88,20 +88,18 @@ TQM -[#1573B5]-> NTP : NTP poll
 
 The Signature Formatter Connector is responsible for assembling the data to be signed — the CMS `SignedAttributes` computed over the `TSTInfo` structure. Core calls it synchronously over HTTP, receives the encoded bytes, signs them with the TSA key via the configured cryptographic token provider, and wraps the result into the RFC 3161 response.
 
-The Time Quality Monitor is a stateless sidecar. It has no inbound API surface; all communication is outbound over AMQP — it receives Time Quality Configuration from Core via the broker, polls the configured NTP servers, and publishes `TimeCheckResult` messages back. Core's Time Quality Register maintains the in-memory status for each active Time Quality Configuration.
+The Time Quality Monitor is a stateless sidecar. It has no inbound API surface; all communication is outbound over AMQP — it receives Time Quality Configuration from Core via the broker, polls the configured NTP servers, and publishes time-check results back. Core maintains the current time-quality status for each active Time Quality Configuration.
 
 ---
 
-## Workflow × scheme matrix
+## Availability today
 
-The table below shows the full workflow × scheme landscape of ILM Core. Model types (sealed record classes) exist for all nine cells. However, the signing engine only executes one combination today: **TIMESTAMPING × MANAGED (static key)**. Every other cell is not yet wired to an engine implementation.
+The signing model is organised as a workflow × scheme matrix. Only one combination is available today — **TIMESTAMPING × MANAGED (static key)**; the others are planned but not yet available.
 
 | Workflow ↓ / Scheme → | MANAGED · Static Key | MANAGED · One-Time Key | DELEGATED |
 | --- | --- | --- | --- |
-| **TIMESTAMPING** | ✓ implemented | — | — |
+| **TIMESTAMPING** | ✓ available | — | — |
 | **CONTENT_SIGNING** | — | — | — |
 | **RAW_SIGNING** | — | — | — |
 
-*✓ = engine-implemented and documented in this section. — = model type exists in code but has no engine implementation yet.*
-
-The signing model permits further workflow/scheme combinations, but only **TIMESTAMPING × MANAGED (static key)** has an engine implementation today; other cells are not yet wired.
+*✓ = available and documented in this section. — = not yet available.*

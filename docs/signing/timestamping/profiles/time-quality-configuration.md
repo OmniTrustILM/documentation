@@ -14,7 +14,7 @@ For the entity-relationship diagram showing how Time Quality Configuration relat
 
 RFC 3161 timestamp tokens assert the time at which a document existed. Issuing a token with a miscalibrated or drifted clock would produce a meaningless or misleading assertion. The Time Quality Configuration encodes the thresholds that the Time Quality Monitor uses to classify clock state as either **OK** (within policy, tokens may be issued) or **DEGRADED** (outside policy, tokens are withheld).
 
-The Time Quality Monitor page covers the monitoring lifecycle, status transitions, and alerting.
+The [Time Quality Monitor](../time-quality-monitor.md) page covers the monitoring lifecycle, status evaluation, and leap-second logging.
 
 ---
 
@@ -69,7 +69,7 @@ A Signing Profile references at most one Time Quality Configuration. When:
 - The Signing Profile has a Time Quality Configuration associated **and** the monitor reports **OK** — timestamp issuance proceeds normally.
 - The Signing Profile has **no** Time Quality Configuration associated — time quality enforcement is not applied.
 
-The Time Quality Monitor page describes how the monitor evaluates each parameter and how status transitions are reported.
+The [Time Quality Monitor](../time-quality-monitor.md) page describes how the monitor evaluates each parameter and how the resulting status is reported.
 
 ---
 
@@ -79,3 +79,11 @@ The Time Quality Monitor page describes how the monitor evaluates each parameter
 - Time Quality Configuration does not own or reference any other entities directly; it is a standalone configuration object.
 
 See the [entity-relationship diagram on the Signing Profile page](./signing-profile.md#entity-relationship-diagram) for the full relationship map.
+
+---
+
+## Related pages
+
+- [Time Quality Monitor](../time-quality-monitor.md) — how the monitor evaluates these parameters and reports status
+- [Time Quality Messaging Contract](../time-quality-messaging.md) — how configurations are delivered to the monitor
+- [Signing Profile](./signing-profile.md) — how a profile associates a Time Quality Configuration

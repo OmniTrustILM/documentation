@@ -83,7 +83,7 @@ The Service Bus subscription that receives config snapshots must be provisioned 
 
 ### Reconnection
 
-A `ConnectionSupervisor` manages the AMQP connection lifecycle. On any connection or link error it closes the existing connection, waits through the configured backoff sequence, and redials. The receiver and sender handlers are rebuilt on each reconnect. The backoff schedule is set by `BACKOFF` (comma-separated ISO 8601 durations; default `PT100MS`; the reference `config.yml` ships the seven-step sequence `PT100MS, PT200MS, PT500MS, PT1S, PT2S, PT5S, PT10S` as a recommended starting point). After all retries are exhausted the supervisor logs an error and the process continues waiting; it does not exit.
+TQM manages the AMQP connection lifecycle internally. On any connection or link error it closes the existing connection, waits through the configured backoff sequence, and redials. The receiver and sender are rebuilt on each reconnect. The backoff schedule is set by `BACKOFF` (comma-separated ISO 8601 durations; default `PT100MS`; the reference `config.yml` ships the seven-step sequence `PT100MS, PT200MS, PT500MS, PT1S, PT2S, PT5S, PT10S` as a recommended starting point). After all retries are exhausted TQM logs an error and continues waiting; it does not exit.
 
 ---
 

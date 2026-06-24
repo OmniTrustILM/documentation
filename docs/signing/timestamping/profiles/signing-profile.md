@@ -57,36 +57,36 @@ TokenProfile "*" --> "1" TokenInstance : uses >
 @enduml
 ```
 
-> This diagram is referenced from the TSP Profile and Time Quality Configuration pages. It is also the basis for the deletion-behaviour discussion covered in the limitations page.
+> This diagram is referenced from the [TSP Profile](./tsp-profile.md) and [Time Quality Configuration](./time-quality-configuration.md) pages. It is also the basis for the deletion-behaviour discussion covered in the [Limitations](../limitations.md) page.
 
 ---
 
 ## Versioning semantics
 
-A Signing Profile maintains a history of `SigningProfileVersion` rows indexed by a monotonically increasing integer (`version`). The profile header (`SigningProfile`) tracks `latestVersion` as a denormalised counter; the active version is the row whose `version` equals `latestVersion`.
+A Signing Profile maintains a history of versions, each identified by a monotonically increasing version number. The most recent version is the active one.
 
 **When a new version is created:**
 
-A version bump occurs on every update call that meets either of the following conditions:
+A new version is created on an update when either of the following holds:
 
-1. Signing records already exist against the current version (records must remain linked to the version under which they were created for audit integrity).
-2. One or more recording-policy fields differ between the stored version and the incoming update request.
+1. Signing records already exist against the current version (records must stay linked to the version under which they were created, for audit integrity).
+2. One or more recording-policy fields differ between the current version and the update request.
 
-When neither condition is met, the current version row is updated in place (no new version row is written). This is the "lenient version bump" strategy: the version counter does not change for schema-neutral edits such as renaming the profile or changing description.
+When neither holds, the current version is updated in place and no new version is created — so schema-neutral edits such as renaming the profile or changing its description do not advance the version number.
 
 **What is immutable on a version:**
 
-Once a signing record references a version, that version row is never mutated. Subsequent updates that would touch it instead create a new version row.
+Once a signing record references a version, that version is never modified; subsequent updates create a new version instead.
 
 **Active version selection:**
 
-The active version is always the row whose `version` equals `latestVersion` on the parent `SigningProfile`. Older versions remain accessible via the read-by-version API endpoint for audit and troubleshooting.
+The active version is always the most recent one. Older versions remain accessible via the read-by-version API endpoint for audit and troubleshooting.
 
 ---
 
 ## Recording policy
 
-The recording policy fields on `SigningProfileVersion` control what data is persisted per signing operation.
+The recording policy fields on each profile version control what data is persisted per signing operation.
 
 - **`recordingEnabled`** — master gate. When `false`, no signing record is created regardless of the other flags.
 - **`recordRequestMetadata`**, **`recordSignature`**, **`recordSignedDocument`**, **`recordDtbs`** — granular switches for which data payloads are stored alongside the record.
@@ -96,12 +96,22 @@ The recording policy fields on `SigningProfileVersion` control what data is pers
   - `DEFERRED_DURABLE` — the record is written asynchronously but is guaranteed to be persisted; balanced latency and durability. This is the default.
   - `BEST_EFFORT` — the record is written on a best-effort basis with no durability guarantee; lowest latency.
 
-Because recording-policy fields are version-scoped, changing any recording-policy field on an update always triggers a version bump, ensuring that each record can be unambiguously linked to the policy that governed its creation. The Signing records page covers record structure and retrieval in detail.
+Because recording-policy fields are version-scoped, changing any recording-policy field on an update always triggers a version bump, ensuring that each record can be unambiguously linked to the policy that governed its creation. The [Signing Records](../signing-records.md) page covers record structure and retrieval in detail.
 
 ---
 
 ## Relationships
 
-- A Signing Profile references at most one **TSP Profile**. The TSP Profile exposes the profile to inbound RFC 3161 clients and carries authentication policy. See the TSP Profile page for details.
-- A Signing Profile references at most one **Time Quality Configuration**. The Time Quality Configuration determines whether the system clock is considered trustworthy before a timestamp token is issued. See the Time Quality Configuration page for details.
+- A Signing Profile references at most one **TSP Profile**. The TSP Profile exposes the profile to inbound RFC 3161 clients and carries authentication policy. See the [TSP Profile](./tsp-profile.md) page for details.
+- A Signing Profile references at most one **Time Quality Configuration**. The Time Quality Configuration determines whether the system clock is considered trustworthy before a timestamp token is issued. See the [Time Quality Configuration](./time-quality-configuration.md) page for details.
 - Each version of a Signing Profile may reference a **Token Profile** (for MANAGED/STATIC\_KEY), a **Certificate** (the TSA signing certificate), an **RA Profile** (for MANAGED/ONE\_TIME\_KEY, model only), or a **Connector** (for DELEGATED scheme or Signature Formatter).
+
+---
+
+## Related pages
+
+- [TSP Profile](./tsp-profile.md) — authentication methods and the default Signing Profile
+- [Time Quality Configuration](./time-quality-configuration.md) — time-source evaluation parameters
+- [Signing Records](../signing-records.md) — record structure, retrieval, and retention
+- [Timestamping Request Flow](../timestamping-flow.md) — how a profile is resolved and used per request
+- [Limitations](../limitations.md) — dependent-resource deletion behaviour

@@ -41,15 +41,15 @@ The record policy's `persistenceMode` field selects how records are written rela
 
 ### IMMEDIATE
 
-The record is mapped and written to `signing_record` **synchronously in the caller's transaction**, before the timestamp response is returned. A persistence failure propagates to the engine's `recordSigning()` call, which catches and logs it — the token is returned regardless (see [Timestamping Request Flow](./timestamping-flow.md) for the engine's exception boundary). The mode offers the strongest durability guarantee: if no exception is thrown, the record is committed.
+The record is written to `signing_record` **synchronously in the caller's transaction**, before the timestamp response is returned. A persistence failure is caught and logged — the token is returned regardless (see [Timestamping Request Flow](./timestamping-flow.md) for the engine's exception boundary). The mode offers the strongest durability guarantee: if the write does not fail, the record is committed.
 
 ### BEST_EFFORT
 
-The record is mapped and admitted to an **in-memory queue** on the signing thread. The caller is never blocked on a database write; if the queue is full the admission policy (either `DROP_OLDEST` or `BLOCK`) is applied. A dedicated background thread — `SigningRecordBestEffortFlusher` — periodically drains the queue and persists batches in single transactions. Flush failures are logged and counted in metrics but not propagated; affected records are lost. This mode adds no latency to the signing path at the cost of possible record loss on queue overflow, flush error, or process restart.
+The record is admitted to an **in-memory queue** on the signing thread. The caller is never blocked on a database write; if the queue is full the admission policy (either `DROP_OLDEST` or `BLOCK`) is applied. A dedicated background thread periodically drains the queue and persists batches in single transactions. Flush failures are logged and counted in metrics but not propagated; affected records are lost. This mode adds no latency to the signing path at the cost of possible record loss on queue overflow, flush error, or process restart.
 
 ### DEFERRED_DURABLE
 
-The record is staged into a separate `signing_record_outbox` table **in the same transaction as the signing operation**. The outbox write is durable the moment the signing transaction commits. An asynchronous background task — `SigningRecordOutboxDrainer`, driven by `SigningRecordOutboxDrainScheduler` — subsequently copies records from the outbox into `signing_record` and deletes the outbox row. This mode combines low signing-path latency with full durability: the outbox entry survives a process restart.
+The record is staged into a separate `signing_record_outbox` table **in the same transaction as the signing operation**. The outbox write is durable the moment the signing transaction commits. An asynchronous background drainer subsequently copies records from the outbox into `signing_record` and deletes the outbox row. This mode combines low signing-path latency with full durability: the outbox entry survives a process restart.
 
 ### Mode comparison
 
@@ -95,21 +95,21 @@ fork
   :Signing operation complete;
 fork again
   repeat
-    :SigningRecordOutboxDrainScheduler\nfires (fixed-delay interval);
-    :SigningRecordOutboxDrainer acquires\ncluster-wide advisory lock;
+    :Drain scheduler fires\n(fixed-delay interval);
+    :Drainer acquires\ncluster-wide advisory lock;
     :Read next batch of drainable rows\n(attempt count below poison threshold);
     repeat
       :For each outbox row:;
-      :Copy row → signing_record\n(REQUIRES_NEW transaction);
+      :Copy row → signing_record\n(own transaction);
       note right
         Idempotent merge copy: safe
         to retry after a crash.
       end note
       if (copy succeeded?) then (yes)
-        :Delete outbox row\n(same REQUIRES_NEW transaction);
+        :Delete outbox row\n(same transaction);
         :Increment drain metric;
       else (no)
-        :Increment attempt count\n(separate REQUIRES_NEW transaction);
+        :Increment attempt count\n(separate transaction);
         note right
           Row retried next drain run
           until poison threshold reached.
@@ -125,8 +125,8 @@ stop
 
 Key properties of the drainer:
 
-- **Cluster safety:** A cluster-wide advisory lock (the same `ClusterOperationSynchronizer` used by retention) ensures only one node drains at a time. The lock is held for the outer `REQUIRES_NEW` transaction that orchestrates the batch.
-- **Per-row isolation:** Each row is copied and deleted in its own short `REQUIRES_NEW` transaction. A single failing row rolls back only its own transaction; healthy rows in the batch are committed and removed from the outbox.
+- **Cluster safety:** A cluster-wide advisory lock (shared with retention) ensures only one node drains at a time. The lock is held for the duration of the batch.
+- **Per-row isolation:** Each row is copied and deleted in its own short transaction. A single failing row rolls back only its own transaction; healthy rows in the batch are committed and removed from the outbox.
 - **Poison detection:** A row that fails repeatedly increments its attempt counter. Once the counter reaches the configured `poison-threshold` the drainer stops claiming it, preventing a bad row from blocking the queue indefinitely.
 - **Backpressure cap:** The drainer processes at most `max-batches-per-run` batches per scheduled invocation. A large backlog drains across multiple runs rather than in one long-running transaction.
 - **Crash recovery:** If the process restarts before an outbox row is drained, the row remains in `signing_record_outbox` and is drained on the next scheduled run. The copy is an idempotent merge, so a row already present in `signing_record` (copied before the crash-then-commit of the delete) is reconciled safely.
@@ -143,7 +143,7 @@ Signing records are subject to a time-based retention sweep controlled by `signi
 | `batch-size` | Records deleted per batch in each sweep run |
 | `max-batches-per-sweep` | Maximum batches per sweep invocation (set to `0` to disable) |
 
-The `SigningRecordRetentionSweeper`, triggered by `SigningRecordRetentionScheduler`, holds a cluster-wide advisory lock and deletes expired records in batches. Each batch commits in its own transaction; a large expired backlog is cleared across multiple scheduled sweeps rather than a single long-running transaction.
+The retention sweeper holds a cluster-wide advisory lock and deletes expired records in batches. Each batch commits in its own transaction; a large expired backlog is cleared across multiple scheduled sweeps rather than a single long-running transaction.
 
 The retention period in days is set per signing profile in the record policy (`retentionDays`). A `null` value means records are kept indefinitely.
 

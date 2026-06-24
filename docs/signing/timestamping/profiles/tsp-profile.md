@@ -36,7 +36,7 @@ Either way, the TSP Profile is what authenticates the request. The management AP
 
 ## Authentication methods
 
-`allowedAuthenticationMethods` controls which authentication transports the TSP Authentication Filter will accept on the endpoint. At least one method must be configured.
+`allowedAuthenticationMethods` controls which authentication transports the endpoint will accept. At least one method must be configured.
 
 | Value | Transport | Secret type |
 |---|---|---|
@@ -44,7 +44,7 @@ Either way, the TSP Profile is what authenticates the request. The management AP
 | `BEARER_TOKEN` | `Authorization: Bearer` header | JWT |
 | `BASIC_PASSWORD` | `Authorization: Basic` header | Username and password (matched against `TspProfileBasicCredential`) |
 
-Multiple methods may be listed simultaneously; the filter accepts requests that satisfy any of them. The authentication-authorization page covers how the detected identity is mapped to platform permissions.
+Multiple methods may be listed simultaneously; the endpoint accepts requests that satisfy any of them. The [Authentication and Authorization](../authentication-authorization.md) page covers how the detected identity is mapped to platform permissions.
 
 ---
 
@@ -69,3 +69,11 @@ A Vault Profile is required when the TSP Profile permits the `BASIC_PASSWORD` au
 - A TSP Profile owns zero or more basic-credential records (cascade delete: credentials are removed when the TSP Profile is deleted).
 
 See the [entity-relationship diagram on the Signing Profile page](./signing-profile.md#entity-relationship-diagram) for the full cardinality map.
+
+---
+
+## Related pages
+
+- [Signing Profile](./signing-profile.md) — the profile a TSP endpoint resolves to
+- [Authentication and Authorization](../authentication-authorization.md) — credential types, allowed-method enforcement, identity mapping
+- [Timestamping Request Flow](../timestamping-flow.md) — where the TSP Profile sits in the request path
