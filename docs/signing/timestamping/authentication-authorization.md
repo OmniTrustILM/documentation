@@ -120,15 +120,9 @@ Role-based access to TSP Profiles is configured through the platform's access-co
 
 ## Performance: caching
 
-On a high-throughput endpoint, the same profiles, certificates, keys, and credentials are looked up on every request. Several caches keep the hot path off the database and off repeated cryptographic work. Those touched by a timestamp request include:
+On a high-throughput endpoint, the same profiles, certificates, keys, and credentials are looked up on every request. Several caches keep this hot path off the database and off repeated cryptographic work — including positive `BASIC_PASSWORD` verification results and the platform identity resolved for `CLIENT_CERTIFICATE` and `BEARER_TOKEN` requests.
 
-- **Credential verification cache** — records positive `BASIC_PASSWORD` verification results so the fingerprint comparison is not repeated on every call.
-- **Authentication cache** — caches the platform identity resolved for `CLIENT_CERTIFICATE` and `BEARER_TOKEN` requests.
-- **TSP profile** and **signing profile** caches — the profile lookups that resolve the request.
-- **Signing certificate**, **certificate chain**, and **cryptographic key item** caches — the PKI resources dereferenced during profile resolution.
-- **Time quality configuration cache** and **connector API client cache** — the time-quality and formatter-connector resources resolved for the signing operation.
-
-For the full list of caches, their bounds, time-to-live, multi-instance behaviour, and invalidation, see [Caching](/docs/certificate-key/concept-design/architecture/caching).
+For the caches involved, their bounds, time-to-live, multi-instance behaviour, and invalidation, see [Caching](/docs/certificate-key/concept-design/architecture/caching).
 
 ---
 
