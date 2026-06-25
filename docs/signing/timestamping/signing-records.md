@@ -1,10 +1,10 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 # Signing Records
 
-Every timestamp operation can produce a **signing record** — a persisted log entry that captures who requested a timestamp, when it was issued, which signing profile and version was used, and (optionally) the cryptographic artifacts from that operation.
+Every timestamp operation can produce a **signing record** — a persisted log entry that captures who requested a timestamp, when it was issued, which signing profile and version was used, and (optionally) the cryptographic artifacts from that operation. Signing records are how a deployment meets the event-logging and record-retention obligations that ETSI EN 319 421 places on a TSP issuing time-stamps.
 
 Recording is governed by the record policy configured on each signing profile. See [Signing Profile](./profiles/signing-profile.md) for the full set of record policy fields.
 

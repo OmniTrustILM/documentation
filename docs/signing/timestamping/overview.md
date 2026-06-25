@@ -6,6 +6,8 @@ sidebar_position: 1
 
 ILM-native timestamping is the platform's built-in RFC 3161 Time-Stamp Authority (TSA) implementation. It runs directly on ILM Core — using the same profile, connector, and credential infrastructure as the rest of the platform — without requiring an external signing server.
 
+The implementation targets the regulatory regime its operators work under. In the EU, electronic time stamps are governed by **Regulation (EU) No 910/2014 (eIDAS)**, and the technical requirements for trust service providers issuing them are set out in the **ETSI EN 319 42x** family. ILM issues both standard RFC 3161 tokens and **qualified electronic time stamps** in the sense of eIDAS Art. 42. For the full set of normative references and how each requirement maps to an ILM mechanism, see [Standards and Compliance](./standards-and-compliance.md).
+
 For teams already using the SignServer-based implementation, the SignServer path continues to be supported. See [Digital Signing — legacy](/docs/signserver/introduction) for that track.
 
 ---
@@ -14,6 +16,7 @@ For teams already using the SignServer-based implementation, the SignServer path
 
 The timestamping documentation covers:
 
+- **Standards and compliance** — the normative references the implementation follows and how eIDAS / ETSI requirements map to ILM mechanisms.
 - **Profiles** — the configuration objects that define a TSA: Signing Profiles, TSP Profiles, and Time Quality Configurations.
 - **Request flow** — how a timestamp request is processed end to end, including authentication and authorization and the signing records it produces.
 - **Supporting components** — the Time Quality Monitor, the timestamp formatter connector, and the Time Quality messaging contract between Core and the monitor.
@@ -54,7 +57,7 @@ ILM-native timestamping speaks the IETF RFC 3161 Time-Stamp Protocol (TSP). A TS
 
 ## Time quality
 
-A timestamp is only meaningful if the TSA's clock is demonstrably accurate. ILM supports this through the **Time Quality Monitor (TQM)** — a lightweight sidecar service that polls a set of NTP servers on a configurable interval and publishes the result back to Core via the message broker (AMQP). Time-quality enforcement is **opt-in**: when a Signing Profile is associated with a Time Quality Configuration, Core checks the current time-quality status before issuing a timestamp token, and rejects the request with `timeNotAvailable` if that status is anything other than `OK`. A profile with no Time Quality Configuration does not perform this check.
+A timestamp is only meaningful if the TSA's clock is demonstrably accurate — eIDAS Art. 42(1)(b) requires a qualified time stamp to be based on an accurate time source linked to UTC, and ETSI EN 319 421 sets out the corresponding time-source accuracy and calibration requirements. ILM supports this through the **Time Quality Monitor (TQM)** — a lightweight sidecar service that polls a set of NTP servers on a configurable interval and publishes the result back to Core via the message broker (AMQP). Time-quality enforcement is **opt-in**: when a Signing Profile is associated with a Time Quality Configuration, Core checks the current time-quality status before issuing a timestamp token, and rejects the request with `timeNotAvailable` if that status is anything other than `OK`. A profile with no Time Quality Configuration does not perform this check.
 
 Monitor setup is covered on the [Time Quality Monitor](./time-quality-monitor.md) page, and the message contract between Core and the monitor on the [Time Quality Messaging](./time-quality-messaging.md) page.
 

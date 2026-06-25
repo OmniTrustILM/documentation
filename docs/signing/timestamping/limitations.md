@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 ---
 
 # Limitations
@@ -10,7 +10,7 @@ This page covers two categories of operational limits: the throughput and longev
 
 ## Serial-number generation
 
-Every RFC 3161 timestamp token requires a unique serial number. ILM generates these timestamp-token serial numbers using a Snowflake/Sonyflake-style 64-bit generator that produces monotonically increasing, structurally unique identifiers without coordination between instances.
+Every RFC 3161 timestamp token requires a unique serial number, and ETSI EN 319 421 requires a TSP to ensure that uniqueness across all the time-stamp tokens it issues. ILM generates these timestamp-token serial numbers using a Snowflake/Sonyflake-style 64-bit generator that produces monotonically increasing, structurally unique identifiers without coordination between instances.
 
 ### Bit layout
 

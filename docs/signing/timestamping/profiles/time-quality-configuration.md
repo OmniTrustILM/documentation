@@ -12,7 +12,7 @@ For the entity-relationship diagram showing how Time Quality Configuration relat
 
 ## Purpose
 
-RFC 3161 timestamp tokens assert the time at which a document existed. Issuing a token with a miscalibrated or drifted clock would produce a meaningless or misleading assertion. The Time Quality Configuration encodes the thresholds that the Time Quality Monitor uses to classify clock state as either **OK** (within policy, tokens may be issued) or **DEGRADED** (outside policy, tokens are withheld).
+RFC 3161 timestamp tokens assert the time at which a document existed. Issuing a token with a miscalibrated or drifted clock would produce a meaningless or misleading assertion. A qualified electronic time stamp must, under eIDAS Art. 42(1)(b), be based on an accurate time source linked to UTC, and ETSI EN 319 421 sets out the corresponding time-source accuracy and calibration requirements for the TSP. The Time Quality Configuration encodes the thresholds that the Time Quality Monitor uses to classify clock state as either **OK** (within policy, tokens may be issued) or **DEGRADED** (outside policy, tokens are withheld).
 
 The [Time Quality Monitor](../time-quality-monitor.md) page covers the monitoring lifecycle, status evaluation, and leap-second logging.
 
@@ -31,7 +31,7 @@ Note that `accuracy` is **not** a clock-error threshold — the permissible cloc
 
 ### `ntpServers`
 
-The list of NTP server addresses (hostnames or IP addresses) that the monitor contacts during each check cycle. Providing multiple servers enables cross-validation and guards against a single server being unreachable or returning a bad reference.
+The list of NTP server addresses (hostnames or IP addresses) that the monitor contacts during each check cycle, using SNTP (RFC 4330). Providing multiple servers enables cross-validation and guards against a single server being unreachable or returning a bad reference. The servers should be traceable to UTC, as required for the time source of a qualified time stamp (eIDAS Art. 42(1)(b)).
 
 ### `ntpCheckInterval`
 
@@ -51,7 +51,7 @@ The minimum number of NTP servers that must respond successfully within a cycle 
 
 ### `maxClockDrift`
 
-The maximum allowable difference between the NTP-derived reference time and the local clock reading. When the measured drift exceeds this value, the monitor transitions to DEGRADED and the Signing Profile will not issue new timestamp tokens until the condition clears.
+The maximum allowable difference between the NTP-derived reference time and the local clock reading — the operator's expression of the time-source accuracy tolerance required by ETSI EN 319 421. When the measured drift exceeds this value, the monitor transitions to DEGRADED and the Signing Profile will not issue new timestamp tokens until the condition clears.
 
 ### `leapSecondGuard`
 

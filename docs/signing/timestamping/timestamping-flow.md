@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # Timestamping Request Flow
@@ -84,7 +84,7 @@ The raw request body is decoded from its ASN.1 `TimeStampReq` form into its fiel
 
 The request is validated against the rules declared on the signing profile's workflow:
 
-- **Hash algorithm** — if `allowedDigestAlgorithms` is set, the request's hash algorithm must be in the list; otherwise the request is rejected with `badAlg`.
+- **Hash algorithm** — if `allowedDigestAlgorithms` is set, the request's hash algorithm must be in the list; otherwise the request is rejected with `badAlg`. Restricting the permitted digest algorithms is how a deployment enforces an approved cryptographic suite (ETSI TS 119 312).
 - **Policy OID** — if `allowedPolicyIds` is set and the request specifies a policy OID, it must match one of the allowed OIDs; otherwise the request is rejected with `unacceptedPolicy`.
 
 ### 4. Profile resolution
@@ -107,17 +107,22 @@ If the status is anything other than `OK`, the engine returns a `timeNotAvailabl
 
 ### 6. Signing certificate validation
 
-The signing certificate is checked against the timestamping eligibility rules (extended key usage, key usage, validity) for the configured qualification level (qualified or non-qualified). A failure returns a `systemFailure` rejection.
+The signing certificate is checked against the timestamping eligibility rules for the configured qualification level (qualified or non-qualified):
+
+- **Extended key usage** — the certificate must assert the `id-kp-timeStamping` extended key usage (OID `1.3.6.1.5.5.7.3.8`, RFC 5280 §4.2.1.12), which is the EKU that marks a certificate as valid for signing time-stamp tokens.
+- **Key usage and validity** — checked alongside the EKU; the certificate (and chain) profile follows ETSI EN 319 412.
+
+A failure returns a `systemFailure` rejection.
 
 ### 7. Serial number generation
 
-A unique serial number is generated for the token. The generator is coordination-free and has a throughput ceiling of 25,600 tokens per second per instance; it protects against sequence overflow and backward clock jumps, rejecting with `timeNotAvailable` if the clock regresses by more than 100 ms. Serial numbers stay within the 160-bit field limit mandated by RFC 5280 and referenced by RFC 3161. The scheme's operational limits are covered on the [Limitations](./limitations.md) page.
+A unique serial number is generated for the token. Serial-number uniqueness is a requirement of both RFC 3161 (§2.4.2) and ETSI EN 319 421 for TSPs issuing time-stamps. The generator is coordination-free and has a throughput ceiling of 25,600 tokens per second per instance; it protects against sequence overflow and backward clock jumps, rejecting with `timeNotAvailable` if the clock regresses by more than 100 ms. Serial numbers stay within the 160-bit field limit mandated by RFC 5280 and referenced by RFC 3161. The scheme's operational limits are covered on the [Limitations](./limitations.md) page.
 
 The generation time (`genTime`) is captured immediately after the serial number is issued, so both reflect the same clock sample.
 
 ### 8. Formatter phase 1 — build the data to be signed
 
-Token assembly is a two-phase exchange with the Signature Formatter Connector. In phase 1, Core sends the request fields (hash, nonce, policy OID, extensions, serial number, `genTime`, accuracy, certificate chain, signature algorithm, formatter attributes) to the connector. The connector encodes the CMS signed attributes computed over the `TSTInfo` and returns the DER bytes — the exact data to be signed. The connector and its two-phase calling convention are described on the [Timestamp Formatter Connector](./timestamp-formatter-connector.md) page.
+Token assembly is a two-phase exchange with the Signature Formatter Connector. In phase 1, Core sends the request fields (hash, nonce, policy OID, extensions, serial number, `genTime`, accuracy, certificate chain, signature algorithm, formatter attributes) to the connector. The connector encodes the CMS (RFC 5652) `SignedAttributes` computed over the `TSTInfo` (RFC 3161) — including the `SigningCertificateV2` attribute (carrying `ESSCertIDv2`, RFC 5816) that binds the TSA certificate to the token — and returns the DER bytes, the exact data to be signed. The connector and its two-phase calling convention are described on the [Timestamp Formatter Connector](./timestamp-formatter-connector.md) page.
 
 ### 9. Signing
 
@@ -125,7 +130,7 @@ Core signs the returned bytes with the profile's managed key through the configu
 
 ### 10. Formatter phase 2 — assemble the token
 
-In phase 2, Core sends the data-to-be-signed and the raw signature back to the connector, which injects the signature into the CMS structure and returns the fully assembled RFC 3161 `TimeStampToken`. If `validateTokenSignature` is set on the profile, Core verifies the token signature against the signing certificate before proceeding; a verification failure returns a `systemFailure` rejection.
+In phase 2, Core sends the data-to-be-signed and the raw signature back to the connector, which injects the signature into the CMS `SignedData` structure (RFC 5652) and returns the fully assembled RFC 3161 `TimeStampToken`. If `validateTokenSignature` is set on the profile, Core verifies the token signature against the signing certificate before proceeding; a verification failure returns a `systemFailure` rejection.
 
 ### 11. Signing record
 

@@ -1,10 +1,10 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # Time Quality Monitor
 
-The Time Quality Monitor (TQM) is a lightweight Go sidecar that runs alongside ILM Core and continuously evaluates whether the system clock is trustworthy enough to issue RFC 3161 timestamp tokens. It queries a set of NTP servers on behalf of each Time Quality Configuration, applies the configured thresholds, and publishes the outcome — **OK** or **DEGRADED** — back to Core over AMQP. Core gates timestamp token issuance on the most recently received status for each configuration.
+The Time Quality Monitor (TQM) is a lightweight Go sidecar that runs alongside ILM Core and continuously evaluates whether the system clock is trustworthy enough to issue RFC 3161 timestamp tokens. It is how ILM satisfies the time-source accuracy requirements of ETSI EN 319 421 (and eIDAS Art. 42(1)(b) for qualified time stamps): it queries a set of NTP servers (via SNTP, RFC 4330) on behalf of each Time Quality Configuration, applies the configured thresholds, and publishes the outcome — **OK** or **DEGRADED** — back to Core over AMQP. Core gates timestamp token issuance on the most recently received status for each configuration.
 
 For the NTP parameters (servers, intervals, thresholds) that drive the evaluation, see [Time Quality Configuration](./profiles/time-quality-configuration.md). For the AMQP message contract that TQM implements, see [Time Quality Messaging](./time-quality-messaging.md).
 

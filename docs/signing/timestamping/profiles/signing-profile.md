@@ -86,7 +86,7 @@ The active version is always the most recent one. Older versions remain accessib
 
 ## Recording policy
 
-The recording policy fields on each profile version control what data is persisted per signing operation.
+The recording policy fields on each profile version control what data is persisted per signing operation. These records are the basis for the event logging and record-retention obligations that ETSI EN 319 421 places on a TSP; see [Signing Records](../signing-records.md).
 
 - **`recordingEnabled`** — master gate. When `false`, no signing record is created regardless of the other flags.
 - **`recordRequestMetadata`**, **`recordSignature`**, **`recordSignedDocument`**, **`recordDtbs`** — granular switches for which data payloads are stored alongside the record.
@@ -104,7 +104,7 @@ Because recording-policy fields are version-scoped, changing any recording-polic
 
 - A Signing Profile references at most one **TSP Profile**. The TSP Profile exposes the profile to inbound RFC 3161 clients and carries authentication policy. See the [TSP Profile](./tsp-profile.md) page for details.
 - A Signing Profile references at most one **Time Quality Configuration**. The Time Quality Configuration determines whether the system clock is considered trustworthy before a timestamp token is issued. See the [Time Quality Configuration](./time-quality-configuration.md) page for details.
-- Each version of a Signing Profile may reference a **Token Profile** (for MANAGED/STATIC\_KEY), a **Certificate** (the TSA signing certificate), an **RA Profile** (for MANAGED/ONE\_TIME\_KEY, model only), or a **Connector** (for DELEGATED scheme or Signature Formatter).
+- Each version of a Signing Profile may reference a **Token Profile** (for MANAGED/STATIC\_KEY), a **Certificate** (the TSA signing certificate — it must carry the `id-kp-timeStamping` EKU per RFC 5280 and follow the ETSI EN 319 412 certificate profile), an **RA Profile** (for MANAGED/ONE\_TIME\_KEY, model only), or a **Connector** (for DELEGATED scheme or Signature Formatter).
 
 ---
 
