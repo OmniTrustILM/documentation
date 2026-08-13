@@ -19,7 +19,7 @@ The **OTPKI Connector** is the [`Connector`](../../concept-design/architecture/c
 | Revoke                   | Revokes an issued certificate with the selected revocation reason                        |
 | Register                 | Pre-registers an identity in OTPKI before a certificate request exists                   |
 | Identify                 | Matches an existing certificate against OTPKI by its serial number                       |
-| CA certificates and CRLs | Downloads the certificate chain and the latest CRL of the selected certification authority |
+| CA certificates | Downloads the certificate chain of the selected certification authority. CRL retrieval is not available: the supported OTPKI generation exposes no API to read a CA's current revocation list, and the connector answers `501 OPERATION_NOT_SUPPORTED` |
 
 The connector authenticates to OTPKI with an OAuth 2.0 access token obtained through the **client credentials** grant. OTPKI validates that token against the identity provider that issued it, and resolves it to an OTPKI user whose roles determine what the connector is allowed to do.
 

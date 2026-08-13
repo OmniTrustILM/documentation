@@ -38,9 +38,11 @@ Revoke the certificate with a revocation reason, see [Revoke Certificate](../../
 
 ## 6. CA certificates and CRL
 
-Download the certificate chain and the CRL of the certification authority selected on the `RA Profile`.
+Download the certificate chain of the certification authority selected on the `RA Profile`.
 
-Both come from OTPKI for that certification authority, and confirm that the platform can build and validate chains for the certificates it manages.
+The chain comes from OTPKI for that certification authority, and confirms that the platform can build and validate chains for the certificates it manages.
+
+Requesting the CRL is expected to fail with `501 OPERATION_NOT_SUPPORTED`: the supported OTPKI generation exposes no API to read a CA's current revocation list, so the connector refuses the operation rather than serving stale or empty revocation data. Seeing this exact response confirms the connector is behaving as documented — it is not an integration failure.
 
 ## 7. Pre-registration
 
