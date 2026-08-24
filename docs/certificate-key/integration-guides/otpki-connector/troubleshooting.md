@@ -20,8 +20,8 @@ sidebar_position: 8
 
 | Symptom                                                              | Cause                                                                        | Resolution                                                                    |
 |----------------------------------------------------------------------|--------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| The **End Entity Profile** list is empty                             | OTPKI cannot be reached, or the role lacks **Read** on end entity profiles     | Run the connection check, then review [Create Role and Permissions](./create-role.md) |
-| The **Certificate Profile** or **Certificate Authority** list is empty | The selected end entity profile has no certificate profile or certification authority bound to it, or the role lacks **Read** on them | Complete the binding described in [Configure CA and Profiles](./configure-profiles.md) |
+| The **End Entity Profile** list is empty                             | OTPKI cannot be reached, the role lacks **Read** on end entity profiles, or every profile has an approval profile attached | Run the connection check, review [Create Role and Permissions](./create-role.md), then check the approval settings in [Configure CA and Profiles](./configure-profiles.md) |
+| The **Certificate Profile** or **Certificate Authority** list is empty, or an expected entry is missing | The selected end entity profile has nothing bound to it, the role lacks **Read** on them, or the missing entry has an approval profile attached and is therefore hidden | Complete the binding and review the approval settings, both in [Configure CA and Profiles](./configure-profiles.md) |
 
 ## Certificate issuance
 
