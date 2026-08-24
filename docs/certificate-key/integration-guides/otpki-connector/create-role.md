@@ -28,7 +28,7 @@ Grant the role the following permissions. Every listed action must resolve to **
 | Certificate           | Issue, Read, Revoke              | Issuing certificates, matching them by serial number, and revoking them          |
 
 :::info[Least privilege]
-The connector never deletes objects in OTPKI, and never manages users, roles, or permissions. Do not grant it **Delete** or any administration permissions. CRL retrieval is not available on the supported OTPKI generation, so no permission relates to it.
+The connector never deletes objects in OTPKI, and never manages users, roles, or permissions. Do not grant it **Delete** or any administration permissions. CRL retrieval is not implemented by the connector, so no permission relates to it.
 :::
 
 Instead of setting the individual cells, you can start from an OTPKI permission template and remove what is not needed. Templates replace the whole permission set of a role, so apply one before making manual changes rather than after.

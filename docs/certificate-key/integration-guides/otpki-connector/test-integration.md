@@ -42,7 +42,7 @@ Download the certificate chain of the certification authority selected on the `R
 
 The chain comes from OTPKI for that certification authority, and confirms that the platform can build and validate chains for the certificates it manages.
 
-Requesting the CRL is expected to fail with `501 OPERATION_NOT_SUPPORTED`: the supported OTPKI generation exposes no API to read a CA's current revocation list, so the connector refuses the operation rather than serving stale or empty revocation data. Seeing this exact response confirms the connector is behaving as documented — it is not an integration failure.
+Requesting the CRL is expected to fail with `501 OPERATION_NOT_SUPPORTED`: the connector does not yet select a current revocation list from the several OTPKI returns for a certification authority, so it refuses the operation rather than serving the wrong list. Seeing this exact response confirms the connector is behaving as documented — it is not an integration failure.
 
 ## 7. Pre-registration
 

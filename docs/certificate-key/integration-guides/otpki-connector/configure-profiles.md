@@ -46,7 +46,13 @@ Leave such attributes optional, or give them a default value, and take the subje
 
 An end entity may submit as many enrollments as the profile allows, and the initial issuance consumes one of them. Renewing a certificate through the platform enrolls again against the same end entity, so with the default of a single allowed request a renewal is refused.
 
-Either raise the number of allowed requests to cover the renewals expected over the lifetime of the end entity, or allow renewal before expiration, which lets an end entity that already holds a certificate renew inside the configured window without consuming a request.
+Raise the number of allowed requests to cover the renewals expected over the lifetime of the end entity, or allow renewal before expiration, which lets an end entity that already holds a certificate renew inside the configured window without consuming a request.
+
+:::note[Both settings apply going forward]
+The allowed request count seeds the end entity when it is created, so raising it does not refill an end entity that already exists, and the count cannot be set on one directly. Allowing renewal before expiration only permits a renewal within that many days of a certificate's expiry, so it does not unblock a certificate issued moments ago.
+
+To recover an end entity that has already used its allowance, reset its status to **New** in OTPKI. That reapplies the profile allowance.
+:::
 
 ### Password configuration
 
@@ -55,12 +61,27 @@ The connector sets a password on every end entity it creates:
 - The password must **not** be auto-generated. OTPKI would replace the supplied password, and the value the connector derives would then no longer match the end entity, so operations that authenticate with it fail.
 - If the profile enforces a minimum password strength, the password the connector supplies must satisfy it.
 
+The value is derived from the end entity's login ID, so the connector never stores it and can recompute it for any later operation. How it is derived depends on the `OTPKI_LOGIN_PASSWORD_KEY` environment variable on the connector, or the `otpki.login.password.key` system property:
+
+| `OTPKI_LOGIN_PASSWORD_KEY` | Password |
+|----------------------------|----------|
+| Set                        | Derived from the login ID with HMAC-SHA256 under that key |
+| Unset                      | The login ID itself |
+
+:::warning[The key cannot be rotated]
+The derivation has to reproduce the same password for the whole life of an end entity. Setting, changing, or removing `OTPKI_LOGIN_PASSWORD_KEY` changes what the connector derives, so every end entity created under the previous setting keeps a password the connector can no longer reproduce, and operations that authenticate with it fail. Those end entities have to be recreated.
+
+Decide the value before the first authority is used, and keep it with the connector's other secrets. Leaving it unset means the password equals the login ID, which is predictable to anyone who can see the end entity — set it unless a deployment has a reason not to.
+:::
+
 ### Approval settings
 
 Do not attach an approval profile to the end entity profile, the certificate profile, or the certification authority that an `RA Profile` in the platform uses. An approval profile can be attached to any of the three, and each of them gates a different part of the flow.
 
-:::warning[Approvals hold issuance outside of the platform]
-When an approval profile applies, the request does not complete while the platform is waiting for it. The OTPKI Connector does not advertise the `certificateStatusPolling` capability, so the platform does not poll for the outcome, and a certificate that OTPKI issues after the approval is never collected into the inventory. See [Synchronous and asynchronous operations](../../connectors/provider-interfaces/authority-provider-v3.md#synchronous-and-asynchronous-operations).
+:::warning[Approval-gated profiles are refused, not held]
+The connector refuses an approval-gated request immediately with `501 OPERATION_NOT_SUPPORTED`, and hides profiles with an approval profile attached from the `RA Profile` dropdowns. It does not advertise the `certificateStatusPolling` capability, so the platform never polls for the outcome and would mark an unpolled pending certificate failed while OTPKI issued it on approval — leaving an issued certificate outside the inventory. An immediate refusal is the safer outcome. See [Synchronous and asynchronous operations](../../connectors/provider-interfaces/authority-provider-v3.md#synchronous-and-asynchronous-operations).
+
+An end entity created before the refusal is detected is left in OTPKI awaiting approval. It is inert, and the connector logs its identifier so it can be removed.
 
 Use dedicated profiles without approvals for the platform, and keep approval workflows on the profiles used by other enrollment channels.
 :::
