@@ -23,7 +23,7 @@ Grant the role the following permissions. Every listed action must resolve to **
 | Certificate Authority | Read                             | Connection check, listing certification authorities, downloading CA certificates |
 | Certificate Profile   | Read                             | Listing the certificate profiles available for an `RA Profile`                   |
 | End Entity Profile    | Read                             | Listing the end entity profiles available for an `RA Profile`                    |
-| End Entity            | Create, Read, Update, Revoke     | Creating the end entity for a certificate, enrolling it, and revoking it         |
+| End Entity            | Create, Read, Update, Revoke     | Creating the end entity, enrolling it, revoking it, and resetting its status to renew |
 | Issuance Request      | Create, Read                     | The issuance that an enrollment creates, and reading its result                  |
 | Certificate           | Issue, Read, Revoke              | Issuing certificates, matching them by serial number, and revoking them          |
 

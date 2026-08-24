@@ -30,7 +30,7 @@ Renew the issued certificate with a new certificate request, see [Renew Certific
 
 The renewal enrolls again against the end entity created during issuance. A certificate request is always required, renewal with the existing key is not supported.
 
-The end entity profile has to permit the second enrollment, either through its number of allowed requests or through its renewal window, see [Configure CA and Profiles](./configure-profiles.md). A renewal refused straight after issuance usually means neither is configured.
+A renewal straight after issuance is the normal case to test: the first issuance uses the end entity's request allowance, and the connector resets the end entity's status to **New** to renew it. This needs **Update** on End Entity in the connector's role, see [Create Role and Permissions](./create-role.md).
 
 ## 5. Certificate revocation
 
@@ -42,7 +42,7 @@ Download the certificate chain of the certification authority selected on the `R
 
 The chain comes from OTPKI for that certification authority, and confirms that the platform can build and validate chains for the certificates it manages.
 
-Requesting the CRL is expected to fail with `501 OPERATION_NOT_SUPPORTED`: the connector does not yet select a current revocation list from the several OTPKI returns for a certification authority, so it refuses the operation rather than serving the wrong list. Seeing this exact response confirms the connector is behaving as documented — it is not an integration failure.
+Requesting the CRL is expected to fail with `501 OPERATION_NOT_SUPPORTED`: the connector does not select a current revocation list from the several OTPKI returns for a certification authority.
 
 ## 7. Pre-registration
 

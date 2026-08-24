@@ -44,14 +44,14 @@ Leave such attributes optional, or give them a default value, and take the subje
 
 ### Request limits
 
-An end entity may submit as many enrollments as the profile allows, and the initial issuance consumes one of them. Renewing a certificate through the platform enrolls again against the same end entity, so with the default of a single allowed request a renewal is refused.
+An end entity may submit as many enrollments as the profile allows, and the initial issuance consumes one of them. Renewing a certificate through the platform enrolls again against the same end entity, so once the allowance is used OTPKI refuses the enrollment until the end entity's status is reset to **New**, which reapplies the profile allowance.
 
-Raise the number of allowed requests to cover the renewals expected over the lifetime of the end entity, or allow renewal before expiration, which lets an end entity that already holds a certificate renew inside the configured window without consuming a request.
+The connector performs that reset itself, so renewal works with the default of a single allowed request and no profile change is needed. Raising the number of allowed requests, or allowing renewal before expiration, lets a renewal proceed without a reset, but neither is required.
 
-:::note[Both settings apply going forward]
-The allowed request count seeds the end entity when it is created, so raising it does not refill an end entity that already exists, and the count cannot be set on one directly. Allowing renewal before expiration only permits a renewal within that many days of a certificate's expiry, so it does not unblock a certificate issued moments ago.
+:::note[The reset needs a permission]
+Resetting the status is an end entity update, so the connector's role needs **Update** on End Entity, see [Create Role and Permissions](./create-role.md). Without it a renewal fails with an access error.
 
-To recover an end entity that has already used its allowance, reset its status to **New** in OTPKI. That reapplies the profile allowance.
+The connector cannot reset an end entity whose profile has an approval profile attached, see the note above.
 :::
 
 ### Password configuration
@@ -79,7 +79,7 @@ Decide the value before the first authority is used, and keep it with the connec
 Do not attach an approval profile to the end entity profile, the certificate profile, or the certification authority that an `RA Profile` in the platform uses. An approval profile can be attached to any of the three, and each of them gates a different part of the flow.
 
 :::warning[Approval-gated profiles are refused, not held]
-The connector refuses an approval-gated request immediately with `501 OPERATION_NOT_SUPPORTED`, and hides profiles with an approval profile attached from the `RA Profile` dropdowns. It does not advertise the `certificateStatusPolling` capability, so the platform never polls for the outcome and would mark an unpolled pending certificate failed while OTPKI issued it on approval — leaving an issued certificate outside the inventory. An immediate refusal is the safer outcome. See [Synchronous and asynchronous operations](../../connectors/provider-interfaces/authority-provider-v3.md#synchronous-and-asynchronous-operations).
+The connector refuses an approval-gated request immediately with `501 OPERATION_NOT_SUPPORTED`, and hides profiles with an approval profile attached from the `RA Profile` dropdowns. It does not advertise the `certificateStatusPolling` capability, so the platform never polls for the outcome and would mark an unpolled pending certificate failed while OTPKI issued it on approval — leaving an issued certificate outside the inventory. See [Synchronous and asynchronous operations](../../connectors/provider-interfaces/authority-provider-v3.md#synchronous-and-asynchronous-operations).
 
 An end entity created before the refusal is detected is left in OTPKI awaiting approval. It is inert, and the connector logs its identifier so it can be removed.
 
