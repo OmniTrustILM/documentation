@@ -47,6 +47,10 @@ The Platform periodically synchronizes with a CBOM Repository to pull new or upd
 
 The CBOM Repository URL must be configured in [Platform Settings](../../settings/platform.md) to enable synchronization.
 
+An entry the synchronization cannot store is retried on the following runs and, once the configured number of retries is spent, given up on as permanently skipped. Both kinds of entry are listed in the **Skipped documents** view reached from the CBOM list, each with the reason its last attempt failed; from there an entry the synchronization gave up on can be sent back to the next run with a full retry budget. The record of a permanently skipped entry is removed once it is older than the configured retention. The number of retries and the retention are part of the [CBOM sync policy](../../settings/platform.md#cbom-sync-policy) in Platform Settings.
+
+A CBOM whose cryptographic assets could not be ingested keeps its record and shows the reason in the **Asset sync error** column of the CBOM list and on its detail; the value is cleared once a later run succeeds.
+
 ### Manual upload
 
 CBOM documents in CycloneDX JSON format can be uploaded through the Platform UI or REST API. Uploaded documents are forwarded to the CBOM Repository for storage and versioning.
