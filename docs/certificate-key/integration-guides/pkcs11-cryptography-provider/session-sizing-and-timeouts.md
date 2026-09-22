@@ -32,7 +32,11 @@ An exhausted session pool returns retryable backpressure. It is not an authentic
 
 Look for a temporary service-unavailable response with retry information. Do not rotate the PKCS#11 PIN in response.
 
-Reduce the pool, reduce concurrency, or increase the HSM partition limit. Check for another client consuming the missing capacity.
+Identify which limit is exhausted before changing the pool.
+
+If the proxy pool is exhausted and the HSM partition has spare capacity, increase `max_sessions` without exceeding the partition budget. Otherwise, reduce request concurrency.
+
+If the HSM partition is exhausted, reduce session use by this or other clients, or increase the partition limit.
 
 ## Budget the request path
 

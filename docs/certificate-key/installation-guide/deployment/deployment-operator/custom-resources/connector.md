@@ -258,6 +258,5 @@ Secrets and ConfigMaps the connector referenced are yours, not the operator's �
 - [The Platform CR](./platform.md) — the platform the connector registers with, and how its edge and API are exposed.
 - [Installation](../installation.md) — installing the operator and its upstream prerequisites; a first platform is stood up in [Run your first platform](./platform.md#run-your-first-platform).
 - [Troubleshooting](../troubleshooting.md) — reading a resource that is not converging.
-- [Deploy the PKCS#11 connector](../../../../integration-guides/pkcs11-cryptography-provider/deployment.md) — compose one connector with PKCS#11 proxy sidecars and HSM storage.
 - [Connector samples](https://github.com/OmniTrustILM/operator/tree/main/config/samples) — the five variants above, ready to edit.
 - [Deployment using the Kubernetes Operator](../overview.md) — the rest of the operator's documentation.

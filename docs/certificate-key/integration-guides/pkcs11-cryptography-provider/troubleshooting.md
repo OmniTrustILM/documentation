@@ -17,7 +17,8 @@ Use the connector status, sidecar status, and container logs together. A healthy
 | The vendor library cannot be loaded | The image runtime or CPU architecture does not match the library | Use the Rocky base for supported commercial libraries and schedule the pod on a compatible node |
 | One sidecar reports that its address is already in use | Two sidecars listen on the same local port | Assign a unique port and update the profile and probes |
 | A vendor sidecar is in `ImagePullBackOff` | Kubernetes cannot authenticate to the registry that holds the finalized image | Add the registry pull Secret to the pod configuration |
-| Requests return temporary service-unavailable responses under load | The HSM partition or proxy session pool is exhausted | Reduce concurrency or session capacity, or raise the partition limit |
+| Requests return temporary service-unavailable responses while the HSM partition has spare capacity | The proxy session pool is exhausted | Increase `max_sessions` without exceeding the partition budget, or reduce request concurrency |
+| Requests return temporary service-unavailable responses when the HSM partition session limit is reached | The HSM partition is exhausted | Reduce session use by this or other clients, or increase the partition limit |
 | Core fails a slow operation near 35 seconds | Core still uses its default connector response timeout | Raise `CONNECTOR_API_CLIENT_RESPONSE_TIMEOUT` above the complete connector timeout budget |
 | A request returns `504` near the connector request deadline | The HSM operation exceeded `APP_REQUEST_TIMEOUT` | Measure the operation and raise the request, HTTP write, and Core timeouts together |
 | Utimaco reports a removed device during a slow command | `CommandTimeout` expired inside the vendor library | Raise it above the slowest operation with safety margin and restart the sidecar |
