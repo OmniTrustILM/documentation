@@ -70,3 +70,34 @@ Every action a resource offers is classified by what it does, and the classifica
 :::note
 The classification lives with the action definitions in the [`ResourceAction` enum](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/core/model/auth/ResourceAction.java). Adding an action requires classifying it — see [Extending resources and actions](../../../../contributors/access-control.md#extending-resources-and-actions).
 :::
+
+## CBOM and cryptographic asset permissions
+
+Two resources govern the [CBOM](../../core-components/cbom.md) documents and the [cryptographic asset inventory](../../modules/cryptographic-asset-inventory.md) built from them. The `Cryptographic Asset` resource also offers permissions on individual assets; the `CBOM` resource is granted for the resource as a whole, with no permissions on individual CBOMs.
+
+The `Cryptographic Asset` resource (`cryptoAssets`) has no action that changes anything: the inventory is written by the CBOM synchronization, by the deletion of a CBOM and by the post-quantum readiness sweep, never through an operation of its own:
+
+| Action   | Access type | Allows                                                                                                   |
+|----------|-------------|----------------------------------------------------------------------------------------------------------|
+| `list`   | `READ`      | Listing and searching the inventory, its searchable fields, and the cryptographic asset dashboard        |
+| `detail` | `READ`      | The detail of an asset                                                                                   |
+
+The `CBOM` resource (`cboms`):
+
+| Action   | Access type | Allows                                                                                                                         |
+|----------|-------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `list`   | `READ`      | Listing CBOMs, their versions and searchable fields, and listing the skipped documents and their searchable fields             |
+| `detail` | `READ`      | The detail of a CBOM                                                                                                           |
+| `create` | `WRITE`     | Uploading a CBOM, and starting a sync run                                                                                      |
+| `update` | `WRITE`     | Retrying a skipped document                                                                                                    |
+| `delete` | `WRITE`     | Deleting CBOMs, which also withdraws them from the cryptographic asset inventory                                               |
+
+No operation requires both resources, but the `CBOM` resource narrows what the `Cryptographic Asset` resource shows:
+
+- The asset detail shows only the sources, and the elected payload, from CBOMs the user may list. An asset declared only by CBOMs outside the user's access still shows its counts, but no source.
+- The **Source CBOM** filter offers only the serial numbers of CBOMs the user may list.
+- The dashboard reports the inventory coverage and the number of source CBOMs only to a user who may list CBOMs.
+
+Deleting a CBOM needs only the `delete` action on `CBOM`, although it removes assets from the inventory.
+
+The [`auditor`](#auditor-role) role holds `list` and `detail` of both resources.
