@@ -24,6 +24,12 @@ The Scheduler supports a range of task types, catering to various aspects of the
 | Certificate discovery             | Initiates the certificate discovery process based on definitions | [DiscoveryCertificateTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/DiscoveryCertificateTask.java)                     |
 | Certificate status update         | Update certificate status, validation, and compliance            | [UpdateCertificateStatusTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateCertificateStatusTask.java)               |
 | Update Intune revocation requests | Manages updates of revocation requests in Intune                 | [UpdateIntuneRevocationRequestsTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateIntuneRevocationRequestsTask.java) |
+| CBOM synchronization              | Synchronizes CBOM documents from the CBOM Repository every hour and onboards their cryptographic assets; see [CBOM](../core-components/cbom.md#synchronization) | [CbomSyncTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncTask.java) |
+| CBOM reconciliation               | Reads the whole CBOM Repository listing every Sunday to store what the hourly runs missed; see [CBOM](../core-components/cbom.md#sync-runs) | [CbomReconcileTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomReconcileTask.java) |
+| CBOM skipped documents retention  | Removes permanently skipped CBOM documents past their retention from the skipped documents list every day; see [CBOM](../core-components/cbom.md#retention) | [CbomSyncSkipRetentionTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncSkipRetentionTask.java) |
+| PQC verdict re-evaluation         | Re-evaluates stale post-quantum readiness verdicts every hour; see [Post-Quantum Readiness](../modules/post-quantum-readiness.md#re-evaluation-sweep) | [CryptoAssetPqcSweepTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CryptoAssetPqcSweepTask.java) |
+
+The four CBOM and cryptographic asset tasks are registered by the platform as system jobs: they can be disabled and enabled again, but their schedule cannot be edited and they cannot be deleted.
 
 ## Task execution mechanism
 
