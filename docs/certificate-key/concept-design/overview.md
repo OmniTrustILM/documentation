@@ -68,3 +68,4 @@ Platform modules provides the following functionality:
 | **[Key Management](modules/key-management.md)**                 | Provides key lifecycle management functions and cryptographic operations.                                 |
 | **[Key Inventory](modules/key-inventory.md)**                   | Inventory of all keys that are consistently visible and managed in technology-agnostic way.               |
 | **[Cryptographic Asset Inventory](modules/cryptographic-asset-inventory.md)** | Deduplicated inventory of the cryptographic assets declared by the synchronized CBOMs.        |
+| **[Post-Quantum Readiness](modules/post-quantum-readiness.md)** | Post-quantum readiness verdict of every cryptographic asset, decided by a versioned rule set.             |
