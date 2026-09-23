@@ -22,6 +22,7 @@ export const apiCatalog = [
             ['core-attribute', 'Attribute'],
             ['core-auth', 'Auth'],
             ['core-authority', 'Authority'],
+            ['core-cbom', 'CBOM'],
             ['core-certificate', 'Certificate'],
             ['core-client-operations', 'Client Operations'],
             ['core-cmp', 'CMP'],
