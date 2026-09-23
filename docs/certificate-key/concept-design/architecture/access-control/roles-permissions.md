@@ -70,3 +70,37 @@ Every action a resource offers is classified by what it does, and the classifica
 :::note
 The classification lives with the action definitions in the [`ResourceAction` enum](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/core/model/auth/ResourceAction.java). Adding an action requires classifying it — see [Extending resources and actions](../../../../contributors/access-control.md#extending-resources-and-actions).
 :::
+
+## CBOM and cryptographic asset permissions
+
+Two resources govern the [CBOM](../../core-components/cbom.md) documents and the [cryptographic asset inventory](../../modules/cryptographic-asset-inventory.md) built from them. The `Cryptographic Asset` resource also offers permissions on individual assets; the `CBOM` resource is granted for the resource as a whole, with no permissions on individual CBOMs. The role editor lists the `Cryptographic Asset` resource as **Crypto Assets** and the `CBOM` resource as **Cboms**.
+
+The `Cryptographic Asset` resource (`cryptoAssets`) has no action that changes anything: the inventory is written by the CBOM synchronization, by the deletion of a CBOM and by the post-quantum readiness sweep, never through an operation of its own:
+
+| Action   | Access type | Allows                                                                                                                                                                                        |
+|----------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `list`   | `READ`      | Listing and searching the inventory, its searchable fields, the cryptographic asset dashboard, the role editor's object picker, and — with `detail` on `CBOM` — the assets a CBOM contributed |
+| `detail` | `READ`      | The detail of an asset and the on-demand explanation of its PQC verdict                                                                                                                       |
+
+The `CBOM` resource (`cboms`):
+
+| Action   | Access type | Allows                                                                                                             |
+|----------|-------------|--------------------------------------------------------------------------------------------------------------------|
+| `list`   | `READ`      | Listing CBOMs, their versions and searchable fields, and listing the skipped documents and their searchable fields |
+| `detail` | `READ`      | The detail of a CBOM and the list of assets it contributed, which also needs `list` on `Cryptographic Asset`       |
+| `create` | `WRITE`     | Uploading a CBOM, and starting a sync run                                                                          |
+| `update` | `WRITE`     | Retrying a skipped document                                                                                        |
+| `delete` | `WRITE`     | Deleting CBOMs, which also withdraws them from the cryptographic asset inventory                                   |
+
+One operation requires both resources. Listing [the assets a CBOM contributed](/api/core-cbom#tag/cbom-management/POST/v1/cboms/{uuid}/assets) requires `detail` on `CBOM` and `list` on `Cryptographic Asset`. Otherwise the `CBOM` resource only narrows what the `Cryptographic Asset` resource shows:
+
+- The asset detail shows only the sources, and the elected payload, from CBOMs the user may list. An asset declared only by CBOMs outside the user's access still shows its counts, but no source.
+- The values a PQC verdict took verbatim from the elected payload — the references and cipher suite labels it names — are left out of the asset detail and of the on-demand explanation of the verdict, unless the user may list the CBOM the payload was taken from.
+- The **Source CBOM** filter offers only the serial numbers of CBOMs the user may list.
+- The dashboard reports the inventory coverage and the number of source CBOMs only to a user who may list CBOMs.
+
+Deleting a CBOM needs only the `delete` action on `CBOM`, although it removes assets from the inventory.
+
+The [`auditor`](#auditor-role) role holds `list` and `detail` of both resources, so it can also read the on-demand explanation of a PQC verdict and the assets a CBOM contributed.
+
+Neither resource supports [comments](../../core-components/comment.md): CBOMs and cryptographic assets are not commentable, so no `comment` action exists for them.
