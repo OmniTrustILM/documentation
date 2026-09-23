@@ -14,6 +14,8 @@ The Entity Provider Connectors are also capable of key management operations tha
 
 Using Cryptography Provider, the platform can generate new key pairs, sign the certification signing request, decrypt incoming requests to issue certificate, and many more. 
 
+To connect the platform to PKCS#11 hardware security modules, see the [PKCS#11 connector overview](../../integration-guides/pkcs11-cryptography-provider/overview.md).
+
 ## How it works
 
 Cryptography Provider implements specific technology capable of managing and using cryptographic keys. Independently of the connected technology, it provides interfaces to manage cryptographic tokens and cryptographic keys in a consistent way. The token is considered to be logical unit maintaining its cryptographic keys and there can be as many tokens as required with proper authentication or activation data.
