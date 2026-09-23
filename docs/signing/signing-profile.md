@@ -63,7 +63,7 @@ A Signing Profile is configured across several tabs. The tabs shown depend on th
 
 #### Signing Operation Attributes
 
-Configures the signature parameters required by the key associated with the selected certificate. The available fields are determined by the key type — for example, an RSA key exposes a signature scheme (PKCS#1 or PSS) and a digest algorithm, while other key types expose their own relevant parameters.
+Configures the signature parameters that the key of the selected certificate accepts. The cryptography provider holding the key determines which fields are available.
 
 ---
 
