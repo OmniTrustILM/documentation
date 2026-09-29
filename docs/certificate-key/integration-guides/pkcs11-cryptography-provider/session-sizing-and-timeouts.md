@@ -53,9 +53,9 @@ The connector defaults are:
 
 | Setting | Default | What it bounds |
 |---|---:|---|
-| `APP_REQUEST_TIMEOUT` | `4m` | All work performed for one connector API request. |
-| `APP_HTTP_WRITE_TIMEOUT` | `6m` | The HTTP server's opportunity to return the response. |
-| `APP_SHUTDOWN_TIMEOUT` | `6m` | Graceful connector shutdown. |
+| `PKCS11_REQUEST_TIMEOUT` | `4m` | All work performed for one connector API request. |
+| `PKCS11_HTTP_WRITE_TIMEOUT` | `6m` | The HTTP server's opportunity to return the response. |
+| `PKCS11_SHUTDOWN_TIMEOUT` | `6m` | Graceful connector shutdown. |
 | `CONNECTOR_API_CLIENT_RESPONSE_TIMEOUT` | `35s` | How long Core waits for a connector response. |
 
 The Core default is shorter than the connector defaults. Raise `CONNECTOR_API_CLIENT_RESPONSE_TIMEOUT` above the connector's HTTP write timeout when you allow operations that can exceed 35 seconds.
@@ -64,12 +64,12 @@ Use this order:
 
 ```text
 slowest operation + margin
-  < APP_REQUEST_TIMEOUT
-  < APP_HTTP_WRITE_TIMEOUT
+  < PKCS11_REQUEST_TIMEOUT
+  < PKCS11_HTTP_WRITE_TIMEOUT
   < CONNECTOR_API_CLIENT_RESPONSE_TIMEOUT
 ```
 
-Set the pod's termination grace period above `APP_SHUTDOWN_TIMEOUT`. The pod must remain alive long enough to return an in-flight response.
+Set the pod's termination grace period above `PKCS11_SHUTDOWN_TIMEOUT`. The pod must remain alive long enough to return an in-flight response.
 
 ## Separate session setup from operation time
 
@@ -87,7 +87,7 @@ For Utimaco, use this order:
 
 ```text
 slowest operation
-  < APP_REQUEST_TIMEOUT
+  < PKCS11_REQUEST_TIMEOUT
   < CommandTimeout
 ```
 

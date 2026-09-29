@@ -53,7 +53,7 @@ Each `Config Profile` names one sidecar address. Use loopback because both conta
 
 The profile address, container port, readiness probe, and liveness probe must use the same port. Set a different port on every additional sidecar.
 
-Store the profile list in a `ConfigMap`. Mount it into the connector and set `APP_PROFILES_FILE` to the mounted file.
+Store the profile list in a `ConfigMap`. Mount it into the connector and set `PKCS11_PROFILES_FILE` to the mounted file.
 
 ## Mount vendor material
 

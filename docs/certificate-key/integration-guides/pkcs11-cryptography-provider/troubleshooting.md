@@ -20,7 +20,7 @@ Use the connector status, sidecar status, and container logs together. A healthy
 | Requests return temporary service-unavailable responses while the HSM partition has spare capacity | The proxy session pool is exhausted | Increase `max_sessions` without exceeding the partition budget, or reduce request concurrency |
 | Requests return temporary service-unavailable responses when the HSM partition session limit is reached | The HSM partition is exhausted | Reduce session use by this or other clients, or increase the partition limit |
 | Core fails a slow operation near 35 seconds | Core still uses its default connector response timeout | Raise `CONNECTOR_API_CLIENT_RESPONSE_TIMEOUT` above the complete connector timeout budget |
-| A request returns `504` near the connector request deadline | The HSM operation exceeded `APP_REQUEST_TIMEOUT` | Measure the operation and raise the request, HTTP write, and Core timeouts together |
+| A request returns `504` near the connector request deadline | The HSM operation exceeded `PKCS11_REQUEST_TIMEOUT` | Measure the operation and raise the request, HTTP write, and Core timeouts together |
 | Utimaco reports a removed device during a slow command | `CommandTimeout` expired inside the vendor library | Raise it above the slowest operation with safety margin and restart the sidecar |
 | Securosys enrollment succeeds but no token appears | `primus.cfg` names a partition not covered by the captured secret | Correct the partition configuration and repeat the connectivity test |
 | Securosys sidecar crash-loops while the HSM is unavailable | `connect_on_init` is enabled | Set it to `false` and restart the sidecar |
