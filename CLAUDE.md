@@ -73,10 +73,12 @@ The operator, cli and devenv pages follow two rules, enforced upstream: every pa
 
 ### Documentation Structure
 
-All docs live in `/docs` and are organized into two major domains:
+All docs live in `/docs` and are organized into these sections:
 
 - **`certificate-key/`** — PKI: certificate management, key management, connectors, protocols (ACME, CMP, SCEP), deployment, integrations (ADCS, EJBCA, HashiCorp Vault, Keycloak, Intune)
-- **`signing/`** — Digital signatures: AdES formats (PAdES, CAdES, XAdES, JAdES, ASiC), validation, HSM integration (nShield, Utimaco, Trident), CSC component
+- **`signing/`** — Native platform signing: signing profiles, signing records, timestamping
+- **`signserver/`** — SignServer-based signing: AdES formats (PAdES, CAdES, XAdES, JAdES, ASiC), validation, SAM and QSCD integration (Entrust, Trident, nShield, Utimaco), CSC component, upgrade information
+- **`development-lifecycle/`** — How the platform is built and released: contribution and change, secure development, quality and review, supply chain, vulnerability management, release and support, controls and standards mapping
 - **`contributors/`** — Developer/contributor guides
 - **`community/`** — Community resources
 
@@ -204,6 +206,10 @@ Each integration lives in its own directory under `docs/certificate-key/integrat
 - Page order inside the directory comes from `sidebar_position` in the front matter, with the overview at position 1
 - Guides describe what to configure in the third-party product and in the platform. Deploying the connector itself belongs in the installation guide, not here
 - Prefer naming entities and their attributes over navigation paths — product menus change more often than the concepts do
+
+### SignServer releases
+
+Each SignServer release adds one page, `docs/signserver/upgrade-information/upgrade-<from>-<to>.md`, titled `From <from> To <to>`. Its `sidebar_position` is one lower than the previous release's, so the newest release is listed first after the overview, which holds position 1; renumber the release pages before a new one would reach it. A new feature gets a section linking to its documentation, and fixes go in the closing *Bug Fixes and Minor Improvements* list. New worker properties are also added to the matching property table, such as `docs/signserver/ades-formats/common-properties/basic-properties.mdx`.
 
 ### Development Lifecycle section
 

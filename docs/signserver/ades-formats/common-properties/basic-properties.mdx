@@ -156,6 +156,93 @@ export const data = [
             )
     },
     {
+        property: "CRL_CACHE_ENABLED",
+        description:
+            (
+                <>
+                    Enables in-memory caching of downloaded CRLs.
+                    A cached CRL is reused until its <code>nextUpdate</code> instead of being downloaded for every signing request.
+                    Review the <a href="#crl-caching">CRL caching</a> notes before enabling it.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">false</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "CRL_CACHE_NEXT_UPDATE_OFFSET",
+        description:
+            (
+                <>
+                    Number of seconds before its <code>nextUpdate</code> at which a cached CRL is refreshed, so that the successor CRL is used as soon as it is expected to be published.
+                    Set it to the CA's CRL overlap period, and keep it below the validity period of the shortest-lived CRL in the chain, otherwise that CRL is never reused.
+                    Applies only when <b>CRL_CACHE_ENABLED</b> is <b>true</b>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
+        property: "CRL_CACHE_MAX_NEXT_UPDATE_DELAY",
+        description:
+            (
+                <>
+                    Maximum number of seconds after its <code>thisUpdate</code> for which a cached CRL is reused, for CAs that publish a distant <code>nextUpdate</code>.
+                    Because the limit counts from <code>thisUpdate</code>, a CRL issued longer ago than this value, such as a rarely issued root CA CRL, is downloaded for every signing request as if caching were disabled.
+                    Applies only when <b>CRL_CACHE_ENABLED</b> is <b>true</b>.
+                </>
+            ),
+        default:
+            (
+                <>
+                    <span class="badge badge--secondary">NONE</span>
+                </>
+            ),
+        mandatory:
+            (
+                <>
+                    <span class="badge badge--danger">NO</span>
+                </>
+            ),
+        metadata:
+            (
+                <>
+                    <span class="badge badge--success">YES</span>
+                </>
+            )
+    },
+    {
         property: "EMBED_OCSP_RESPONSE",
         description:
             (
@@ -481,3 +568,12 @@ export const GenTable = ({data}) => (
     <GenTable data={data}/>
   </tbody>
 </table>
+
+## CRL caching
+
+Before enabling `CRL_CACHE_ENABLED`, keep in mind that:
+
+- The cache is shared by all workers in the same instance that enable it. Each worker applies its own limits, and a CRL that one of them refreshes is refreshed for all.
+- A CRL republished before its `nextUpdate`, for example after an emergency revocation, is not used until the cached copy expires, and only a restart clears the cache. Limit this with `CRL_CACHE_NEXT_UPDATE_OFFSET`, or with `CRL_CACHE_MAX_NEXT_UPDATE_DELAY` if every CRL in the chain is reissued within that delay.
+- Cached CRLs are held in memory, so allow enough heap for large CRLs.
+- For augmentors, keep caching disabled unless its effect on the [`ALERTS_NOREVOCATIONAFTERBESTSIGNATURETIME`](./alerts-properties.mdx) alert has been verified.
