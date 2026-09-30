@@ -10,6 +10,7 @@ Currently there are following platform settings categories:
 - [Util](#util-settings)
 - [Certificates](#certificates-settings)
 - [Request Attributes](request-attributes.md) — stored in the certificates category
+- [Appearance](appearance.md) — logos, brand colors and the default theme, stored in the branding category
 
 ## Util settings
 
