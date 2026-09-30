@@ -45,7 +45,8 @@ A file with certificates and keys can be imported into the inventory in one step
 ## What an import does
 
 - An import never changes an existing object. An entry that is already in the inventory keeps its owner, groups, custom attributes, name and description.
-- A key held only as its public key is completed with the imported private key. This needs permission to update that key; without it, the entry is refused as a key the platform already holds.
+- A key held only as its public key, and in no token, is completed with the imported private key. This needs permission to update that key.
+- An entry whose key cannot be completed is refused: when you may not update the key, or when a token holds its public key without its private key. The result names the key and gives the reason when you may see the key, and otherwise says "A key with the same public key already exists."
 - Key pairs and secret keys are imported separately: for a selection that mixes them, the form warns "Import key pairs and secret keys separately." and keeps the import button disabled.
 - An imported key is registered disabled, and a key completed from its public key keeps its public key's state. Click **Enable** on the key before it signs, is exported, or is downloaded with its certificate.
 - The selected certificates are registered in the inventory, and each leaf certificate is associated with its key.
