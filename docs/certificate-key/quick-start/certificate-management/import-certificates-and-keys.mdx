@@ -1,0 +1,74 @@
+---
+sidebar_position: 8
+---
+
+# Import Certificates and Keys
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUpload } from '@fortawesome/free-solid-svg-icons'
+
+A file with certificates and keys can be imported into the inventory in one step. The platform reads the file, lists what it holds, and imports the entries you select: certificates into the certificate inventory, and keys into a `Token Profile` whose cryptography provider imports them.
+
+## Import a file
+
+1. Click **Certificates** in the left menu
+2. Click **Import certificates and keys** (upload symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faUpload} /></span>)
+3. Choose the file, or paste its content. The platform recognizes the format from the content:
+    - PKCS#12, in any composition
+    - JKS and JCEKS key stores
+    - a PEM bundle of certificates with at most one private key
+    - a PKCS#8 private key, encrypted or not
+    - an OpenSSL traditional PEM private key
+    - an OpenSSH private key
+    - a single certificate, PEM or DER
+    - PKCS#7
+4. If the file is protected, enter the **File password**. The field appears when the file needs it. The password is used only to read the file and is never stored.
+5. Review **Detected content**. Each entry is listed with its kind: **Key pair**, **Certificate**, **Private key**, **Secret key** or **Signing request**. An entry the chosen provider does not import is marked **Not supported by provider**, and a signing request is listed but cannot be imported.
+6. For the key entries, fill in the **Key destination**:
+    - **Token profile** — only profiles whose provider imports the key's type and algorithm are offered
+    - **Key name** — taken from the entry's alias, or else from its certificate's common name
+    - **Exportable** — shown only when the provider exports the type and algorithm of every selected key; see [exportable keys](../../concept-design/core-components/key.md#exportable)
+7. Fill in the provider's **Import attributes**, when it has any, and the **Key custom attributes**. **Certificate custom attributes** appear whenever a certificate is selected.
+8. Click the import button, which counts the selected entries, for example **Import 2 entries**
+9. Read the **Import results**:
+
+| Result                                   | What happened                                                         |
+|------------------------------------------|-----------------------------------------------------------------------|
+| **Imported**                             | The entry was created by this import.                                 |
+| **Already in inventory**                 | The entry was already in the inventory, and nothing changed.          |
+| **Private key added to an existing key** | The private key was added to a key that held only its public key.     |
+| **Certificate added to an existing key** | The key was already in the inventory, and its certificate is new.     |
+| **Not imported**                         | The entry failed, and the result shows the reason the platform gives. |
+
+**Retry failed entries** imports the failed entries again, after the file password is entered again for a protected file. **Back to edit** returns to the selection.
+
+## What an import does
+
+- An import never changes an existing object. An entry that is already in the inventory keeps its owner, groups, custom attributes, name and description.
+- A key held only as its public key is completed with the imported private key. This needs permission to update that key; without it, the entry is refused as a key the platform already holds.
+- Key pairs and secret keys are imported separately: for a selection that mixes them, the form warns "Import key pairs and secret keys separately." and keeps the import button disabled.
+- An imported key is registered disabled, and a key completed from its public key keeps its public key's state. Click **Enable** on the key before it signs, is exported, or is downloaded with its certificate.
+- The selected certificates are registered in the inventory, and each leaf certificate is associated with its key.
+
+## Limits
+
+A file is refused when it goes over any of these limits:
+
+- 5 MiB
+- 200 certificates, and 100 other entries (keys, secret keys and certificate requests together)
+- 10,000,000 key-derivation iterations across the whole file
+
+## Refusals
+
+- **A wrong or missing password:** for a PKCS#12, JKS or JCEKS file, "The file's integrity check failed: the passphrase is wrong or missing, or the file is damaged."; for a protected PKCS#8, OpenSSL traditional or OpenSSH key, "The key could not be read: the passphrase is wrong or missing, or the file is damaged."
+- **A key protected with a different password than the file:** the platform does not read such a file.
+- **An unsupported format:** the refusal lists the formats the platform reads.
+- **More than one private key in a PEM file:** "A PEM file can hold at most one private key."
+
+## Permissions
+
+Reading the file needs the `create` permission on `certificates` or the `importKey` permission on `keys`. Importing a certificate, or a key together with its leaf certificate, needs `create` on `certificates`. Importing a key needs `importKey` on `keys`, `detail` on `tokenProfiles`, and `detail` and `members` on `tokens`; choosing the destination in the UI also needs `list` on `tokenProfiles` and `tokens`. See [Roles and Permissions](../../concept-design/architecture/access-control/roles-permissions.md#permissions-for-key-import-and-export).
+
+:::info[Key material]
+Private keys are transferred protected and stored only in the cryptography provider, never in the platform. See [Key](../../concept-design/core-components/key.md#import-and-export) for how key material is protected when it is imported and exported.
+:::

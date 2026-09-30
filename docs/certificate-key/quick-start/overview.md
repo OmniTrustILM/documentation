@@ -36,3 +36,13 @@ To create a certificate management service and start managing certificates, foll
 | **5.** | [Issue Certificate](certificate-management/issue-certificate.mdx)     | Issue new `Certificate` using the `RA Profile`.                                                                                                                                                                                                                                                             |
 | **6.** | [Renew Certificate](certificate-management/renew-certificate.mdx)     | Renew already issued and registred `Certificate` using the `RA Profile` with the same `Attributes`.                                                                                                                                                                                                         |
 | **7.** | [Revoke Certificate](certificate-management/revoke-certificate.mdx)   | Revoke issued`Certificate` using the `RA Profile` and provided revocation reason.                                                                                                                                                                                                                           |
+| **8.** | [Import Certificates and Keys](certificate-management/import-certificates-and-keys.mdx) | Import the certificates and keys a file holds: certificates into the inventory, keys into a `Token Profile`. |
+| **9.** | [Download Certificate](certificate-management/download-certificate.mdx) | Download a `Certificate` on its own, with its chain, or as PKCS#12 with its private key. |
+
+## Key Management Quick Start
+
+To import keys into a `Token Profile` and export them, follow the steps below:
+
+| #      | Step | Description |
+|--------|------|-------------|
+| **1.** | [Import and Export Keys](key-management/import-and-export-keys.mdx) | Generate or import a `Key`, and export an exportable one protected by a password. |
