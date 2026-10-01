@@ -48,7 +48,7 @@
     "node": ">=24.0"
   },
   "resolutions": {
-    "webpack": "5.105.4"
+    "webpack": "5.111.1"
   },
   "browserslist": {
     "production": [
