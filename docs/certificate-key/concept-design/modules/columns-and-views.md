@@ -69,7 +69,7 @@ Click a column heading to sort the list by that column in ascending order, and c
 
 Sorting orders the **whole inventory**, not only the rows on the current page: the platform returns the sorted result and paging walks through it, so page 2 continues where page 1 ended. The list sorts by one column at a time, and sorting by another column replaces the previous sort.
 
-The active sort is shown by an arrow on the heading and in the summary line above the table, for example `Sorted by Expires At`. The reset button of the table restores the default ordering of the list, together with the default filters and paging.
+The active sort is shown by an arrow on the heading and in the summary line above the table, for example `Sorted by Expires At`. The reset button of the table clears the filters, returns to the first page and restores the default ordering of the list. It keeps the columns.
 
 ### Which columns can be sorted
 
@@ -131,10 +131,12 @@ The name of a `Custom Attribute` cannot change once it is created; editing its l
 
 A view keeps a column that refers to an attribute which no longer exists. The column is not shown, and a notice above the table names it by its heading in the view, or by its field identifier when the heading was never renamed, for example `department|STRING cannot be shown, so this view is showing 5 of its 6 columns.` From the notice:
 
-- `Remove from view` deletes the column from the view permanently;
+- `Remove from view` deletes the column from the view permanently. It is not offered when none of the columns can be shown;
 - the dismiss button hides the notice until the page is reloaded or another column of the view becomes unavailable.
 
 If none of the columns of a view can be shown, the table shows the standard columns instead. Saving the view keeps the unavailable columns, so they are never lost without the user removing them. A sort on an unavailable column is ignored, and the view opens without a sort column.
+
+A filter on a deleted attribute also stays in the view and is shown in the filter by its field identifier. No object holds a value of the attribute any more, so a filter that requires a value matches no object, while a negative or `Empty` condition matches every object. Remove the filter to stop it narrowing the list.
 
 ## Permissions
 
