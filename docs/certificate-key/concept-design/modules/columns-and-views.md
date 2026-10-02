@@ -84,13 +84,9 @@ Attribute columns are sorted by the type of their content: numbers numerically, 
 
 A view is a saved arrangement of a list: its columns, its filters and its sort. Views are shown as tabs above the filter of each inventory.
 
-| Stored in a view                                             | Not stored in a view          |
-|--------------------------------------------------------------|-------------------------------|
-| Columns, their order and any renamed headings                | Page size and the current page |
-| Filters                                                      | Column widths                 |
-| Sort column and direction                                    |                               |
+A view stores its columns, with their order and any renamed headings, its filters, and its sort column and direction. The page size and the current page are not stored.
 
-A filter on a field with secret content applies to the table but is never saved into a view.
+A filter that compares a value of a field with secret content applies to the table but is never saved into a view. An `Empty` or `Not empty` condition on such a field is saved.
 
 Switching to another tab replaces the columns, the filters and the sort together, and returns to the first page. Any filter set before the switch is replaced by the filters of the view, so a tab always shows the same rows for the same data.
 
@@ -113,7 +109,7 @@ Changing the columns, the filters or the sort does not change the view automatic
 
 | Action          | How                                                                                                     |
 |-----------------|---------------------------------------------------------------------------------------------------------|
-| Create          | The **+** at the end of the tab strip. A new view starts from the standard columns, with no filters and no sort. |
+| Create          | The **+** at the end of the tab strip. A new view starts from the standard columns, with no filters and no sort column. |
 | Duplicate       | `Duplicate` in the tab's actions menu. The copy takes what the table shows, including unsaved changes, and is named `<name> (copy)`, then `<name> (copy) 2` and so on. |
 | Rename          | `Rename…` in the tab's actions menu.                                                                    |
 | Delete          | `Delete view` in the tab's actions menu. Deleting the active view opens the default view.               |
@@ -133,17 +129,17 @@ The name of a `Custom Attribute` cannot change once it is created; editing its l
 
 ### Deleted attribute
 
-A view keeps a column that refers to an attribute which no longer exists. The column is not shown, and a notice above the table names it, for example `Department cannot be shown, so this view is showing 5 of its 6 columns.` From the notice:
+A view keeps a column that refers to an attribute which no longer exists. The column is not shown, and a notice above the table names it by its heading in the view, or by its field identifier when the heading was never renamed, for example `department|STRING cannot be shown, so this view is showing 5 of its 6 columns.` From the notice:
 
 - `Remove from view` deletes the column from the view permanently;
-- the dismiss button hides the notice, which returns if another column of the view becomes unavailable.
+- the dismiss button hides the notice until the page is reloaded or another column of the view becomes unavailable.
 
-If none of the columns of a view can be shown, the table shows the standard columns instead. Saving the view keeps the unavailable columns, so they are never lost without the user removing them. A sort on an unavailable column is ignored and the view opens in the default ordering of the list.
+If none of the columns of a view can be shown, the table shows the standard columns instead. Saving the view keeps the unavailable columns, so they are never lost without the user removing them. A sort on an unavailable column is ignored, and the view opens without a sort column.
 
 ## Permissions
 
 A `Custom Attribute` is offered as a column, as a filter field and as a sort key only to users whose role grants the `Members` action on that attribute. For any other user it is left out entirely, and its values are not returned in any list.
 
-A view whose owner later loses that permission behaves as if the attribute had been deleted: the column is listed as unavailable in the notice, a sort on it is ignored, and a filter on it no longer matches any object. Metadata and data attributes are not restricted by this permission.
+A view whose owner later loses that permission behaves as if the attribute had been deleted: the column is listed as unavailable in the notice and a sort on it is ignored. Its values are treated as absent, so a filter that requires a value of the attribute matches no object, while a negative or `Empty` condition on it matches every object. Metadata and data attributes are not restricted by this permission.
 
 Views themselves need no permission. A user can always create and manage their own views, and the rows a view shows are still limited by the user's permissions on the inventory.
