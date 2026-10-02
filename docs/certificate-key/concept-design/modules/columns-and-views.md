@@ -11,7 +11,7 @@ Inventory lists let each user choose which columns are shown, sort the whole inv
 | `Certificates`     | Properties, custom attributes, metadata and data attributes     |
 | `Keys`             | Properties, custom attributes, metadata and data attributes     |
 | `Discoveries`      | Properties, custom attributes, metadata and data attributes     |
-| `Connectors`       | Properties, custom attributes, metadata and data attributes     |
+| `Connectors`       | Properties and custom attributes                                |
 | `Secrets`          | Properties, custom attributes, metadata and data attributes     |
 | `CBOMs`            | Properties                                                      |
 | `Crypto Assets`    | Properties                                                      |
@@ -87,6 +87,8 @@ A view is a saved arrangement of a list: its columns, its filters and its sort. 
 
 A view stores its columns, with their order and any renamed headings, its filters, and its sort column and direction. The page size and the current page are not stored.
 
+A few standard columns are shown on `Standard` but cannot be stored in a view, because the platform does not offer them as fields: `Associations` on `Keys`, `Interface` and `Duration` on `Discoveries`, `Proxy` on `Connectors`, `Version` on `Secrets`, and `Occurrences` on `Crypto Assets`. A view saved while such a column is shown opens without it, and it cannot be added back from the column menu.
+
 A field with secret content can only be filtered by `Empty` or `Not empty`, and such a filter is saved like any other.
 
 Switching to another tab replaces the columns, the filters and the sort together, and returns to the first page. Any filter set before the switch is replaced by the filters of the view, so a tab always shows the same rows for the same data.
@@ -104,14 +106,14 @@ Each user has their own views for each inventory. A view is never shared with or
 Changing the columns, the filters or the sort does not change the view automatically. The tab shows a dot and the summary line reports unsaved changes:
 
 - on a saved view, `Save to view` stores the changes and `Revert` discards them;
-- on `Standard`, which cannot hold changes, `Save as view…` saves the table as a new view and `Revert` discards them.
+- on `Standard`, which cannot hold changes, `Save as view…` saves the table as a new view and `Revert` discards them. Like `Duplicate`, it leaves out columns and filters on attributes that no longer exist.
 
 ### Managing views
 
 | Action          | How                                                                                                     |
 |-----------------|---------------------------------------------------------------------------------------------------------|
 | Create          | The **+** at the end of the tab strip. A new view starts from the standard columns, with no filters and no sort column. |
-| Duplicate       | `Duplicate` in the tab's actions menu. The copy takes what the table shows, including unsaved changes, and is named `<name> (copy)`, then `<name> (copy) 2` and so on. |
+| Duplicate       | `Duplicate` in the tab's actions menu. The copy takes what the table shows, including unsaved changes, and is named `<name> (copy)`, then `<name> (copy) 2` and so on. Columns and filters on attributes that no longer exist are not copied. |
 | Rename          | `Rename…` in the tab's actions menu.                                                                    |
 | Delete          | `Delete view` in the tab's actions menu. Deleting the active view opens the default view.               |
 | Open by default | `Open this view by default` in the tab's actions menu. `Stop opening this view by default` clears it.   |
