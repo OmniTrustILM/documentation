@@ -76,7 +76,8 @@ The active sort is shown by an arrow on the heading and in the summary line abov
 A heading that cannot be sorted is plain text without an arrow, and its header menu shows the sort entries disabled. A column cannot be sorted when:
 
 - it holds an attribute with `File` or `Resource` content;
-- it holds a property with no single orderable value, such as key usage or a list of values stored together.
+- it holds a property with no single orderable value, such as key usage or a list of values stored together;
+- it holds a property derived from other data, such as whether a certificate has a private key.
 
 Attribute columns are sorted by the type of their content: numbers numerically, dates chronologically and everything else alphabetically. An attribute with several values on one object is sorted by its smallest value in ascending order and by its largest in descending order. Objects with no value for the column are always listed last, in both directions.
 
@@ -136,7 +137,7 @@ A view keeps a column that refers to an attribute which no longer exists. The co
 
 If none of the columns of a view can be shown, the table shows the standard columns instead. Saving the view keeps the unavailable columns, so they are never lost without the user removing them. A sort on an unavailable column is ignored, and the view opens without a sort column.
 
-A filter on a deleted attribute is shown in the filter by its field identifier. No object holds a value of the attribute any more, so a filter that requires a value matches no object, while a negative or `Empty` condition matches every object. The next time the view is saved, renamed or marked as default, a filter that compares a value of the attribute is dropped from it; an `Empty` or `Not empty` condition is kept.
+A filter on a deleted attribute is shown in the filter by its field identifier. No object holds a value of the attribute any more, so a filter that requires a value matches no object, while a negative or `Empty` condition matches every object. The next time the view is changed in any way, a filter that compares a value of the attribute is dropped from it; an `Empty` or `Not empty` condition is kept.
 
 ## Permissions
 
