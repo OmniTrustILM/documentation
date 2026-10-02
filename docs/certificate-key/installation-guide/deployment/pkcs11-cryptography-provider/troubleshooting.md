@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 9
 ---
 
 # Troubleshooting
@@ -27,7 +27,8 @@ Use the connector status, sidecar status, and container logs together. A healthy
 | nShield startup does not reach ready state | The appliance does not permit the replica address, or its identity values are wrong | Check the visible source address, electronic serial number, and KNETI hash |
 | nShield restarts during enrollment | The startup probe does not cover the pre-start budget | Allow at least 90 seconds before liveness checks can restart the container |
 | nShield cannot write its key store | The persistent volume ownership does not admit the sidecar group | Set an allowed pod `fsGroup` and correct the volume permissions |
-| nShield keys disappear after pod replacement | The key store used ephemeral storage | Mount a persistent volume at `/var/lib/pkcs11-vendor` and restore the protected key store |
+| nShield keys disappear after pod replacement | The key store used ephemeral storage, or the installed `Connector` CRD dropped the claim | Mount a persistent volume at `/var/lib/pkcs11-vendor`, upgrade the Kubernetes Operator if needed, and restore the protected key store |
+| Two connector pods run during an update | The rollout strategy is unset, or the installed `Connector` CRD dropped it | Set `Recreate`; upgrade the Kubernetes Operator first if needed |
 | SoftHSM cannot initialize the token | The token directory is absent or read-only | Mount a writable volume at `/var/lib/pkcs11-vendor/tokens` |
 
 ## Check the layers in order

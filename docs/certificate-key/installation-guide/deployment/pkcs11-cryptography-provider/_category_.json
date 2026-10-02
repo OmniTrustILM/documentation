@@ -1,8 +1,8 @@
 {
-  "position": 24,
+  "position": 8,
   "label": "PKCS#11 Cryptography Provider",
   "link": {
     "type": "doc",
-    "id": "integration-guide"
+    "id": "deployment"
   }
 }

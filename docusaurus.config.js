@@ -10,6 +10,7 @@ import {resolveApiCatalog, buildApiNavbarItems} from './src/lib/apiCatalog.mjs';
 import {
   apiVersion,
   chartVersion,
+  pkcs11ConnectorVersion,
   cscVersion,
   operatorVersion,
   cliVersion,
@@ -63,6 +64,32 @@ const config = {
         sourceBaseUrl: "https://raw.githubusercontent.com/OmniTrustILM/helm-charts/"+chartVersion+"/charts/ilm/docs/", // the base url for the markdown (gets prepended to all of the documents when fetching)
         outDir: "docs/certificate-key/installation-guide/deployment/deployment-helm", // the base directory to output to.
         documents: ["configurable-parameters.md", "overview.md", "troubleshooting.md", "upgrading.md"], // the file names to download
+      },
+    ],
+    [
+      "docusaurus-plugin-remote-content",
+      {
+        // Authored in OmniTrustILM/pkcs11-cryptography-provider under docs/site/. Files
+        // written here are OVERWRITTEN by the next download.
+        name: "pkcs11-connector-docs",
+        noRuntimeDownloads: true,
+        performCleanup: false,
+        sourceBaseUrl: "https://raw.githubusercontent.com/OmniTrustILM/pkcs11-cryptography-provider/" + pkcs11ConnectorVersion + "/docs/site/",
+        outDir: "docs/certificate-key/integration-guides/pkcs11-cryptography-provider",
+        documents: ["integration-guide.md"],
+      },
+    ],
+    [
+      "docusaurus-plugin-remote-content",
+      {
+        // Authored in OmniTrustILM/pkcs11-cryptography-provider under docs/site/deployment/.
+        // Same ref as pkcs11-connector-docs. Files written here are OVERWRITTEN by the next download.
+        name: "pkcs11-connector-deployment-docs",
+        noRuntimeDownloads: true,
+        performCleanup: false,
+        sourceBaseUrl: "https://raw.githubusercontent.com/OmniTrustILM/pkcs11-cryptography-provider/" + pkcs11ConnectorVersion + "/docs/site/deployment/",
+        outDir: "docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider",
+        documents: ["deployment.md", "sidecar-image-finalization.md", "softhsm.md", "utimaco.md", "securosys.md", "nshield.md", "session-sizing-and-timeouts.md", "limitations.md", "troubleshooting.md"],
       },
     ],
     [

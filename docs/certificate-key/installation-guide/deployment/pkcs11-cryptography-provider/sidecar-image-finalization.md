@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 # Finalize a sidecar image
@@ -68,7 +68,7 @@ Use the vendor page for the expected payload and build command:
 
 ## Verify the image
 
-Perform three checks before you deploy it.
+Perform these checks before you deploy it.
 
 **Contract check** — Confirm that the expected library exists, is readable, and matches the image architecture.
 

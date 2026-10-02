@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 # Deploy the PKCS#11 connector
@@ -11,7 +11,7 @@ Deploy the connector with one PKCS#11 proxy sidecar for each `Config Profile`. T
 You need:
 
 - A running platform.
-- The Kubernetes Operator when you deploy with a `Connector` custom resource.
+- The Kubernetes Operator 1.1.0 or later when you deploy with a `Connector` custom resource.
 - Access to the PKCS#11 connector image and the sidecar images you use.
 - A finalized sidecar image for each commercial HSM vendor.
 - Network access from the pod to each HSM.
@@ -120,7 +120,7 @@ registration:
   authType: none
 ```
 
-See [The Connector CR](../../installation-guide/deployment/deployment-operator/custom-resources/connector.md) for the registration contract and status conditions.
+See [The Connector CR](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/deployment-operator/custom-resources/connector) for the registration contract and status conditions.
 
 ## Verify the deployment
 

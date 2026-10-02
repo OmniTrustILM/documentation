@@ -2,17 +2,17 @@
 sidebar_position: 1
 ---
 
-# PKCS#11 connector overview
+# PKCS#11 Cryptography Provider
 
-The **PKCS#11 Cryptography Provider** connects the platform to PKCS#11 hardware security modules (HSMs) that you operate.
+The **PKCS#11 Cryptography Provider** connects the platform to hardware security modules (HSMs) through their PKCS#11 interface.
 
 One connector can connect to multiple HSMs. The HSMs can come from different vendors.
 
-If you are new to cryptographic keys in the platform, read [Cryptography Provider](../../connectors/provider-interfaces/cryptography-provider.md) first. Then return here to learn what the PKCS#11 connector adds.
+If you are new to cryptographic keys in the platform, read [Cryptography Provider](https://docs.otilm.com/docs/certificate-key/connectors/provider-interfaces/cryptography-provider) first. Then return here to learn what the PKCS#11 connector adds.
 
 ---
 
-## What makes the PKCS#11 connector different
+## Vendor libraries run in sidecars
 
 HSMs are accessed through vendor-specific PKCS#11 libraries. Commercial libraries are licensed separately, so they are not built into the PKCS#11 connector. Instead, each library runs with a proxy in its own sidecar container. One sidecar contains one vendor library.
 
@@ -97,20 +97,12 @@ EntrustLibrary -[#1573B5]-> EntrustHSM : vendor connection
 
 The connector discovers the mechanisms that each token actually supports. A mechanism is available only when the selected HSM and its firmware provide it.
 
-## Deployment shape
+## Deploy the connector
 
-Run the connector and its proxy sidecars in one Kubernetes pod. Give each `Config Profile` its own sidecar and local port.
+The deployment guide takes the connector from vendor images to a verified pod:
 
-Keep the proxy ports off Services, Ingresses, and host ports. The connector uses the pod's loopback network to reach each sidecar. A `NetworkPolicy` must also restrict access through the pod IP.
-
-The connector sends the HSM PIN to the selected sidecar for operations that require a logged-in session.
-
-For the complete deployment sequence, see [Deploy the PKCS#11 connector](./deployment.md).
-
-## Where to start
-
-1. [Finalize a sidecar image](./sidecar-image-finalization.md) for each commercial HSM vendor you use.
-2. Follow the page for [Utimaco](./utimaco.md), [Securosys](./securosys.md), [Entrust nShield](./nshield.md), or [SoftHSM](./softhsm.md).
-3. [Size sessions and timeouts](./session-sizing-and-timeouts.md) for your environment.
-4. [Deploy the connector](./deployment.md) and verify each `Config Profile`.
-5. Review the [limitations](./limitations.md) before production use.
+1. [Finalize a sidecar image](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/sidecar-image-finalization) for each commercial HSM vendor you use.
+2. Follow the page for [Utimaco](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/utimaco), [Securosys](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/securosys), [Entrust nShield](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/nshield), or [SoftHSM](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/softhsm).
+3. [Size sessions and timeouts](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/session-sizing-and-timeouts) for your environment.
+4. [Deploy the connector](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/deployment) and verify each `Config Profile`.
+5. Review the [limitations](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/limitations) before production use.
