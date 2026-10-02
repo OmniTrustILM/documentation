@@ -65,9 +65,9 @@ See [Session sizing and timeouts](./session-sizing-and-timeouts.md) before choos
 
 ## Configure QuantumProtect firmware
 
-Enable the Utimaco post-quantum module only when the target firmware contains the required QuantumProtect graft.
+The supplied `config.yaml.example` becomes the image's proxy configuration. It sets `modules.pkcs11.utimaco.pqc.pqc_firmware` to `true`. Keep that only when the target firmware contains the required QuantumProtect graft.
 
-Leave the option disabled on standard CryptoServer firmware. The connector then omits the unavailable post-quantum mechanisms from discovery.
+On standard CryptoServer firmware, set it to `false` before you build the image. The connector then omits the unavailable post-quantum mechanisms from discovery.
 
 ## Verify the integration
 
