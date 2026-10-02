@@ -54,6 +54,10 @@ Everything else readable is included, so an auditor can list and open certificat
 `auditor` is a system role but carries no system user, so it is assigned to people like any ordinary role. Its permission set is fixed by the platform and cannot be edited.
 :::
 
+## Branding permission
+
+Most settings are changed with the `update` action on the `settings` resource. Branding is the exception: it is changed only with `updateBranding`, and `update` does not include it. A role holding `updateBranding` together with `list` on `settings`, which it needs to read the current branding, can therefore change the platform's appearance without being able to change the rest of its configuration, and the reverse. See [Appearance](../../../settings/appearance.md#access-control).
+
 ## Action access types
 
 Every action a resource offers is classified by what it does, and the classification is what decides whether a read-only role such as [`auditor`](#auditor-role) receives it.
