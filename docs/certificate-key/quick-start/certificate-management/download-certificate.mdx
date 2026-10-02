@@ -1,0 +1,53 @@
+---
+sidebar_position: 12
+---
+
+# Download Certificate
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDownload } from '@fortawesome/free-solid-svg-icons'
+
+A `Certificate` can be downloaded on its own, with its chain, or as a PKCS#12 file that also holds its private key.
+
+## Download a certificate
+
+1. Click **Certificates** in the left menu and open the `Certificate`
+2. Click **Download** (download symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faDownload} /></span>)
+3. For the certificate on its own, select the **Certificate Format**, **Raw** or **PKCS#7**, and the **Certificate Encoding**, **PEM** or **DER**
+4. For the certificate with its chain, switch on **Certificate Chain** instead, and select the **Certificate Chain Format** and **Certificate Chain Encoding**
+5. Click **Submit**
+
+The file extension follows the format and the encoding:
+
+| Format     | PEM    | DER    |
+|------------|--------|--------|
+| **Raw**    | `.pem` | `.cer` |
+| **PKCS#7** | `.p7c` | `.p7b` |
+
+A raw DER file holds a single certificate, so a chain is downloaded as raw PEM or as PKCS#7.
+
+## Download with the private key as PKCS#12
+
+The **Certificate Format** list offers **PKCS12 – certificate, private key and chain (.p12)** when the platform can build the file:
+
+- the `Certificate` is issued
+- its `Key` holds a private key item whose public key matches the certificate
+- that item is exportable, active and enabled; a key is created and imported disabled until you enable it, see [exportable keys](../../concept-design/core-components/key.md#exportable)
+- the key's `Token Profile` exports the key's algorithm
+- you hold the `exportKey` permission on `keys`
+
+To download it:
+
+1. Select **PKCS12 – certificate, private key and chain (.p12)** as the **Certificate Format**
+2. Enter the **Password** and **Confirm password**. The password needs at least 12 characters and cannot be only whitespace. It must be printable ASCII, so every tool, including Java keytool, can open the file.
+3. Click **Download**
+
+The file holds the private key, protected as its cryptography provider protected it, the certificate, and its chain. The chain is completed from the inventory, and the self-signed root of a complete chain is left out. The certificates are protected, and the file is authenticated, with AES-256-CBC under PBKDF2-HMAC-SHA256 and an HMAC-SHA256 MAC, at the iteration count of the key's own protection. The file is named after the certificate's common name, with the `.p12` extension.
+
+OpenSSL 3.x, Java keytool, and Windows Server 2019 or later open these files. Earlier consumers that need the legacy 3DES and SHA-1 profiles are not supported.
+
+## Permissions
+
+Downloading a certificate needs the `detail` permission on `certificates`. Downloading it with its private key also needs the permissions of a key export: `exportKey` and `detail` on `keys`, `detail` on `tokenProfiles`, and `detail` and `members` on `tokens`. See [Roles and Permissions](../../concept-design/architecture/access-control/roles-permissions.md#permissions-for-key-import-and-export).
+
+A download with the private key is audit-logged, and the certificate's history records it as **Download Keystore**.

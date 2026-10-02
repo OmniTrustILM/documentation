@@ -64,13 +64,11 @@ Poll the certificate detail for that `uuid` until its state becomes `Issued`, th
 
 ## Upload existing certificate
 
-Upload the existing certificate to the platform.
+Upload an existing certificate, together with its private key when you have one, by importing it:
 
-
-1. Click **Certificates** in the left menu 
-2. Click **Upload Certificate** (upload symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faUpload} /></span>)
-3. Upload the certificate (CRT file)
-4. Click **Submit** to upload the certificate to the platform
+1. Click **Certificates** in the left menu
+2. Click **Import certificates and keys** (upload symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faUpload} /></span>)
+3. Continue as described in [Import Certificates and Keys](./import-certificates-and-keys.mdx)
 
 ## Create new certificate
 
@@ -83,6 +81,7 @@ Select the correct `RA Profile` and issue a new `Certificate`:
 5. Choose the **Key Source**:
     - **External** — upload your own certificate request (CSR file)
     - **Existing Key** — the platform builds and signs the request from a platform key: select the **Token Profile** and the **Key**, and fill the **Signature Attributes** tab. For a hybrid certificate, switch on **Include Alternative Key**, select the **Alternative Token Profile** and **Alternative Key**, and fill the **Alternative Signature Attributes** tab.
+    - To generate the key in the same step, select **+ Add new** in the **Key** list. It opens **Add New Key**, which generates a key in the selected **Token Profile**. When the profile's provider exports the key's type, the form shows the **Exportable** switch: "Required to download the certificate with its private key (PKCS12) after issuance. Cannot be enabled later." Switch it on to [download the certificate with its private key](./download-certificate.mdx) once it is issued. The new key is created disabled: enable it under **Keys** before clicking **Create**, or the request is refused with "Key needs to be Active and enabled."
 6. With **Existing Key**, fill the **Request Attributes** tab — its values define the content of the certificate request
 7. Fill the **Connector Attributes** and **Custom Attributes** tabs, if needed
 8. Click **Create**

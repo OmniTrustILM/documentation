@@ -1,0 +1,40 @@
+---
+sidebar_position: 1
+---
+
+# Import and Export Keys
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDownload, faPlus } from '@fortawesome/free-solid-svg-icons'
+
+A `Key` can be generated in a `Token Profile`, imported into it from a file, and exported from it later. Import and export are offered only where the `Token Profile`'s cryptography provider supports them for the key's type and algorithm.
+
+## Create or import a key
+
+1. Click **Keys** in the left menu
+2. Click **Create Key** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+3. When you hold the `importKey` permission on `keys`, the form has two tabs, **Generate new** and **Import material**. Without it, the form only generates a key.
+
+**Generate new** creates the key in the selected `Token Profile`. The key is created disabled; enable it before it is used. When the profile's provider exports the key's type, the form shows the **Exportable** switch: "Can be exported later by users holding the key export permission. Off by default, and cannot be switched on later." See [exportable keys](../../concept-design/core-components/key.md#exportable).
+
+**Import material** reads a file into the selected `Token Profile` in the same way as [importing certificates and keys](../certificate-management/import-certificates-and-keys.mdx): the file, its password when it is protected, the entries it holds, the key's name, the **Exportable** switch and the provider's import attributes. Certificates found in the file can be imported with the key.
+
+## Export a key
+
+1. Open the `Key` and select its private or secret key item
+2. Click **Export** (download symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faDownload} /></span>). The action is shown for a private or secret key item that is exportable, active and enabled, when its `Token Profile` exports the key's algorithm, to users who hold the `exportKey` permission on `keys`. A new key is disabled, so click **Enable** on the item first.
+3. In **Export key material**, the **Format** is **Encrypted PKCS8 – private key (PEM)** for a private key, or **Encrypted PKCS8 – secret key (PEM)** for a secret key
+4. Enter the **Password** and **Confirm password**. The password needs at least 12 characters, cannot be only whitespace, and must be in Unicode normalization form C.
+5. Click **Export**
+
+The file is a PEM `ENCRYPTED PRIVATE KEY` block, named after the key item. The cryptography provider protects the key under the password with PBES2, PBKDF2-HMAC-SHA256 and AES-256-CBC; the platform never decrypts it.
+
+The platform refuses an export, and says why, when:
+
+- the key item was not created or imported as exportable
+- the key item is not active and enabled
+- the `Token Profile` does not export the key's algorithm
+- the provider refuses the export, with its error code
+- the provider describes a different key from the one the platform holds
+
+Exporting a key needs `exportKey` and `detail` on `keys`, `detail` on `tokenProfiles`, and `detail` and `members` on `tokens`. See [Roles and Permissions](../../concept-design/architecture/access-control/roles-permissions.md#permissions-for-key-import-and-export). Every export is audit-logged, and the key's history records it as **Export Key**.

@@ -14,6 +14,8 @@ The platform offers the following list of operations from the Key Inventory:
 | Operation              | Description                                    |
 |------------------------|------------------------------------------------|
 | Create new `Key`       | Create new `Key` from selected `Token Profile` |
+| Import `Key`           | Import a `Key` from a file                     |
+| Export `Key`           | Export a private or secret key item            |
 | Change status of `Key` | Enable / disable `Key`                         |
 | Update `Key` usage     | Update key usage of the `Key`                  |
 | Rename `Key` item      | Change the name of an individual key item      |
@@ -22,6 +24,8 @@ The platform offers the following list of operations from the Key Inventory:
 | Delete `Key`           | Removes the `Key` from inventory               |
 | Sign with `Key`        | Sign data with the `Key`                       |
 | Verify with `Key`      | Verify data with the `Key`                     |
+
+Importing and exporting keys is described in [Import and Export Keys](../../quick-start/key-management/import-and-export-keys.mdx).
 
 ## Key details
 
