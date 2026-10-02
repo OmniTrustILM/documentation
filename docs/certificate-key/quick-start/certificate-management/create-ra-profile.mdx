@@ -150,7 +150,7 @@ Request attributes define what the requester fills in on the certificate request
 5. In the **Mapping targets** section, pick the **Target** — where the value lands in the certificate. Use **Add mapping target** to write the same value to several targets; the targets are applied in the order listed:
     - **RDN (subject)** — a component of the certificate subject name (e.g. CN, O); select the **RDN** below. Careful with the codes: `SN` is **Surname** (`2.5.4.4`), not serial number — the subject **Serial Number** (`SERIALNUMBER`, `2.5.4.5`) is a separate entry, and neither has any relationship to the issued certificate's serial number. A mispick is a valid mapping that no validation will reject.
     - **Subject Alternative Name** — select the **SAN type** below: `dNSName`, `rfc822Name (email)`, `iPAddress`, `uniformResourceIdentifier`, `otherName`, `directoryName`, or `registeredID`; for `otherName`, also fill **otherName OID** and **otherName value encoding**
-    - **Certificate extension** — select the **Extension** below; tick **Requester may override criticality** to let the requester change the extension's criticality. Key Usage, Extended Key Usage and Subject Alternative Name are not offered here
+    - **Certificate extension** — select the **Extension** below; Key Usage, Extended Key Usage and Subject Alternative Name are not offered here
     - **Key Usage** — select the **Permitted key usages**; mark the attribute as a list
     - **Extended Key Usage** — select the **Permitted purposes**; mark the attribute as a list
 6. Choose the **Value source**:
@@ -161,7 +161,7 @@ Request attributes define what the requester fills in on the certificate request
     - **Static only** — only the attributes authored here are used (the default)
     - **Connector only** — only the connector's attributes are used
     - **Merge** — both are combined; where both define an attribute, the connector's definition wins
-9. If the connector supplies attributes, you can attach a different value source to one of them in **Value-source bindings**: click to add a binding, pick the **Connector attribute** (or enter its **Attribute UUID** or **Attribute name**) and choose the **Value source**. Without an authored set, the platform default set applies, as shown in the **Request Attributes** widget of the profile
+9. If the connector supplies attributes, you can attach a different value source to one of them in **Value-source bindings**: click to add a binding, pick the **Connector attribute** (or enter its **Attribute UUID** or **Attribute name**) and choose the **Value source**. The platform default set applies only when the resulting set is empty, as shown in the **Request Attributes** widget of the profile
 10. Click **Update** — changes are saved when you click Update
 
 See [Merge mode](../../concept-design/core-components/request-attribute.md#merge-mode) for how the sets combine.

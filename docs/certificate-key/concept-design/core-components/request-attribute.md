@@ -30,7 +30,7 @@ One attribute can map to several fields at once. A single "Server FQDN" value ca
 
 The value of a generic `Certificate extension` mapping is written in one of two ways, depending on whether the extension's OID has an [ASN.1 module](../../settings/oid.md#asn1-modules-and-jer-values) registered:
 
-- **With a module** — the value is written in JER, the JSON encoding of ASN.1 (ITU-T X.697), naming the members of the module's type. The platform checks the value against the module and encodes it as DER.
+- **With a module** — the value can be written in JER, the JSON encoding of ASN.1 (ITU-T X.697), naming the members of the module's type. The platform checks a JER value against the module and encodes it as DER. A value given as Base64-encoded DER is still accepted.
 - **Without a module** — the value is Base64-encoded DER, which the platform embeds as it is. It cannot be checked, because the platform has no description of it.
 
 An attribute that carries a value for an OID with no module must give it as Base64-encoded DER; a value written as JER is refused with a message saying that a module is required.
@@ -43,7 +43,7 @@ The module and the JSON Schema constraint check the values supplied for the attr
 
 ### Advisory semantics toward the certification authority
 
-A mapping describes what the platform asks for. The certification authority decides what it issues. A requested Key Usage or Extended Key Usage is honoured only when the CA allows the request to set it — for example, EJBCA needs "Allow Extension Override" on the certificate profile, and an ADCS template must take the extension from the request rather than from the template itself. A mapping is therefore not a guarantee that the issued certificate carries the value.
+A mapping describes what the platform asks for. The certification authority decides what it issues. A requested Key Usage or Extended Key Usage is honored only when the CA allows the request to set it — for example, EJBCA needs "Allow Extension Override" on the certificate profile, and an ADCS template must take the extension from the request rather than from the template itself. A mapping is therefore not a guarantee that the issued certificate carries the value.
 
 ## Value sources
 

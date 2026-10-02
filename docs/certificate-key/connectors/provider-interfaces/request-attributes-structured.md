@@ -33,10 +33,6 @@ Three invariants hold:
 - At least one of the five lists is present and not empty. Content that carries only a key usage list, or only an extended key usage list, is valid.
 - The raw CSR remains authoritative for the public key and the proof of possession. The structured content carries the decoded identity intent alongside it.
 
-:::warning[Key Usage and Extended Key Usage are no longer in `extensions`]
-A connector that read `2.5.29.15` or `2.5.29.37` out of `extensions` must read the `keyUsage` and `extendedKeyUsage` lists instead. The two OIDs are no longer delivered in `extensions`, so a connector that has not been changed no longer sees them.
-:::
-
 Example structured content on an issue request:
 
 ```json
@@ -63,7 +59,7 @@ Example structured content on an issue request:
 }
 ```
 
-Both Key Usage and Extended Key Usage are requests to the certification authority, not instructions. Whether they are honoured depends on the CA technology — see [advisory semantics](../../concept-design/core-components/request-attribute.md#advisory-semantics-toward-the-certification-authority).
+Both Key Usage and Extended Key Usage are requests to the certification authority, not instructions. Whether they are honored depends on the CA technology — see [advisory semantics](../../concept-design/core-components/request-attribute.md#advisory-semantics-toward-the-certification-authority).
 
 ## Where it rides
 

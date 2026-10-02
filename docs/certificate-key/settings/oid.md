@@ -59,7 +59,7 @@ An extension registered with the `DER` encoding can also carry an **ASN.1 module
 The module is written once, by whoever knows the extension. It is optional:
 
 - **Without a module**, the value is Base64-encoded DER, which the platform embeds as it is and cannot check. A value written as JER for such an OID is refused with a message saying that a module is required.
-- **With a module**, the value may be written as JER or still given as Base64-encoded DER. A value is read as JER when it starts with `{`, `[`, `"` or `-`, and also when it is a bare `true`, `false`, `null` or number. Anything else is read as Base64-encoded DER.
+- **With a module**, the value may be written as JER or still given as Base64-encoded DER. A value is read as JER when it starts with `{`, `[`, `"` or `-`, and also when it is a bare `true`, `false` or `null`. A value of digits only is read as Base64-encoded DER when it decodes to one complete DER value, and as a JER number otherwise. Anything else is read as Base64-encoded DER.
 
 Core also ships a module for each of its built-in standard extensions (see [Shipped modules](#shipped-modules)). Key Usage and Extended Key Usage ship none, because they are set through their own mapping targets.
 
@@ -154,7 +154,7 @@ Extensions that appear only in *issued* certificates (set by the CA, never reque
 
 ### Built-in certificate extensions
 
-The extensions a requester plausibly places in a CSR are built in — Extended Key Usage, Key Usage, and Basic Constraints among them. No Custom OID entry is needed, and none can be created for them. Basic Constraints and the other standard extensions are available as generic extension mapping targets straight away; Key Usage and Extended Key Usage are mapped through their own [targets](../concept-design/core-components/request-attribute.md#mapping-targets). Each carries the `DER` value encoding and, where Core ships one, an [ASN.1 module](#shipped-modules), so a platform-side value is written in JER or supplied as Base64-encoded DER.
+The extensions a requester plausibly places in a CSR are built in — Extended Key Usage, Key Usage, and Basic Constraints among them. No Custom OID entry is needed, and none can be created for them. Basic Constraints and the other standard extensions are available as generic extension mapping targets straight away; Key Usage and Extended Key Usage are mapped through their own [targets](../concept-design/core-components/request-attribute.md#mapping-targets). The generic extensions carry the `DER` value encoding and, where Core ships one, an [ASN.1 module](#shipped-modules), so a platform-side value is written in JER or supplied as Base64-encoded DER.
 
 Subject Alternative Name (`2.5.29.17`) is deliberately absent — it is reached through its own mapping target, never as a certificate extension.
 
