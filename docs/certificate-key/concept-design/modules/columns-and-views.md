@@ -32,7 +32,7 @@ A column shows one field, taken from one of four sources:
 | Metadata         | `Meta`   | Information a `Connector` or the platform recorded about the object, such as where a certificate was discovered. |
 | Data attribute   | `Data`   | A value entered when the object was created or configured through a `Connector`.                             |
 
-The column menu shows the badge of every field it lists. On the table, only the heading of an attribute column carries its badge, so a custom attribute and a property with the same label can be told apart. Hovering a badge shows the full source name.
+In the column menu, each column already shown carries its badge, and the other fields are grouped under a heading naming their source. On the table, only the heading of an attribute column carries its badge, so a custom attribute and a property with the same label can be told apart. Hovering a badge shows the full source name.
 
 Attributes that share a name and content type are shown as one column, whatever `Connector` or object they come from.
 
