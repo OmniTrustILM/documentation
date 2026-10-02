@@ -4,7 +4,7 @@ sidebar_position: 13
 
 # Appearance
 
-Appearance settings give the platform the organization's own identity: two logos and four brand colors, applied across the whole web interface in both the light and the dark theme, and on the login page before anyone signs in.
+Appearance settings give the platform the organization's own identity: two logos and four brand colors, applied across the whole web interface and on the login page before anyone signs in. **Primary**, **Secondary** and the logos apply in both the light and the dark theme; **Background** and **Text** apply to the light theme only.
 
 Branding is global. It is held in the platform settings, so one instance carries one brand, and every user sees a change without a redeployment.
 
@@ -148,6 +148,8 @@ The branding carries these fields, all optional:
 | `primaryColor`, `secondaryColor`, `backgroundColor`, `textColor` | Six-digit hexadecimal color prefixed with `#`, for example `#0073CF` |
 | `lightLogo`, `darkLogo` | Base64 data URI with media type `image/png` or `image/svg+xml`, at most 1 MB decoded |
 | `defaultTheme` | `light` or `dark` |
+
+`backgroundColor` and `textColor` apply to the light theme only, as in the Appearance tab.
 
 The API checks only the color format. The [contrast check](#contrast-check) runs in the Appearance tab, so colors written through the API are not checked.
 
