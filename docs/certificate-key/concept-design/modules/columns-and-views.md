@@ -6,18 +6,18 @@ sidebar_position: 16
 
 Inventory lists let each user choose which columns are shown, sort the whole inventory by a column, and save the arrangement as a named view. This applies to the following lists:
 
-| Inventory          | Custom attribute columns |
-|--------------------|:------------------------:|
-| `Certificates`     |           Yes            |
-| `Keys`             |           Yes            |
-| `Discoveries`      |           Yes            |
-| `Connectors`       |           Yes            |
-| `Secrets`          |           Yes            |
-| `CBOMs`            |            No            |
-| `Crypto Assets`    |            No            |
-| `Signing Records`  |            No            |
+| Inventory          | Columns available from                                          |
+|--------------------|-----------------------------------------------------------------|
+| `Certificates`     | Properties, custom attributes, metadata and data attributes     |
+| `Keys`             | Properties, custom attributes, metadata and data attributes     |
+| `Discoveries`      | Properties, custom attributes, metadata and data attributes     |
+| `Connectors`       | Properties, custom attributes, metadata and data attributes     |
+| `Secrets`          | Properties, custom attributes, metadata and data attributes     |
+| `CBOMs`            | Properties                                                      |
+| `Crypto Assets`    | Properties                                                      |
+| `Signing Records`  | Properties                                                      |
 
-Every list offers its object properties as columns. Metadata and data attributes are offered on a list once objects of that inventory carry them. `CBOMs`, `Crypto Assets` and `Signing Records` do not support `Custom Attributes`, so their lists offer fewer sources than the others.
+All eight lists have configurable columns, saved views and sorting; they differ only in which fields can be shown. Metadata and data attributes are offered on a list once objects of that inventory carry them. `CBOMs`, `Crypto Assets` and `Signing Records` do not support `Custom Attributes` and carry no metadata or data attributes, so their columns come from object properties only.
 
 ## Choosing columns
 
