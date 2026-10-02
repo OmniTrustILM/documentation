@@ -87,7 +87,7 @@ A view is a saved arrangement of a list: its columns, its filters and its sort. 
 
 A view stores its columns, with their order and any renamed headings, its filters, and its sort column and direction. The page size and the current page are not stored.
 
-A few standard columns are shown on `Standard` but cannot be stored in a view, because the platform does not offer them as fields: `Associations` on `Keys`, `Interface` and `Duration` on `Discoveries`, `Proxy` on `Connectors`, `Version` on `Secrets`, and `Occurrences` on `Crypto Assets`. A view saved while such a column is shown opens without it, and it cannot be added back from the column menu.
+A few standard columns are shown on `Standard` but cannot be stored in a view, because the platform does not offer them as fields: `Associations` on `Keys`, `Interface` and `Duration` on `Discoveries`, `Proxy` on `Connectors` when proxies are enabled, `Version` on `Secrets`, and `Occurrences` on `Crypto Assets`. A view saved while such a column is shown opens without it, and it cannot be added back from the column menu.
 
 A field with secret content can only be filtered by `Empty` or `Not empty`, and such a filter is saved like any other.
 
