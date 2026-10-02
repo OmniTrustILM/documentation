@@ -62,6 +62,8 @@ The issuance request is accepted and queued; it runs asynchronously, so the resp
 
 Poll the certificate detail for that `uuid` until its state becomes `Issued`, then read the signed certificate from the detail response.
 
+When the profile validates leniently and the uploaded CSR does not comply with the request attributes, the response also carries `requestAttributeWarnings`, a list of messages. The certificate is issued all the same; the warnings are informational. The field is empty when there is nothing to report. See [Warnings under lenient validation](../../concept-design/core-components/ra-profile.md#warnings-under-lenient-validation).
+
 ## Upload existing certificate
 
 Upload the existing certificate to the platform.
@@ -94,5 +96,5 @@ The **Request Attributes** tab shows the resolved set for the selected `RA Profi
 :::
 
 :::note[External CSR validation]
-With the **External** key source, the uploaded CSR is validated against the profile's resolved request-attribute set, in strict or lenient mode — see [External CSR validation](../../concept-design/core-components/ra-profile.md#external-csr-validation). Violations appear in the red **Compliance errors** panel on the form.
+With the **External** key source, the uploaded CSR is validated against the profile's resolved request-attribute set, in strict or lenient mode — see [External CSR validation](../../concept-design/core-components/ra-profile.md#external-csr-validation). Under strict validation, violations appear in the red **Compliance errors** panel on the form and the request is not submitted. Under lenient validation, the request is accepted and the form stays open with the warning **Certificate request accepted with warnings**, listing what does not comply. Click **Open certificate** to continue to the certificate, or **Close**. Warnings are raised for an uploaded CSR only: a request built from an **Existing Key** raises none.
 :::
