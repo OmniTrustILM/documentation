@@ -26,3 +26,7 @@ The platform offers the following list of operations from the Key Inventory:
 ## Key details
 
 See [`Key`](../core-components/key.md) for more information.
+
+## Columns and views
+
+The columns, sorting and saved views of the list are described in [Columns and Views](./columns-and-views.md).
