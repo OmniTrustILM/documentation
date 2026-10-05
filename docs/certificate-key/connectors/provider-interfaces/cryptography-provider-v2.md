@@ -175,7 +175,7 @@ Core --> Client: Key
 @enduml
 ```
 
-Import is idempotent through `keyImportId`, as creation is through `keyCreationId`. The import result endpoint resolves an import by its `keyImportId`. A caller that lost the response thus learns what the connector holds.
+Import is idempotent through `keyImportId`, as creation is through `keyCreationId`. `Core` protects the material again for every submission. The import result endpoint resolves an import by its `keyImportId`. A caller that lost the response thus learns what the connector holds.
 
 ### Export
 
