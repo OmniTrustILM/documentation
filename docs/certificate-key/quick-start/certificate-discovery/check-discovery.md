@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Check Discovery Status
 
-Check Discovery process status for see whether the `Discovery` is completed. 
+Check the status of the `Discovery` process to see whether it is still running, has finished, or ran into problems. While a v2 `Discovery` runs, you can also follow its progress, stop and resume it, or cancel it.
 
 ## Check `Discovery` status using the API
 
@@ -19,31 +19,121 @@ curl -X GET \
   #https://[domain]:[port]/api/v1/discoveries/{uuid}
 ```
 
-This will give us the details about the `Discovery` including its status:
+This will give us the details about the `Discovery` including its status and progress:
 ```json
 {
     "uuid": "c0aaafda-a731-4175-8ec4-2cdcd06015fa",
     "name": "ILM Hostname Discovery",
-    "kind": "IP-Hostname",
-    "status": "completed",
+    "status": "inProgress",
+    "connectorStatus": "inProgress",
+    "connectorInterface": {
+        "uuid": "5d1f0c7e-3b2a-4e8f-9c6d-7a1b2c3d4e5f",
+        "code": "discovery",
+        "version": "v2",
+        "features": ["discoveryStopResume"]
+    },
+    "resources": ["certificates", "keys"],
+    "stoppable": true,
+    "progress": {
+        "targetsProcessed": 1,
+        "targetsTotal": 1,
+        "targetsFailed": 0,
+        "byResource": {
+            "certificates": { "produced": 3 },
+            "keys": { "produced": 3 }
+        },
+        "updatedAt": "2026-10-05T09:12:44Z"
+    },
+    "itemsDiscovered": 6,
+    "runMessageCount": 0,
     ...
-    "meta": {
-        "totalUrls": 1,
-        "successUrls": 1,
-        "failedUrls": 0
-    }
 }
 ```
 
-You can periodically check for the status of the `Discovery` process before it is completed.
+The `status` is one of `inProgress`, `stopped`, `processing`, `completed`, `warning`, `failed` and `cancelled`, described in [Discovery status](../../concept-design/modules/certificate-discovery.md#discovery-status). A `Discovery` has finished when its status is `completed`, `warning`, `failed` or `cancelled`. You can check the status periodically until then. A v1 `Discovery` has no `connectorInterface`, `progress` or `itemsDiscovered`, and it is never `stopped` or `cancelled`.
+
+### Stop, resume or cancel a `Discovery`
+
+A v2 `Discovery` that is in progress can be stopped when its `stoppable` is `true`, and a stopped one can be resumed. A `Discovery` in progress or stopped can be cancelled:
+
+```bash
+curl -X PATCH \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  https://[domain]:[port]/api/v1/discoveries/c0aaafda-a731-4175-8ec4-2cdcd06015fa/stop
+  #https://[domain]:[port]/api/v1/discoveries/{uuid}/stop
+  #https://[domain]:[port]/api/v1/discoveries/{uuid}/resume
+  #https://[domain]:[port]/api/v1/discoveries/{uuid}/cancel
+```
+
+Each answers `204 No Content` when it is done, and `422 Unprocessable Entity` when the `Discovery` is not in a status that allows it. Cancelling cannot be undone: what the `Discovery` collected is never imported into the inventory.
+
+### Read the run messages
+
+When a v2 `Discovery` ran into problems, its `runMessageCount` is above zero, and the messages say what happened:
+
+```bash
+curl -X GET \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Accept: application/json" \
+  "https://[domain]:[port]/api/v1/discoveries/c0aaafda-a731-4175-8ec4-2cdcd06015fa/messages?itemsPerPage=10&pageNumber=1"
+  #https://[domain]:[port]/api/v1/discoveries/{uuid}/messages
+```
+
+```json
+{
+    "items": [
+        {
+            "severity": "warning",
+            "code": "keyImportFailed",
+            "message": "A discovered key was not imported. The item listing says which, and why.",
+            "occurrences": 2,
+            "firstSeenAt": "2026-10-05T09:13:02Z",
+            "lastSeenAt": "2026-10-05T09:13:02Z"
+        },
+        {
+            "severity": "warning",
+            "code": "runEnded",
+            "message": "Discovery completed with warnings. See this run's messages, and the run's items for per-item detail.",
+            "occurrences": 1,
+            "firstSeenAt": "2026-10-05T09:13:03Z",
+            "lastSeenAt": "2026-10-05T09:13:03Z"
+        }
+    ],
+    "itemsPerPage": 10,
+    "pageNumber": 1,
+    "totalPages": 1,
+    "totalItems": 2
+}
+```
+
+The messages are listed oldest first, and a problem that repeats is counted in `occurrences` rather than repeated. The codes are described in [Run messages](../../concept-design/modules/certificate-discovery.md#run-messages).
 
 ## Check `Discovery` status using the Web Interface
 
 Steps for checking `Discovery` status:
 
-1. Log in to the Operator Interface `https://[domain]:[port]/operator`
-2. Click **Discovery** in the left menu to display the **Discovery Store**
-3. You can find `Discovery` easily by name `ILM Hostname Discovery`
-4. Click on the **ILM Hostname Discovery** to see the `Discovery` status and details
+1. Click **Discoveries** in the left menu to display the **Discovery Store**
+2. You can find `Discovery` easily by name `ILM Hostname Discovery`. The **Status** column shows its status, and the **Interface** column whether it runs through `v1` or `v2`
+3. Click on the **ILM Hostname Discovery** to see the `Discovery` status and details
 
-Once the discovery process has finished, the Status becomes Completed, and Total Certificates will be displayed.
+The **Details** tab shows:
+
+- **Discovery Details**, with the **Status**, the **Connector Interface** the discovery runs through, and the **Resources** it targets
+- **Progress**, while the `Discovery Provider` reports it or the discovery is processing: the targets the provider has scanned, the targets that failed, its phase with the time it was reported, and per resource what it has found. During processing, a **Platform import** bar shows how many items have been imported
+- **Results**, with the items received, those new to the inventory, imported and not imported
+
+The page does not refresh by itself; use the refresh icon to update it. Once the discovery has finished, its status becomes Completed, or Warning when something was not imported.
+
+To control a running v2 `Discovery`, use the buttons at the top of the detail. They are shown when the discovery allows the action and you have the permission for it:
+
+- **Stop** (pause symbol), while it is In Progress and its provider can stop it
+- **Resume** (play symbol), while it is Stopped
+- **Cancel**, while it is In Progress or Stopped. Confirm with **Cancel discovery** in the **Cancel Discovery** dialog, or click **Keep running**
+
+**Delete** is available once a v2 discovery has finished. Before that, its tooltip says what to do: **Delete (cancel the run first)** while it is In Progress or Stopped, and **Delete (wait for the run to end)** while it is Processing.
+
+The **Messages** tab, with its count, lists the run messages: their **Severity**, **Code**, **Message**, **Occurrences**, and when each was **First seen** and **Last seen**. Messages are advisory: a discovery with messages has not necessarily failed.
