@@ -117,3 +117,13 @@ These problem types are shared across all ILM services and connectors:
 | [`RATE_LIMIT_EXCEEDED`](/problems/common/RATE_LIMIT_EXCEEDED) | `/common/RATE_LIMIT_EXCEEDED` | 429 | yes | Too many requests in the allowed time window |
 | [`SERVICE_UNAVAILABLE`](/problems/common/SERVICE_UNAVAILABLE) | `/common/SERVICE_UNAVAILABLE` | 503 | yes | Service or a critical dependency is temporarily unavailable |
 | [`INTERNAL_SERVER_ERROR`](/problems/common/INTERNAL_SERVER_ERROR) | `/common/INTERNAL_SERVER_ERROR` | 500 | **no** | Unexpected server error — report with correlation ID |
+
+### Connector types
+
+These problem types belong to connector operations. A type specific to one interface carries the interface in its URI, `https://docs.otilm.com/problems/connector/{interface}/{ERROR_CODE}`:
+
+| Error code | Type URI | HTTP Status | Retryable | Description |
+|---|---|---|---|---|
+| [`OPERATION_NOT_TRACKED`](/problems/connector/OPERATION_NOT_TRACKED) | `/connector/OPERATION_NOT_TRACKED` | 404 | no | The connector does not track the operation the request refers to |
+| [`OPERATION_PAST_POINT_OF_NO_RETURN`](/problems/connector/OPERATION_PAST_POINT_OF_NO_RETURN) | `/connector/OPERATION_PAST_POINT_OF_NO_RETURN` | 422 | no | The operation has gone too far to be stopped or cancelled |
+| [`CHECKPOINT_LOST`](/problems/connector/discovery/CHECKPOINT_LOST) | `/connector/discovery/CHECKPOINT_LOST` | 410 | no | A stopped discovery run cannot be resumed from its checkpoint |
