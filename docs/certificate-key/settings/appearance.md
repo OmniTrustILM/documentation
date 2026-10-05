@@ -10,8 +10,6 @@ Branding is global. It is held in the platform settings, so one instance carries
 
 To manage it, navigate to **Settings** → **Platform** → **Appearance** tab. The tab is offered only to users who hold the [branding permission](#access-control).
 
-![Appearance tab](../../assets/branding/appearance-tab.png)
-
 ## Colors
 
 Each color is entered as a six-digit hexadecimal value prefixed with `#`, for example `#0073CF`, either typed or chosen with the color picker. A value in any other format is refused with an inline error, and **Save** stays disabled until it is corrected.
@@ -67,8 +65,6 @@ It measures the shades the platform actually renders, in both the light and the 
 
 If any pairing falls short, a **Contrast check** dialog lists the findings grouped by the color that causes them, each with its measured ratio and the theme it affects. Where a nearby shade would pass without introducing a new finding, the dialog offers it, and choosing it updates the field.
 
-![Contrast check dialog](../../assets/branding/contrast-check.png)
-
 :::warning[Contrast findings are warnings, not errors]
 **Save anyway** stores the colors as they are. The platform does not block a combination that falls below WCAG AA, because the brand remains the operator's decision. Colors saved this way can make parts of the interface hard to read for every user of the instance.
 :::
@@ -99,10 +95,6 @@ A user's own choice always wins, and this includes an explicit choice of **Syste
 ## Login page
 
 Branding reaches the login page, before anyone signs in, so users recognize the instance at the first screen.
-
-![Branded login page in the light theme](../../assets/branding/login-light.png)
-
-![Branded login page in the dark theme](../../assets/branding/login-dark.png)
 
 The browser remembers the last theme and colors it received and applies them before the page first renders, so a returning visitor does not see the platform's own look flash before the brand. If the branding cannot be loaded, no error is shown: a returning visitor keeps the colors and default theme from their last visit and sees the platform logo, and a first-time visitor sees the platform's own look.
 
