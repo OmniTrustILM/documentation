@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # Caching
 
-To keep request latency low — especially on the authentication hot path, where the same lookups repeat across many requests — `Core` maintains a number of in-memory caches. Each cache holds the result of an operation that is comparatively expensive to recompute (an authentication decision, a resolved certificate chain, a connector lookup) so that subsequent identical requests are served without repeating the work.
+To keep request latency low — especially on the authentication hot path, where the same lookups repeat across many requests — `Core` maintains a number of in-memory caches. Each cache holds the result of an operation that is comparatively expensive to recompute (an authentication or authorization decision, a resolved certificate chain, a connector lookup) so that subsequent identical requests are served without repeating the work.
 
 All caches share the same foundation:
 
@@ -38,6 +38,42 @@ Beyond time-to-live expiry, the authentication cache is invalidated whenever a c
 
 - **Per-identity** — cached entries for a user are removed when that user's profile is updated, role assignments change, or the user is disabled or deleted. The cached entry for a certificate is removed when its user association changes or when the certificate is revoked through the platform. The next request from that identity re-authenticates.
 - **Global** — when a role itself changes (the role is updated or deleted, or its permissions are changed), the entire authentication cache is cleared. Because such a change can affect every user holding that role, clearing all entries is the safe choice; all identities re-authenticate on their next request.
+
+## Authorization cache
+
+Every protected operation is checked against the platform's authorization policies, which are evaluated by the Open Policy Agent (OPA). Without caching, each check would be a round-trip to OPA. The authorization cache stores the results of these checks, so a repeated check is served from memory and does not leave the `Core` process. For how authorization works, see [Authorization](./access-control/authorization.md).
+
+Two kinds of results are cached, each in its own cache:
+
+- **Verdicts** — the answer to whether a caller may perform an action on a resource, as used by the method-level checks.
+- **Object filters** — the set of objects of a resource that a caller may access, as used when listing and reading objects.
+
+### What an entry is keyed by
+
+An entry is keyed by the caller's **effective permissions**, not by the caller's identity, together with an indication of whether the caller is anonymous, the policy that was asked, and the request being checked. Users who hold equal permissions therefore share one entry, however many of them there are or however they obtained the permissions.
+
+This is safe because the authorization policies decide on nothing else about the caller. They read only the caller's permissions and, for the anonymous user, its name. When a user's permissions change, for example because a role is assigned or removed, the user's next request produces a different key and does not meet the old entry. Nothing stale has to be removed for the change to take effect.
+
+The order in which a request lists the objects it asks about does not change the key, so the same question asked in a different order is answered from the same entry.
+
+### Configuration
+
+The authorization cache is bounded in the same way as the other caches, with these differences:
+
+- It can be **switched off** entirely, in which case every check goes to OPA. This is a deployment setting and takes effect when `Core` is restarted.
+- Its time-to-live is **five minutes by default**. It should not exceed the time-to-live of the [authentication cache](#authentication-cache).
+- Verdicts and object filters have **separate size limits**, because verdicts are many small entries and object filters are few large ones.
+
+### Keeping authorization decisions fresh
+
+Beyond time-to-live expiry, the authorization cache is cleared in full when a role changes: the same changes that clear the authentication cache (a role is updated or deleted, or its permissions are changed) clear both caches on the instance that processed the change. A change to a single user needs no eviction, because the user's permissions, and so the key, change with it.
+
+Two things are bounded only by the time-to-live:
+
+- **Anonymous callers.** Anonymous requests are never cached by authentication, so the authorization time-to-live is the only limit on how long a cached decision for an anonymous caller can outlive a change to the policy it was decided under.
+- **A redeployment of the OPA policies.** A new version of the policies does not clear the cache. Decisions made under the previous version are served until they expire.
+
+As with the other caches, each `Core` instance holds its own authorization cache. A change cleared on one instance reaches the others when their entries expire; see [Effective time of changes](#effective-time-of-changes).
 
 ## Certificate chain cache
 
@@ -104,16 +140,17 @@ In practice this means:
 
 - User-affecting changes (disabling a user, changing role permissions, revoking a user's certificate association) become effective platform-wide **within the time-to-live window** — not instantly.
 - Credentials revoked **outside** of `Core` are not signalled to the cache. This includes JWTs revoked at the identity provider and client certificates revoked at the issuing CA but not yet reflected in `Core`'s own certificate state. The cached authentication outcome remains valid for that credential until its time-to-live elapses.
-- A role change clears the entire authentication cache on the processing instance, so every cached identity there re-authenticates on its next request — briefly raising load on the authentication service.
+- A role change clears the entire authentication cache on the processing instance, so every cached identity there re-authenticates on its next request — briefly raising load on the authentication service. It also clears the authorization cache there, so the next checks go to OPA until the cache warms up again.
+- A redeployment of the authorization policies is not signalled to the authorization cache. Cached decisions remain valid on every instance until their time-to-live elapses.
 
 ## Operational considerations
 
 Because caches are held in memory on each `Core` instance, they are not shared across a high-availability deployment: each instance maintains its own cache, and an entry evicted on one instance remains on the others until it expires or is independently evicted there.
 
-Entries also do not survive a restart — caches start empty and warm up as requests arrive. The first requests after a restart pay the full uncached cost; subsequent requests benefit from the cached results as each cache reaches steady state.
+Entries also do not survive a restart — caches start empty and warm up as requests arrive. The first requests after a restart pay the full uncached cost; subsequent requests benefit from the cached results as each cache reaches steady state. This applies to the authorization cache as well: after a restart, or after a role change, checks go to OPA until the cache is warm, so a burst of requests briefly raises the load on OPA.
 
 ## Resetting a cache
 
-In normal operation a cache never needs to be reset by hand. Entries are removed automatically whenever the underlying data changes — a single key is evicted when its object changes, and the whole authentication cache is cleared when a role changes — and any entry that is not invalidated expires on its own once its time-to-live elapses (five minutes by default).
+In normal operation a cache never needs to be reset by hand. Entries are removed automatically whenever the underlying data changes — a single key is evicted when its object changes, and both the authentication and the authorization cache are cleared in full when a role changes — and any entry that is not invalidated expires on its own once its time-to-live elapses (five minutes by default).
 
 There is currently **no runtime endpoint to flush a cache**: at present the management interface exposes only health and info, so caches cannot be cleared through an API call today. When a full reset is genuinely required — for example after a direct database change that bypasses `Core` — the supported way to discard all cached state is to **restart the `Core` instance**. Because caches are in-memory and per-instance, they start empty on boot and warm up again as requests arrive; in a high-availability deployment each instance must be restarted to clear its own copy.
