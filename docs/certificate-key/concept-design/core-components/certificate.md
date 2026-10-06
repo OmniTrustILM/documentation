@@ -117,9 +117,25 @@ For a connector-backed registration, the platform replays the registration's tra
 A registration can be protected with an **authorization secret** (a challenge), so that only a caller who presents the same secret can complete the issuance of the registered placeholder.
 
 - The operator supplies the secret — and, optionally, an expiry window — when registering. It is opt-in; the platform never generates one.
-- The secret is stored **encrypted**; the same secret must be presented with the issue request to complete a `Registered` certificate. Verification is constant-time, and repeated failures lock the registration.
+- The secret is stored **encrypted**; the same secret must be presented with the issue request to complete a `Registered` certificate. Verification is constant-time, and repeated failures lock the registration. The number of failed attempts allowed is a [platform setting](../../settings/platform.md#registration) (five by default).
 - The challenge is a control between the operator and the platform — the authority connector is not involved and never sees the secret.
-- While a registration is active, renewing or rekeying the certificate is currently rejected.
+- While a registration is `Active`, renewing or rekeying the certificate requires the same secret. See [Renew and rekey with a challenge](#renew-and-rekey-with-a-challenge).
+- A registration can be carried to a successor certificate. See [Register a successor](../../quick-start/certificate-management/register-certificate.mdx#register-a-successor).
+
+#### Renew and rekey with a challenge
+
+A certificate that has a registration in the `Active` state can be renewed or rekeyed only by a caller who presents the challenge. The administrator interface shows a **Challenge** field in the **Renew** and **Rekey** dialogs while the registration is `Active`; the API takes the secret in the `authorizationSecret` property of the renew and rekey requests. A certificate without a registration, or with a `Closed` one, is renewed and rekeyed as before, and the secret is ignored.
+
+| Situation                                                      | Result                                                                                                              |
+|----------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| The challenge is correct                                       | The operation proceeds, the failed-attempts counter is reset, and the registration follows the new certificate     |
+| The challenge is wrong                                         | The request is refused and **one failed attempt is counted**, even when the request would have failed anyway        |
+| No challenge is presented                                      | The request is refused and **no attempt is counted**                                                                |
+| The registration is `Locked` or `Expired`                      | The request is refused                                                                                              |
+
+After too many failed attempts the registration becomes `Locked`. A refusal stays in the dialog with the reason, and closing the dialog after a failed attempt refreshes the **Registration** widget with the failed attempts and the `Locked` state. The issuance window applies to the first issuance only: once the registered certificate is issued, there is no deadline for renewing or rekeying it.
+
+Some operations that the platform starts on its own do not know the challenge. A renewal in a location and a CMP key update outside of the registration mode present no secret, so they are refused on a challenge-protected certificate without counting an attempt. A CMP key update in the registration mode presents the challenge it was authenticated with. See [Challenge source](../../protocols/common-properties.md#challenge-source).
 
 #### Registration and issuance flow
 
@@ -442,8 +458,8 @@ The **predecessor** certificate is always the one issued earlier, and the **succ
 The type of relationship between the two certificates is determined as follows:
 
 - **`Pending`** — The successor certificate has not yet been issued. The relation type will be automatically updated once issuance is complete.
-- **`Renewal`** — Both certificates share the same issuer, public key, and (if applicable) alternative public key.
-- **`Rekey`** — Both certificates share the same issuer, but their public keys differ.
+- **`Renewal`** — Both certificates share the same subject, issuer, public key, and (if applicable) alternative public key.
+- **`Rekey`** — Both certificates share the same subject and issuer, but their public keys differ.
 - **`Replacement`** — Any other case that does not fit the above criteria.
 
 ### Relation Type Transitions

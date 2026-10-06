@@ -39,7 +39,7 @@ Where the certificate lands depends on the variant. A platform-level registratio
 
 When a challenge was set, the registration carries an authorization state — a challenge-less registration has none — shown in the **Registration** widget of the certificate detail. The widget shows the rows `State`, `Expires`, and `Failed attempts`. The state is one of:
 
-- `Active` — the challenge gates issue.
+- `Active` — the challenge gates issue, renew and rekey.
 - `Expired` — the issuance window has passed.
 - `Locked` — locked after too many failed challenge attempts.
 - `Closed` — behaves as unregistered.
@@ -55,8 +55,36 @@ When a challenge was set, the registration carries an authorization state — a 
 The identity from the registration is preserved. Completion runs through the standard issue flow.
 
 :::note
-Renew and rekey against an active registration are rejected. Completion must go through the issue flow (with the challenge, if one was set).
+While the registration is `Active`, renewing or rekeying the certificate needs the challenge as well. See [Renew and rekey with a challenge](../../concept-design/core-components/certificate.md#renew-and-rekey-with-a-challenge).
 :::
+
+## Register a successor
+
+You can pre-register the certificate that will replace an issued or revoked one, without renewing it now. The successor is a certificate in the `Registered` state that is completed later, and it is shown on the **Related Certificates** of the source as a **Pending** successor.
+
+1. Click **Certificates** in the left menu and open the issued or revoked certificate
+2. Click **Renew** and switch on **Register instead of renewing now**. The dialog hides the CSR upload and shows the identity of the source read-only: its request attributes, or its subject DN and SANs when it has none
+3. Enter the **Challenge** of the successor. It is not inherited from the source: it must be 12–255 printable ASCII characters, and the administrator interface requires it when the registration of the source is `Active`. Optionally set the **Issuance window**, which is possible only together with a challenge
+4. Fill the **Connector Attributes** that the connector asks for when registering. The custom attributes of the source are carried over
+5. Click **Register**
+
+Complete the successor later with **Complete**, as for any registered certificate.
+
+:::note[When the successor cannot be registered]
+**Register** is disabled when the identity of the source cannot be replayed exactly, because a successor with a different SAN set would not match a holder that enrolls with the identity of the source. This is the case for SAN types without a textual form (`x400Address`, `ediPartyName`), for `otherName` values that are not plain text and for SAN values that contain a comma. It is also disabled until the connector's register attributes are loaded; a failed load shows an error and a retry.
+:::
+
+With the API, send `sourceCertificateUuid` in the register request, together with the identity and, optionally, the `authorizationSecret` of the successor and, only together with it, the `expiresAt` issuance window. The source must be in the `Issued` or `Revoked` state.
+
+### How the relation is resolved
+
+When the successor is issued, its relation to the source changes from **Pending** to one of the following, depending on the issued certificate:
+
+- **Renewal** — the subject, the issuer and the public key (and alternative public key) are the same as in the source.
+- **Rekey** — the subject and the issuer are the same, but the public key differs.
+- **Replacement** — anything else.
+
+Complete the successor with an identity that is the same as the source, otherwise the relation ends as a replacement.
 
 ## Register a certificate using the API
 

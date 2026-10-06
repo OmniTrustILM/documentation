@@ -10,6 +10,7 @@ sidebar_position: 3
 |--------------------------------|-------------------------------------------------------------------------------------------------|---------------|-----------------------------------------------|
 | **Name**                       | `CMP Profile` Name                                                                              |               | <span class="badge badge--success">Yes</span> |
 | **Description**                | Description of the `CMP Profile`                                                                |               | <span class="badge badge--danger">No</span>   |
+| **Challenge Source**           | Where the shared secret of the CMP messages comes from: the profile or a certificate registration. See [Challenge source](../common-properties.md#challenge-source) | `Protocol Default` | <span class="badge badge--danger">No</span> |
 | **Variant**                    | Variant of the CMP protocol defining the behaviour                                              |               | <span class="badge badge--success">Yes</span> |
 | **Request Protection Method**  | One of available protection methods for the CMP requests                                        |               | <span class="badge badge--success">Yes</span> |
 | **Shared Secret**              | Shared secret for the protection of CMP message when request protection method is shared secret |               | <span class="badge badge--danger">No</span>   |
@@ -36,6 +37,15 @@ The platform supports the following protection methods for CMP requests and resp
 The following restrictions apply for the protection methods configuration:
 - If the `Response Protection Method` is set to `Shared Secret`, the `Shared Secret` protection method must be configured also for the `Request Protection Method`
 - If the `Request Protection Method` is set to `Signature`, the `Signature` protection method must be used also for the `Response Protection Method`
+
+## Challenge source
+
+With the challenge source `Protocol Default`, the CMP messages are protected with the **Shared Secret** of the profile. With `Certificate Registration`, the shared secret of the message is the challenge of a [registered certificate](../../quick-start/certificate-management/register-certificate.mdx), which the message names in its `senderKID`. See [Challenge source](../common-properties.md#challenge-source) for the matching rules.
+
+The following restrictions apply to a profile with the challenge source `Certificate Registration`:
+- The variant must be `CMPv2`
+- The `Request Protection Method` must be `Shared Secret`, and no shared secret is configured on the profile
+- The `Response Protection Method` can be either `Shared Secret` or `Signature`
 
 ## Request signing certificate
 
