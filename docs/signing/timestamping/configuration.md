@@ -18,6 +18,12 @@ Timestamping is configured through a [`Signing Profile`](/docs/signing/signing-p
 
 ---
 
+## TSA key
+
+The certificate selected under [Signing Scheme](/docs/signing/signing-profile#signing-scheme) determines the TSA key. Any cryptography provider can hold it. The key can be RSA or ECDSA, or post-quantum: ML-DSA, SLH-DSA with a SHA2 parameter set, or FALCON-1024.
+
+---
+
 ## Linking to a TSP Profile
 
 A `Signing Profile` configured for timestamping must be associated with at least one [`TSP Profile`](./tsp-profile.md) before it can accept inbound RFC 3161 requests. The association supplies the authentication policy that guards the endpoint. Without it, the profile is configured but unreachable.
