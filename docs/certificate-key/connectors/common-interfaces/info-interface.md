@@ -101,6 +101,8 @@ Feature flags are optional capability indicators that signal connector behaviour
 | `openMetrics`      | `metrics`             | Metrics are exposed in OpenMetrics format (in addition to Prometheus text)   |
 | `secretVersioning` | `secret`              | Supports versioning of secrets, keeping a history of previous values         |
 | `secretRotation`   | `secret`              | Supports triggering rotation of secrets                                      |
+| `keyImport`        | `cryptography`        | Imports keys into a token                                                    |
+| `keyExport`        | `cryptography`        | Exports keys from a token, protected by a password                           |
 
 ### Processes
 
