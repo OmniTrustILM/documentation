@@ -22,6 +22,10 @@ The content of a `Secret` is stored in a `Vault` on provider side.
 | `Key-Value`            | Stores secret data as a key-value pair.                                        | Map of key and its corresponding secret value.                               |
 | `Generic`              | Stores arbitrary secret content that does not fit a more specific secret type. | Base64 encoded generic secret value or custom secret data structure.         |
 
+## Use of secrets
+
+A `Secret` of the type `Secret Key` or `Generic` can hold an HMAC key for [External Account Binding](../../protocols/acme/external-account-binding.md) of an `ACME Profile`.
+
 ## Source Vault Profile
 The `Source Vault Profile` and its parent `Vault` are the primary sources for the `Secret`. When a `Secret` is created, it is the vault that creates the secret. 
 `Secret Content` is always retrieved from the source `Vault Profile` and access to `Secret` is evaluated based on the source profile. When a `Source Vault Profile` is changed, the previous source profile is moved to `Sync Vault Profile`.
