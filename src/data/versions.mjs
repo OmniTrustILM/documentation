@@ -6,6 +6,9 @@ export const apiVersion = '2.19.0';
 /** Helm chart, used by docusaurus-plugin-remote-content. */
 export const chartVersion = '2.19.0';
 
+/** PKCS#11 Cryptography Provider, used by docusaurus-plugin-remote-content. */
+export const pkcs11ConnectorVersion = '1.0.0';
+
 /** CSC component OpenAPI document, versioned independently of the platform. */
 export const cscVersion = '1.7.0';
 
