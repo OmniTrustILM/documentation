@@ -1,8 +1,12 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 ---
 
-# Cryptography Provider
+# Cryptography Provider v1
+
+:::warning[Deprecated]
+Cryptography Provider v1 is deprecated since 2.20.0. New connectors implement [Cryptography Provider v2](./cryptography-provider-v2.md), the default interface. `Core` keeps serving v1 for the tokens bound to it.
+:::
 
 ## Overview
 
