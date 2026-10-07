@@ -8,15 +8,15 @@ sidebar_position: 7
 
 Cryptography Provider v2 is the default interface between `Core` and a technology holding cryptographic keys, such as a hardware security module, a key management service or a software keystore. The interface covers token status, the key lifecycle, and the cryptographic operations performed with a key: signing, verification, encryption, decryption and random data generation.
 
-v2 differs from the [v1 interface](./cryptography-provider.md) as follows:
+Cryptography Provider v2 differs from [Cryptography Provider v1](./cryptography-provider.md) as follows:
 
 - **Stateless.** `Core` owns every token and token profile. Each request carries the context the connector needs.
 - **Capability-driven.** A connector declares asynchronous execution, key import and key export as capabilities. `Core` uses only what a connector declares.
 - **Synchronous or asynchronous.** A slow operation can be accepted and tracked to completion. The caller selects the mode on each request.
 
-## Relationship to v1
+## Relationship to Cryptography Provider v1
 
-v1 is deprecated. `Core` serves both contracts side by side. Deployed v1 providers therefore keep working while they migrate.
+Cryptography Provider v1 is deprecated since 2.20.0. `Core` serves both contracts side by side. Deployed v1 providers therefore keep working while they migrate.
 
 `Core` binds each token to one contract at the token's creation:
 
@@ -53,7 +53,7 @@ A connector declares optional behavior as feature flags on its `cryptography` in
 | Key import   | `keyImport`    | The connector imports protected key material into a token                                          |
 | Key export   | `keyExport`    | The connector exports keys created or imported as exportable, as protected key material            |
 
-### Discovery
+### What a connector publishes
 
 The platform offers only what the connector publishes for each token and token profile:
 

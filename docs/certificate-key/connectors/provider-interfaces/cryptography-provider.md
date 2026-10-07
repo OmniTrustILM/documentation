@@ -2,10 +2,10 @@
 sidebar_position: 8
 ---
 
-# Cryptography Provider
+# Cryptography Provider v1
 
 :::warning[Deprecated]
-This page describes the deprecated v1 interface. New connectors implement [Cryptography Provider v2](./cryptography-provider-v2.md), the default interface. `Core` keeps serving v1 for the tokens bound to it.
+Cryptography Provider v1 is deprecated since 2.20.0. New connectors implement [Cryptography Provider v2](./cryptography-provider-v2.md), the default interface. `Core` keeps serving v1 for the tokens bound to it.
 :::
 
 ## Overview

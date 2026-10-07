@@ -27,4 +27,4 @@ The platform implements support for post-quantum cryptography algorithms. The fo
 
 ## Cryptography providers
 
-Every `Key` operation runs through the `Cryptography Provider` of the `Token` behind its `Token Profile`. That provider decides what the platform offers. Key import and export are available only where the default [Cryptography Provider v2](../../connectors/provider-interfaces/cryptography-provider-v2.md) declares them.
+Every `Key` operation runs through the `Cryptography Provider` of the `Token` behind its `Token Profile`. That provider decides what the platform offers. A [Cryptography Provider v1](../../connectors/provider-interfaces/cryptography-provider.md) connector creates and destroys keys and runs cryptographic operations with them. A [Cryptography Provider v2](../../connectors/provider-interfaces/cryptography-provider-v2.md) connector also imports and exports keys when it declares those capabilities.
