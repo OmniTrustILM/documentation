@@ -26,4 +26,4 @@ See [`Secret`](../core-components/secret.md) for more information.
 
 ## Columns and views
 
-The columns, sorting and saved views of the list are described in [Columns and Views](./columns-and-views.md).
+The columns, sorting and saved views of the list are described in [Columns and Views](../architecture/columns-and-views.md).

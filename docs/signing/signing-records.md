@@ -276,4 +276,4 @@ The following gauges apply to `Deferred Durable` mode and give a real-time view 
 
 [Core API - Signing Record](/api/core-signing-record) — The OpenAPI specification for retrieving `Signing Records`
 
-[Columns and Views](../certificate-key/concept-design/modules/columns-and-views.md) — Choosing columns, sorting and saving views on the `Signing Records` list
+[Columns and Views](../certificate-key/concept-design/architecture/columns-and-views.md) — Choosing columns, sorting and saving views on the `Signing Records` list

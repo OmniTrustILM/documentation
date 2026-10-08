@@ -1,5 +1,5 @@
 ---
-sidebar_position: 16
+sidebar_position: 10
 ---
 
 # Columns and Views
@@ -28,7 +28,7 @@ A column shows one field, taken from one of four sources:
 | Source           | Badge    | Description                                                                                                  |
 |------------------|----------|--------------------------------------------------------------------------------------------------------------|
 | Property         | `Prop`   | A property of the object itself, such as its name, status or expiry date.                                     |
-| Custom attribute | `Custom` | A [`Custom Attribute`](../architecture/attributes/custom-attributes.md) defined in the platform and set on the object. |
+| Custom attribute | `Custom` | A [`Custom Attribute`](./attributes/custom-attributes.md) defined in the platform and set on the object. |
 | Metadata         | `Meta`   | Information a `Connector` or the platform recorded about the object, such as where a certificate was discovered. |
 | Data attribute   | `Data`   | A value entered when the object was created or configured through a `Connector`.                             |
 
