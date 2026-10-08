@@ -23,3 +23,7 @@ The platform offers the following list of operations from the Secret Inventory:
 ## Secret details
 
 See [`Secret`](../core-components/secret.md) for more information.
+
+## Columns and views
+
+The columns, sorting and saved views of the list are described in [Columns and Views](../architecture/columns-and-views.md).
