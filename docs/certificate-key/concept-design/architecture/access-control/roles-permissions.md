@@ -56,7 +56,7 @@ Everything else readable is included, so an auditor can list and open certificat
 
 ## Branding permission
 
-Most settings are changed with the `update` action on the `settings` resource. Branding is the exception: it is changed only with `updateBranding`, and `update` does not include it. A role holding `updateBranding` together with `list` on `settings`, which it needs to read the current branding, can therefore change the platform's appearance without being able to change the rest of its configuration, and the reverse. See [Appearance](../../../settings/appearance.md#access-control).
+Most settings are changed with the `update` action on the `settings` resource. Branding is the exception: it is changed only with `updateBranding`, listed as **Update branding** in the role permissions editor, and `update` does not include it. A role holding `updateBranding` together with `list` on `settings`, which it needs to read the current branding, can therefore change the platform's appearance without being able to change the rest of its configuration, and the reverse. See [Appearance](../../../settings/appearance.md#access-control).
 
 ## Action access types
 

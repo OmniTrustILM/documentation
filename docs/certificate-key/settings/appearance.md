@@ -104,12 +104,12 @@ To render the login page, the platform serves the logos, the brand colors and th
 
 ## Access control
 
-Changing branding requires the `updateBranding` action on the `settings` resource. It is separate from the `update` action that governs the rest of the platform settings, in both directions:
+Changing branding requires the `updateBranding` action on the `settings` resource, shown in the role permissions editor as **Update branding** under **Settings**. It is separate from the `update` action (**Update**) that governs the rest of the platform settings, in both directions:
 
 - `updateBranding` grants branding only. A role holding it can change the colors, logos and default theme, but not the other platform settings.
 - `update` does not grant branding. A role that manages the platform settings cannot change the appearance without `updateBranding` as well.
 
-A role that manages the appearance also needs the `list` action on `settings`, which opens the platform settings and reads the current branding. Without it the Appearance tab cannot read what is stored and stays read-only. `list` and `updateBranding` together let the platform's appearance be delegated, for example to a communications team, without handing over the rest of its configuration.
+A role that manages the appearance also needs the `list` action (**List**) on `settings`, which opens the platform settings and reads the current branding. Without it the Appearance tab cannot read what is stored and stays read-only. `list` and `updateBranding` together let the platform's appearance be delegated, for example to a communications team, without handing over the rest of its configuration.
 
 The **Appearance** tab is shown only to users holding `updateBranding`; for everyone else it is absent rather than read-only. Reading the branding settings through the authenticated API requires the `list` action on `settings`, as for other platform settings.
 
