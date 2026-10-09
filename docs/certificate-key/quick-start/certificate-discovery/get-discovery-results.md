@@ -90,7 +90,7 @@ Steps to get `Discovery` results:
 3. Click `ILM Hostname Discovery` to display the `Discovery` detail
 4. Open the **Results** tab
 
-On the **Details** tab, the **Resources** row of **Discovery Details** names what the discovery targeted, and the **Results** widget counts the items received, new to the inventory, imported and not imported. For a discovery that targets certificates, it also counts the distinct certificates saved and the certificate items the provider reported.
+On the **Details** tab, the **Resources** row of **Discovery Details** names what the discovery targeted, and the **Import summary** widget counts the items received, new to the inventory, imported and not imported. For a discovery that targets certificates, it also counts the distinct certificates saved and the certificate items the provider reported.
 
 The **Results** tab shows one tab per resource, **Certificate** and **Key**, when the discovery targets more than one; otherwise it shows the one resource directly. Each lists **All** items, or only the **New** or **Existing** ones. When the discovery was cancelled or failed, a note says that nothing it found was imported into the inventory and no triggers ran on it.
 

@@ -123,10 +123,10 @@ Steps for checking `Discovery` status:
 The **Details** tab shows:
 
 - **Discovery Details**, with the **Status**, the **Connector Interface** the discovery runs through, and the **Resources** it targets
-- **Progress**, while the `Discovery Provider` reports it or the discovery is processing: the targets the provider has scanned, the targets that failed, its phase with the time it was reported, and per resource what it has found. During processing, a **Platform import** bar shows how many items have been imported
-- **Results**, with the items received, those new to the inventory, imported and not imported
+- **Progress**, for a v2 discovery, and for any discovery while it is processing: the targets the provider has scanned, the targets that failed, its phase with the time it was reported, and per resource what it has found. Until the provider reports progress, it says **No progress reported yet.** During processing, a **Platform import** bar shows how many items have been imported
+- **Import summary**, with the items received, those new to the inventory, imported and not imported
 
-The page does not refresh by itself; use the refresh icon to update it. Once the discovery has finished, its status becomes Completed, or Warning when something was not imported.
+While the discovery is In Progress or Processing, the page refreshes itself every ten seconds, as long as its browser tab is visible and its window has focus. The refresh icon of **Discovery Details** updates the page at any time. Once the discovery has finished, its status becomes Completed, or Warning when something was not imported.
 
 To control a running v2 `Discovery`, use the buttons at the top of the detail. They are shown when the discovery allows the action and you have the permission for it:
 
