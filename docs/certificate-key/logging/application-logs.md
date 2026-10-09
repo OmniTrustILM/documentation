@@ -28,13 +28,11 @@ The format is chosen when Core is deployed, with the `PLATFORM_LOG_FORMAT` envir
 
 Any other value stops Core at startup with an error that names the supported values. The Graylog Extended Log Format (GELF) is not supported, because it cannot carry the audit and event records that the JSON formats include.
 
-With the Helm chart, set the variable in the chart values:
+With the Helm chart, set `logging.format` in the chart values. An install or upgrade with a value other than `text`, `ecs` or `logstash` fails before Core is changed:
 
 ```yaml
-additionalEnv:
-  variables:
-    - name: PLATFORM_LOG_FORMAT
-      value: "ecs"
+logging:
+  format: "ecs"
 ```
 
 With the operator, set it on Core in the platform resource:
