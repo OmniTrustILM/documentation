@@ -104,7 +104,7 @@ Besides its name, status, `Connector`, `Attributes` and metadata, the details of
 | `connectorInterface` | The `discovery` interface the discovery runs through, with its version and feature flags. Absent for a v1 discovery |
 | `stoppable` | Whether the discovery can be stopped. Always `false` for a v1 discovery |
 | `progress` | The progress the `Connector` last reported: targets processed, in total and failed, the phase, and per resource the items produced, an estimated total and the phase, with the time it was reported |
-| `runMessageCount` | The number of entries in the [run messages](#run-messages). Always `0` for a v1 discovery |
+| `runMessageCount` | The number of entries in the [run messages](#run-messages). For a v1 discovery, `0` unless its metadata could not be stored |
 | `itemsDiscovered` | The highest item sequence collected from the `Connector` so far. Absent for a v1 discovery |
 | `itemsNewlyDiscovered`, `itemsProcessed`, `itemsFailed` | How many of the staged items were new to the inventory, have been processed, and carry a reason |
 | `connectorStatus` | The status of the run as the `Connector` last reported it |
@@ -158,6 +158,8 @@ A problem the run recovered from does not downgrade it. A processing batch that 
 
 A v1 discovery finishes as `Warning` when processing leaves a gap, for example certificates that could not be imported into the inventory, and its message states each gap with a count.
 
+A v1 discovery whose metadata about the run could not be stored still finishes as `Completed` when nothing else went wrong, and its message ends with "Discovery metadata could not be stored." A v2 discovery records a `runMetadataNotRecorded` warning instead and finishes as `Warning`, as above.
+
 ### Time limits
 
 A v1 discovery that is still in progress after `DISCOVERY_PROVIDER_MAX_WAIT_TIME_SECONDS` (6 hours by default) shows `Warning` while the platform keeps polling it; if the `Connector` then finishes, the discovery goes on as usual. At twice that time, 12 hours by default, the discovery ends `Failed`.
@@ -185,7 +187,7 @@ Each entry describes one distinct problem:
 
 A problem that happens again is added to its existing entry rather than repeated: the count is in `occurrences`, never in the message. Entries are listed oldest first. A discovery keeps at most 20 entries of one code and 50 entries in all, keeping the oldest. Beyond 20, further problems of a code are counted on an entry of that code that reads "Further messages of this kind were not recorded."; beyond 50, all further problems are counted on one `messagesSuppressed` entry. The count on these entries is the number of occurrences that were not recorded.
 
-A v1 discovery has no message log. Its counted sentences stay in the discovery's message.
+A v1 discovery records one kind of entry only, `runMetadataNotRecorded`, when the `Connector`'s metadata about the run could not be stored. Its counted sentences stay in the discovery's message.
 
 | Code | Severity | Meaning |
 |------|----------|---------|
@@ -201,7 +203,7 @@ A v1 discovery has no message log. Its counted sentences stay in the discovery's
 | `batchProcessingFailed` | info | A processing batch did not complete and will be tried again |
 | `batchProcessingAbandoned` | warning | A processing batch failed after its items were already imported |
 | `keyImportFailed` | warning | Discovered keys were not imported; the items listing says which, and why |
-| `runMetadataNotRecorded` | warning | The `Connector`'s metadata about the run was too large or malformed, and was not recorded |
+| `runMetadataNotRecorded` | warning | The `Connector`'s metadata about the run was not recorded: it was too large or malformed, or the platform could not store it |
 | `runEnded` | info, warning or error | How the discovery ended: `info` for `Completed`, `warning` for `Warning`, `error` for `Failed` and `Cancelled` |
 | `messagesSuppressed` | worst of what it stands for | Further problems the discovery had no room to keep |
 
