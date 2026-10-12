@@ -34,9 +34,9 @@ Each asset has one of the following types, shown in the **Type** column:
 | `Protocol`                | A protocol at an endpoint, such as TLS 1.3 on a server port                 | Its name and OIDs; its cipher suites are in its crypto properties                                   |
 | `Related crypto material` | A key, or other material such as a password, a salt or a token             | Its size as parameter set, and the algorithm family, primitive and elliptic curve of its algorithm |
 
-A component the document declares as a cryptographic asset without naming its type is shown as `Untyped`.
+A component of type `cryptographic-asset` without `cryptoProperties`, which CycloneDX allows, has no asset type and is shown as `Untyped`, with the verdict `Not applicable`.
 
-The same asset declared by several `CBOMs` is one entry of the inventory, for example a CA certificate found by three scans, or `sha-256` used by ten applications. The **Source CBOMs** column counts the `CBOMs` that declare the asset, and **Occurrences** how many times they report it in all. A newer version of a `CBOM` takes the place of the earlier one, see [Versions and deletion](../core-components/cbom.md#versions-and-deletion). Asset names and the properties listed above are shown in lower case, as the platform stores them, so `AES-256` reads `aes-256`.
+The same asset declared by several `CBOMs` is one entry of the inventory, for example a CA certificate found by three scans, or `sha-256` used by ten applications. The **Source CBOMs** column counts the `CBOMs` that declare the asset, and **Occurrences** how many times they report it in all. Asset names and the properties listed above are shown in lower case, as the platform stores them, so `AES-256` reads `aes-256`.
 
 ## Asset details
 
@@ -68,7 +68,7 @@ The **Crypto Assets Filter** offers the following filter fields, which can be co
 | PQC Readiness                                                                                | The post-quantum readiness verdict                                                                                                                    |
 | Source CBOMs                                                                                 | The number of `CBOMs` that declare the asset                                                                                                          |
 | Source CBOM                                                                                  | A `CBOM` that declares the asset, by serial number; **View the assets of this CBOM in the crypto asset inventory** on the `CBOM` detail opens the list with this filter |
-| Identity Rule Set Version                                                                    | The version of the rules by which the platform recognized the asset as one entry                                                                      |
+| Identity Rule Set Version                                                                    | A platform version number for how the asset was recognized; used for support                                                                          |
 
 ## Columns and views
 
@@ -76,17 +76,8 @@ The list shows the columns **Name**, **Type**, **PQC readiness**, **Source CBOMs
 
 ## Post-quantum readiness
 
-Each asset carries one of the following verdicts, shown in the **PQC readiness** column:
-
-| Verdict          | Description                                                                                          |
-|------------------|------------------------------------------------------------------------------------------------------|
-| `PQC ready`      | The asset withstands a cryptographically relevant quantum computer.                                  |
-| `Not PQC ready`  | The asset needs migration: a quantum computer breaks it, or it is broken, undersized or not standardized. |
-| `Not applicable` | Post-quantum migration does not apply to the asset, for example a password or a salt.               |
-| `Unknown`        | The rules cannot decide from what the `CBOMs` record, or the asset has not been evaluated yet.       |
-
-The verdict is decided by rules shipped with the platform, described in [Post-Quantum Readiness](../architecture/post-quantum-readiness.md). The **PQC readiness** widget of the asset detail shows which rule decided and why, and the **PQC readiness** tab walks through every rule the asset was tested against. The [cryptographic asset dashboard](dashboards.md#cryptographic-asset-dashboard) shows how the verdicts are spread across the inventory.
+Each asset carries one of the verdicts `PQC ready`, `Not PQC ready`, `Not applicable` or `Unknown`, shown in the **PQC readiness** column. The verdict is decided by rules shipped with the platform; [Post-Quantum Readiness](../architecture/post-quantum-readiness.md) describes what each verdict means and how it is decided. The [cryptographic asset dashboard](dashboards.md#cryptographic-asset-dashboard) shows how the verdicts are spread across the inventory.
 
 ## Asset synchronization
 
-An asset enters the inventory when a sync run adds the assets of a `CBOM` that declares it, and leaves it when no `CBOM` declares it any longer, for example after its `CBOM` is deleted or replaced by a newer version. How far the assets of a `CBOM` have come is its asset sync state, shown on the CBOM list, see [Asset sync states](../core-components/cbom.md#asset-sync-states). The detail of an asset that has left the inventory reads *This cryptographic asset is not in the inventory.*
+An asset enters the inventory when a sync run adds the assets of a `CBOM` that declares it. It leaves the inventory when no `CBOM` declares it any longer, for example after its `CBOM` is deleted or replaced by a newer version, see [Versions and deletion](../core-components/cbom.md#versions-and-deletion). How far the assets of a `CBOM` have come is its asset sync state, shown on the CBOM list, see [Asset sync states](../core-components/cbom.md#asset-sync-states). The detail of an asset that has left the inventory reads *This cryptographic asset is not in the inventory.*
