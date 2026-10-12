@@ -24,14 +24,12 @@ The Scheduler supports a range of task types, catering to various aspects of the
 | Certificate discovery             | Initiates the certificate discovery process based on definitions | [DiscoveryCertificateTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/DiscoveryCertificateTask.java)                     |
 | Certificate status update         | Update certificate status, validation, and compliance            | [UpdateCertificateStatusTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateCertificateStatusTask.java)               |
 | Update Intune revocation requests | Manages updates of revocation requests in Intune                 | [UpdateIntuneRevocationRequestsTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateIntuneRevocationRequestsTask.java) |
-| CBOM synchronization              | Synchronizes CBOM documents from the CBOM Repository every hour and onboards their cryptographic assets; see [CBOM](../core-components/cbom.md#synchronization) | [CbomSyncTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncTask.java) |
-| CBOM reconciliation               | Reads the whole CBOM Repository listing every Sunday to store what the hourly runs missed; see [CBOM](../core-components/cbom.md#sync-runs) | [CbomReconcileTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomReconcileTask.java) |
-| CBOM skipped documents retention  | Removes permanently skipped CBOM documents past their retention from the skipped documents list every day; see [CBOM](../core-components/cbom.md#retention) | [CbomSyncSkipRetentionTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncSkipRetentionTask.java) |
-| PQC verdict re-evaluation         | Re-evaluates stale post-quantum readiness verdicts every hour; see [Post-Quantum Readiness](../modules/post-quantum-readiness.md#re-evaluation-sweep) | [CryptoAssetPqcSweepTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CryptoAssetPqcSweepTask.java) |
+| CBOM synchronization | Stores new CBOMs from the CBOM Repository and adds their assets to the inventory, every hour; see [CBOM](../core-components/cbom.md#synchronization) | [CbomSyncTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncTask.java) |
+| CBOM reconciliation | Stores the CBOMs the hourly runs missed, every Sunday; see [CBOM](../core-components/cbom.md#synchronization) | [CbomReconcileTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomReconcileTask.java) |
+| CBOM skipped documents retention | Removes old permanently skipped CBOM documents, every day; see [CBOM](../core-components/cbom.md#skipped-documents) | [CbomSyncSkipRetentionTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncSkipRetentionTask.java) |
+| Crypto asset PQC re-evaluation | Re-evaluates outdated post-quantum readiness verdicts of crypto assets, every hour; see [Post-Quantum Readiness](./post-quantum-readiness.md) | [CryptoAssetPqcSweepTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CryptoAssetPqcSweepTask.java) |
 
-The four CBOM and cryptographic asset tasks are registered by the platform as system jobs: they can be disabled and enabled again, but their schedule cannot be edited and they cannot be deleted.
-
-A run the job declines is *skipped*: it leaves no row in the job history and is recorded on the job with the time and reason of the skip. The API serves both on the scheduled job, in its [list](/api/core-scheduler#tag/scheduled-jobs-management/GET/v1/scheduler/jobs) and [detail](/api/core-scheduler#tag/scheduled-jobs-management/GET/v1/scheduler/jobs/{uuid}), as `lastSkippedAt` and `lastSkipReason`, together with `nextFireTime`, when the scheduler will fire the job next. The four CBOM and cryptographic asset tasks give these reasons: *No CBOM repository client is configured* and *The CBOM repository answered 503 Service Unavailable* (CBOM synchronization and CBOM reconciliation); *Another sweep is already running* and *Nothing past the retention window* (CBOM skipped documents retention); *The sweep is turned off*, *Another sweep is already running* and *No stale cryptographic asset to re-evaluate* (PQC verdict re-evaluation).
+In the Scheduler, the **Job Type** of a job is the name in the Reference column.
 
 ## Task execution mechanism
 
@@ -75,5 +73,9 @@ The Scheduler meticulously maintains a history of task executions, capturing ess
 - Execution status
 
 Additionally, the execution history may encompass supplementary information and references to objects that were processed by the task.
+
+A task can skip a run, for example when it has nothing to do or a service it needs is not configured or not reachable. A skipped run leaves no entry in the history; the job detail shows when it happened in **Last Skipped At** and why in **Last Skip Reason**, for example *No CBOM repository client is configured*.
+
+The **Schedule** column of the job list shows the state of the job's schedule, such as `Scheduled` or `Paused`, and **Last Fired** when the job last fired. The job detail adds **Schedule State**, **Next Fire Time** and **Previous Fire Time**.
 
 The Scheduler stands as an essential component within the platform, enabling the systematic execution of management and automation tasks. By mastering the concepts of Scheduled Tasks, Cron Expressions, and Execution History, users gain a thorough understanding of how to utilize this feature effectively.
