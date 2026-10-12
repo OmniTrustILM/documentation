@@ -23,22 +23,22 @@ Currently there are following platform settings categories:
 
 The **Utils** tab also holds the settings of the [CBOM synchronization](../concept-design/core-components/cbom.md#synchronization). Clearing a field returns it to its default value.
 
-| Name                                                                 | Description                                                                                                                                                                        | Default Value |
-|----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| **CBOM Sync Overlap (seconds)**<br/>`cbomSyncOverlapSeconds`         | How far before the start of the last successful sync run each run lists the CBOM Repository again, from 0 to 86400 seconds                                                         | 60 seconds    |
-| **CBOM Sync Retries (runs)**<br/>`cbomSyncSkippedRetryRuns`          | How many later sync runs retry a document that could not be stored before it is permanently skipped, from 0 to 1000; `0` gives it up at the first failure                         | 3             |
-| **CBOM Sync Catch-up (documents)**<br/>`cbomSyncMaxIngestDocuments`  | How many `CBOMs` still waiting for their assets, such as uploaded ones, a sync run adds to the inventory besides the documents it has just stored, from 0 to 10000; `0` turns this off, so uploaded `CBOMs` stay `Pending` | 50            |
-| **CBOM Sync Skip Retention (days)**<br/>`cbomSyncSkipRetentionDays`  | How many days after its last attempt a permanently skipped document stays on the **Skipped CBOM documents** page, from 1 to 3650; a document still retrying is never removed      | 90 days       |
+| Name                                                                | Description                                                                                                                                                                                                         | Default Value |
+|---------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| **CBOM Sync Overlap (seconds)**<br/>`cbomSyncOverlapSeconds`        | How far before the start of the last successful sync run each run lists the CBOM Repository again, from 0 to 86400 seconds                                                                                          | 60 seconds    |
+| **CBOM Sync Retries (runs)**<br/>`cbomSyncSkippedRetryRuns`         | How many later sync runs retry a document that could not be stored before it is permanently skipped, from 0 to 1000; `0` gives it up at the first failure                                                           | 3             |
+| **CBOM Sync Catch-up (documents)**<br/>`cbomSyncMaxIngestDocuments` | How many further `CBOMs` one sync run adds to the inventory, from 0 to 10000. These are `CBOMs` still waiting for their assets, such as uploaded ones. `0` turns this off, and uploaded `CBOMs` then stay `Pending` | 50            |
+| **CBOM Sync Skip Retention (days)**<br/>`cbomSyncSkipRetentionDays` | How many days after its last attempt a permanently skipped document stays on the **Skipped Documents** page, from 1 to 3650; a document still retrying is never removed                                             | 90 days       |
 
 :::note
 The values below have no field on the **Utils** tab and can be set only through the [Update platform settings](/api/core-other#tag/settings/PUT/v1/settings/platform) API. Saving the **Utils** tab resets them to their defaults, unless the table says otherwise.
 :::
 
-| Name                              | Description                                                                                                                         | Default Value |
-|-----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| `cbomSyncPageSize`                | How many entries one request to the CBOM Repository lists, from 1 to 1000                                                           | 1000          |
-| `cbomSyncAssetBatchSize`          | How many cryptographic assets are written to the inventory in one step, from 1 to 10000                                             | 100           |
-| `cbomSyncIngestRetryAfterSeconds` | How long a sync run leaves a `CBOM` whose assets failed, or are still being added, before it tries again, from 0 to 86400 seconds  | 1800 seconds  |
+| Name                              | Description                                                                                                                          | Default Value |
+|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| `cbomSyncPageSize`                | How many entries one request to the CBOM Repository lists, from 1 to 1000                                                            | 1000          |
+| `cbomSyncAssetBatchSize`          | How many cryptographic assets are written to the inventory in one step, from 1 to 10000                                              | 100           |
+| `cbomSyncIngestRetryAfterSeconds` | How long a sync run leaves a `CBOM` whose assets failed, or are still being added, before it tries again, from 0 to 86400 seconds    | 1800 seconds  |
 | `cbomSyncAssetIngestEnabled`      | Whether sync runs add assets to the inventory at all; `false` keeps every `CBOM` as it is. Saving the **Utils** tab keeps this value | `true`        |
 
 ## Certificates Settings

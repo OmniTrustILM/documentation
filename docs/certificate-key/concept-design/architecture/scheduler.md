@@ -24,12 +24,12 @@ The Scheduler supports a range of task types, catering to various aspects of the
 | Certificate discovery             | Initiates the certificate discovery process based on definitions | [DiscoveryCertificateTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/DiscoveryCertificateTask.java)                     |
 | Certificate status update         | Update certificate status, validation, and compliance            | [UpdateCertificateStatusTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateCertificateStatusTask.java)               |
 | Update Intune revocation requests | Manages updates of revocation requests in Intune                 | [UpdateIntuneRevocationRequestsTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateIntuneRevocationRequestsTask.java) |
-| CBOM synchronization | Stores new CBOMs from the CBOM Repository and adds their assets to the inventory, every hour; see [CBOM](../core-components/cbom.md#synchronization) | [CbomSyncTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncTask.java) |
-| CBOM reconciliation | Stores the CBOMs the hourly runs missed, every Sunday; see [CBOM](../core-components/cbom.md#synchronization) | [CbomReconcileTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomReconcileTask.java) |
-| CBOM skipped documents retention | Removes old permanently skipped CBOM documents, every day; see [CBOM](../core-components/cbom.md#skipped-documents) | [CbomSyncSkipRetentionTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncSkipRetentionTask.java) |
-| Crypto asset PQC re-evaluation | Re-evaluates outdated post-quantum readiness verdicts of crypto assets, every hour; see [Post-Quantum Readiness](./post-quantum-readiness.md) | [CryptoAssetPqcSweepTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CryptoAssetPqcSweepTask.java) |
+| CBOM synchronization              | Synchronizes CBOMs from the CBOM Repository every hour           | [CbomSyncTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncTask.java)                                                             |
+| CBOM reconciliation               | Stores the CBOMs the hourly runs missed, every Sunday            | [CbomReconcileTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomReconcileTask.java)                                                   |
+| CBOM skipped documents retention  | Removes old permanently skipped CBOM documents every day         | [CbomSyncSkipRetentionTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncSkipRetentionTask.java)                                   |
+| Crypto asset PQC re-evaluation    | Re-evaluates outdated PQC verdicts of crypto assets every hour   | [CryptoAssetPqcSweepTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CryptoAssetPqcSweepTask.java)                                       |
 
-In the Scheduler, the **Job Type** of a job is the name in the Reference column.
+In the Scheduler, the **Job Type** of a job is the name in the Reference column. The CBOM tasks are described in [CBOM](../core-components/cbom.md#synchronization), the re-evaluation in [Post-Quantum Readiness](./post-quantum-readiness.md).
 
 ## Task execution mechanism
 
@@ -74,7 +74,7 @@ The Scheduler meticulously maintains a history of task executions, capturing ess
 
 Additionally, the execution history may encompass supplementary information and references to objects that were processed by the task.
 
-A task can skip a run, for example when it has nothing to do or a service it needs is not configured or not reachable. A skipped run leaves no entry in the history; the job detail shows when it happened in **Last Skipped At** and why in **Last Skip Reason**, for example *No CBOM repository client is configured*.
+A task can skip a run, for example when it has nothing to do, or when a service it needs is not configured or cannot be reached. A skipped run leaves no entry in the history. The job detail shows when it happened in **Last Skipped At** and why in **Last Skip Reason**, for example *No CBOM repository client is configured*.
 
 The **Schedule** column of the job list shows the state of the job's schedule, such as `Scheduled` or `Paused`, and **Last Fired** when the job last fired. The job detail adds **Schedule State**, **Next Fire Time** and **Previous Fire Time**.
 
