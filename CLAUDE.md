@@ -49,21 +49,23 @@ work. If a release makes the build fail with a `SIGABRT` heap-limit crash (which
 infrastructure flakiness), raise both together after confirming with one cold build:
 `yarn clear && NODE_OPTIONS=--max_old_space_size=<limit> yarn build`.
 
-### Remote docs (five synced sets)
+### Remote docs
 
 These directories are **not authored here**. `docusaurus-plugin-remote-content` downloads them from their source repositories at a pinned ref, so local edits are overwritten on the next download — fix errors upstream.
 
 | Target directory | Source repository and path | Pin | Download command |
 |---|---|---|---|
 | `docs/certificate-key/installation-guide/deployment/deployment-helm/` | `OmniTrustILM/helm-charts` `charts/ilm/docs/` | `chartVersion` | `yarn docusaurus download-remote-helm-docs` |
+| `docs/certificate-key/integration-guides/pkcs11-cryptography-provider/` | `OmniTrustILM/pkcs11-cryptography-provider` `docs/site/` (the integration guide) | `pkcs11ConnectorVersion` | `yarn docusaurus download-remote-pkcs11-connector-docs` |
+| `docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/` | `OmniTrustILM/pkcs11-cryptography-provider` `docs/site/deployment/` (the deployment pages) | `pkcs11ConnectorVersion` | `yarn docusaurus download-remote-pkcs11-connector-deployment-docs` |
 | `docs/certificate-key/installation-guide/deployment/deployment-operator/` | `OmniTrustILM/operator` `docs/site/` (the five journey pages) | `operatorDocsRef` | `yarn docusaurus download-remote-operator-docs` |
 | `docs/certificate-key/installation-guide/deployment/deployment-operator/custom-resources/` | `OmniTrustILM/operator` `docs/site/custom-resources/` (the four CR guides) | `operatorDocsRef` | `yarn docusaurus download-remote-operator-cr-docs` |
 | `docs/certificate-key/cli/` | `OmniTrustILM/cli` `docs/site/` | `cliDocsRef` | `yarn docusaurus download-remote-cli-docs` |
 | `docs/contributors/development-environment.md` | `OmniTrustILM/development-environment` `docs/site/` | `devenvDocsRef` | `yarn docusaurus download-remote-devenv-docs` |
 
-The two operator entries share `operatorDocsRef` and are always re-pinned together. The `_category_.json` in each target directory **is** authored here — it is not in any `documents` array, so a download never touches it.
+The two operator entries share `operatorDocsRef` and are always re-pinned together. The two PKCS#11 entries share `pkcs11ConnectorVersion`. The `_category_.json` in each target directory **is** authored here — it is not in any `documents` array, so a download never touches it.
 
-The operator, cli and devenv pages follow two rules, enforced upstream: every page carries `sidebar_position` front matter, and links are relative within the synced set (same-directory, or one level between `docs/site/` and `docs/site/custom-resources/` in the operator set) — everything else is an absolute URL. (The helm set predates both rules and carries no front matter.) `markdown.hooks.onBrokenMarkdownLinks` is `'throw'`, so a link violation fails `yarn build` rather than printing a warning nobody reads.
+The PKCS#11 connector, operator, cli and devenv pages follow two rules, enforced upstream: every page carries `sidebar_position` front matter, and links are relative within the synced set (same-directory, or one level between `docs/site/` and `docs/site/custom-resources/` in the operator set) — everything else is an absolute URL. (The helm set predates both rules and carries no front matter.) `markdown.hooks.onBrokenMarkdownLinks` is `'throw'`, so a link violation fails `yarn build` rather than printing a warning nobody reads.
 
 > **The helm set is pinned behind its fix.** `charts/ilm/docs/overview.md` carried a link out of its own directory (`../../messaging-rabbitmq`), which was hand-patched here after a sync — the exact failure mode the `'throw'` flip exists to prevent. The upstream fix is merged on `helm-charts` `main` but is **not** in the `2.19.0` tag that `chartVersion` pins, so `download-remote-helm-docs` must not be re-run until `chartVersion` advances. If it is, the build now fails loudly instead of regressing silently.
 
@@ -101,6 +103,7 @@ single entry renders as a plain navbar link, a group with several as a dropdown.
 Versions and the remote-content pins live in `src/data/versions.mjs`:
 - `apiVersion` — core, connector, messaging and protocol documents
 - `chartVersion` — Helm chart (used by `docusaurus-plugin-remote-content`)
+- `pkcs11ConnectorVersion` — PKCS#11 Cryptography Provider documentation tag
 - `cscVersion` — CSC component, versioned independently
 - `operatorVersion`, `cliVersion` — substituted into docs as `%OPERATOR_VERSION%` / `%CLI_VERSION%`
 - `operatorDocsRef`, `cliDocsRef`, `devenvDocsRef` — immutable refs for the synced doc sets
