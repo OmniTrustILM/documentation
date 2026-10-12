@@ -68,6 +68,8 @@ Destroyed --> [*]
 
 Every key has defined its key usages. The key usage can restrict the type of cryptographic operation that can be performed using the `Key`.
 
+Key usages are platform policy. The platform checks them before it sends an operation to the connector. The connector can also restrict the key where it stores it, for example with the PKCS#11 `CKA_SIGN` flag, when it creates the key.
+
 The following key usages are supported:
 
 | Key Usage | Description                                              |
