@@ -19,7 +19,7 @@ In addition to the above details, the following are mapped to the `Key` for the 
 - `Group` it belongs to
 - Optionally description of the `Key`
 
-A `Key` created or imported in a `Token Profile` is held by that profile's token. A `Key` found by a [discovery](../modules/discovery.md#discovered-keys) belongs to no token: the platform holds only its public part, and operations that need the token are not available for it. See [Discovered keys](../modules/key-inventory.md#discovered-keys).
+A `Key` found by a discovery belongs to no `Token Profile`, see [Discovered keys](../modules/key-inventory.md#discovered-keys).
 
 ## Attributes
 

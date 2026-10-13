@@ -32,15 +32,7 @@ The same connector service can implement both contracts. It is then registered t
 
 ### Run scope
 
-`Core` mints a `runId` for each run and never reuses it. Every operation request carries the same scope:
-
-| Field | Description |
-|-------|-------------|
-| `runId` | The run's identity. |
-| `resources` | The resource types the run targets, as resource codes (`certificates`, `keys`). Fixed when the run is initiated. |
-| `attributes` | The run-level attributes. |
-| `resourceAttributes` | The attributes of each targeted resource, keyed by resource code. |
-| `checkpoint` | The connector's opaque run handle, as the connector last returned it. Absent on initiate. |
+`Core` mints a `runId` for each run and never reuses it. Every operation request carries the run's whole scope: its `runId`, the resources it targets, its run-level and per-resource attributes, and, after initiate, the connector's `checkpoint`. The exact shape is [`DiscoveryV2ScopedRequestDto`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/connector/discovery/v2/DiscoveryV2ScopedRequestDto.java).
 
 The `checkpoint` is the connector's own description of where the run stands. `Core` never interprets it. It stores the checkpoint that the initiate, stop and resume responses return, keeps the stored one when a response leaves it out, and replays it on every later request for the run. A checkpoint larger than 64 KB serialized cannot be replayed, so the run ends `Failed`, and `Core` cancels it at the connector.
 
@@ -87,15 +79,7 @@ note over Core, Connector : Full acknowledgement after a terminal state
 @enduml
 ```
 
-The status response reports the run's `state`:
-
-| State | Meaning |
-|-------|---------|
-| `running` | The connector is scanning. |
-| `stopped` | The run is stopped and can be resumed. |
-| `completed` | The connector has finished scanning. |
-| `failed` | The connector could not finish the run. |
-| `cancelled` | The run was cancelled. |
+The status response reports the run's `state`: `running`, `stopped`, `completed`, `failed` or `cancelled`.
 
 `Core` polls the status and drains the results on its own schedule. A run in progress gets a status poll, and a drain that finds nothing new, about once a minute; a drain that returns `more` is followed at once by the next page, and a stopped run is polled every 5 minutes. When the connector reports `completed` and every item up to the highest sequence has been collected, `Core` moves the run to processing and sends the full acknowledgement described below. A connector that reports `failed` or `cancelled` ends the run with that status.
 
@@ -122,18 +106,11 @@ The status response can carry two further statements about the run:
 - **`progress`** — how far the run has got, counted in targets and in items per resource, as described below. The platform stamps `updatedAt` itself and ignores a value the connector sends.
 - **`meta`** — the connector's metadata about the run, as metadata attributes, shown on the discovery. When `meta` is absent, `Core` keeps the metadata it holds; when it is present, it replaces that metadata whole; an empty list clears it. `meta` larger than 64 KB serialized, or malformed, is dropped with a `runMetadataNotRecorded` run message. The run goes on, but the warning makes it end `Warning`. The counts `progress` has fields for belong there, not in `meta`; `meta` can say what `progress` has no field for, such as why targets failed.
 
-`progress` counts the connector's work in targets. A target is one unit of the connector's work that a person would recognise, such as an address and port, a CA, a CA and certificate template, a secrets mount or a report. One target can yield many items or none.
+`progress` counts the connector's work in targets. A target is one unit of the connector's work that a person would recognize, such as an address and port, a CA, a CA and certificate template, a secrets mount or a report. One target can yield many items or none.
 
-| Field | Description |
-|-------|-------------|
-| `targetsProcessed` | How many targets the connector has attempted so far, whatever came of them. |
-| `targetsTotal` | How many targets the run will attempt in total: exact if the connector knows, an estimate otherwise, and it may change as the run goes on. Leave it out when the connector cannot know the total; there is then no percentage to show, and clients do not guess one. |
-| `targetsFailed` | How many targets the connector expected to read and could not: access refused, a source it was configured to read being unreachable, an answer it could not read. |
-| `targetsEmpty` | How many targets were attempted and held nothing to discover: a CA or template with no certificates, an empty mount or report, or a target the connector only guessed at, like an address in a swept range, that does not answer. |
-| `phase` | A free-text label for what the connector is doing, such as `scanning`. |
-| `byResource` | Per resource code, the items `produced`, a `totalEstimate` and a `phase`. Leave out a resource with nothing to report rather than sending an empty object. |
+Every processed target ends one way: it yielded items, it held nothing to discover, or the connector expected to read it and could not, because access was refused, a source it was configured to read was unreachable, or it could not read the answer. `targetsProcessed` counts all of them; `targetsEmpty` and `targetsFailed` count the two kinds of target that yielded nothing, within `targetsProcessed` rather than in addition to it, and never the same target twice. `targetsTotal` is how many targets the run will attempt, exact or estimated; leave it out when the connector cannot know it, and clients then show no percentage. `phase` is a free-text label for what the connector is doing, and `byResource` reports per resource the items produced, an estimated total and a phase. The fields are defined in [`DiscoveryProgressDto`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/connector/discovery/v2/DiscoveryProgressDto.java).
 
-Every processed target ends one way: it yielded items, it was empty, or it failed. `targetsEmpty` and `targetsFailed` are counted within `targetsProcessed`, not in addition to it, and a target is never counted in both. The targets that yielded items are the remainder, and no field counts them. An empty target is a normal outcome, not a failure, even when the connector had to try it to learn that it was empty, as a scan of an address range does. Leave out a counter you cannot keep: `targetsProcessed` when the connector cannot count its work, `targetsEmpty` when it does not tell empty targets apart.
+An empty target is a normal outcome, not a failure, even when the connector had to try it to learn that it was empty, as a scan of an address range does. Leave out a counter you cannot keep: `targetsProcessed` when the connector cannot count its work, `targetsEmpty` when it does not tell empty targets apart.
 
 A connector whose unit of work would only be a page of search results leaves all the target counters out, because a count of pages means nothing to the person watching the run, and reports `byResource` and `phase` instead. When such a run targets one resource and reports its `totalEstimate`, the platform shows the run's progress in items against that estimate.
 
@@ -174,29 +151,18 @@ Answer `404` only for a `runId` you cannot rebuild from the request: it ends the
 
 ## Items
 
-A discovered item carries:
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| `sequence` | yes | The item's position in the run, from 1, with no gaps. |
-| `uniqueRef` | yes | The connector's natural key for the item, which `Core` uses to deduplicate it across drains and retries. |
-| `payload` | yes | What was found: a certificate or a key, as described below. |
-| `meta` | no | Where the item was found, such as a host, port or path, as metadata attributes. `Core` keeps it on the inventory object as discovery metadata. Location belongs here, never in the payload. |
-| `discoveredAt` | no | When the connector found the item. |
+A discovered item carries its `sequence`, its `uniqueRef`, which is the connector's natural key for the item and lets `Core` deduplicate it across drains and retries, the `payload` that says what was found, and optionally `discoveredAt` and `meta`. `meta` says where the item was found, such as a host, port or path, as metadata attributes, and `Core` keeps it on the inventory object as discovery metadata; location belongs there, never in the payload. The item is defined in [`DiscoveredItemDto`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/connector/discovery/v2/DiscoveredItemDto.java).
 
 The `payload` is polymorphic: its `resource` property names the resource type, and the other properties depend on it. In the OpenAPI document it is the `oneOf` schema `DiscoveredItemPayload` with `resource` as its discriminator. A connector written in Java gets this from the `interfaces` library; a connector written in another language must write `resource` into every payload itself, because the item carries no resource field of its own and `Core` reads the type from the payload alone.
 
-| `resource` | Required properties | Optional properties |
-|------------|---------------------|---------------------|
-| `certificates` | `certificateData` — the Base64-encoded DER certificate | — |
-| `keys` | `type` (`Public`, `Private`, `Secret` or `Split`), `algorithm` (for example `RSA`, `ECDSA`, `ML-DSA`, `AES`, or `Unknown`) | `length`, `fingerprint`, `publicKeyFormat`, `publicKey` |
+A certificate payload has `resource` set to `certificates` and carries the Base64-encoded DER certificate, see [`DiscoveredCertificateDto`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/connector/discovery/v2/DiscoveredCertificateDto.java). A key payload has `resource` set to `keys` and carries the key's type and algorithm, and optionally its length, fingerprint and public key, see [`DiscoveredKeyDto`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/connector/discovery/v2/DiscoveredKeyDto.java).
 
 ```json
 { "sequence": 1, "uniqueRef": "10.0.0.5:443:0", "payload": { "resource": "certificates", "certificateData": "MIIF..." } }
 { "sequence": 2, "uniqueRef": "kms/keys/7f3a", "payload": { "resource": "keys", "type": "Public", "algorithm": "RSA", "length": 2048, "publicKeyFormat": "SubjectPublicKeyInfo", "publicKey": "MIIBIjAN..." } }
 ```
 
-A key payload never carries private material. For a `Private`, `Secret` or `Split` key, `publicKey` and `publicKeyFormat` must be absent, and `publicKeyFormat` is never `PrivateKeyInfo` or `EncryptedPrivateKeyInfo`. `Core` checks every item against the contract and skips one that breaks it, filing an `itemInvalid` warning in the run messages. It also computes a key's fingerprint, algorithm and size from the public key itself rather than taking the connector's values. Which keys the platform imports, and how, is described under [Discovered keys](../../concept-design/modules/key-inventory.md#discovered-keys).
+A key payload never carries private material. For a `Private`, `Secret` or `Split` key, `publicKey` and `publicKeyFormat` must be absent, and `publicKeyFormat` is never `PrivateKeyInfo` or `EncryptedPrivateKeyInfo`. `Core` checks every item against the contract and skips one that breaks it, with a warning in the discovery's messages. It computes a key's fingerprint, algorithm and size from the public key itself rather than taking the connector's values. Which keys are added to the inventory is described in [Discovered keys](../../concept-design/modules/key-inventory.md#discovered-keys).
 
 ## For connector developers
 

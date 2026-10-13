@@ -75,11 +75,10 @@ This returns one page of the items, in the order the `Discovery Provider` found 
 
 - `resource` narrows the listing to one resource, for example `?resource=keys`, and `newlyDiscovered=true` to the items that were new to the inventory.
 - `inventory` is the certificate or key the item became. It is absent while a key waits to be imported, when it was not imported, and when the object was deleted later.
-- `processedError` carries the reason when an item was not imported or could not be processed, for example for a private key, which the platform lists but never imports.
-- `uniqueRef` is the `Discovery Provider`'s reference for the item. The `Network Discovery Provider` uses the fingerprint of the certificate or the key.
+- `processedError` gives the reason when an item was not imported, for example a private key, which the platform lists but never imports.
 - `meta` says where the `Discovery Provider` found the item, such as the host and port.
 
-The fields are described in [Items](../../concept-design/modules/discovery.md#items). The certificates a `Discovery` found are also listed on their own, with their subject, issuer and validity, by `GET /api/v1/discoveries/{uuid}/certificates`.
+The item is defined in [`DiscoveryItemDto`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/core/discovery/DiscoveryItemDto.java). The certificates a `Discovery` found are also listed on their own by `GET /api/v1/discoveries/{uuid}/certificates`.
 
 ## Get `Discovery` results using the Web Interface
 
@@ -96,19 +95,4 @@ The **Results** tab shows one tab per resource, **Certificate** and **Key**, whe
 
 **Discovered Certificates** lists the **Common Name**, which links to the certificate in the inventory, **Serial Number**, **Not After**, **Not Before**, **Issuer Common Name** and **Fingerprint**. The **New** tab also shows the **Triggers** evaluated on each certificate, and an information symbol that opens the **Processing error** of a certificate that could not be processed. Triggers are evaluated once per unique certificate, so a certificate found in several places shows them on one of its rows, and the cell stays empty on the others.
 
-**Discovered Key** lists the keys:
-
-| Column      | Description |
-|-------------|-------------|
-| Name        | The key in the key inventory, linked, once the key is imported |
-| Type        | Public, private, secret or split key |
-| Algorithm   | The key's algorithm |
-| Size        | The key's size |
-| Format      | The format of the public key, when one was reported |
-| Fingerprint | The fingerprint the provider reported |
-| Discovered  | When the provider found the key |
-| State       | **Imported**; **Not imported**, in warning colour, with the reason shown when you point at it; or **Waiting** while the key is not processed yet |
-| Public key  | An eye symbol that opens the **Public key** dialog, with the key's format, its value, and **Copy public key** to copy it. Private, secret and split keys have none |
-| Details     | An information symbol that opens the item: its position in the run and the provider's reference as the title, the reason when it was not imported, and the payload and metadata the provider reported |
-
-A private, secret or split key is listed as **Not imported**: the platform imports only keys with a public part. See [Discovered keys](../../concept-design/modules/key-inventory.md#discovered-keys).
+**Discovered Key** lists each key's name, which links to the key once it is imported, its type, algorithm, size, format and fingerprint, when it was found, and its state: **Imported**, **Waiting** while it is not processed yet, or **Not imported**, with the reason shown when you point at it. Why a key is not imported is described in [Discovered keys](../../concept-design/modules/key-inventory.md#discovered-keys). The eye symbol opens the key's public key, with a button to copy it, and the information symbol opens the item with what the provider reported.
