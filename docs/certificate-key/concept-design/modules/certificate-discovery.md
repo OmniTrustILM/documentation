@@ -103,7 +103,7 @@ Besides its name, status, `Connector`, `Attributes` and metadata, the details of
 | `resources` | The resources the discovery targets. A v1 discovery shows `certificates` |
 | `connectorInterface` | The `discovery` interface the discovery runs through, with its version and feature flags. Absent for a v1 discovery |
 | `stoppable` | Whether the discovery can be stopped. Always `false` for a v1 discovery |
-| `progress` | The progress the `Connector` last reported: targets processed, in total and failed, the phase, and per resource the items produced, an estimated total and the phase, with the time it was reported |
+| `progress` | The progress the `Connector` last reported: targets processed, in total, empty and failed, the phase, and per resource the items produced, an estimated total and the phase, with the time it was reported. Targets are described under [Progress and run metadata](../../connectors/provider-interfaces/discovery-provider-v2.md#progress-and-run-metadata) |
 | `runMessageCount` | The number of entries in the [run messages](#run-messages). For a v1 discovery, `0` unless its metadata could not be stored |
 | `itemsDiscovered` | The highest item sequence collected from the `Connector` so far. Absent for a v1 discovery |
 | `itemsNewlyDiscovered`, `itemsProcessed`, `itemsFailed` | How many of the staged items were new to the inventory, have been processed, and carry a reason |
@@ -119,7 +119,7 @@ Besides its name, status, `Connector`, `Attributes` and metadata, the details of
 | Completed   | The discovery has finished, and everything it found was processed without a problem |
 | Warning     | The discovery has finished, but some items were not imported, or it recorded a problem. Its message, run messages and items say what |
 | Failed      | The discovery could not be finished: the `Connector` failed or no longer knows the run, or the platform could not drive it. Items it collected are not processed |
-| Cancelled   | The discovery was cancelled by a user, or because it stayed stopped too long. Items it collected are not processed |
+| Cancelled   | The discovery was cancelled by a user, because it stayed stopped too long, because its `Connector` was force-deleted while the discovery was live, or because the `Connector` reported the run cancelled on its own. Items it collected are not processed |
 
 ```plantuml
 @startuml
@@ -153,6 +153,8 @@ A v2 discovery that is processed to the end finishes as `Completed` unless one o
 
 - an item carries a reason of its own: a key that was not imported, or a certificate that could not be processed,
 - the run collected a run message of `warning` or `error` severity.
+
+Targets the `Discovery Provider` could not read end up there too: when the provider has finished and its last progress counts failed targets, the platform files a `targetsNotExamined` warning for them, so the discovery ends `Warning`. Targets that held nothing to discover are a normal outcome and never downgrade it.
 
 A problem the run recovered from does not downgrade it. A processing batch that fails and is then retried cleanly is recorded as an `info` message, so the discovery still ends `Completed`. A batch that keeps failing until its retries run out stops the processing, and the discovery ends `Warning` with the number of items that could not be imported.
 
@@ -204,8 +206,19 @@ A v1 discovery records one kind of entry only, `runMetadataNotRecorded`, when th
 | `batchProcessingAbandoned` | warning | A processing batch failed after its items were already imported |
 | `keyImportFailed` | warning | Discovered keys were not imported; the items listing says which, and why |
 | `runMetadataNotRecorded` | warning | The `Connector`'s metadata about the run was not recorded: it was too large or malformed, or the platform could not store it |
-| `runEnded` | info, warning or error | How the discovery ended: `info` for `Completed`, `warning` for `Warning`, `error` for `Failed` and `Cancelled` |
+| `targetsNotExamined` | warning | A target the `Discovery Provider` was asked to examine could not be read. `occurrences` is the number of failed targets in its last progress |
+| `runEnded` | info, warning or error | How the discovery ended, with a severity that follows why it ended, see below |
 | `messagesSuppressed` | worst of what it stands for | Further problems the discovery had no room to keep |
+
+The `runEnded` entry takes its severity from the cause of the ending rather than from the final status alone, so an `error` entry always means the discovery failed:
+
+| The discovery | Severity |
+|---------------|----------|
+| Completed | info |
+| Ended with warnings | warning |
+| Failed | error |
+| Was cancelled by a user | info |
+| Was cancelled because it stayed stopped too long, because its `Connector` was force-deleted while the discovery was live, or because the `Connector` reported the run cancelled on its own | warning |
 
 ## Items
 

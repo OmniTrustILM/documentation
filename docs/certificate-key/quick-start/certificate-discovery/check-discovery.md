@@ -38,6 +38,7 @@ This will give us the details about the `Discovery` including its status and pro
         "targetsProcessed": 1,
         "targetsTotal": 1,
         "targetsFailed": 0,
+        "targetsEmpty": 0,
         "byResource": {
             "certificates": { "produced": 3 },
             "keys": { "produced": 3 }
@@ -51,6 +52,15 @@ This will give us the details about the `Discovery` including its status and pro
 ```
 
 The `status` is one of `inProgress`, `stopped`, `processing`, `completed`, `warning`, `failed` and `cancelled`, described in [Discovery status](../../concept-design/modules/certificate-discovery.md#discovery-status). A `Discovery` has finished when its status is `completed`, `warning`, `failed` or `cancelled`. You can check the status periodically until then. A v1 `Discovery` has no `connectorInterface`, `progress` or `itemsDiscovered`, and it is never `stopped` or `cancelled`.
+
+The `progress` counts targets. For the `Network Discovery Provider`, a target is one port on one host: the example above has scanned its one target, `www.example.com:443`, and found three certificates and their keys there. Every processed target either yielded items or is counted in exactly one of these counters:
+
+| Counter | What the `Network Discovery Provider` counts in it |
+|---------|----------------------------------------------------|
+| `targetsEmpty` | A port with nothing listening, where the connection is refused, has no route or times out; a service that does not answer with TLS; a connection closed before any TLS answer |
+| `targetsFailed` | A host that refuses the TLS handshake with an alert; a host name that does not resolve; a certificate the provider cannot turn into an item |
+
+Empty targets are normal: most of a sweep over an address range finds nothing listening. Failed targets are not. The provider publishes how many targets failed for each reason in the discovery's metadata, and a `Discovery` with failed targets ends `warning`, with a `targetsNotExamined` run message. The counters are described in [Discovery Provider v2](../../connectors/provider-interfaces/discovery-provider-v2.md#progress-and-run-metadata).
 
 ### Stop, resume or cancel a `Discovery`
 
@@ -123,10 +133,10 @@ Steps for checking `Discovery` status:
 The **Details** tab shows:
 
 - **Discovery Details**, with the **Status**, the **Connector Interface** the discovery runs through, and the **Resources** it targets
-- **Progress**, for a v2 discovery, and for any discovery while it is processing: the targets the provider has scanned, the targets that failed, its phase with the time it was reported, and per resource what it has found. Until the provider reports progress, it says **No progress reported yet.** During processing, a **Platform import** bar shows how many items have been imported
+- **Progress**, for a v2 discovery, and for any discovery while it is processing: the targets the provider has scanned, its phase with the time it was reported, and per resource what it has found. Targets that had nothing to discover are counted on a muted line, such as **12 targets had nothing to discover**, and only targets that failed are shown in amber, such as **3 targets failed**. Without a total, the bar moves while the provider works and is drawn full once it has finished. When the provider counts no targets, a discovery of one resource gets a bar counted in items against the provider's estimate, such as **3,700 / ~12,000 certificates**. Until the provider reports progress, it says **No progress reported yet.** During processing, a **Platform import** bar shows how many items have been imported
 - **Import summary**, with the items received, those new to the inventory, imported and not imported
 
-While the discovery is In Progress or Processing, the page refreshes itself every ten seconds, as long as its browser tab is visible and its window has focus. The refresh icon of **Discovery Details** updates the page at any time. Once the discovery has finished, its status becomes Completed, or Warning when something was not imported.
+While the discovery is In Progress or Processing, the page refreshes itself every ten seconds, as long as its browser tab is visible and its window has focus. The refresh icon of **Discovery Details** updates the page at any time. Once the discovery has finished, its status becomes Completed, or Warning when something was not imported or a target could not be read.
 
 To control a running v2 `Discovery`, use the buttons at the top of the detail. They are shown when the discovery allows the action and you have the permission for it:
 

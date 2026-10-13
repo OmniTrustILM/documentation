@@ -119,8 +119,25 @@ If the connector can rebuild a run but no longer holds the items a drain asks fo
 
 The status response can carry two further statements about the run:
 
-- **`progress`** — how far the run has got: `targetsProcessed`, `targetsTotal`, `targetsFailed` (counted within `targetsProcessed`, not in addition to it), a free-text `phase`, and `byResource`, which reports per resource code the items `produced`, a `totalEstimate` and a `phase`. Leave out a resource with nothing to report rather than sending an empty object. The platform stamps `updatedAt` itself and ignores a value the connector sends.
-- **`meta`** — the connector's metadata about the run, as metadata attributes, shown on the discovery. When `meta` is absent, `Core` keeps the metadata it holds; when it is present, it replaces that metadata whole; an empty list clears it. `meta` larger than 64 KB serialized, or malformed, is dropped with a `runMetadataNotRecorded` run message. The run goes on, but the warning makes it end `Warning`. Counts belong in `progress`, not in `meta`.
+- **`progress`** — how far the run has got, counted in targets and in items per resource, as described below. The platform stamps `updatedAt` itself and ignores a value the connector sends.
+- **`meta`** — the connector's metadata about the run, as metadata attributes, shown on the discovery. When `meta` is absent, `Core` keeps the metadata it holds; when it is present, it replaces that metadata whole; an empty list clears it. `meta` larger than 64 KB serialized, or malformed, is dropped with a `runMetadataNotRecorded` run message. The run goes on, but the warning makes it end `Warning`. The counts `progress` has fields for belong there, not in `meta`; `meta` can say what `progress` has no field for, such as why targets failed.
+
+`progress` counts the connector's work in targets. A target is one unit of the connector's work that a person would recognise, such as an address and port, a CA, a CA and certificate template, a secrets mount or a report. One target can yield many items or none.
+
+| Field | Description |
+|-------|-------------|
+| `targetsProcessed` | How many targets the connector has attempted so far, whatever came of them. |
+| `targetsTotal` | How many targets the run will attempt in total: exact if the connector knows, an estimate otherwise, and it may change as the run goes on. Leave it out when the connector cannot know the total; there is then no percentage to show, and clients do not guess one. |
+| `targetsFailed` | How many targets the connector expected to read and could not: access refused, the source unreachable, an answer it could not read. |
+| `targetsEmpty` | How many targets were attempted and held nothing to discover: an address with nothing listening, a CA or template with no certificates, an empty mount or report. |
+| `phase` | A free-text label for what the connector is doing, such as `scanning`. |
+| `byResource` | Per resource code, the items `produced`, a `totalEstimate` and a `phase`. Leave out a resource with nothing to report rather than sending an empty object. |
+
+Every processed target ends one way: it yielded items, it was empty, or it failed. `targetsEmpty` and `targetsFailed` are counted within `targetsProcessed`, not in addition to it, and a target is never counted in both. The targets that yielded items are the remainder, and no field counts them. An empty target is a normal outcome, not a failure, even when the connector had to try it to learn that it was empty, as a scan of an address range does. Leave out a counter you cannot keep: `targetsProcessed` when the connector cannot count its work, `targetsEmpty` when it does not tell empty targets apart.
+
+A connector whose unit of work would only be a page of search results leaves all the target counters out, because a count of pages means nothing to the person watching the run, and reports `byResource` and `phase` instead. When such a run targets one resource and reports its `totalEstimate`, the platform shows the run's progress in items against that estimate.
+
+Failed targets do not make the run fail, but part of what it was asked to examine went unexamined, and the platform reports that. When the connector has finished the run and its last `progress` reports `targetsFailed` above zero, `Core` files a `targetsNotExamined` warning counting the failed targets, and the discovery ends `Warning`. Empty targets never produce a run message.
 
 ### Stop, resume and cancel
 
