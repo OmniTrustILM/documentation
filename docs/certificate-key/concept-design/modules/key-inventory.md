@@ -29,7 +29,7 @@ See [`Key`](../core-components/key.md) for more information.
 
 ## Discovered keys
 
-A `Key` usually comes from a `Token Profile`, where it is created or imported. A [discovery](certificate-discovery.md#discovered-keys) that targets keys adds a second source: it brings into the inventory the keys a `Discovery Provider` finds, without any token.
+A `Key` usually comes from a `Token Profile`, where it is created or imported. A [discovery](discovery.md#discovered-keys) that targets keys adds a second source: it brings into the inventory the keys a `Discovery Provider` finds, without any token.
 
 - **No token, public part only.** A discovered key belongs to no token and no `Token Profile`. The platform holds at most its public part. The discovery contract carries no private, secret or split key material, and `Core` refuses an item that does.
 - **What is onboarded.** Only a key with a public part in SubjectPublicKeyInfo form is added to the inventory. A private, secret or split key, or a public part in another encoding, stays listed on the discovery as **Not imported**, with the reason on its item.

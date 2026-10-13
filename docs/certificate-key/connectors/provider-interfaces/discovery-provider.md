@@ -22,7 +22,7 @@ The history of `Discovery` is maintained in the `Core` for further reference.
 
 ## Provider objects
 
-[`Discovery`](../../concept-design/modules/certificate-discovery.md) objects are managed in the platform through the Discovery Provider implementation.
+[`Discovery`](../../concept-design/modules/discovery.md) objects are managed in the platform through the Discovery Provider implementation.
 Each `Discovery` provides an overview of the configuration and the discovery process, including discovered certificates.
 
 ## Processes

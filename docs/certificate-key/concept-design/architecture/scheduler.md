@@ -70,7 +70,7 @@ Additionally, the execution history may encompass supplementary information and 
 
 ### Discovery jobs
 
-A discovery job creates a [discovery](../modules/certificate-discovery.md) each time it runs, and its execution reports how that discovery ended:
+A discovery job creates a [discovery](../modules/discovery.md) each time it runs, and its execution reports how that discovery ended:
 
 | Discovery ends as                                    | Execution status |
 |------------------------------------------------------|------------------|

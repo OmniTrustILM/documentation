@@ -13,7 +13,7 @@ Discovery Provider v2 is the interface between `Core` and a connector that finds
 - **Incremental results.** `Core` collects items while the run is still scanning, in sequence, and acknowledges them as it goes. The connector does not have to hold a run's whole result until it ends.
 - **Stop, resume and cancel.** A run can be stopped with a checkpoint and resumed later, or cancelled.
 
-How the platform presents discovery runs, their statuses and their results is described on the [Discovery](../../concept-design/modules/certificate-discovery.md) page. This page describes the connector interface itself.
+How the platform presents discovery runs, their statuses and their results is described on the [Discovery](../../concept-design/modules/discovery.md) page. This page describes the connector interface itself.
 
 ## Relationship to v1
 

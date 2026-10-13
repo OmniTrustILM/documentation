@@ -51,7 +51,7 @@ This will give us the details about the `Discovery` including its status and pro
 }
 ```
 
-The `status` is one of `inProgress`, `stopped`, `processing`, `completed`, `warning`, `failed` and `cancelled`, described in [Discovery status](../../concept-design/modules/certificate-discovery.md#discovery-status). A `Discovery` has finished when its status is `completed`, `warning`, `failed` or `cancelled`. You can check the status periodically until then. A v1 `Discovery` has no `connectorInterface`, `progress` or `itemsDiscovered`, and it is never `stopped` or `cancelled`.
+The `status` is one of `inProgress`, `stopped`, `processing`, `completed`, `warning`, `failed` and `cancelled`, described in [Discovery status](../../concept-design/modules/discovery.md#discovery-status). A `Discovery` has finished when its status is `completed`, `warning`, `failed` or `cancelled`. You can check the status periodically until then. A v1 `Discovery` has no `connectorInterface`, `progress` or `itemsDiscovered`, and it is never `stopped` or `cancelled`.
 
 The `progress` counts targets. For the `Network Discovery Provider`, a target is one port on one host: the example above has scanned its one target, `www.example.com:443`, and found three certificates and their keys there. Every processed target either yielded items or is counted in exactly one of these counters:
 
@@ -120,7 +120,7 @@ curl -X GET \
 }
 ```
 
-The messages are listed oldest first, and a problem that repeats is counted in `occurrences` rather than repeated. The codes are described in [Run messages](../../concept-design/modules/certificate-discovery.md#run-messages).
+The messages are listed oldest first, and a problem that repeats is counted in `occurrences` rather than repeated. The codes are described in [Run messages](../../concept-design/modules/discovery.md#run-messages).
 
 ## Check `Discovery` status using the Web Interface
 

@@ -79,7 +79,7 @@ This returns one page of the items, in the order the `Discovery Provider` found 
 - `uniqueRef` is the `Discovery Provider`'s reference for the item. The `Network Discovery Provider` uses the fingerprint of the certificate or the key.
 - `meta` says where the `Discovery Provider` found the item, such as the host and port.
 
-The fields are described in [Items](../../concept-design/modules/certificate-discovery.md#items). The certificates a `Discovery` found are also listed on their own, with their subject, issuer and validity, by `GET /api/v1/discoveries/{uuid}/certificates`.
+The fields are described in [Items](../../concept-design/modules/discovery.md#items). The certificates a `Discovery` found are also listed on their own, with their subject, issuer and validity, by `GET /api/v1/discoveries/{uuid}/certificates`.
 
 ## Get `Discovery` results using the Web Interface
 
