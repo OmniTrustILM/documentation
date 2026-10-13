@@ -34,7 +34,7 @@ Each asset has one of the following types, shown in the **Type** column:
 | `Protocol`                | A protocol at an endpoint, such as TLS 1.3 on a server port                 | None; a protocol is known by its name and OIDs, and its cipher suites are in its crypto properties |
 | `Related crypto material` | A key, or other material such as a password, a salt or a token              | Its size as parameter set, and the algorithm family, primitive and elliptic curve of its algorithm |
 
-A component of type `cryptographic-asset` without `cryptoProperties`, which CycloneDX allows, has no asset type and is shown as `Untyped`, with the verdict `Not applicable`. Some views name its type `Unroutable` or `cryptographic-asset`, and the **Asset Type** filter and the dashboard leave it out; the **PQC Readiness** filter `Not applicable` finds it.
+A component of type `cryptographic-asset` without `cryptoProperties`, which CycloneDX allows, has no asset type and is shown as `Untyped`, with the verdict `Not applicable`. Some views name its type `Unroutable` or `cryptographic-asset`, and the **Asset Type** filter and the **Assets by Type** chart leave it out; the **PQC Readiness** filter `Not applicable` finds it.
 
 The same asset declared by several `CBOMs` is one entry of the inventory, for example a CA certificate found by three scans, or `sha-256` used by ten applications. The **Source CBOMs** column counts the `CBOMs` that declare the asset, and **Occurrences** how many times they report it in all. Asset names and the properties listed above are stored in lower case, so `AES-256` reads `aes-256` in the list and in the **Identity** widget; the crypto properties and the **PQC readiness** tab keep the spelling of the `CBOM`.
 
