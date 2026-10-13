@@ -154,7 +154,7 @@ A v2 discovery that is processed to the end finishes as `Completed` unless one o
 - an item carries a reason of its own: a key that was not imported, or a certificate that could not be processed,
 - the run collected a run message of `warning` or `error` severity.
 
-Targets the `Discovery Provider` could not read end up there too: when the provider has finished and its last progress counts failed targets, the platform files a `targetsNotExamined` warning for them, so the discovery ends `Warning`. Targets that held nothing to discover are a normal outcome and never downgrade it.
+Targets the `Discovery Provider` could not read end up there too: when the provider has finished and its last progress counts failed targets, the platform files a `targetsFailed` warning for them, so the discovery ends `Warning`. Targets that held nothing to discover are a normal outcome and never downgrade it.
 
 A problem the run recovered from does not downgrade it. A processing batch that fails and is then retried cleanly is recorded as an `info` message, so the discovery still ends `Completed`. A batch that keeps failing until its retries run out stops the processing, and the discovery ends `Warning` with the number of items that could not be imported.
 
@@ -206,7 +206,7 @@ A v1 discovery records one kind of entry only, `runMetadataNotRecorded`, when th
 | `batchProcessingAbandoned` | warning | A processing batch failed after its items were already imported |
 | `keyImportFailed` | warning | Discovered keys were not imported; the items listing says which, and why |
 | `runMetadataNotRecorded` | warning | The `Connector`'s metadata about the run was not recorded: it was too large or malformed, or the platform could not store it |
-| `targetsNotExamined` | warning | A target the `Discovery Provider` was asked to examine could not be read. `occurrences` is the number of failed targets in its last progress |
+| `targetsFailed` | warning | A target the `Discovery Provider` was asked to examine could not be read. `occurrences` is the number of failed targets in its last progress |
 | `runEnded` | info, warning or error | How the discovery ended, with a severity that follows why it ended, see below |
 | `messagesSuppressed` | worst of what it stands for | Further problems the discovery had no room to keep |
 
@@ -243,4 +243,5 @@ The certificate-only listing, `GET /v1/discoveries/{uuid}/certificates`, stays a
 ## API changes in 2.20.0
 
 - `DiscoveryStatus` gains `stopped` and `cancelled`. A client that switches over the status values must handle them, or better, tolerate values it does not know.
+- `SchedulerJobExecutionStatus` gains `cancelled`, which a scheduled job's last execution status and its execution history now report, and which the scheduled job finished event names as `Cancelled`. A client that switches over execution statuses must handle it, or tolerate values it does not know.
 - `DiscoveryHistoryDetailDto` is renamed `DiscoveryDetailDto` and `DiscoveryHistoryDto` is renamed `DiscoveryListDto`, which breaks source compatibility for code using the generated types. The create request keeps the name `DiscoveryDto`, and no old name is reused for a different shape, so a stale reference fails at compile time. A v2 discovery carries no `kind` in either.

@@ -128,8 +128,8 @@ The status response can carry two further statements about the run:
 |-------|-------------|
 | `targetsProcessed` | How many targets the connector has attempted so far, whatever came of them. |
 | `targetsTotal` | How many targets the run will attempt in total: exact if the connector knows, an estimate otherwise, and it may change as the run goes on. Leave it out when the connector cannot know the total; there is then no percentage to show, and clients do not guess one. |
-| `targetsFailed` | How many targets the connector expected to read and could not: access refused, the source unreachable, an answer it could not read. |
-| `targetsEmpty` | How many targets were attempted and held nothing to discover: an address with nothing listening, a CA or template with no certificates, an empty mount or report. |
+| `targetsFailed` | How many targets the connector expected to read and could not: access refused, a source it was configured to read being unreachable, an answer it could not read. |
+| `targetsEmpty` | How many targets were attempted and held nothing to discover: a CA or template with no certificates, an empty mount or report, or a target the connector only guessed at, like an address in a swept range, that does not answer. |
 | `phase` | A free-text label for what the connector is doing, such as `scanning`. |
 | `byResource` | Per resource code, the items `produced`, a `totalEstimate` and a `phase`. Leave out a resource with nothing to report rather than sending an empty object. |
 
@@ -137,7 +137,7 @@ Every processed target ends one way: it yielded items, it was empty, or it faile
 
 A connector whose unit of work would only be a page of search results leaves all the target counters out, because a count of pages means nothing to the person watching the run, and reports `byResource` and `phase` instead. When such a run targets one resource and reports its `totalEstimate`, the platform shows the run's progress in items against that estimate.
 
-Failed targets do not make the run fail, but part of what it was asked to examine went unexamined, and the platform reports that. When the connector has finished the run and its last `progress` reports `targetsFailed` above zero, `Core` files a `targetsNotExamined` warning counting the failed targets, and the discovery ends `Warning`. Empty targets never produce a run message.
+Failed targets do not make the run fail, but part of what it was asked to examine went unexamined, and the platform reports that. When the connector has finished the run and its last `progress` reports `targetsFailed` above zero, `Core` files a `targetsFailed` warning counting the failed targets, and the discovery ends `Warning`. Empty targets never produce a run message.
 
 ### Stop, resume and cancel
 
