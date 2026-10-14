@@ -83,6 +83,8 @@ At a CDN or reverse proxy, disable shared caching of authenticated responses and
 
 ### Native Traefik forwarding
 
+Use Traefik [v3.7.12 or later](https://github.com/traefik/traefik/releases/tag/v3.7.12). Before forwarding certificates, set `entryPoints.<name>.http.aliasHeadersStrategy=delete` in Traefik's static configuration for every entrypoint serving a platform route, for example `--entryPoints.websecure.http.aliasHeadersStrategy=delete`. A dedicated platform entrypoint also needs this setting. Native forwarding and canonical-name clearing leave aliases untouched; deleting only underscore aliases is insufficient.
+
 Use stock [PassTLSClientCert](https://doc.traefik.io/traefik/reference/routing-configuration/http/middlewares/passtlsclientcert/) with `pem: true` and select `X-Forwarded-Tls-Client-Cert` in Core. Create a clearing middleware followed by the native forwarding middleware:
 
 ```yaml
@@ -116,7 +118,7 @@ PassTLSClientCert alone leaves caller assertions in place when no peer certifica
 <details>
 <summary>Shared listeners and header aliases</summary>
 
-Check duplicate headers, `Connection` nominations and header-name aliases against your deployed listener. Traefik's `entryPoints.websecure.http.aliasHeadersStrategy=delete` deletes headers containing characters other than letters, digits and dashes, including unrelated underscore or dot names. Review its effect on every host sharing that listener.
+Check duplicate headers, `Connection` nominations and header-name aliases against your deployed listener. The `delete` strategy deletes headers containing characters other than letters, digits and dashes, including unrelated underscore or dot names. Review its effect on every host sharing that listener; use a dedicated platform entrypoint if other hosts need those names.
 
 </details>
 
@@ -130,19 +132,30 @@ Run these checks with your deployed versions, routes and CA hierarchy before ena
 | Registered leaf for an enabled user | The correct user and permissions are selected. If intermediates are forwarded, the same leaf remains the identity. |
 | Unknown leaf or disabled user | HTTP 401 if the request reaches Core. |
 | Client signed by an unrelated CA | Rejected by proxy TLS validation, or HTTP 401 if it reaches Auth. Forwarding its root cannot grant trust. |
-| Forged certificate fields without TLS credentials | The proxy removes the fields; the request cannot acquire a certificate identity. |
+| Forged certificate fields, including underscore and dot aliases, without TLS credentials | The proxy removes the fields; the request cannot acquire a certificate identity. |
 
 A proxy TLS rejection happens before HTTP, so it may produce a TLS error rather than HTTP 401. A supplied empty, malformed, ambiguous or untrusted certificate header that reaches Core produces HTTP 401 and does not fall back to bearer, Basic, another header or another certificate.
 
 Also check expired material, malformed chains and duplicate RFC/XFCC identities, including after a successful certificate request. Test your actual chain size and TLS session behavior. Confirm the origin is inaccessible through unintended routes and authenticated responses cannot be reused from a shared cache.
 
-## 5. Rotate CAs \{#ca-changes-and-cache-timing}
+## 5. Renew a client certificate
 
-Add replacement roots before issuing replacement client certificates, register the new leaves and verify authentication before retiring old roots.
+Use this procedure when the renewed leaf's issuing chain is already available to the gateway and Auth, through the current CA configuration or forwarded intermediates. If the CA configuration must change, follow the CA rotation procedure below first.
 
-CA changes follow Kubernetes Secret projection and the existing runtime trust-store refresh. There is no fixed propagation or reload delay, and Auth does not reread CA files on every validation. A `subPath` mount does not receive projected updates. Core caches successful identities per instance for the duration configured by `AUTH_CACHE_TTL_MINUTES` (five minutes by default), measured from when the entry was written. CA removal or certificate expiry can therefore remain hidden until that entry expires or is discarded.
+1. Keep separate administrator or OIDC access available throughout the cutover.
+2. Issue the renewed leaf and check its chain against the configured CA bundle. Confirm that the gateway completes TLS validation and forwards the selected header. Full Auth acceptance is checked after the association is replaced.
+3. Replace the enabled user's certificate association with the exact renewed leaf. Each user has one certificate association, so this is a cutover; both leaves cannot be registered to that user together.
+4. Switch the client to the renewed certificate and its private key, then verify the expected user identity, assigned roles and permissions. After the cache window or restarts below, check that the old leaf fails to authenticate.
 
-For deterministic enforcement after removing a CA:
+The old fingerprint can remain accepted until Core's cached identity expires after `AUTH_CACHE_TTL_MINUTES` (five minutes by default), measured from when the entry was written. The association update evicts local user and certificate entries on the processing instance; other Core instances can retain them. For deterministic cache discard, restart every Core instance after replacing the association, wait until all new replicas are Ready and all old pods have terminated, then verify that the new leaf works and the old leaf fails. Auth does not need a restart when the CA trust is unchanged.
+
+## 6. Rotate CAs \{#ca-changes-and-cache-timing}
+
+Add replacement roots and complete the trust rollout below before issuing replacement client certificates or replacing user associations. Then follow the renewal cutover above and verify authentication before retiring old roots.
+
+CA changes follow Kubernetes Secret projection and the existing runtime trust-store refresh. There is no fixed propagation or reload delay, and Auth does not reread CA files on every validation. A `subPath` mount does not receive projected updates. Core's authentication cache described above can also hide CA removal or certificate expiry until an entry expires or is discarded.
+
+For deterministic enforcement after adding or removing a CA:
 
 1. Update the edge trust and confirm the new CA files have reached every Auth instance.
 2. Restart every Auth instance so its system store loads the new material. Wait until every new Auth replica is Ready and every old Auth pod has terminated.
@@ -180,7 +193,9 @@ Legacy-only repeated selected fields keep the existing first-physical-field sele
 
 Text XFCC rejects multiple proxy observations, repeated selected fields, JSON and Chain-only assertions. The leading `Chain` leaf must match `Cert` byte-for-byte as DER; it counts once and is removed from candidates. Later leaf occurrences fail. Malformed candidates, parameters or metadata fail even after a successful request for the same leaf. DER must contain exactly one complete certificate with no trailing data. Candidate order is preserved when duplicate DER certificates are removed; all asserted candidates count toward limits before that removal.
 
-Direct Auth callers without a chain retain existing Base64-wrapped PEM loading, including certificates with explicit EC parameters. Chain assertions require complete DER certificate input; Core normalizes supported proxy formats to that form.
+Legacy single-certificate loading preserves the original certificate bytes and its existing tolerance for noncanonical encodings. Chain assertions and RFC/XFCC formats apply structural DER and canonical re-encoding checks while retaining native `PrintableString` tolerance. Direct Auth callers without chain material (absent or empty) retain existing Base64-wrapped PEM loading, including certificates with explicit EC parameters.
+
+When certificate-chain material is forwarded, Auth does not download missing issuers from certificate URLs. Forward the required intermediates or include them in the existing CA configuration. Requests without forwarded chain material retain the existing runtime behavior.
 
 </details>
 
@@ -189,7 +204,9 @@ Direct Auth callers without a chain retain existing Base64-wrapped PEM loading, 
 <details>
 <summary>Size and count limits</summary>
 
-Core accepts at most 262,144 bytes across selected header values and the RFC companion, 65,536 bytes per DER certificate and 16 asserted certificates before deduplication. The RFC companion accepts at most 16 field lines; XFCC accepts at most 128 key/value pairs. Auth independently limits encoded input to 262,144 characters, DER to 65,536 bytes each and material to 16 certificates.
+Core's bundled configuration sets `server.max-http-request-header-size` to `64KB`: a 64 KiB HTTP request-header budget including certificate fields, cookies and authorization headers. The parser's separate defensive ceiling is 262,144 bytes across selected certificate header values and the RFC companion; it does not raise the HTTP server or proxy limits. A request rejected before parsing can return HTTP 400.
+
+The parser also limits DER to 65,536 bytes per certificate and material to 16 asserted certificates before deduplication. The RFC companion accepts at most 16 field lines; XFCC accepts at most 128 key/value pairs. Auth independently limits encoded input to 262,144 characters, DER to 65,536 bytes each and material to 16 certificates.
 
 Wrapped PEM is bounded by the original header before allocation. Decoded PEM text can exceed the DER limit due to encoding overhead, but each inner certificate and the material count must meet their limits. RFC's byte limit includes untrimmed leaf and companion values and joining separators. XFCC counts `Cert` and its matching leading `Chain` leaf once; remaining candidates and legacy repeated-leaf tails count before deduplication. Your proxy may impose smaller limits.
 
