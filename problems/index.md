@@ -14,7 +14,7 @@ When an ILM service returns an error, the response body includes a `type` field 
 Problem types are grouped by category:
 
 - **Common** — General errors that can occur in any ILM service or connector.
-- **Connector** — Connector-specific errors (defined per connector).
+- **Connector** — Errors of connector operations. A problem type specific to one interface is grouped under that interface, for example **Discovery**.
 
 ## Example response
 

@@ -68,4 +68,20 @@ The Scheduler meticulously maintains a history of task executions, capturing ess
 
 Additionally, the execution history may encompass supplementary information and references to objects that were processed by the task.
 
+### Discovery jobs
+
+A discovery job creates a [discovery](../modules/discovery.md) each time it runs, and its execution reports how that discovery ended:
+
+| Discovery ends as                                    | Execution status |
+|------------------------------------------------------|------------------|
+| `Completed` or `Warning`                             | Succeeded        |
+| `Cancelled` by a user                                | Cancelled        |
+| `Failed`, or `Cancelled` for any other reason        | Failed           |
+
+A discovery is cancelled for another reason when it stayed stopped too long, when its `Connector` was force-deleted while the discovery was live, or when the `Connector` reported the run cancelled on its own. None of these was asked for, so the execution fails.
+
+A v1 discovery has ended by the time its execution finishes. A v2 discovery runs on after the job has started it, so its execution stays open until the discovery ends. A stopped discovery therefore keeps the execution open until it is resumed and ends, or until it is cancelled because it stayed stopped too long. While an execution is open, the scheduled job cannot be deleted.
+
+When the discovery cannot be created, the execution fails and says why. A discovery whose `Connector` refuses its configuration ends `Failed`, and so does the execution. A one-time discovery job is removed from the scheduler after an execution that succeeded or was cancelled, and stays in the scheduler after one that failed.
+
 The Scheduler stands as an essential component within the platform, enabling the systematic execution of management and automation tasks. By mastering the concepts of Scheduled Tasks, Cron Expressions, and Execution History, users gain a thorough understanding of how to utilize this feature effectively.
