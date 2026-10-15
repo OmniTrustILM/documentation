@@ -46,10 +46,10 @@ The connector's `/v2/info` endpoint returns an `InfoResponse` with two top-level
     }
   },
   "interfaces": [
-    { "code": "info", "version": "2", "features": [] },
-    { "code": "health", "version": "2", "features": [] },
-    { "code": "metrics", "version": "1", "features": ["openMetrics"] },
-    { "code": "authority", "version": "2", "features": [] }
+    { "code": "info", "version": "v2", "features": [] },
+    { "code": "health", "version": "v2", "features": [] },
+    { "code": "metrics", "version": "v1", "features": ["openMetrics"] },
+    { "code": "authority", "version": "v2", "features": [] }
   ]
 }
 ```
@@ -71,7 +71,7 @@ Each entry describes one implemented interface. The structure is `ConnectorInter
 | Field      | Type            | Required | Description                                                                          |
 |------------|-----------------|----------|--------------------------------------------------------------------------------------|
 | `code`     | string          | yes      | Interface identifier — see [Interface codes](#interface-codes) below                 |
-| `version`  | string          | yes      | Version of the interface implemented by this connector (e.g., `"2"`)                |
+| `version`  | string          | yes      | Version of the interface implemented by this connector (e.g., `"v2"`)               |
 | `features` | array of string | no       | Optional feature flags — see [Feature flags](#feature-flags) below                  |
 
 ### Interface codes
@@ -99,6 +99,7 @@ Feature flags are optional capability indicators that signal connector behaviour
 |--------------------|-----------------------|------------------------------------------------------------------------------|
 | `stateless`        | any                   | The connector does not require a persistence layer (e.g., no database)       |
 | `openMetrics`      | `metrics`             | Metrics are exposed in OpenMetrics format (in addition to Prometheus text)   |
+| `asynchronous`     | `cryptography`        | Accepts asynchronous execution, with status and cancel endpoints             |
 | `secretVersioning` | `secret`              | Supports versioning of secrets, keeping a history of previous values         |
 | `secretRotation`   | `secret`              | Supports triggering rotation of secrets                                      |
 
