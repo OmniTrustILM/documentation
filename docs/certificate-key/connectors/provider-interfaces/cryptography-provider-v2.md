@@ -59,7 +59,6 @@ The platform offers only what the connector publishes for each token and token p
 
 - **Token attributes**, the schema an operator fills in to configure a token.
 - **Token profile attributes**, for a given token.
-- **Key usages** the token supports.
 - **Key request types** the token profile can create: a secret key, a key pair, or both.
 - **Operation attribute schemas**: for creating each key type, and for signing, verification, encryption, decryption and random data with a given key or profile.
 - **Importable and exportable key types**, each with the algorithms it accepts, when the connector declares import or export.
@@ -209,7 +208,7 @@ The proxy preserves the HTTP status. `200 OK` and `202 Accepted` therefore mean 
 
 The base contract covers:
 
-- the token endpoints: token attributes, token status, token profile attributes, key usages and key request types;
+- the token endpoints: token attributes, token status, token profile attributes and key request types;
 - synchronous key creation and destruction, with the key creation attribute schema;
 - signing, verification, encryption, decryption and random data, each with its attribute schema.
 
