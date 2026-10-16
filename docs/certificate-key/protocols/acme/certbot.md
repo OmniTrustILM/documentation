@@ -20,6 +20,17 @@ Before configuring `Certbot` with the platform, you need to have the following:
 
 To install `Certbot`, follow the [installation guide](https://certbot.eff.org/).
 
+## External Account Binding
+
+Register the account before you request certificates. For the `kid` and the key, see [Set up an ACME client](external-account-binding.md#set-up-an-acme-client).
+
+```bash
+certbot register \
+  --server https://[domain]:[port]/api/v1/protocols/acme/raProfile/[ra-profile]/directory \
+  --eab-kid [kid] \
+  --eab-hmac-key [key]
+```
+
 ## HTTP-01
 
 Issuing certificate using `Certbot` for is an easy step. `http-01` challenge type is considered by default for the request. We are going to use `Apache` HTTP server as an example of the web server for which we would like to manage SSL/TLS certificate using `Certbot`.

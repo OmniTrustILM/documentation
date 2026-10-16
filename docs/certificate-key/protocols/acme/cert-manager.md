@@ -76,6 +76,27 @@ Events:                    <none>
 
 That means that the ACME client was registered successfully, and you can start managing certificates.
 
+## External Account Binding
+
+Store the key in a Kubernetes `Secret` and reference it with the `kid` from the `ClusterIssuer`. For the `kid` and the key, see [Set up an ACME client](external-account-binding.md#set-up-an-acme-client):
+
+```bash
+kubectl create secret generic eab-secret -n cert-manager \
+  --from-literal=secret=[key]
+```
+
+```yaml
+spec:
+  acme:
+    externalAccountBinding:
+      keyID: [kid]
+      keySecretRef:
+        name: eab-secret
+        key: secret
+```
+
+Add the `externalAccountBinding` block to the `ClusterIssuer` manifest above before you apply it.
+
 ## Request certificate
 
 You can try to issue certificate using the following manifest:

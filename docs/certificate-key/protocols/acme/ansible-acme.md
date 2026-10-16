@@ -95,6 +95,30 @@ First, we will create private RSA key pair which will be associated with later r
       when: acme_register_account
 ```
 
+### External Account Binding
+
+Add the `external_account_binding` option to the `acme_account` task. For the `kid` and the key, see [Set up an ACME client](external-account-binding.md#set-up-an-acme-client):
+
+```yaml
+    - name: Register ACME Account with external binding
+      community.crypto.acme_account:
+        account_key_src: "tmp/acme_account_key"
+        acme_directory: "{{ acme_directory }}"
+        acme_version: "{{ acme_version }}"
+        state: present
+        terms_agreed: true
+        contact:
+          - "mailto:{{ acme_account_email }}"
+        external_account_binding:
+          kid: "[kid]"
+          alg: HS256
+          key: "{{ eab_key }}"
+      register: acme_account
+      when: acme_register_account
+```
+
+Keep the key in a vaulted variable.
+
 ### Generate private key and prepare CSR
 
 The step to generate key pair and certificate signing request is optional. You can also you externally generated and signed certificate signing request.
