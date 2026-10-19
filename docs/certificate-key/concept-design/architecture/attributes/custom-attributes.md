@@ -37,7 +37,7 @@ Characteristics of `Custom Attributes` are:
 - Single `Custom Attribute` can be associated with multiple object types / resources.
 - `Property` of `Custom Attribute` can be updated and maintained by the user.
 - A `Custom Attribute` must be in <span class="badge badge--success">enabled</span> state to be used.
-- A `Custom Attribute` is offered as a list column, a filter field and a sort key only to users whose role grants the `Members` action on it. For any other user it is left out entirely, and a saved view that references it shows the column as unavailable, ignores a sort on it, and treats its values as absent in filters. See [Columns and Views](../columns-and-views.md#permissions).
+- The content of a `Custom Attribute` is shown only to users whose role grants the `Members` action on it. This applies to object details and to lists, where only those users are offered it as a column, a filter field or a sort key, see [Columns and Views](../columns-and-views.md).
 
 :::info
 To know more about how to work with `Attributes`, see [Using Attributes](../../../../contributors/attributes/overview.md).
