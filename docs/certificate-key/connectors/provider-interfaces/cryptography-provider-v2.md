@@ -80,15 +80,15 @@ A create request names the key type, the execution mode and a caller-chosen `key
 autonumber
 skinparam topurl /api/
 Client -> Core [[core-key#tag/cryptographic-key-management/GET/v1/tokens/{tokenInstanceUuid}/tokenProfiles/{tokenProfileUuid}/keys/{type}/attributes]]: List key creation attributes
-Core -> Connector: List key creation attributes
+Core -> Connector [[connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys/create/attributes]]: List key creation attributes
 Connector --> Core: Attribute schema
 Core --> Client: Attribute schema
 Client -> Client: Fill in the attributes
 Client -> Core [[core-key#tag/cryptographic-key-management/POST/v1/tokens/{tokenInstanceUuid}/tokenProfiles/{tokenProfileUuid}/keys/{type}]]: Create key\n(attributes)
-Core -> Connector: List key creation attributes
+Core -> Connector [[connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys/create/attributes]]: List key creation attributes
 Connector --> Core: Attribute schema
 Core -> Core: Validate attributes
-Core -> Connector: Create key synchronously\n(token, profile, keyCreationId)
+Core -> Connector [[connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys]]: Create key synchronously\n(token, profile, keyCreationId)
 Connector --> Core: 200 OK (key data, keyMeta)
 Core -> Core: Store key in the inventory
 Core --> Client: Key
@@ -113,15 +113,15 @@ The diagram shows an asynchronous key creation. Each asynchronous operation has 
 @startuml
 autonumber
 skinparam topurl /api/
-Core -> Connector: Create key asynchronously\n(token, profile, keyCreationId)
+Core -> Connector [[connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys]]: Create key asynchronously\n(token, profile, keyCreationId)
 Connector --> Core: 202 Accepted (operationMeta)
-Core -> Connector: Get status\n(operationMeta)
+Core -> Connector [[connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys/create/status]]: Get status\n(operationMeta)
 alt In progress
   Connector --> Core: In progress
 else Ended
   Connector --> Core: Result or reason
 end
-Core -> Connector: Cancel\n(operationMeta)
+Core -> Connector [[connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys/create/cancel]]: Cancel\n(operationMeta)
 alt Aborted
   Connector --> Core: Canceled
 else Not tracked
@@ -132,13 +132,13 @@ end
 @enduml
 ```
 
-A completed status carries the result in the shape of a synchronous response. A failed or canceled status carries a reason.
+For a key operation, a completed status carries the result in the shape of the synchronous response, and a failed or canceled status carries a reason. A signing status reports each item instead, as described under [Cryptographic operations](#cryptographic-operations).
 
 ## Cryptographic operations
 
 Signing, verification, encryption and decryption run on a batch of items, each with an `identifier`. Every response item carries the identifier of exactly one request item. The response covers each request item once. `Core` matches the results to the request by identifier.
 
-- **Sign** runs synchronously or asynchronously. An asynchronous batch is tracked and canceled as a whole. A retry after a lost response signs again.
+- **Sign** runs synchronously or asynchronously. An asynchronous batch is tracked and canceled as a whole. Its status reports each item's own status, with the signature of a completed item and the reason of a failed or canceled one. The batch ends when every item has ended. A retry after a lost response signs again.
 - **Verify**, **encrypt** and **decrypt** are synchronous.
 - **Random data** is synchronous. It runs under a token profile.
 
@@ -146,7 +146,7 @@ Signing, verification, encryption and decryption run on a batch of items, each w
 
 Import and export move key material between the platform and a token. Each needs its capability flag. The importable and exportable key types tell the platform what a token accepts before a user asks for it.
 
-**Key material crosses the interface only inside a protected PKCS#8 envelope**: an `EncryptedPrivateKeyInfo` under one pinned password-based protection profile. The OpenAPI specification states the profile.
+**Key material crosses the interface only inside a protected PKCS#8 envelope**: an `EncryptedPrivateKeyInfo` under one pinned password-based protection profile. The [import operation](/api/connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys/import) states the profile on its `material`.
 
 ### Import
 
@@ -156,16 +156,16 @@ Import and export move key material between the platform and a token. Each needs
 @startuml
 autonumber
 skinparam topurl /api/
-Client -> Core: Import key
+Client -> Core [[core-key#tag/cryptographic-key-management/POST/v1/tokens/{tokenInstanceUuid}/tokenProfiles/{tokenProfileUuid}/keys/{type}/import]]: Import key
 Core -> Core: Open the material and protect it again\nunder a one-time passphrase
-Core -> Connector: Import key\n(envelope, passphrase,\nkeyImportId, keyReference)
+Core -> Connector [[connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys/import]]: Import key\n(envelope, passphrase,\nkeyImportId, keyReference)
 Connector -> Connector: Decrypt and store the key\nbound to keyReference
 alt Synchronous
   Connector --> Core: 200 OK (key data, keyMeta)
 else Asynchronous
   Connector --> Core: 202 Accepted (operationMeta)
   loop Until the import ends
-    Core -> Connector: Get status\n(operationMeta)
+    Core -> Connector [[connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys/import/status]]: Get status\n(operationMeta)
     Connector --> Core: Status
   end
 end
@@ -174,7 +174,7 @@ Core --> Client: Key
 @enduml
 ```
 
-Import is idempotent through `keyImportId`, as creation is through `keyCreationId`. `Core` protects the material again for every submission. The import result endpoint resolves an import by its `keyImportId`. A caller that lost the response thus learns what the connector holds.
+Import is idempotent through `keyImportId`, as creation is through `keyCreationId`. `Core` protects the material again for every submission, so a replay is equivalent when its terms and the imported key itself match, whatever its envelope bytes and passphrase. The [import result](/api/connector-cryptography-provider-v2#tag/key-management-v2/POST/v2/cryptographyProvider/keys/import/result) endpoint resolves an import by its `keyImportId`. A caller that lost the response thus learns what the connector holds. The connector keeps each import's record for at least 24 hours after the import ends. Within that period it answers `404` only for an import it never accepted.
 
 ### Export
 
@@ -182,11 +182,29 @@ Export is synchronous. The protected material therefore exists only in its respo
 
 Only a key created or imported as exportable can be exported. The exportable intent is set once: through the `keyExportable` attribute at creation, or the `exportable` field at import. The connector maps it to the technology's own extractability control. A connector refuses the request when its token forbids extractable keys.
 
+## Errors
+
+The connector answers errors as `application/problem+json`, following [Error Handling](../error-handling.md). These codes carry a meaning of their own in this interface:
+
+| Code | Status | Operations | Answered when |
+|------|--------|------------|---------------|
+| [`VALIDATION_FAILED`](/problems/common/VALIDATION_FAILED) | `422` | All | The body breaks a field rule, including an envelope outside the protection profile |
+| [`RESOURCE_ALREADY_EXISTS`](/problems/common/RESOURCE_ALREADY_EXISTS) | `409` | Create, import | The `keyCreationId` or `keyImportId` is reused with a request that is not equivalent |
+| [`EXPORTABLE_NOT_SUPPORTED`](/problems/connector/cryptography/EXPORTABLE_NOT_SUPPORTED) | `422` | Create, import | An exportable key is requested and the token cannot hold one |
+| [`KEY_TYPE_NOT_IMPORTABLE`](/problems/connector/cryptography/KEY_TYPE_NOT_IMPORTABLE) | `422` | Import | The token cannot hold a key of that type or algorithm |
+| [`KEY_DECRYPTION_FAILED`](/problems/connector/cryptography/KEY_DECRYPTION_FAILED) | `422` | Import | The envelope does not open with the passphrase |
+| [`KEY_MATERIAL_MISMATCH`](/problems/connector/cryptography/KEY_MATERIAL_MISMATCH) | `422` | Import, export | The key is not the key type or algorithm the request declares |
+| [`KEY_NOT_EXPORTABLE`](/problems/connector/cryptography/KEY_NOT_EXPORTABLE) | `422` | Export | The key was not created or imported as exportable |
+| [`KEY_TYPE_NOT_EXPORTABLE`](/problems/connector/cryptography/KEY_TYPE_NOT_EXPORTABLE) | `422` | Export | The token does not release a key of that type or algorithm |
+| [`PARAMETER_UNSUPPORTED`](/problems/connector/PARAMETER_UNSUPPORTED) | `422` | Sign, verify, encrypt, decrypt | The selected algorithm, or another parameter, is not supported by the key |
+| [`OPERATION_NOT_TRACKED`](/problems/connector/OPERATION_NOT_TRACKED) | `404` | Status, cancel, import result | The connector does not track the operation. For the import result: no import was ever accepted under the `keyImportId` |
+| [`OPERATION_PAST_POINT_OF_NO_RETURN`](/problems/connector/OPERATION_PAST_POINT_OF_NO_RETURN) | `422` | Cancel | The operation has already ended or can no longer be aborted |
+
 ## Sensitive data
 
 - **Requests carry resolved credentials.** The transport is trusted with them as with connector credentials.
 - **Passphrases and key material are used once.** The connector discards them once the operation is done. Over the message broker, a request carrying them expires with the operation timeout.
-- **Responses hold sanitized text only.** Schemas, results and failure reasons reach callers. `Core` refuses a response that echoes a secret it sent.
+- **Responses hold sanitized text only.** Schemas, results and failure reasons can reach callers, so keeping secrets out of them is the connector's duty. `Core` also refuses an attribute schema, a verification result, or a key import or export answer that echoes a secret it sent.
 
 ## Transport
 
@@ -201,8 +219,8 @@ The proxy preserves the HTTP status. `200 OK` and `202 Accepted` therefore mean 
 
 - **Tokens and token profiles live in the platform.** The token status shown is the one the connector reports.
 - **Key creation, destruction and signing always run synchronously.**
-- **Key import runs asynchronously** on a connector declaring `asynchronous`. `Core` polls the import until it ends. `Core` cancels it when the request timeout passes. An import whose requester never received the answer is settled later through the import result. The key it left on the token is destroyed.
-- **A key the connector no longer knows counts as destroyed.** `Core` treats a `404 Not Found` from a destroy request that way.
+- **Key import runs asynchronously** on a connector declaring `asynchronous`. `Core` polls the import until it ends. `Core` cancels it when the request timeout passes.
+- **An import whose requester never received the answer is settled later** through the import result. `Core` destroys the key the import left on the token. A key the connector refuses to destroy is registered deactivated in the inventory. An import `Core` cannot settle in time is logged as unresolved with its `keyReference`, which identifies its key on the token.
 
 ## For connector developers
 
@@ -222,6 +240,8 @@ Each capability adds endpoints:
 
 Cryptography Provider v2 implements the [Common Interfaces](../common-interfaces/overview.md) and these interfaces of its own:
 
-- Token Management v2
-- Key Management v2
-- Cryptographic Operations v2
+- [Token Management v2](/api/connector-cryptography-provider-v2#tag/token-management-v2)
+- [Key Management v2](/api/connector-cryptography-provider-v2#tag/key-management-v2)
+- [Cryptographic Operations v2](/api/connector-cryptography-provider-v2#tag/cryptographic-operations-v2)
+
+The OpenAPI specification of Cryptography Provider v2 is published in the platform API reference: [Connector API - Cryptography Provider v2](/api/connector-cryptography-provider-v2).

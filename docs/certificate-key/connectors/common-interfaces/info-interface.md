@@ -100,6 +100,8 @@ Feature flags are optional capability indicators that signal connector behaviour
 | `stateless`        | any                   | The connector does not require a persistence layer (e.g., no database)       |
 | `openMetrics`      | `metrics`             | Metrics are exposed in OpenMetrics format (in addition to Prometheus text)   |
 | `asynchronous`     | `cryptography`        | Accepts asynchronous execution, with status and cancel endpoints             |
+| `keyImport`        | `cryptography`        | Imports protected key material into a token                                  |
+| `keyExport`        | `cryptography`        | Exports keys created or imported as exportable, as protected key material    |
 | `secretVersioning` | `secret`              | Supports versioning of secrets, keeping a history of previous values         |
 | `secretRotation`   | `secret`              | Supports triggering rotation of secrets                                      |
 
