@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 15
 ---
 
 # Download Certificate
@@ -28,26 +28,22 @@ A raw DER file holds a single certificate, so a chain is downloaded as raw PEM o
 
 ## Download with the private key as PKCS#12
 
-The **Certificate Format** list offers **PKCS12 – certificate, private key and chain (.p12)** when the platform can build the file:
+The **Certificate Format** list offers **PKCS12 – certificate, private key and chain (.p12)** when:
 
-- the `Certificate` is issued
-- its `Key` holds a private key item whose public key matches the certificate
-- that item is exportable, active and enabled; a key is created and imported disabled until you enable it, see [exportable keys](../../concept-design/core-components/key.md#exportable)
-- the key's `Token Profile` exports the key's algorithm
-- you hold the `exportKey` permission on `keys`
+- the `Certificate` is issued, and its `Key` holds the private key that matches it
+- that key item is [exportable](../../concept-design/core-components/key.md#exportable), active and enabled; a key is created and imported disabled until you enable it
+- the key's `Token Profile` [exports](../../concept-design/core-components/key.md#import-and-export) the key's algorithm
+- you hold the `exportKey` permission on `keys`, among the [permissions a PKCS#12 download needs](../../concept-design/core-components/key.md#permissions)
 
 To download it:
 
 1. Select **PKCS12 – certificate, private key and chain (.p12)** as the **Certificate Format**
-2. Enter the **Password** and **Confirm password**. The password needs at least 12 characters and cannot be only whitespace. It must be printable ASCII, so every tool, including Java keytool, can open the file.
-3. Click **Download**
+2. Enter the **Password** and **Confirm password**. The password needs at least 12 characters, all printable ASCII, so that every tool, including Java keytool, can open the file.
+3. Fill in the provider's export attributes, when it has any
+4. Click **Download**
 
-The file holds the private key, protected as its cryptography provider protected it, the certificate, and its chain. The chain is completed from the inventory, and the self-signed root of a complete chain is left out. The certificates are protected, and the file is authenticated, with AES-256-CBC under PBKDF2-HMAC-SHA256 and an HMAC-SHA256 MAC, at the iteration count of the key's own protection. The file is named after the certificate's common name, with the `.p12` extension.
-
-OpenSSL 3.x, Java keytool, and Windows Server 2019 or later open these files. Earlier consumers that need the legacy 3DES and SHA-1 profiles are not supported.
+The file holds the private key, as its cryptography provider protected it, the certificate and its [chain](../../concept-design/core-components/certificate.md#certificate-chain), without the self-signed root of a complete chain. It is named after the certificate's common name, with the `.p12` extension. OpenSSL 3.x, Java keytool, and Windows Server 2019 or later open these files. Earlier consumers that need the legacy 3DES and SHA-1 profiles are not supported. The certificate's history records the download as **Download Keystore**.
 
 ## Permissions
 
-Downloading a certificate needs the `detail` permission on `certificates`. Downloading it with its private key also needs the permissions of a key export: `exportKey` and `detail` on `keys`, `detail` on `tokenProfiles`, and `detail` and `members` on `tokens`. See [Roles and Permissions](../../concept-design/architecture/access-control/roles-permissions.md#permissions-for-key-import-and-export).
-
-A download with the private key is audit-logged, and the certificate's history records it as **Download Keystore**.
+Downloading a certificate needs the `detail` permission on `certificates`.

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 14
 ---
 
 # Import Certificates and Keys
@@ -7,7 +7,7 @@ sidebar_position: 8
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUpload } from '@fortawesome/free-solid-svg-icons'
 
-A file with certificates and keys can be imported into the inventory in one step. The platform reads the file, lists what it holds, and imports the entries you select: certificates into the certificate inventory, and keys into a `Token Profile` whose cryptography provider imports them.
+A file with certificates and keys can be imported into the inventory in one step. The platform reads the file, lists what it holds, and imports the entries you select: certificates into the certificate inventory, and keys into a `Token Profile` whose cryptography provider imports them. See [Import and export](../../concept-design/core-components/key.md#import-and-export) for the tokens that import keys and how key material is protected.
 
 ## Import a file
 
@@ -22,7 +22,7 @@ A file with certificates and keys can be imported into the inventory in one step
     - an OpenSSH private key
     - a single certificate, PEM or DER
     - PKCS#7
-4. If the file is protected, enter the **File password**. The field appears when the file needs it. The password is used only to read the file and is never stored.
+4. If the file is protected, enter the **File password**. The field appears when the file needs it. The password is used only to read the file and is never stored. A wrong or missing password is reported as a failed integrity check of the file, or as a key that could not be read.
 5. Review **Detected content**. Each entry is listed with its kind: **Key pair**, **Certificate**, **Private key**, **Secret key** or **Signing request**. An entry the chosen provider does not import is marked **Not supported by provider**, and a signing request is listed but cannot be imported.
 6. For the key entries, fill in the **Key destination**:
     - **Token profile** — only profiles whose provider imports the key's type and algorithm are offered
@@ -44,10 +44,10 @@ A file with certificates and keys can be imported into the inventory in one step
 
 ## What an import does
 
-- An import never changes an existing object. An entry that is already in the inventory keeps its owner, groups, custom attributes, name and description.
-- A key held only as its public key, and in no token, is completed with the imported private key. This needs permission to update that key.
-- An entry whose key cannot be completed is refused: when you may not update the key, or when a token holds its public key without its private key. The result names the key and gives the reason when you may see the key, and otherwise says "A key with the same public key already exists."
-- Key pairs and secret keys are imported separately: for a selection that mixes them, the form warns "Import key pairs and secret keys separately." and keeps the import button disabled.
+- An import never overwrites what the inventory holds: an entry already in it keeps its owner, groups, custom attributes, name and description.
+- A key held only as its public key, and in no token, is completed with the imported private key.
+- An entry whose key cannot be completed is refused: when you may not update the key, or when a token holds its public key without its private key. The result gives the reason, and names the key only when you may see it.
+- Key pairs and secret keys are imported separately: for a selection that mixes them, the import button stays disabled.
 - An imported key is registered disabled, and a key completed from its public key keeps its public key's state. Click **Enable** on the key before it signs, is exported, or is downloaded with its certificate.
 - The selected certificates are registered in the inventory, and each leaf certificate is associated with its key.
 
@@ -59,17 +59,10 @@ A file is refused when it goes over any of these limits:
 - 200 certificates, and 100 other entries (keys, secret keys and certificate requests together)
 - 10,000,000 key-derivation iterations across the whole file
 
-## Refusals
-
-- **A wrong or missing password:** for a PKCS#12, JKS or JCEKS file, "The file's integrity check failed: the passphrase is wrong or missing, or the file is damaged."; for a protected PKCS#8, OpenSSL traditional or OpenSSH key, "The key could not be read: the passphrase is wrong or missing, or the file is damaged."
-- **A key protected with a different password than the file:** the platform does not read such a file.
-- **An unsupported format:** the refusal lists the formats the platform reads.
-- **More than one private key in a PEM file:** "A PEM file can hold at most one private key."
-
 ## Permissions
 
-Reading the file needs the `create` permission on `certificates` or the `importKey` permission on `keys`. Importing a certificate, or a key together with its leaf certificate, needs `create` on `certificates`. Importing a key needs `importKey` on `keys`, `detail` on `tokenProfiles`, and `detail` and `members` on `tokens`; choosing the destination in the UI also needs `list` on `tokenProfiles` and `tokens`. See [Roles and Permissions](../../concept-design/architecture/access-control/roles-permissions.md#permissions-for-key-import-and-export).
+Importing a key needs the `importKey` permission on `keys`, among the [permissions an import needs](../../concept-design/core-components/key.md#permissions).
 
 :::info[Key material]
-Private keys are transferred protected and stored only in the cryptography provider, never in the platform. See [Key](../../concept-design/core-components/key.md#import-and-export) for how key material is protected when it is imported and exported.
+Private keys are stored only in the cryptography provider, never in the platform.
 :::

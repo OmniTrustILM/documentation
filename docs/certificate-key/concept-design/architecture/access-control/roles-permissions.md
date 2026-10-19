@@ -55,17 +55,6 @@ Everything else readable is included, so an auditor can list and open certificat
 `auditor` is a system role but carries no system user, so it is assigned to people like any ordinary role. Its permission set is fixed by the platform and cannot be edited.
 :::
 
-## Permissions for key import and export
-
-Key import and export have their own actions on `keys`: `importKey`, a `WRITE` action, and `exportKey`, a `SENSITIVE_READ` action that no read-only role receives. Each journey needs these permissions:
-
-| Journey                           | Permissions                                                                                                                                                                                                                                                                                                                                                                                                 |
-|-----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Import certificates and keys      | `create` on `certificates` or `importKey` on `keys` to read the file; `create` on `certificates` to import a certificate, or a key with its certificate; `importKey` on `keys`, `detail` on `tokenProfiles` and `detail` and `members` on `tokens` for each key; `list` on `tokenProfiles` and `tokens` to choose a destination in the UI; `update` on `keys` to complete a key held only as its public key |
-| Export a key                      | `exportKey` and `detail` on `keys`, `detail` on `tokenProfiles`, and `detail` and `members` on `tokens`                                                                                                                                                                                                                                                                                                     |
-| Download a certificate as PKCS#12 | `detail` on `certificates`, and every permission of a key export                                                                                                                                                                                                                                                                                                                                            |
-| Disable a key's export            | `update` and `detail` on `keys`, and `detail` and `members` on `tokens`                                                                                                                                                                                                                                                                                                                                     |
-
 ## Action access types
 
 Every action a resource offers is classified by what it does, and the classification is what decides whether a read-only role such as [`auditor`](#auditor-role) receives it.
