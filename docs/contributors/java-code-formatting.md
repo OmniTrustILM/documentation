@@ -53,6 +53,7 @@ Every build between that commit and the reformat then fails, CI included.
 6. Create a `.git-blame-ignore-revs` file at the repository root containing that commit's SHA, and commit it.
 7. Commit `.editorconfig` and `.gitattributes`.
 8. Commit the parent bump. This is what turns the gates on, so it goes last.
+9. Merge the pull request with a merge commit, not a squash. A squash replaces the reformat commit with a new one, so the SHA in `.git-blame-ignore-revs` never reaches the main branch.
 
 :::danger[Step 1 has to come first, or step 4 will fight you]
 IntelliJ collapses imports into a wildcard at 5 classes or 3 static members by default — exactly what `AvoidStarImport` rejects. `.editorconfig` raises both thresholds to 999.
