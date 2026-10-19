@@ -4,29 +4,29 @@ sidebar_position: 23
 
 # CBOM
 
-`CBOM` (Cryptographic Bill of Materials) is a standardized inventory of cryptographic assets based on the [CycloneDX](https://cyclonedx.org) specification. The platform supports [CycloneDX v1.6](https://cyclonedx.org/docs/1.6/json/) and [v1.7](https://cyclonedx.org/docs/1.7/json/) and provides inventory, management, and visualization of CBOM documents containing cryptographic assets such as certificates, keys, algorithms, protocols, and secrets. The cryptographic assets of the synchronized `CBOMs` are collected in the [Cryptographic Asset Inventory](../modules/cryptographic-asset-inventory.md). `CBOMs` are listed under **CBOMs** in the main menu.
+`CBOM` (Cryptographic Bill of Materials) is a standardized inventory of cryptographic assets based on the [CycloneDX](https://cyclonedx.org) specification. The platform supports [CycloneDX v1.6](https://cyclonedx.org/docs/1.6/json/) and [v1.7](https://cyclonedx.org/docs/1.7/json/) and provides inventory, management, and visualization of CBOM documents containing cryptographic assets such as certificates, keys, algorithms, protocols, and secrets. The cryptographic assets of the synchronized `CBOMs` are collected in the [Cryptographic Asset Inventory](../modules/cryptographic-asset-inventory.md).
 
 ## CBOM Properties
 
 Each `CBOM` document in the platform is tracked with the following properties:
 
-| Property         | Description                                                                                                                                                                                                                            |
-|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Serial Number    | Unique identifier of the CBOM document (URN)                                                                                                                                                                                           |
-| Version          | Version number of the CBOM document                                                                                                                                                                                                    |
-| Spec Version     | Version of the CycloneDX specification, shown on the detail only                                                                                                                                                                       |
-| Source           | The component name in the document metadata. CBOM Lens writes its own name there, `CBOM-Lens`; other producers usually write the system the `CBOM` describes, for example `payments-service`. An asset detail shows it as **Producer** |
-| Timestamp        | Timestamp from the CBOM document metadata                                                                                                                                                                                              |
-| Certificates     | Number of certificate assets                                                                                                                                                                                                           |
-| Algorithms       | Number of algorithm assets                                                                                                                                                                                                             |
-| Protocols        | Number of protocol assets                                                                                                                                                                                                              |
-| Crypto Material  | Number of related cryptographic material items                                                                                                                                                                                         |
-| Total Assets     | Total number of all cryptographic assets                                                                                                                                                                                               |
-| Asset Sync State | How far the assets of the `CBOM` have been added to the inventory, see [Asset sync states](#asset-sync-states)                                                                                                                         |
-| Assets Synced At | When the assets of the `CBOM` were last added to the inventory                                                                                                                                                                         |
-| Asset Sync Error | Why the last attempt to add the assets of the `CBOM` to the inventory failed                                                                                                                                                           |
+| Property         | Description                                                                                                                                                                                  |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Serial Number    | Unique identifier of the CBOM document (URN)                                                                                                                                                 |
+| Version          | Version number of the CBOM document                                                                                                                                                          |
+| Spec Version     | Version of the CycloneDX specification                                                                                                                                                       |
+| Source           | The component name in the document metadata. CBOM Lens writes its own name there, `CBOM-Lens`; other producers usually write the system the `CBOM` describes, for example `payments-service` |
+| Timestamp        | Timestamp from the CBOM document metadata                                                                                                                                                    |
+| Certificates     | Number of certificate assets                                                                                                                                                                 |
+| Algorithms       | Number of algorithm assets                                                                                                                                                                   |
+| Protocols        | Number of protocol assets                                                                                                                                                                    |
+| Crypto Material  | Number of related cryptographic material items                                                                                                                                               |
+| Total Assets     | Total number of all cryptographic assets                                                                                                                                                     |
+| Asset Sync State | How far the assets of the `CBOM` have been added to the inventory, see [Asset sync states](#asset-sync-states)                                                                               |
+| Assets Synced At | When the assets of the `CBOM` were last added to the inventory                                                                                                                               |
+| Asset Sync Error | Why the last attempt to add the assets of the `CBOM` to the inventory failed                                                                                                                 |
 
-In the list, Version, Certificates, Algorithms, Protocols, Crypto Material and Total Assets are headed **Ver.**, **Certs**, **Alg.**, **Proto.**, **Material** and **Assets**. Timestamp and the three asset sync properties are optional columns, added with **Add column**, the **+** at the right end of the column headings. The list can be filtered by every property except Spec Version; the asset counts are named with `Count`, for example **Algorithms Count**. The **Has Contributed Assets** filter finds the `CBOMs` whose assets are in the inventory now.
+The properties come from the document and its synchronization and cannot be edited. Custom attributes assigned to the `CBOM` resource can be set on a `CBOM`, at upload or later, see [Custom Attributes](../../settings/custom-attributes.md). The list of `CBOMs` can be filtered by most of these properties and by custom attributes, and its columns, sorting and saved views are described in [Columns and Views](../architecture/columns-and-views.md).
 
 Multiple versions of the same `CBOM` (identified by serial number) are tracked, allowing historical comparison of cryptographic asset changes over time. The inventory follows the synchronized version with the highest version number, see [Versions and deletion](#versions-and-deletion).
 
@@ -44,38 +44,37 @@ v1.7 is additive for cryptographic assets: it introduces a registry of algorithm
 
 Cryptographic assets can be automatically discovered using a `Connector` implementing the `Discovery Provider` `Function Group`, see [Certificate Discovery](../modules/certificate-discovery.md). Discovered CBOM documents are stored in the CBOM Repository and synchronized with the platform.
 
-[CBOM Lens](https://github.com/OmniTrustILM/cbom-lens) is one such tool. It discovers cryptographic assets in filesystems, container images, and network endpoints. In discovery mode it registers itself in the platform as a `Connector` with the status `Waiting for approval`. Once the `Connector` is approved under **Connectors**, a discovery created with it scans with the configuration given in its `Attributes`. The discovery itself returns no certificates: the `CBOM` it produces appears in the CBOM list after the next sync run. CBOM Lens can also scan on its own schedule and upload its `CBOMs` to the CBOM Repository directly.
+[CBOM Lens](https://github.com/OmniTrustILM/cbom-lens) is one such tool. It discovers cryptographic assets in filesystems, container images, and network endpoints. In discovery mode it registers itself in the platform as a `Connector` with the status `Waiting for approval`. Once the `Connector` is approved, a discovery created with it scans with the configuration given in its `Attributes`. The discovery itself returns no certificates: the `CBOM` it produces appears in the CBOM list after the next sync run. CBOM Lens can also scan on its own schedule and upload its `CBOMs` to the CBOM Repository directly.
 
 ### CBOM Repository synchronization
 
-The platform synchronizes with the CBOM Repository every hour. It stores every new CBOM document the repository holds, whoever uploaded it. Synchronization can also be started manually, see [Synchronization](#synchronization). The CBOM Repository URL must be configured in [Platform Settings](../../settings/platform.md#util-settings) to enable synchronization.
+The platform synchronizes with the CBOM Repository every hour and stores every new CBOM document the repository holds, whoever uploaded it. Synchronization can also be started manually, see [Synchronization](#synchronization). The CBOM Repository URL must be configured in [Platform Settings](../../settings/platform.md#util-settings) to enable synchronization.
 
 ### Manual upload
 
-The upload icon in the **CBOMs** header (tooltip "Upload CBOM") opens a dialog for a CycloneDX document in JSON or YAML. Paste the document, drop a file on it, or choose one with **Select file...**. The platform forwards the document to the CBOM Repository, which checks it against the CycloneDX schema of its specification version. A document that does not conform is refused with the reason. A `version` given in the document must be a whole number from 1 upwards. Otherwise the upload is refused with *Invalid CBOM version. Version must be an integer from 1 to 2147483647. Example: 1*. The uploaded `CBOM` appears in the list at once, with the asset sync state `Pending`. A following sync run adds its assets to the inventory.
-
-When custom attributes are assigned to the **Cboms** resource, the dialog asks for them below the document. Required ones are shown at once and must be filled before the upload is sent; optional ones are added from the attribute selector. The values are stored with the uploaded `CBOM` and can be changed later on the **Attributes** tab of its detail, see [Custom Attributes](../../settings/custom-attributes.md). If the custom attribute definitions cannot be loaded, the dialog says why and offers **Retry**. The document can still be uploaded, and the platform refuses it when a required custom attribute is missing. If the platform stores the document but cannot store its custom attributes, the message names the stored `CBOM` by its UUID and gives the reason; the `CBOM` is in the list, and its attributes can be set on its **Attributes** tab.
+A CycloneDX document can be uploaded in JSON, or in YAML through the web interface. The platform forwards it to the CBOM Repository, which checks it against the CycloneDX schema of its specification version and refuses a document that does not conform. A `version` given in the document must be a whole number from 1 upwards. Custom attributes assigned to the `CBOM` resource are filled in with the upload, and a required one must be given. The uploaded `CBOM` is listed at once with the asset sync state `Pending`, and a following sync run adds its assets to the inventory.
 
 ## CBOM operations
 
-The platform offers the following list of operations from the CBOM list, the CBOM detail and the **Skipped Documents** page:
+The platform offers the following list of operations for `CBOMs`:
 
-| Operation                    | Description                                                                                                                                                                       |
-|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Upload `CBOM`                | The upload icon in the **CBOMs** header uploads a CycloneDX document, see [Manual upload](#manual-upload).                                                                        |
-| Synchronize `CBOMs`          | The sync icon in the **CBOMs** header (tooltip "Sync CBOMs") starts a sync run at once, in addition to the scheduled ones.                                                        |
-| View `CBOM` detail           | The serial number opens the detail with the tabs **Overview**, **Assets**, **Raw JSON** and **Attributes**.                                                                       |
-| View versions                | The version selector of the detail switches between the versions of the `CBOM`; **View Version History** lists all of them.                                                       |
-| View assets in the inventory | On the detail of a synchronized `CBOM`, assets that are in the inventory link to their entry. **View the assets of this CBOM in the crypto asset inventory** lists them together. |
-| Copy or download `CBOM`      | The copy and download icons in the serial number cell, shown on hover (tooltips "Copy JSON" and "Download JSON"), copy or download the document.                                  |
-| Delete `CBOM`                | The trash icon in the **CBOMs** header (tooltip "Delete"), enabled once rows are checked, removes the checked `CBOMs`, see [Versions and deletion](#versions-and-deletion).       |
-| Retry a skipped document     | The retry icon in the **Actions** column sends a permanently skipped document back to the next sync run, see [Skipped documents](#skipped-documents).                             |
+| Operation                    | Description                                                                                                |
+|------------------------------|------------------------------------------------------------------------------------------------------------|
+| Upload `CBOM`                | Upload a CycloneDX document, see [Manual upload](#manual-upload)                                           |
+| Synchronize `CBOMs`          | Start a sync run at once, in addition to the scheduled ones                                                |
+| View `CBOM` detail           | Show the properties, the assets and the document of a `CBOM`                                               |
+| View versions                | Switch between the versions of a `CBOM` and list all of them                                               |
+| View assets in the inventory | Open the inventory entries of the assets a synchronized `CBOM` declares                                    |
+| Copy or download `CBOM`      | Copy or download the CycloneDX document                                                                    |
+| Edit custom attributes       | Set the custom attributes of a `CBOM`                                                                      |
+| Delete `CBOM`                | Remove `CBOMs` from the platform, see [Versions and deletion](#versions-and-deletion)                      |
+| Retry a skipped document     | Send a permanently skipped document back to the next sync run, see [Skipped documents](#skipped-documents) |
 
 Access to `CBOMs` is granted through the **Cboms** resource of a role, see [Roles and Permissions](../architecture/access-control/roles-permissions.md).
 
 ## Synchronization
 
-Three scheduled jobs keep the `CBOMs` of the platform in step with the CBOM Repository. The [Scheduler](../architecture/scheduler.md#supported-task-types) lists them under these names:
+The following scheduled jobs keep the `CBOMs` of the platform in step with the CBOM Repository. The [Scheduler](../architecture/scheduler.md#supported-task-types) lists them under these names:
 
 | Job                         | When (UTC)              | What it does                                                                                                     |
 |-----------------------------|-------------------------|------------------------------------------------------------------------------------------------------------------|
@@ -83,19 +82,21 @@ Three scheduled jobs keep the `CBOMs` of the platform in step with the CBOM Repo
 | `CbomReconcileTask`         | Sundays at 02:30        | Reads the whole CBOM Repository and stores every document the hourly runs missed                                 |
 | `CbomSyncSkipRetentionTask` | Every day at 03:15      | Removes old permanently [skipped documents](#skipped-documents)                                                  |
 
-The sync icon on the CBOM list starts the same run as the hourly job at once. Nothing is synchronized while no CBOM Repository URL is configured, although a manual sync still reports *CBOMs successfully synchronized.* A scheduled run is skipped while the URL is missing or the CBOM Repository cannot be reached. The job then shows the reason in **Last Skip Reason**.
+A manual synchronization starts the same run as the hourly job. Nothing is synchronized while no CBOM Repository URL is configured. A scheduled run is skipped while the URL is missing or the CBOM Repository cannot be reached, and the job records why, see [Scheduler](../architecture/scheduler.md#task-execution-history).
 
-Each run adds to the inventory the assets of the documents it has just stored. It also adds the assets of up to **CBOM Sync Catch-up** further `CBOMs` that still wait for them: uploaded `CBOMs` first, then those whose earlier attempt failed or was interrupted. If `CBOMs` stay `Pending` for many runs, raise **CBOM Sync Catch-up**, or start extra runs with the sync icon. **CBOM Sync Overlap**, **CBOM Sync Retries**, **CBOM Sync Catch-up** and **CBOM Sync Skip Retention** are set on the **Utils** tab of [Platform Settings](../../settings/platform.md#cbom-synchronization).
+Each run adds to the inventory the assets of the documents it has just stored. It also adds the assets of up to **CBOM Sync Catch-up** further `CBOMs` that still wait for them: uploaded `CBOMs` first, then those whose earlier attempt failed or was interrupted. If `CBOMs` stay `Pending` for many runs, raise **CBOM Sync Catch-up**, or start extra runs manually. The synchronization settings are described in [Platform Settings](../../settings/platform.md#cbom-synchronization).
+
+When the assets of a `CBOM` have been added to the inventory for the first time, the platform raises the **CBOM synced** event, which triggers and notifications can act on, see [Events](workflow/event.md). It is raised once for each `CBOM`, and a newer version of the document is a new `CBOM` with an event of its own.
 
 ### Versions and deletion
 
-When a newer version of a `CBOM` is synchronized, its assets replace those of the earlier version. An asset the newer version no longer declares leaves the inventory, unless another `CBOM` declares it. The earlier version stays in the CBOM list, and its detail says that a later version holds its assets now.
+When a newer version of a `CBOM` is synchronized, its assets replace those of the earlier version. An asset the newer version no longer declares leaves the inventory, unless another `CBOM` declares it. The earlier version stays in the platform, but no longer contributes assets.
 
-Deleting a `CBOM` removes it from the platform together with the assets that no other synchronized `CBOM` holds. The document stays in the CBOM Repository, but synchronization does not store it again; to bring it back, upload it again. Deleting the newest version does not return the assets of the earlier version to the inventory; to restore them, delete the earlier version too and upload it again. A document removed from the CBOM Repository by other means stays in the platform with its assets until it is deleted here. Its detail then shows only *This CBOM no longer exists in the repository. Please synchronize the inventory.*; synchronizing does not change that.
+Deleting a `CBOM` removes it from the platform together with the assets that no other synchronized `CBOM` holds. The document stays in the CBOM Repository, but synchronization does not store it again; to bring it back, upload it again. Deleting the newest version does not return the assets of the earlier version to the inventory; to restore them, delete the earlier version too and upload it again. A document removed from the CBOM Repository by other means stays in the platform with its assets until it is deleted in the platform, but its content can no longer be shown.
 
 ### Asset sync states
 
-The **Asset Sync State** column and filter of the CBOM list, and the detail of a `CBOM` above its assets, show how far its assets have come:
+The asset sync state of a `CBOM` shows how far its assets have come:
 
 | State         | Description                                                                                                                                                                                              |
 |---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -106,16 +107,14 @@ The **Asset Sync State** column and filter of the CBOM list, and the detail of a
 
 ### Skipped documents
 
-A document that a sync run cannot read from the CBOM Repository, or cannot store, does not appear in the CBOM list. It is listed on the **Skipped Documents** page instead, with the **Reason** of its last attempt. The page opens from the skipped-documents icon in the **CBOMs** header (tooltip "Skipped documents: what the sync could not store").
+A document that a sync run cannot read from the CBOM Repository, or cannot store, is not added to the `CBOMs` of the platform. It is listed among the skipped documents instead, with the reason of its last attempt:
 
 | State                 | Description                                                                                                                      |
 |-----------------------|----------------------------------------------------------------------------------------------------------------------------------|
 | `Retrying`            | The next sync runs try the document again, up to [**CBOM Sync Retries**](../../settings/platform.md#cbom-synchronization) times. |
 | `Permanently skipped` | The retries are spent. The weekly reconciliation still tries the document while the repository lists it.                         |
 
-Once the cause is fixed, use the retry icon in the **Actions** column of a permanently skipped document (tooltip "Retry on the next sync run") and confirm with **Retry**. The next sync run then tries the document again, with a full set of retries. A document leaves the page when a run stores it. A permanently skipped document is also removed [**CBOM Sync Skip Retention**](../../settings/platform.md#cbom-synchronization) days after its last attempt. When many are due, the daily job removes them over several days; nothing needs to be configured. A document that keeps failing while the repository lists it is tried again by every weekly reconciliation, so it stays on the page; with a **CBOM Sync Skip Retention** shorter than a week it can be removed and then comes back as `Retrying`.
-
-A corrected version from the producer is a new document and leaves this entry in place. The platform cannot dismiss the entry. It goes away **CBOM Sync Skip Retention** days after its last attempt, once whoever administers the CBOM Repository has removed the document from the repository's storage. Until then it is harmless and can be ignored.
+Once the cause is fixed, a permanently skipped document can be sent back to the next sync run, which tries it again with a full set of retries. A document leaves the skipped documents when a run stores it. A permanently skipped document is also removed [**CBOM Sync Skip Retention**](../../settings/platform.md#cbom-synchronization) days after its last attempt; when many are due, they are removed over several days.
 
 ## Integration with CBOM Repository
 

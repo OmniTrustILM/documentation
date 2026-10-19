@@ -29,7 +29,7 @@ The Scheduler supports a range of task types, catering to various aspects of the
 | CBOM skipped documents retention  | Removes old permanently skipped CBOM documents every day         | [CbomSyncSkipRetentionTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CbomSyncSkipRetentionTask.java)                                   |
 | Crypto asset PQC re-evaluation    | Re-evaluates outdated PQC verdicts of crypto assets every hour   | [CryptoAssetPqcSweepTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/CryptoAssetPqcSweepTask.java)                                       |
 
-The Scheduler shows the task type of a job as **Job Type**, with the name in the Reference column. The CBOM tasks are described in [CBOM](../core-components/cbom.md#synchronization), the re-evaluation in [Post-Quantum Readiness](./post-quantum-readiness.md).
+The task type of a job is the name in the Reference column. The CBOM tasks are described in [CBOM](../core-components/cbom.md#synchronization), the re-evaluation in [Post-Quantum Readiness](./post-quantum-readiness.md#re-evaluation).
 
 ## Task execution mechanism
 
@@ -74,8 +74,8 @@ The Scheduler meticulously maintains a history of task executions, capturing ess
 
 Additionally, the execution history may encompass supplementary information and references to objects that were processed by the task.
 
-Only the three CBOM tasks and the crypto asset PQC re-evaluation can skip a run, for example when there is nothing to do, or when the CBOM Repository is not configured or cannot be reached; the other tasks never skip. A skipped run leaves no entry in the history. The job detail shows when it happened in **Last Skipped At** and why in **Last Skip Reason**, for example *No CBOM repository client is configured*.
+Only the CBOM tasks and the crypto asset PQC re-evaluation can skip a run, for example when there is nothing to do, or when the CBOM Repository is not configured or cannot be reached. A skipped run leaves no entry in the history; the job records when it last skipped a run and why.
 
-The **Schedule** column of the job list shows the state of the job's schedule, such as `Scheduled` or `Paused`, and **Last Fired** when the job last fired. The job detail adds **Schedule State**, **Next Fire Time** and **Previous Fire Time**.
+A job also records the state of its schedule, such as `Scheduled` or `Paused`, and when the scheduler last fired it and will fire it next.
 
 The Scheduler stands as an essential component within the platform, enabling the systematic execution of management and automation tasks. By mastering the concepts of Scheduled Tasks, Cron Expressions, and Execution History, users gain a thorough understanding of how to utilize this feature effectively.
