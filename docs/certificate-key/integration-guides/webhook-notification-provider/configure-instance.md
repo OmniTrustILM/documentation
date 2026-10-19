@@ -2,36 +2,30 @@
 sidebar_position: 2
 ---
 
-# Configure the notification instance
+# Configure Notification Instance
 
-Create a [`Notification`](../../concept-design/core-components/notification.md) instance of the Webhook Notification Provider connector with the kind `WEBHOOK`. The instance represents one webhook — one target URL with one content configuration. Create multiple instances when different notifications go to different endpoints or need different payloads.
+Create a [`Notification`](../../concept-design/core-components/notification.md) instance of the Webhook Notification Provider with the kind `WEBHOOK`. An instance is one URL with one content configuration; create more instances when notifications go to different endpoints or need different bodies.
 
 ## Instance attributes
 
-| Attribute        | Content Type | Description                                                                       |
-|------------------|--------------|--------------------------------------------------------------------------------------|
-| Webhook URL      | `STRING`     | URL the notification content is sent to as an HTTP `POST` request                     |
-| Content type     | `STRING`     | How the request body is built — see [content types](#content-types)                   |
-| Content template | `CODEBLOCK`  | Template of the request body, in the selected syntax. Not used with `RAW_JSON`        |
+| Attribute        | Content Type | Description                                                           |
+|------------------|--------------|-----------------------------------------------------------------------|
+| Webhook URL      | `STRING`     | URL the request is sent to                                            |
+| Content type     | `STRING`     | How the request body is built, see [content types](#content-types)    |
+| Content template | `CODEBLOCK`  | Template of the request body. Not used with `RAW_JSON`                |
 
-The connector declares no [mapping attributes](../../concept-design/core-components/notification.md#mapping-attributes) — delivery goes to the configured URL, not to per-recipient addresses.
+The connector declares no [mapping attributes](../../concept-design/core-components/notification.md#mapping-attributes): it delivers to the URL of the instance, not to addresses of the recipients.
 
 ## Content types
 
-| Content type | Request body                                                       | `Content-Type` header |
-|--------------|---------------------------------------------------------------------|------------------------|
-| `RAW_JSON`   | The whole notification request serialized as JSON, without a template | `application/json`     |
-| `JSON`       | Rendered from the content [template](templates.md)                   | `application/json`     |
-| `XML`        | Rendered from the content [template](templates.md)                   | `application/xml`      |
+| Content type | Request body                                                  | `Content-Type` header |
+|--------------|---------------------------------------------------------------|-----------------------|
+| `RAW_JSON`   | The whole notification request as JSON, without a template    | `application/json`    |
+| `JSON`       | Rendered from the content [template](templates.md)            | `application/json`    |
+| `XML`        | Rendered from the content [template](templates.md)            | `application/xml`     |
 
-`RAW_JSON` is the zero-template integration: the endpoint receives the complete notification request — the event information, the resolved recipients, and, when [event data categories](../../concept-design/core-components/notification-profile.md#event-data) are enabled on the profile, the object data. The structure is defined by the [send notification operation](/api/connector-notification-provider/#tag/Notification-instances-Management/operation/sendNotification) of the Notification Provider interface, so the receiving side parses a stable, documented format that can evolve with the platform.
-
-:::info
-Passing the object data through requires a connector version built against `interfaces` version `2.20.0` or later — earlier versions do not know the `objectData` field and do not deliver it.
-:::
-
-Use `JSON` or `XML` with a template when the endpoint expects its own payload format — for example a chat tool's message schema or a ticketing system's API.
+With `RAW_JSON`, the endpoint receives the whole notification request, as defined by the [send notification operation](/api/connector-notification-provider#tag/notification-instances-management/POST/v1/notificationProvider/notifications/{uuid}/notify): the event and its data, the resolved recipients and, when the profile enables [event data](../../concept-design/core-components/notification-profile.md#event-data), the object data. Use `JSON` or `XML` with a template when the endpoint expects a format of its own, such as the message format of a chat tool or the API of a ticketing system.
 
 ## Use in a notification profile
 
-Select the instance as the `Notification instance` of a [notification profile](../../concept-design/core-components/notification-profile.md). The recipient type `None` fits the webhook pattern — no recipients are resolved and the payload still carries the full event content. To include data about the event's object, enable [event data categories](../../concept-design/core-components/notification-profile.md#event-data) on the profile; with `RAW_JSON` the data arrives automatically as `objectData`, with a template it is available to render.
+Select the instance in a [notification profile](../../concept-design/core-components/notification-profile.md) with the recipient type `None`: no recipients are resolved, and the request still carries the whole event. To include data about the event's object, enable [event data](../../concept-design/core-components/notification-profile.md#event-data) on the profile; with `RAW_JSON` it arrives as `objectData`, and a template can render it.

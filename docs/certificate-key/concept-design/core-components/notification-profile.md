@@ -23,10 +23,10 @@ The `Notification Profile` represents configuration how notifications are handle
 | Internal notification | Indicates if internal notification should be executed or not                                                                                                                                 |
 | Frequency             | Used when notifying in context of monitoring events. It specifies interval between consecutive notifications and controls how often to repeat notification from the time when it was created |
 | Repetitions           | Used when notifying in context of monitoring events. It specifies maximum number of notification repetitions                                                                                 |
-| Event data            | Categories of the event object's data to include in external notifications. All disabled by default. See [Event data](#event-data)                                                          |
+| Event data            | Categories of data about the event's object to include in external notifications. All disabled by default. See [Event data](#event-data)                                                    |
 
 :::note
-`Notification Profile` is versioned to ensure that already pending notifications are not influenced by configuration changes. Description and [event data](#event-data) categories are properties of the profile itself rather than of a version — changing them does not create a new version and applies immediately, including to already pending notifications.
+`Notification Profile` is versioned to ensure that already pending notifications are not influenced by configuration changes. The description and the [event data](#event-data) categories belong to the profile rather than to a version: changing them creates no new version and applies at once, also to pending notifications.
 :::
 
 In case of notifying in context of monitoring events, notification system controls how often and how many notifications are sent to prevent spamming user with notifications carrying the same information.
@@ -38,28 +38,30 @@ When certificate expiring event is raised for certificate X, notification system
 
 ## Event data
 
-The `Notification Profile` can enrich external notifications with data about the object the event concerns. Four categories can be enabled independently, and all are disabled by default:
+A notification profile can add data about the object an event concerns to its external notifications. Each category is enabled separately, and all are disabled by default:
 
-| Category          | Included data                                                                                                       |
-|-------------------|---------------------------------------------------------------------------------------------------------------------|
-| Custom attributes | Content of the [custom attributes](../../settings/custom-attributes.md) assigned to the object                       |
-| Metadata          | Connector-sourced metadata of the object, grouped by the connector and source object that produced it                |
-| Associations      | Objects associated with the object: owner, groups, and RA profile                                                    |
-| Object content    | The content representation of the object when its type provides one — for certificates, the Base64-encoded DER data  |
+| Category          | Included data                                                                                         |
+|-------------------|-------------------------------------------------------------------------------------------------------|
+| Custom attributes | Content of the [custom attributes](../../settings/custom-attributes.md) assigned to the object         |
+| Metadata          | Connector-sourced metadata of the object, grouped by the connector and source object that produced it |
+| Associations      | The owner and groups of the object and, for certificates, its RA profile                              |
+| Object content    | The content of the object when its type has one: for certificates, the Base64-encoded DER data        |
 
-The categories describe the event's **subject** object — the event's own object for most events, the object awaiting approval for approval events. A category yields data only when the subject object's type supports it, so the configuration is independent of the events the profile is used with — enabling a category that does not apply to some event simply contributes no data for that event. See [object data in external notifications](workflow/event.md#object-data-in-external-notifications) for what each event can yield and how the data reaches the [notification provider](../../connectors/provider-interfaces/notification-provider.mdx). For rendering the data in notification templates, see the [Email Notification Provider](../../integration-guides/email-notification-provider/templates.md) and [Webhook Notification Provider](../../integration-guides/webhook-notification-provider/templates.md) integration guides.
+The data describes the event's **subject**: for approval and comment events, the object the approval or comment is about; for every other event, the event's own object. A category adds data only where the subject supports it, and nothing elsewhere: custom attributes and metadata where its resource has attributes, the owner and groups where its resource has them, and the RA profile and content for certificates.
+
+The data is sent to the [notification provider](../../connectors/provider-interfaces/notification-provider.mdx#sending-notifications) as the `objectData` part of the notification request, next to the event's own data. It is loaded when the notification is sent, and reflects the object at that time. Loading is best effort, and the notification is sent in any case: a category that cannot be loaded or is too large is left out, and a long value is cut short and ends with `...[truncated]`. Treat every part of `objectData` as optional; the templates of the [Email Notification Provider](../../integration-guides/email-notification-provider/templates.md) and the [Webhook Notification Provider](../../integration-guides/webhook-notification-provider/templates.md) show how.
+
+Object data never contains the values of secret or credential attributes, or the content of protected attribute definitions, whichever categories are enabled. This applies to object data only: the event's own data can carry a secret, such as the one-time credential of the [Certificate registered](workflow/event.md#certificate-registered-event) event.
 
 :::info[Required permissions]
-Enabling event data categories authorizes export of the object data to the notification instance configured on the profile. Two categories therefore require additional permissions of the configuring user, verified when the category is being enabled and also when the notification instance is changed while such category remains enabled:
+Enabling a category authorizes sending the object data to the notification instance of the profile. These categories therefore require additional permissions, without object-level restrictions, of the user who enables them, or who changes the notification instance while they are enabled:
 
-- **Custom attributes** requires the `Members` action on the `Attribute` resource without object-level restrictions.
-- **Object content** requires the `Detail` action on the `Certificate` resource and the `Members` action on the `RA Profile` resource, both without object-level restrictions.
+- **Custom attributes** requires the `Members` action on the `Attribute` resource.
+- **Object content** requires the `Detail` action on the `Certificate` resource and the `Members` action on the `RA Profile` resource.
 
-The check is performed at configuration time. Permissions lost later do not disable already configured profiles.
+The permissions are checked only at that time: losing them later does not disable a configured profile.
 :::
 
 :::note[Trust boundary]
-Enable event data categories only for notification instances whose provider you trust with the exported data. For providers connected through a proxy, requests transit the message broker and may be durably retained there until consumed — the broker is part of the trust boundary for connector traffic.
+Enable event data only for notification instances whose connector you trust with the data. A connector reached through a proxy receives its requests through the message broker, which is then part of that trust boundary.
 :::
-
-Secret content never leaves the platform: secret and credential typed values, as well as content of protected attribute definitions, are always excluded from the exported data regardless of the enabled categories.

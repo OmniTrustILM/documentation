@@ -40,6 +40,8 @@ Event triggers are automated mechanisms that respond to specific events within t
 | [Comment resolved](#comment-events) | Comment | Group | <span class="badge badge--danger">NO</span>   | Occurs when a thread is resolved or reopened | [`CommentEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/events/data/CommentEventData.java) |
 | Scheduled job finished       | Scheduled job |                   | <span class="badge badge--danger">NO</span>   | Occurs when scheduled job execution finished                                                   | [`ScheduledJobFinishedEventData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/events/data/ScheduledJobFinishedEventData.java)             |
 
+External notifications can also carry data about the event's object, when the notification profile enables [event data](../notification-profile.md#event-data).
+
 ### Certificate Uploaded event
 
 The **Certificate Uploaded** event fires when a certificate is manually uploaded to the platform. It does not fire for certificates that enter the inventory through issuance or discovery — those have their own events.
@@ -86,29 +88,3 @@ The **Comment created** and **Comment resolved** events fire for [comments](../c
 The triggers of these events can be overridden per **Group**: a trigger or notification profile associated with a group applies to comments on objects that belong to that group, in addition to the triggers configured in [Settings → Events](../../../settings/events.md). Nothing is delivered through a notification profile unless it is associated with the event.
 
 The owner of the object and the participants of the thread are notified internally without any association. See [Notifications](../comment.md#notifications) for details, including the note on who receives the comment text.
-
-### Object data in external notifications
-
-Besides the event data listed above, external notifications can carry object data describing the object the event concerns, when [event data categories](../notification-profile.md#event-data) are enabled on the notification profile. It is delivered to the [notification provider](../../../connectors/provider-interfaces/notification-provider.mdx) as the `objectData` part of the notification request — the authoritative definition of its structure is [`NotificationEventObjectDataDto`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/connector/notification/NotificationEventObjectDataDto.java) with the classes it references, the same way the event data classes above define the `notificationData` part.
-
-The categories describe the event's **subject**, stated explicitly in the delivered data. For most events this is the event's own object; for approval events it is the **object awaiting approval** — the approval record itself carries no attributes. When the awaited object no longer exists at delivery time, the subject reference keeps its resource and UUID without a name, the categories stay empty, and the notification is still delivered.
-
-Whether a category yields data is not configured per event — it follows from what the subject's resource supports: custom attributes and metadata where the resource supports attributes, owner and group associations where the resource declares them, RA profile associations and content for certificates. Events added to the platform get this behavior automatically. For the current events:
-
-| Event                        | Subject                      | Custom attributes | Metadata | Associations              | Object content                              |
-|------------------------------|-------------------------------|-------------------|----------|----------------------------|----------------------------------------------|
-| Certificate status changed   | The certificate               | ✓                 | ✓        | Owner, groups, RA profile  | ✓                                            |
-| Certificate action performed | The certificate               | ✓                 | ✓        | Owner, groups, RA profile  | ✓                                            |
-| Certificate discovered       | The certificate               | ✓                 | ✓        | Owner, groups, RA profile  | ✓                                            |
-| Certificate expiring         | The certificate               | ✓                 | ✓        | Owner, groups, RA profile  | ✓                                            |
-| Certificate not compliant    | The certificate               | ✓                 | ✓        | Owner, groups, RA profile  | ✓                                            |
-| Certificate uploaded         | The certificate               | ✓                 | ✓        | Owner, groups, RA profile  | ✓                                            |
-| Certificate registered       | The certificate               | ✓                 | ✓        | Owner, groups, RA profile  | Once issued — registered certificates have no content yet |
-| Discovery finished           | The discovery                 | ✓                 | ✓        | —                          | —                                            |
-| Approval requested           | The object awaiting approval  | Per subject type  | Per subject type | Per subject type    | When the subject is a certificate            |
-| Approval closed              | The object awaiting approval  | Per subject type  | Per subject type | Per subject type    | When the subject is a certificate            |
-| Scheduled job finished       | The scheduled job             | —                 | —        | —                          | —                                            |
-
-Object content is currently provided for certificates; other object types yield no content. Event-specific context (statuses, actions, results) always stays in the event data — object data adds information about the object, it never duplicates the event data.
-
-Object data is delivered **best effort** and reflects the state of the object at delivery time: a notification is never suppressed because object data could not be loaded, and categories load independently, so one failing category does not block the others. The exported data is bounded — long values are truncated with a `...[truncated]` suffix, a category whose stored content is too large to load safely is omitted whole, and when the payload exceeds its overall cap, categories are dropped in a deterministic order (metadata, custom attributes, object content, associations) until it fits; certificate content is never truncated, it is either included whole or dropped. Every omission is logged as a warning. Consumers of the data must therefore treat every part of it as optional.
