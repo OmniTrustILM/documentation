@@ -30,7 +30,7 @@ Create an `Authority` that uses the OTPKI Connector, see [Create Authority](../.
 | OAuth audience             | No       | Audience requested with the access token. Leave empty unless the identity provider requires one                      |
 | TLS trust                  | No       | Root CA and intermediate CA certificates to trust when connecting. Leave empty when a public CA is used              |
 | Call deadline (ms)         | No       | Maximum time to wait for a single call to OTPKI. Values outside `1000`-`60000` are clamped to that range. Default `30000`  |
-| Retry max attempts         | No       | How often a safe-to-repeat call is retried when OTPKI is briefly unavailable. Read-only calls also retry timeouts; the enrollment status poll retries only when the request never reached OTPKI; other state-changing calls are never retried. Default `3` |
+| Retry max attempts         | No       | How many times a call that only reads from OTPKI is retried when OTPKI is briefly unavailable or does not answer in time. Calls that change data in OTPKI are never retried. Default `3` |
 | Retry initial backoff (ms) | No       | Wait time before the first retry. Default `500`                                                                      |
 | Retry max backoff (ms)     | No       | Upper bound on the wait time between retries. Default `5000`                                                         |
 

@@ -19,7 +19,7 @@ The **OTPKI Connector** is the [`Connector`](../../concept-design/architecture/c
 | Revoke                   | Revokes an issued certificate with the selected revocation reason                        |
 | Register                 | Pre-registers an identity in OTPKI before a certificate request exists                   |
 | Identify                 | Matches an existing certificate against OTPKI by its serial number                       |
-| CA certificates | Downloads the certificate chain of the selected certification authority. CRL retrieval is not available: OTPKI returns every revocation list in force for a certification authority, and the connector does not yet select the current one from that response, so it answers `501 OPERATION_NOT_SUPPORTED` |
+| CA certificates          | Downloads the certificate chain of the selected certification authority. CRLs are not available through the connector, see [Troubleshooting](./troubleshooting.md) |
 
 The connector authenticates to OTPKI with an OAuth 2.0 access token obtained through the **client credentials** grant. OTPKI validates that token against the identity provider that issued it, and resolves it to an OTPKI user whose roles determine what the connector is allowed to do.
 
@@ -57,7 +57,7 @@ The connector authenticates to OTPKI with an OAuth 2.0 access token obtained thr
 Before you start, make sure that:
 
 - OTPKI is installed, running, and reachable from the OTPKI Connector. Installing and operating OTPKI is out of scope of this document, refer to the [OTPKI documentation](https://docs.otpki.com/).
-- The OTPKI version matches the one the connector supports. Each connector release speaks a single generation of the OTPKI API, and OTPKI has repackaged that API between releases. A mismatch is not a connectivity problem and does not surface as one — see [Troubleshooting](./troubleshooting.md).
+- The deployed OTPKI is a 1.0.x release. The OTPKI Connector 1.1.0 speaks the OTPKI 1.0 API and does not work with earlier OTPKI releases, so upgrade OTPKI and the connector together. Use OTPKI 1.0.1 or later if certificates carry otherName subject alternative names, such as a user principal name: OTPKI 1.0.0 encodes them incorrectly, and the platform then stores the certificate without any subject alternative names. A version mismatch can pass the connection check and fail only at issuance, see [Troubleshooting](./troubleshooting.md).
 - An OIDC identity provider is registered in OTPKI and can issue client credentials tokens. See [Identity Providers](https://docs.otpki.com/docs/operations/administration/identity/identity-providers/).
 - The OTPKI Connector is deployed and registered in the platform. Deploying the connector is out of scope of this document, see [Register Connectors](../../quick-start/certificate-management/register-connectors.mdx) for registering it.
 - A [`Vault Profile`](../../concept-design/core-components/vault-profile.md) is available in the platform to store the OAuth client credentials.
