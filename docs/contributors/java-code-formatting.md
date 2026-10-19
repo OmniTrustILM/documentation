@@ -10,7 +10,13 @@ You do not copy any rules into your repository. They live in the `com.otilm:buil
 
 ## The two gates
 
-Both gates run in the `verify` phase. Your existing pipeline already reaches that phase, so no workflow change is needed.
+Both gates run in the `verify` phase, so a pipeline that runs `mvn verify` or `mvn install` needs no workflow change. A pipeline that stops earlier, at `package` or `test`, never reaches them and needs a step of its own:
+
+```bash
+mvn spotless:check checkstyle:check
+```
+
+The same command is the quick local check. It runs both gates without the test suite that `mvn verify` brings along.
 
 | Gate           | What it checks                                                                                   | How to fix a failure                                                       |
 |----------------|--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -48,9 +54,9 @@ Every build between that commit and the reformat then fails, CI included.
 1. Copy `.editorconfig` and `.gitattributes` from the [`dependencies`](https://github.com/OmniTrustILM/dependencies) repository. Do this before you open the project.
 2. Bump the parent version locally. Do not commit it yet.
 3. Run `mvn spotless:apply`.
-4. Run `mvn verify` and fix what Checkstyle reports by hand. Wildcard imports are the common one.
+4. Run `mvn spotless:check checkstyle:check` and fix what Checkstyle reports by hand. Wildcard imports are the common one.
 5. Commit the reformat as a single mechanical commit. Change nothing else in it — leave the two files from step 1 and the parent bump uncommitted for now.
-6. Create a `.git-blame-ignore-revs` file at the repository root containing that commit's SHA, and commit it.
+6. Create a `.git-blame-ignore-revs` file at the repository root containing that commit's full SHA, and commit it.
 7. Commit `.editorconfig` and `.gitattributes`.
 8. Commit the parent bump. This is what turns the gates on, so it goes last.
 9. Merge the pull request with a merge commit, not a squash. A squash replaces the reformat commit with a new one, so the SHA in `.git-blame-ignore-revs` never reaches the main branch.
@@ -64,6 +70,15 @@ If the project is already open, **reload it** — a newly added `.editorconfig` 
 :::
 
 Step 6 is what keeps `git blame` useful. A one-shot reformat touches nearly every line of every file, and without that file it becomes the last author of all of them. GitHub applies `.git-blame-ignore-revs` automatically in its blame view, and the parent POM wires your local `git blame` to use it too.
+
+List each commit by its full 40-character SHA, one per line. Git rejects an abbreviated one, and because every developer's build points `git blame` at this file, a single short SHA breaks `git blame` for everyone in the repository:
+
+```text
+# Apply Spotless formatting and Checkstyle fixes
+4e8d54ee5957bff5f66dba7b51cfa5091aa3f026
+```
+
+When a later parent version changes the formatting profile, reformat again in a commit of its own and append its SHA to the same file.
 
 Keeping the reformat commit free of anything else is what lets it be skipped wholesale — that is why the config files are copied first but committed after it.
 
@@ -81,7 +96,7 @@ It also does one thing Spotless cannot: it stops your IDE from *undoing* the imp
 
 ## Windows: refresh your worktree once
 
-**If you already had the repository checked out on Windows, your first build after the gates land will fail.** It fails on files the reformat never touched, which is confusing enough to be worth explaining.
+**If you already had the repository checked out on Windows with CRLF line endings, your first build after the gates land will fail.** That is the usual state of a Windows checkout, because Git for Windows installs with `core.autocrlf=true`. It fails on files the reformat never touched, which is confusing enough to be worth explaining.
 
 Git rewrites a file during checkout only when the commit changed that file. The reformat commit changes most of your Java files, so those come back with LF. The rest keep the CRLF endings they have had since you first cloned. `.gitattributes` cannot reach back and fix them.
 
@@ -120,4 +135,4 @@ A fresh clone is unaffected, and so is CI on ephemeral runners — both check ou
 | You want to keep your own hook         | `-P -install-git-hooks`  |
 | One commit, the hook is in the way     | `git commit --no-verify` |
 
-**None of these change your pipeline.** The `verify` gates remain authoritative, so anything you skip locally is caught before merge.
+**None of these change your pipeline.** The gates in CI remain authoritative, so anything you skip locally is caught before merge.
