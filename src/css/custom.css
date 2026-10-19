@@ -117,11 +117,14 @@ html[data-theme='dark'] .discord-icon::before {
 }
 
 /*
- * Build-time-rendered PlantUML diagrams are embedded as <img src="/img/plantuml/…">.
- * Diagrams narrower than the column keep their natural size; wider ones scale down
- * to fit so they never overflow the content area.
+ * Build-time-rendered PlantUML diagrams are embedded as
+ * <object type="image/svg+xml" data="/img/plantuml/…">, not as <img>: an SVG referenced by <img>
+ * renders non-interactively, which would kill the [[…]] links diagrams carry into the API
+ * reference. Diagrams narrower than the column keep their natural size; wider ones scale down to
+ * fit so they never overflow the content area.
  */
-img[src^="/img/plantuml/"] {
+.plantumlDiagram {
+  display: block;
   max-width: 100%;
   height: auto;
 }

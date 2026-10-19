@@ -22,10 +22,11 @@ jobs:
         uses: ./.github/actions/plantuml
       - name: Test build
         env:
-          NODE_OPTIONS: "--max_old_space_size=10240"
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           yarn install --frozen-lockfile
           yarn build
+          yarn verify-api-build
   gh-release:
     if: github.event_name != 'pull_request'
     name: Deploy to GitHub Pages
@@ -52,10 +53,11 @@ jobs:
         uses: ./.github/actions/plantuml
       - name: Build website
         env:
-          NODE_OPTIONS: "--max_old_space_size=10240"
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           yarn install --frozen-lockfile
           yarn build
+          yarn verify-api-build
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:

@@ -50,7 +50,7 @@ In order to start with the CMP protocol, the platform must be configured and act
 
 For this purpose we define the [`CMP Profile`](./cmp-profile.md) that contains configuration of the CMP server.
 
-You can manage `CMP Profile` through the web interface or through the [`Core CMP API`](/api/core-cmp/).
+You can manage `CMP Profile` through the web interface or through the [`Core CMP API`](/api/core-cmp).
 
 ## CMP Profile vs RA Profile CMP API
 

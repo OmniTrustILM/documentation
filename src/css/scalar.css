@@ -1,0 +1,140 @@
+/**
+ * Bridge the Docusaurus (Infima) theme into the embedded Scalar API reference.
+ *
+ * Scalar ships its own palette and assumes it owns the viewport. Both need adjusting: the colors
+ * are mapped onto the site's Infima variables so an API page matches the rest of the documentation
+ * in light and dark mode, and the layout is reduced by the navbar height so the reference's sticky
+ * sidebar does not slide under it.
+ */
+
+.scalar-api-reference {
+  --scalar-font: var(--ifm-font-family-base);
+  --scalar-font-code: var(--ifm-font-family-monospace);
+  --scalar-border-width: 1px;
+  --refs-header-height: var(--ifm-navbar-height);
+
+  /* Infima's list and heading spacing would otherwise leak into the reference. */
+  --ifm-heading-margin-bottom: 0;
+  --ifm-list-left-padding: 0;
+}
+
+.scalar-api-reference h2 {
+  font-size: unset;
+  margin: unset;
+}
+
+/* --- Palette ------------------------------------------------------------- */
+
+html[data-theme='light'] body,
+html[data-theme='light'] .scalar-card.dark-mode {
+  --scalar-color-1: var(--ifm-font-color-base);
+  --scalar-color-2: var(--ifm-color-emphasis-700);
+  --scalar-color-3: var(--ifm-color-emphasis-600);
+  --scalar-color-accent: var(--ifm-color-primary);
+
+  /*
+   * Infima leaves --ifm-background-color transparent in light mode, so a var() fallback never
+   * fires — it is defined, just see-through. Scalar needs an opaque surface for the cards,
+   * dropdowns and sticky headers it paints over page content.
+   */
+  --scalar-background-1: #fff;
+  --scalar-background-2: color-mix(in srgb, rgba(0, 0, 0, 1) 4%, white);
+  --scalar-background-3: color-mix(in srgb, rgba(0, 0, 0, 1) 8%, white);
+  --scalar-background-accent: var(--ifm-menu-color-background-active, rgba(0, 0, 0, 0.05));
+
+  --scalar-border-color: var(--ifm-color-emphasis-300);
+  --scalar-button-1: rgba(0, 0, 0, 1);
+  --scalar-button-1-hover: rgba(0, 0, 0, 0.8);
+  --scalar-button-1-color: rgba(255, 255, 255, 0.9);
+}
+
+html[data-theme='dark'] body,
+html[data-theme='dark'] .scalar-card.dark-mode {
+  --scalar-color-1: var(--ifm-font-color-base);
+  --scalar-color-2: var(--ifm-color-emphasis-700);
+  --scalar-color-3: var(--ifm-color-emphasis-400);
+  --scalar-color-accent: var(--ifm-link-color);
+
+  --scalar-background-1: var(--ifm-background-color);
+  --scalar-background-2: color-mix(in srgb, rgba(255, 255, 255, 1) 6%, var(--ifm-background-color));
+  --scalar-background-3: color-mix(in srgb, rgba(255, 255, 255, 1) 12%, var(--ifm-background-color));
+  --scalar-background-accent: var(--ifm-menu-color-background-active, hsla(0, 0%, 100%, 0.05));
+
+  --scalar-border-color: var(--ifm-color-emphasis-200);
+  --scalar-button-1: rgba(255, 255, 255, 1);
+  --scalar-button-1-hover: rgba(255, 255, 255, 0.9);
+  --scalar-button-1-color: black;
+}
+
+/* --- Sidebar ------------------------------------------------------------- */
+
+.t-doc__sidebar {
+  --scalar-sidebar-background-1: var(--scalar-background-1);
+  --scalar-sidebar-border-color: var(--scalar-border-color);
+  --scalar-sidebar-color-1: var(--scalar-color-1);
+  --scalar-sidebar-color-2: var(--scalar-color-2);
+  --scalar-sidebar-color-active: var(--scalar-color-accent);
+  --scalar-sidebar-item-active-background: var(--scalar-background-accent);
+  --scalar-sidebar-item-hover-background: var(--ifm-menu-color-background-hover);
+  --scalar-sidebar-item-hover-color: currentColor;
+  --scalar-sidebar-search-background: transparent;
+  --scalar-sidebar-search-border-color: var(--scalar-border-color);
+  --scalar-sidebar-search--color: var(--scalar-color-3);
+
+  /* Sit below the navbar rather than scrolling under it. */
+  height: calc(100dvh - var(--ifm-navbar-height));
+  max-height: calc(100dvh - var(--ifm-navbar-height));
+  position: sticky;
+  top: var(--ifm-navbar-height);
+}
+
+/* --- Embedded layout ----------------------------------------------------- */
+
+/* The reference is one section of a page, not the page, so it must not own scrolling. */
+.references-layout {
+  overflow: initial !important;
+}
+
+.section-column:nth-of-type(2) {
+  max-height: calc(100dvh - var(--ifm-navbar-height));
+}
+
+.scalar-card {
+  max-height: calc((100dvh - var(--ifm-navbar-height) - var(--refs-header-height) - 60px) / 2);
+}
+
+.references-rendered .section-header {
+  color: var(--ifm-heading-color, var(--scalar-color-1));
+}
+
+/*
+ * An outbound call to action for Scalar's hosted MCP registry. The sidebar's "Powered by Scalar"
+ * attribution is kept — Redoc credited Redocly in the same position.
+ */
+.scalar-mcp-layer {
+  display: none !important;
+}
+
+/*
+ * Scalar clamps the description beside a response code, a parameter or a schema property to one
+ * line and clips it with an ellipsis, so a narrow column turns "Forbidden" into "Forbidd…" and
+ * "Internal Server Error" into "Internal Server Err…". These descriptions are short and are the
+ * only label the row carries, so let them wrap instead of hiding characters.
+ *
+ * Scalar's rule is `.scalar-app .truncate`. Its stylesheet is injected by the bundle at runtime and
+ * therefore lands after this one, so an equally specific selector would lose the tie — hence
+ * matching both classes on the reference root.
+ */
+.scalar-app.scalar-api-reference .markdown-summary {
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  -webkit-line-clamp: unset;
+}
+
+.scalarApiReferenceError {
+  margin: 0 auto;
+  max-width: var(--ifm-container-width);
+  padding: 4rem var(--ifm-spacing-horizontal);
+}

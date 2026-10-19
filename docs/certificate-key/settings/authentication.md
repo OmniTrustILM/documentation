@@ -8,7 +8,7 @@ sidebar_position: 30
 
 ## OAuth 2.0 provider management
 
-OAuth 2.0 providers can be managed using [OAuth2 provider settings API](/api/core-other#tag/Settings/operation/updateOAuth2ProviderSettings).
+OAuth 2.0 providers can be managed using [OAuth2 provider settings API](/api/core-other#tag/settings/PUT/v1/settings/authentication/oauth2Providers/{providerName}).
 
 Example of how to set a provider can be found in [Keycloak Integration Guide](../integration-guides/keycloak/provider-settings).
 
@@ -26,7 +26,7 @@ The effective claim must be present as a non-empty string in the token claims (a
 The resolved claim value is the username under which the user is identified. When automatic registration is enabled (`createUnknownUsers`), the user is created with this username. Additionally, roles from the token's `roles` claim are registered automatically when `createUnknownRoles` is enabled.
 
 :::info[Identity providers without a username claim]
-Some identity providers, for example Microsoft Entra ID, do not issue a `username` claim and provide `preferred_username` instead. For these providers, set `usernameClaim` to `preferred_username` in the [OAuth2 provider settings](/api/core-other#tag/Settings/operation/updateOAuth2ProviderSettings).
+Some identity providers, for example Microsoft Entra ID, do not issue a `username` claim and provide `preferred_username` instead. For these providers, set `usernameClaim` to `preferred_username` in the [OAuth2 provider settings](/api/core-other#tag/settings/PUT/v1/settings/authentication/oauth2Providers/{providerName}).
 :::
 
 :::warning[Changing the username claim of an existing provider]

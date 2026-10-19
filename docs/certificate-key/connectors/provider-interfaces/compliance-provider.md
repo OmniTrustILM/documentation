@@ -31,13 +31,13 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-connector/#tag/Connector-Management/operation/createConnector]]: Create a new Connector
-        Core -> Connector [[connector-compliance-provider/#tag/Info/operation/listSupportedFunctions]]: List supported functions of the connector
+    skinparam topurl /api/
+        Client -> Core [[core-connector#tag/connector-management/POST/v1/connectors]]: Create a new Connector
+        Core -> Connector [[connector-compliance-provider#tag/connector-info/GET/v1]]: List supported functions of the connector
         Connector --> Core: Function Group and Kind
-        Core -> Connector [[connector-compliance-provider/#tag/Compliance-Rules/operation/getRules]]: Get list of rules
+        Core -> Connector [[connector-compliance-provider#tag/compliance-rules/GET/v1/complianceProvider/{kind}/rules]]: Get list of rules
         Connector --> Core: List Compliance Rules
-        Core -> Connector [[connector-compliance-provider/#tag/Compliance-Rules/operation/getGroups]]: Get list of groups
+        Core -> Connector [[connector-compliance-provider#tag/compliance-rules/GET/v1/complianceProvider/{kind}/groups]]: Get list of groups
         Connector --> Core: List Compliance Groups
         Core -> Core: Store Rules and Groups
         Core -> Client: Return Connector UUID
@@ -49,13 +49,13 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-certificate/#tag/Certificate-Inventory/operation/checkCompliance]]: Initiate Certificate Compliance Check
+    skinparam topurl /api/
+        Client -> Core [[core-certificate#tag/certificate-inventory/POST/v1/certificates/compliance]]: Initiate Certificate Compliance Check
         Core --> Client: Return Async response
         Core -> Core: Get Compliance Profile of the Certificate
         Core -> Core: Frame requests to the Compliance Providers
         loop for each Compliance Provider
-            Core -> Connector [[connector-compliance-provider/#tag/Compliance/operation/checkCompliance]]: Check certificate compliance
+            Core -> Connector [[connector-compliance-provider#tag/compliance/POST/v1/complianceProvider/{kind}/compliance]]: Check certificate compliance
             Connector --> Connector: Evaluate each rule
             Connector --> Core: Return Compliance Check Result
         end
@@ -71,7 +71,7 @@ When a request is made to check the compliance of the `Certificate`, the `Core` 
 ## Specification and example
 
 The Compliance Provider implements [Common Interfaces](../common-interfaces/overview.md) and the following additional interfaces:
-- [Compliance Rules](/api/connector-compliance-provider/#tag/Compliance-Rules)
-- [Compliance](/api/connector-compliance-provider/#tag/Compliance)
+- [Compliance Rules](/api/connector-compliance-provider#tag/compliance-rules)
+- [Compliance](/api/connector-compliance-provider#tag/compliance)
 
-The OpenAPI specification of the Compliance Provider can be found here: [Connector API - Compliance Provider](/api/connector-compliance-provider/).
+The OpenAPI specification of the Compliance Provider can be found here: [Connector API - Compliance Provider](/api/connector-compliance-provider).

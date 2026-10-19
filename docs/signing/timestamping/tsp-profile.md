@@ -103,4 +103,4 @@ See the [relationship diagram on the Signing Profile page](/docs/signing/signing
 - [Authentication and Authorization](./authentication-authorization.md) — credential types, allowed-method enforcement, identity mapping
 - [Timestamping request flow](./timestamping-flow.md) — where the TSP Profile sits in the request path
 
-The OpenAPI specification for managing `TSP Profiles` can be found here: [Core API - TSP Profile](/api/core-tsp-profile/).
+The OpenAPI specification for managing `TSP Profiles` can be found here: [Core API - TSP Profile](/api/core-tsp-profile).

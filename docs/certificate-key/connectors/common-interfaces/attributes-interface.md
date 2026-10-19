@@ -68,7 +68,7 @@ This approach:
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
+    skinparam topurl /api/
         Client->>Core: Request operation (e.g., issue certificate)
         Core->>Connector: GET /{operation-path}/attributes
         Note over Core,Connector: Retrieve attributes definition for this operation
@@ -82,7 +82,7 @@ This approach:
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
+    skinparam topurl /api/
         Client->>Core: Submit operation with Attribute values
         Core->>Core: Validate Attribute values against definitions
         Core->>Connector: Execute operation with Attribute values
@@ -112,8 +112,8 @@ Because each `Connector` defines its own specific `Attributes`, we need to get i
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client->>Core [[core-connector/#tag/Connector-Management-API/operation/getAttributes]]: Get Attributes from a Connector
+    skinparam topurl /api/
+        Client->>Core [[core-connector#tag/connector-management/GET/v1/connectors/{uuid}/attributes/{functionGroup}/{kind}]]: Get Attributes from a Connector
         Core->>Connector: List available Attributes
         Connector-->>Core: Return Attributes
         Core-->>Client: Return Attributes
@@ -131,8 +131,8 @@ The following example is creating `Credential` object. The same approach can be 
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client->>Core [[core-credential/#tag/Credential-Management-API/operation/createCredential]]: Add Credential
+    skinparam topurl /api/
+        Client->>Core [[core-credential#tag/credential-management/POST/v1/credentials]]: Add Credential
         Note over Client,Core: Add Credential with specific Attributes
         Core->>Core: Check existence of Connector and Credential
         Core->>Connector: Validate Attributes
@@ -145,5 +145,5 @@ The following example is creating `Credential` object. The same approach can be 
 ### Specification and example
 
 You can find specification and information about the legacy `Attributes` interface on the following locations:
-- [Core Connector API](/api/core-connector/)
-- Connector API specifications, see for example [Authority Provider](/api/connector-authority-provider-v2/)
+- [Core Connector API](/api/core-connector)
+- Connector API specifications, see for example [Authority Provider](/api/connector-authority-provider-v2)

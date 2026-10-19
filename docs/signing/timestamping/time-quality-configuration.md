@@ -56,4 +56,4 @@ The [Time Quality Monitor](./time-quality-monitor.md#ntp-evaluation) documentati
 - [Time Quality Monitor](./time-quality-monitor.md#ntp-evaluation) — how these parameters determine the time quality status
 - [Signing Profile](/docs/signing/signing-profile) — how a profile associates a Time Quality Configuration
 
-The OpenAPI specification for managing `Time Quality Configurations` can be found here: [Core API - Time Quality Configuration](/api/core-time-quality-configuration/).
+The OpenAPI specification for managing `Time Quality Configurations` can be found here: [Core API - Time Quality Configuration](/api/core-time-quality-configuration).

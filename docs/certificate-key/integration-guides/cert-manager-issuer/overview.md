@@ -6,6 +6,10 @@ sidebar_position: 1
 
 This document outlines the steps necessary to be taken to integrate ILM with the [cert-manager](https://cert-manager.io/) `czertainly-issuer`.
 
+:::note[About the `czertainly-issuer` name]
+The issuer component, its Helm chart, its API group `czertainly-issuer.czertainly.com` and its `CzertainlyIssuer`/`CzertainlyClusterIssuer` resource kinds still carry their original names in current releases, so this guide uses them verbatim. Type them exactly as shown — these are live Kubernetes identifiers, and substituting the ILM name makes the commands and resources on the following pages fail.
+:::
+
 This integration guide was tested with:
 - Kubernetes 1.19+
 - cert-manager 1.7.0+

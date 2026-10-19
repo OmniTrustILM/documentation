@@ -80,13 +80,13 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-Entity/#tag/Entity-Management/operation/createEntityInstance]]: Add Entity instance
+    skinparam topurl /api/
+        Client -> Core [[core-entity#tag/entity-management/POST/v1/entities]]: Add Entity instance
         note over Client,Core: Update Existing Entity with Attributes from the connector
         Core->Core: Check existence of Connector and Entity
-        Core -> Connector [[core-Entity/#tag/Entity-Management/operation/validateLocationAttributes]]: Validate Attributes
+        Core -> Connector [[core-entity#tag/entity-management/POST/v1/entities/{entityUuid}/attributes/location/validate]]: Validate Attributes
         Connector --> Core: Result of attribute validation
-        Core -> Connector [[core-Entity/#tag/Entity-Management/operation/createEntityInstance]]: Add Entity instance
+        Core -> Connector [[core-entity#tag/entity-management/POST/v1/entities]]: Add Entity instance
         Connector --> Connector: Check Connection to the Entity
         Connector --> Connector: Resister Entity
         Connector --> Core: Entity Details
@@ -100,9 +100,9 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-Entity/#tag/Entity-Management/operation/getEntityInstance]]: Get Entity instance details
-        Core -> Connector [[core-Entity/#tag/Entity-Management/operation/getEntityInstance]]: Get Entity instance details
+    skinparam topurl /api/
+        Client -> Core [[core-entity#tag/entity-management/GET/v1/entities/{entityUuid}]]: Get Entity instance details
+        Core -> Connector [[core-entity#tag/entity-management/GET/v1/entities/{entityUuid}]]: Get Entity instance details
         Connector --> Core: Entity details
         Core -> Client: Return Entity details
     @enduml
@@ -113,12 +113,12 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-Entity/#tag/Entity-Management/operation/editEntityInstance]]: Update Entity instance
+    skinparam topurl /api/
+        Client -> Core [[core-entity#tag/entity-management/PUT/v1/entities/{entityUuid}]]: Update Entity instance
         note over Client,Core: Update Existing Entity with Attributes from the connector
-        Core -> Connector [[core-Entity/#tag/Entity-Management/operation/validateLocationAttributes]]: Validate Attributes
+        Core -> Connector [[core-entity#tag/entity-management/POST/v1/entities/{entityUuid}/attributes/location/validate]]: Validate Attributes
         Connector --> Core: Result of attribute validation
-        Core -> Connector [[connector-entity-provider/#tag/Entity-Management/operation/updateEntityInstance]]: Update Entity instance
+        Core -> Connector [[connector-entity-provider#tag/entity-management/PUT/v1/entityProvider/entities/{entityUuid}]]: Update Entity instance
         Connector -> Connector: Check Connection to the Entity
         Connector -> Connector: Update Entity details and attributes
         Connector --> Core: Entity Details
@@ -133,10 +133,10 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-Entity/#tag/Entity-Management/operation/deleteEntityInstance]]: Remove Entity instance
+    skinparam topurl /api/
+        Client -> Core [[core-entity#tag/entity-management/DELETE/v1/entities/{entityUuid}]]: Remove Entity instance
         Core -> Core: Check for dependent objects
-        Core -> Connector [[core-Entity/#tag/Entity-Management/operation/removeEntityInstance]]: Remove Entity instance
+        Core -> Connector [[connector-entity-provider#tag/entity-management/DELETE/v1/entityProvider/entities/{entityUuid}]]: Remove Entity instance
         Connector --> Core: Entity Instance removed
         Connector -> Connector: Remove Entity Instance reference
         Core --> Client: Entity Instance removed
@@ -152,16 +152,16 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
+    skinparam topurl /api/
         Client -> Core: List Entities
         Core --> Client: List Entities
-        Client -> Core [[core-location/#tag/Location-Management/operation/addLocation]]: Add Location
+        Client -> Core [[core-location#tag/location-management/POST/v1/entities/{entityUuid}/locations]]: Add Location
         Core->Core: Check existence of Connector
         Core -> Core: Check existence of Entity
         Core -> Core: Check existence of Location
-        Core -> Connector [[connector-entity-provider/#tag/Entity-Management/operation/validateLocationAttributes]]: Validate Attributes
+        Core -> Connector [[connector-entity-provider#tag/entity-management/POST/v1/entityProvider/entities/{entityUuid}/location/attributes/validate]]: Validate Attributes
         Connector --> Core: Result of attribute validation
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/getLocationDetail]]: Get Location Details
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations]]: Get Location Details
         Connector --> Connector: Get Location details and Certificates
         Connector --> Core: Location details and Certificates
         Core -> Core: Create and store Location
@@ -175,8 +175,8 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-location/#tag/Location-Management/operation/getLocation]]: Get Location Details
+    skinparam topurl /api/
+        Client -> Core [[core-location#tag/location-management/GET/v1/entities/{entityUuid}/locations/{locationUuid}]]: Get Location Details
         Core -> Core: Process location details
         Core --> Client: Location details
     @enduml
@@ -187,9 +187,9 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-location/#tag/Location-Management/operation/editLocation]]: Edit Location
-        Core -> Connector [[connector-entity-provider/#tag/Entity-Management/operation/validateLocationAttributes]]: Validate Attributes
+    skinparam topurl /api/
+        Client -> Core [[core-location#tag/location-management/PUT/v1/entities/{entityUuid}/locations/{locationUuid}]]: Edit Location
+        Core -> Connector [[connector-entity-provider#tag/entity-management/POST/v1/entityProvider/entities/{entityUuid}/location/attributes/validate]]: Validate Attributes
         Connector --> Core: Result of attribute validation
         Core -> Core: Update Location details
         Core --> Client: Location details
@@ -201,8 +201,8 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-location/#tag/Location-Management/operation/deleteLocation]]: Remove Location
+    skinparam topurl /api/
+        Client -> Core [[core-location#tag/location-management/DELETE/v1/entities/{entityUuid}/locations/{locationUuid}]]: Remove Location
         Core -> Core: Check for dependent objects
         Core -> Core: Remove Location
         Core --> Client: Location details
@@ -214,10 +214,10 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
+    skinparam topurl /api/
         alt enable/disable
-            Client -> Core [[core-location/#tag/Location-Management/operation/enableLocation]]: Enable Location
-            Client -> Core [[core-location/#tag/Location-Management/operation/disableLocation]]: Disable Location
+            Client -> Core [[core-location#tag/location-management/PATCH/v1/entities/{entityUuid}/locations/{locationUuid}/enable]]: Enable Location
+            Client -> Core [[core-location#tag/location-management/PATCH/v1/entities/{entityUuid}/locations/{locationUuid}/disable]]: Disable Location
             end
         Core --> Client: Location State Changed
     @enduml
@@ -228,20 +228,20 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-location/#tag/Location-Management/operation/issueCertificate]]: Issue Certificate to Location
+    skinparam topurl /api/
+        Client -> Core [[core-location#tag/location-management/POST/v1/entities/{entityUuid}/locations/{locationUuid}/certificates]]: Issue Certificate to Location
         Core -> Core: Perform Pre Checks for Certificate Issuance
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/validateGenerateCsrAttributes]]: Validate CSR Attributes
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/csr/attributes/validate]]: Validate CSR Attributes
         Connector --> Core: Result of CSR Attribute validation
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/generateCsrLocation]]: Generate CSR
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/csr]]: Generate CSR
         Connector -> Connector: Generate CSR with new Key Pair
         Connector --> Core: CSR Data
-        Core -> Authority [[connector-authority-provider-v2/#tag/Certificate-Management/operation/issueCertificate]]: Issue Certificate
+        Core -> Authority [[connector-authority-provider-v2#tag/certificate-management/POST/v2/authorityProvider/authorities/{uuid}/certificates/issue]]: Issue Certificate
         Authority --> Core: Base64 Certificate
         Core -> Core: Store Certificate
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/validatePushCertificateAttributes]]: Validate Push Certificate Attributes
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/push/attributes/validate]]: Validate Push Certificate Attributes
         Connector --> Core: Result of Push Attribute validation
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/pushCertificateToLocation]]: Push Certificate
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/push]]: Push Certificate
         Connector --> Core: Certificate Pushed
         Core --> Client: Certificate Issued
     @enduml
@@ -253,20 +253,20 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-location/#tag/Location-Management/operation/renewCertificateInLocation]]: Renew Certificate in Location
+    skinparam topurl /api/
+        Client -> Core [[core-location#tag/location-management/PATCH/v1/entities/{entityUuid}/locations/{locationUuid}/certificates/{certificateUuid}]]: Renew Certificate in Location
         Core -> Core: Perform Pre Checks for Certificate Renewal
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/validateGenerateCsrAttributes]]: Validate CSR Attributes
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/csr/attributes/validate]]: Validate CSR Attributes
         Connector --> Core: Result of CSR Attribute validation
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/generateCsrLocation]]: Generate CSR
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/csr]]: Generate CSR
         Connector -> Connector: Generate CSR with existing Key Pair
         Connector --> Core: CSR Data
-        Core -> Authority [[connector-authority-provider-v2/#tag/Certificate-Management/operation/renewCertificate]]: Renew Certificate
+        Core -> Authority [[connector-authority-provider-v2#tag/certificate-management/POST/v2/authorityProvider/authorities/{uuid}/certificates/renew]]: Renew Certificate
         Authority --> Core: Base64 Certificate
         Core -> Core: Store Certificate
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/validatePushCertificateAttributes]]: Validate Push Certificate Attributes
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/push/attributes/validate]]: Validate Push Certificate Attributes
         Connector --> Core: Result of Push Attribute validation
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/pushCertificateToLocation]]: Push Certificate
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/push]]: Push Certificate
         Connector --> Core: Certificate Pushed
         Core --> Client: Certificate Renewed
     @enduml
@@ -278,11 +278,11 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-location/#tag/Location-Management/operation/pushCertificate]]: Push Certificate to Location
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/validatePushCertificateAttributes]]: Validate Push Certificate Attributes
+    skinparam topurl /api/
+        Client -> Core [[core-location#tag/location-management/PUT/v1/entities/{entityUuid}/locations/{locationUuid}/certificates/{certificateUuid}]]: Push Certificate to Location
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/push/attributes/validate]]: Validate Push Certificate Attributes
         Connector --> Core: Result of Push Attribute validation
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/pushCertificateToLocation]]: Push Certificate
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/push]]: Push Certificate
         Connector --> Core: Certificate Pushed
         Core --> Client: Certificate Pushed to Location
     @enduml
@@ -294,9 +294,9 @@ The following processes are associated with the Entity Provider and management o
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-location/#tag/Location-Management/operation/removeCertificate]]: Remove Certificate from Location
-        Core -> Connector [[connector-entity-provider/#tag/Location-Operations/operation/removeCertificateFromLocation]]: Remove Certificate
+    skinparam topurl /api/
+        Client -> Core [[core-location#tag/location-management/DELETE/v1/entities/{entityUuid}/locations/{locationUuid}/certificates/{certificateUuid}]]: Remove Certificate from Location
+        Core -> Connector [[connector-entity-provider#tag/location-operations/POST/v1/entityProvider/entities/{entityUuid}/locations/remove]]: Remove Certificate
         Connector --> Core: Result of Certificate deletion
         Core --> Client: Certificate deleted
     @enduml
@@ -305,7 +305,7 @@ The following processes are associated with the Entity Provider and management o
 ## Specification and example
 
 The Entity Provider implements [Common Interfaces](../common-interfaces/overview.md) and the following additional interfaces:
-- [Entity Management](/api/connector-entity-provider/#tag/Entity-Management)
-- [Location Operations](/api/connector-entity-provider/#tag/Location-Operations)
+- [Entity Management](/api/connector-entity-provider#tag/entity-management)
+- [Location Operations](/api/connector-entity-provider#tag/location-operations)
 
-The OpenAPI specification of the Entity Provider can be found here: [Connector API - Entity Provider](/api/connector-entity-provider/).
+The OpenAPI specification of the Entity Provider can be found here: [Connector API - Entity Provider](/api/connector-entity-provider).

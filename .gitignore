@@ -11,6 +11,10 @@
 # Build-time-rendered PlantUML diagrams
 /static/img/plantuml/
 
+# Build-time-downloaded OpenAPI documents and the vendored Scalar runtime
+/static/api-specs/
+/static/scalar/
+
 # Misc
 .DS_Store
 .env.local

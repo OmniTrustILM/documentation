@@ -1,6 +1,7 @@
 {
   "position": 70,
-  "label": "QA Strategy",
+  "label": "Development Lifecycle",
+  "collapsed": true,
   "link": {
     "type": "doc",
     "id": "overview"

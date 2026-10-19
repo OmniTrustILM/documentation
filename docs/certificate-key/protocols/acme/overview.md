@@ -10,7 +10,7 @@ Implementation of ACME provides a flexibility for the clients and administrators
 
 :::info
 ACME implementation follows [RFC 8555 - Automatic Certificate Management Environment (ACME)](https://datatracker.ietf.org/doc/html/rfc8555).
-See [ACME protocol API](/api/protocol-acme/) for more information about implemented end points.
+See [ACME protocol API](/api/protocol-acme) for more information about implemented end points.
 :::
 
 ## Platform ACME management
@@ -23,7 +23,7 @@ For this purpose we define the following management objects:
 | [`ACME Profile`](acme-profile.md) | Contains configuration of the ACME server                 |
 | [`ACME Account`](acme-account.md) | Registered ACME account that consumes the ACME operations |
 
-You can manage `ACME Profiles` and `ACME Accounts` through the web interface or through the [`Core ACME API`](/api/core-acme/).
+You can manage `ACME Profiles` and `ACME Accounts` through the web interface or through the [`Core ACME API`](/api/core-acme).
 
 ## ACME Profile vs RA Profile ACME API
 

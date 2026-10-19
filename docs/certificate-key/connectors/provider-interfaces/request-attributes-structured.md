@@ -19,16 +19,18 @@ This is the v3 authority wire. v2 authority connectors have no structured form a
 
 ## The Request Content
 
-The request content is polymorphic on certificate type; the only type today is X.509. It carries three lists:
+The request content is polymorphic on certificate type; the only type today is X.509. It carries five lists, all optional:
 
-- **Subject** — ordered subject DN components. Each entry has a type — a short code (for example `CN`) or a dotted-decimal OID, resolved through the [OID registry](../../settings/oid.md) — and a value.
-- **Subject Alternative Names** — typed SAN entries. Each entry has a type (`dns`, `email`, `ip`, `uri`, `otherName`, `directoryName`, or `registeredId`) and a value. An `otherName` entry additionally carries its OID and a value encoding, because different OtherName OIDs carry differently typed values.
-- **Extensions** — requested X.509 extensions, excluding SAN. Each entry has an OID, a criticality flag, an encoding, and a value — a string whose interpretation is declared by the encoding.
+- **Subject** (`subject`) — ordered subject DN components. Each entry has a type — a short code (for example `CN`) or a dotted-decimal OID, resolved through the [OID registry](../../settings/oid.md) — and a value.
+- **Subject Alternative Names** (`subjectAltNames`) — typed SAN entries. Each entry has a type (`dns`, `email`, `ip`, `uri`, `otherName`, `directoryName`, or `registeredId`) and a value. An `otherName` entry additionally carries its OID and a value encoding, because different OtherName OIDs carry differently typed values.
+- **Key Usage** (`keyUsage`) — the requested key usage bits, each one of `digitalSignature`, `nonRepudiation`, `keyEncipherment`, `dataEncipherment`, `keyAgreement`, `keyCertSign`, `cRLSign`, `encipherOnly` and `decipherOnly` (bits 0 to 8 of RFC 5280 §4.2.1.3, in that order). The entries are names, not bit numbers. The list carries no criticality: the platform marks the extension critical.
+- **Extended Key Usage** (`extendedKeyUsage`) — the requested purposes as dotted-decimal OID strings, for example `1.3.6.1.5.5.7.3.1` for server authentication. The entries are OIDs, not names.
+- **Extensions** (`extensions`) — requested X.509 extensions, excluding SAN, Key Usage and Extended Key Usage. Each entry has an OID, a criticality flag, an encoding, and a value — a string whose interpretation is declared by the encoding.
 
 Three invariants hold:
 
-- SAN is never duplicated as an extension. SAN entries appear only in the subject alternative names list.
-- At least one of the three lists is present.
+- SAN, Key Usage (`2.5.29.15`) and Extended Key Usage (`2.5.29.37`) are never duplicated as extensions. Each appears only in its own list.
+- At least one of the five lists is present and not empty. Content that carries only a key usage list, or only an extended key usage list, is valid.
 - The raw CSR remains authoritative for the public key and the proof of possession. The structured content carries the decoded identity intent alongside it.
 
 Example structured content on an issue request:
@@ -43,6 +45,8 @@ Example structured content on an issue request:
     "subjectAltNames": [
       { "type": "dns", "value": "web01.example.com" }
     ],
+    "keyUsage": ["digitalSignature", "keyEncipherment"],
+    "extendedKeyUsage": ["1.3.6.1.5.5.7.3.1", "1.3.6.1.5.5.7.3.2"],
     "extensions": [
       {
         "oid": "1.3.6.1.4.1.99999.1",
@@ -55,13 +59,23 @@ Example structured content on an issue request:
 }
 ```
 
+Both Key Usage and Extended Key Usage are requests to the certification authority, not instructions. Whether they are honored depends on the CA technology — see [advisory semantics](../../concept-design/core-components/request-attribute.md#advisory-semantics-toward-the-certification-authority).
+
 ## Where it rides
 
-The structured content is an optional part of three v3 operations:
+The structured content is an optional part of three v3 operations. Plain issuance from a submitted CSR does not carry it: the connector reads the identity, including Key Usage and Extended Key Usage, from the CSR.
 
-- **Issue** — when present, it is the authoritative source of subject identity and extensions for the issuance. Otherwise the identity comes from the submitted CSR.
-- **Renew** — when present, it is authoritative for the renewal. Otherwise the identity derives from the existing certificate (serial number and issuer DN).
-- **Register** — no CSR exists at registration time. The flat fields are still populated for non-structured connectors and remain the validation anchor.
+- **Issue** — when present, it is the authoritative source of subject identity and extensions for the issuance. It is present when a registered certificate is completed. Otherwise the identity comes from the submitted CSR.
+- **Renew** — when present, it is authoritative for the renewal. It is sent only to a connector that advertises `certificateRequestStructured`. Otherwise the identity derives from the existing certificate (serial number and issuer DN). See [Renew and rekey](#renew-and-rekey).
+- **Register** — no CSR exists at registration time. The flat fields are still populated for non-structured connectors and remain the validation anchor. For a non-structured connector, Key Usage and Extended Key Usage are rendered into the flat `extensions` as Base64 DER entries, with Key Usage marked critical.
+
+### Renew and rekey
+
+A renewed or rekeyed certificate keeps the subject DN and the Subject Alternative Names of the certificate it replaces. For a renewal, the platform sends them as structured content to a connector that advertises `certificateRequestStructured`; the extensions of the replaced certificate are the CA's and are not carried over.
+
+- When the operator supplies a CSR, the content is taken from that CSR instead, including the extensions it requests.
+- The platform sends no structured content, and the connector reads the CSR, when the subject has a multi-valued RDN, a SAN of a type the platform cannot re-request, or an extension value it cannot represent.
+- A rekey without a CSR is built by the platform from the replaced certificate. When its identity cannot be carried over, the request is refused with a validation error instead of being issued with a changed identity.
 
 ## Identity override
 

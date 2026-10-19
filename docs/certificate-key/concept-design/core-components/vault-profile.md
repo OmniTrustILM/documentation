@@ -29,4 +29,4 @@ When `Vault Profile` is a source profile, access to a secret is based on access 
 
 For more information about `Attributes`, refer to [A<sup>2</sup> Engine](../architecture/attributes/overview.md).
 
-For management of `Vault Profiles`, see [Vault Profile Management API](/api/core-vault-profile/).
+For management of `Vault Profiles`, see [Vault Profile Management API](/api/core-vault-profile).

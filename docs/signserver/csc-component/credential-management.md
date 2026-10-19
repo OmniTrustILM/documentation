@@ -16,4 +16,4 @@ The API is exposed on the `/management/v1/credentials` endpoint and supports the
 | `POST /management/v1/credentials/disable` | Disable existing credential. Disabled credential cannot be used for signing. |
 | `POST /management/v1/credentials/enable`  | Enable existing credential.                                                  |
 
-For more information about the API, see the [Credential Management API](/api/csc-component#tag/Credentials-Management).
+For more information about the API, see the [Credential Management API](/api/csc-component#tag/credentials-management).

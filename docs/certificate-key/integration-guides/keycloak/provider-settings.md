@@ -20,7 +20,7 @@ OpenID Endpoint Configuration can be found at `https://<KEYCLOAK_DOMAIN>/realms/
 
 In the example, the name of provider will be set `keycloak`, authentication with JWT token will be enabled, only tokens with audience `ilm` will be accepted and the user will be logged out after 10 minutes. Since the client is of type OpenID Client, the scopes must include `openid` scope.
 
-To create such provider, a request to the [Update OAuth2 Provider settings API](/api/core-other#tag/Settings/operation/updateOAuth2ProviderSettings) should be made with following JSON body:
+To create such provider, a request to the [Update OAuth2 Provider settings API](/api/core-other#tag/settings/PUT/v1/settings/authentication/oauth2Providers/{providerName}) should be made with following JSON body:
 
 ```json
 {

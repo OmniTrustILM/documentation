@@ -35,6 +35,7 @@ Supported constraint types are defined in the [`AttributeConstraintType`](https:
 | `REGEXP`                  | [`RegexpAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/RegexpAttributeConstraint.java)     | `string`                                                                                                                                                                                                                 |
 | `RANGE`                   | [`RangeAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/RangeAttributeConstraint.java)       | [`RangeAttributeConstraintData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/data/RangeAttributeConstraintData.java)       |
 | `DATETIME`                | [`DateTimeAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/DateTimeAttributeConstraint.java) | [`DateTimeAttributeConstraintData`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/data/DateTimeAttributeConstraintData.java) |
+| `JSON_SCHEMA`             | [`JsonSchemaAttributeConstraint`](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint/JsonSchemaAttributeConstraint.java) | `string` (JSON Schema document) |
 
 ## Constraint type description and samples
 
@@ -163,6 +164,53 @@ constraint.setType(AttributeConstraintType.DATETIME);
 </Tabs>
 ```
 
+### `JsonSchemaAttributeConstraint`
+
+Use this constraint when the content is a JSON document that needs to be validated against a [JSON Schema](https://json-schema.org/). It applies to attributes with `string` or `text` content. Each value is read as JSON and must conform to the schema, so a value that is not well-formed JSON violates the constraint.
+
+The `data` is the JSON Schema document, written inline as a string:
+
+- the dialect is JSON Schema draft 2020-12; a document that declares another `$schema` is rejected;
+- `$ref` may only point inside the document, remote references are not loaded;
+- the document is validated when the attribute is created or updated, and an invalid schema is rejected. A default content of the attribute must conform to it as well.
+
+When the value violates the schema, the `errorMessage` is reported if it is set, otherwise the message of the validator with the location of the violation.
+
+For an attribute that is mapped to a certificate extension, the constraint adds policy over a value written in JER, on top of the [ASN.1 module](../../certificate-key/settings/oid.md#asn1-modules-and-jer-values) of the extension. See [Request Attributes](request-attributes.mdx).
+
+```mdx-code-block
+<Tabs>
+<TabItem value="json" label="JSON">
+```
+
+```json
+{
+    "description": "Service entitlement tier",
+    "errorMessage": "Tier must be 1 or 2",
+    "type": "jsonSchema",
+    "data": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"tier\":{\"enum\":[1,2]}}}"
+}
+```
+
+```mdx-code-block
+</TabItem>
+
+<TabItem value="java" label="Java">
+```
+
+```java
+JsonSchemaAttributeConstraint constraint = new JsonSchemaAttributeConstraint();
+constraint.setDescription("Service entitlement tier");
+constraint.setErrorMessage("Tier must be 1 or 2");
+constraint.setData("{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"tier\":{\"enum\":[1,2]}}}");
+constraint.setType(AttributeConstraintType.JSON_SCHEMA);
+```
+
+```mdx-code-block
+</TabItem>
+</Tabs>
+```
+
 ## Constraint model
 
 The following diagram represents the constraint model inherited from the `AttributeConstraint`. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/otilm/api/model/common/attribute/common/constraint).
@@ -176,6 +224,7 @@ The following diagram represents the constraint model inherited from the `Attrib
     
     class BaseAttributeConstraint
     class DateTimeAttributeConstraint
+    class JsonSchemaAttributeConstraint
     class RangeAttributeConstraint
     class RegexpAttributeConstraint
     
@@ -184,6 +233,7 @@ The following diagram represents the constraint model inherited from the `Attrib
   
     AttributeConstraint <-right- BaseAttributeConstraint : extends
     BaseAttributeConstraint <-- DateTimeAttributeConstraint : extends
+    BaseAttributeConstraint <-- JsonSchemaAttributeConstraint : extends
     BaseAttributeConstraint <-- RangeAttributeConstraint : extends
     BaseAttributeConstraint <-- RegexpAttributeConstraint : extends
     

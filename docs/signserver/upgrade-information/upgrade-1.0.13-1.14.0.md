@@ -4,13 +4,17 @@ sidebar_position: 160
 
 # From 1.0.13 To 1.14.0
 
-In release version `1.14.0` the following changes were made as part of the integration efforts with the CZERTAINLY platform:
+In release version `1.14.0` the following changes were made as part of the integration efforts with the platform:
 
 ## Change of the base package
 
-The base package was changed from `company.threekey` to `com.czertainly`. This change was made in accordance with the roadmap and integration efforts of the CZERTAINLY Signing with the platform and to prepare for next major release.
+The base package was changed from `company.threekey` to `com.czertainly`. This change was made in accordance with the roadmap and integration efforts of the signing component with the platform and to prepare for next major release.
 
 Each configuration consisting of the `company.threekey` module needs to be updated to `com.czertainly` in order to work with this new version.
+
+:::note[Package name is unchanged]
+`com.czertainly` is the Java base package shipped by the signing modules and it keeps that name in current releases, despite the platform being renamed to ILM. Type it exactly as shown — a configuration that uses any other package name will fail to load.
+:::
 
 ## Example of the change
 

@@ -12,6 +12,8 @@ The platform is carefully designed with the following goals in mind:
 - easy to use and maintain
 - quick installation
 
+See the [development lifecycle](/docs/development-lifecycle/overview) for how the platform itself is built, reviewed and evidenced.
+
 ## Concept of the platform
 
 It is designed as a microservice architecture with the ability to be flexible in various occasions.

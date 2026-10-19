@@ -42,15 +42,15 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-compliance-v2/#tag/Compliance-Profile-Management-v2/operation/getComplianceGroupsV2]]: Get Compliance Groups from provider
+    skinparam topurl /api/
+        Client -> Core [[core-compliance-v2#tag/compliance-profile-management-v2/GET/v2/complianceProfiles/groups]]: Get Compliance Groups from provider
         Core -> Core: Determine API version of selected compliance provider
-        Core -> Connector [[connector-compliance-provider-v2/#tag/Compliance-Rules/operation/getGroups]]: Request to retrieve groups from provider
+        Core -> Connector [[connector-compliance-provider-v2#tag/compliance-rules/GET/v2/complianceProvider/{kind}/groups]]: Request to retrieve groups from provider
         Connector --> Core: List Compliance Groups
         Core -> Core: Set availability status of each provider rule and group 
         Core -> Client: Return Compliance Groups of specified Compliance Provider
-        Client -> Core [[core-compliance-v2/#tag/Compliance-Profile-Management-v2/operation/getComplianceGroupRulesV2]]: Get Compliance Group rules
-        Core -> Connector [[connector-compliance-provider-v2/#tag/Compliance-Rules/operation/getGroupRules]]: Request to retrieve group rules from provider
+        Client -> Core [[core-compliance-v2#tag/compliance-profile-management-v2/GET/v2/complianceProfiles/groups/{groupUuid}/rules]]: Get Compliance Group rules
+        Core -> Connector [[connector-compliance-provider-v2#tag/compliance-rules/GET/v2/complianceProvider/{kind}/groups/{groupUuid}/rules]]: Request to retrieve group rules from provider
         Connector --> Core: List Compliance Rules belonging to the group
         Core -> Client: Return Compliance Group rules
     @enduml
@@ -61,10 +61,10 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-compliance-v2/#tag/Compliance-Profile-Management-v2/operation/getComplianceProfileV2]]: Get detail of Compliance Profile
+    skinparam topurl /api/
+        Client -> Core [[core-compliance-v2#tag/compliance-profile-management-v2/GET/v2/complianceProfiles/{uuid}]]: Get detail of Compliance Profile
         Core -> Core: Retrieve Compliance Profile and its associated rules and groups
-        Core -> Connector [[connector-compliance-provider-v2/#tag/Compliance-Rules/operation/getRulesBatch]]: Construct batch request to retrieve rules and groups from provider
+        Core -> Connector [[connector-compliance-provider-v2#tag/compliance-rules/POST/v2/complianceProvider/{kind}/rules]]: Construct batch request to retrieve rules and groups from provider
         Connector --> Connector: Load all rules and groups
         Connector --> Core: List Compliance Rules and groups
         Core -> Core: Set availability status of each provider rule and group 
@@ -77,16 +77,16 @@ The following processes are associated with the Compliance Provider and manageme
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client -> Core [[core-compliance-v2/#tag/Compliance-Management-v2/operation/checkResourceObjectComplianceV2]]: Initiate Compliance Check
+    skinparam topurl /api/
+        Client -> Core [[core-compliance-v2#tag/compliance-management-v2/POST/v2/compliance/{resource}/{objectUuid}]]: Initiate Compliance Check
         Core --> Client: Return Async response
         Core -> Core: Get Compliance Profile of the object
         Core -> Core: Get applicable compliance rules and groups of the Compliance profile
         loop for each Compliance Provider
-            Core -> Connector [[connector-compliance-provider-v2/#tag/Compliance-Rules/operation/getRulesBatch]]: Retrieve rules and groups from provider
+            Core -> Connector [[connector-compliance-provider-v2#tag/compliance-rules/POST/v2/complianceProvider/{kind}/rules]]: Retrieve rules and groups from provider
             Connector --> Core: Return rules and groups
             Core --> Core: Update compliance result for not available or updated rules
-            Core -> Connector [[connector-compliance-provider-v2/#tag/Compliance/operation/checkCompliance]]: Check object compliance for remaining rules
+            Core -> Connector [[connector-compliance-provider-v2#tag/compliance/POST/v2/complianceProvider/{kind}/compliance]]: Check object compliance for remaining rules
             Connector --> Connector: Evaluate each rule
             Connector --> Core: Return Compliance Check Result
         end
@@ -103,7 +103,7 @@ After all compliance rules are evaluated, the `Core` then computes the overall c
 ## Specification and example
 
 The Compliance Provider implements [Common Interfaces](../common-interfaces/overview.md) and the following additional interfaces:
-- [Compliance Rules](/api/connector-compliance-provider-v2/#tag/Compliance-Rules)
-- [Compliance](/api/connector-compliance-provider-v2/#tag/Compliance)
+- [Compliance Rules](/api/connector-compliance-provider-v2#tag/compliance-rules)
+- [Compliance](/api/connector-compliance-provider-v2#tag/compliance)
 
-The OpenAPI specification of the Compliance Provider can be found here: [Connector API - Compliance Provider v2](/api/connector-compliance-provider-v2/).
+The OpenAPI specification of the Compliance Provider can be found here: [Connector API - Compliance Provider v2](/api/connector-compliance-provider-v2).

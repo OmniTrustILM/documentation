@@ -6,6 +6,10 @@ sidebar_position: 5
 
 The cert-manager issuer implements `czertainly-issuer.czertainly.com/v1alpha1` API that support both `CzertainlyClusterIssuer` and `CzertainlyIssuer` resources, and it allow you to configure the following `spec` field:
 
+:::note
+The API group and the resource kinds keep their original names in current releases. Use them exactly as written on this page — they are the identifiers the cluster resolves.
+:::
+
 | Field                              | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Mandatory                                     |
 |------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
 | `apiUrl`                           | URL to access the ILM platform API.                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | <span class="badge badge--success">YES</span> |

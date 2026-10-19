@@ -174,8 +174,8 @@ The liveness and readiness probes are designed to integrate with Kubernetes:
 ### Specification and example
 
 You can find specification and information about the Connector NG `Health` interface on the following locations:
-- [Core Connector API v2](/api/core-connector/#tag/Connector-Management-v2) — `checkHealthV2`
-- [Secret Provider API](/api/connector-secret-provider/) — connector-side `GET /v2/health` schema
+- [Core Connector API v2](/api/core-connector#tag/connector-management-v2) — `checkHealthV2`
+- [Secret Provider API](/api/connector-secret-provider) — connector-side `GET /v2/health` schema
 
 ---
 
@@ -207,8 +207,8 @@ The following diagrams represents the requests and communication flow.
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Client->>Core [[core-connector/#tag/Connector-Management-API/operation/checkHealth]]: Check Health of a Connector
+    skinparam topurl /api/
+        Client->>Core [[core-connector#tag/connector-management/GET/v1/connectors/{uuid}/health]]: Check Health of a Connector
         Core->>Connector: Health check
         Note over Core,Connector: Get status information of the Connector and its services
         Connector-->>Core: Return status
@@ -219,5 +219,5 @@ The following diagrams represents the requests and communication flow.
 ### Specification and example
 
 You can find specification and information about the legacy `Health` interface on the following locations:
-- [Core Connector API](/api/core-connector/)
-- Connector API specifications, see for example [Authority Provider](/api/connector-authority-provider-v2/)
+- [Core Connector API](/api/core-connector)
+- Connector API specifications, see for example [Authority Provider](/api/connector-authority-provider-v2)

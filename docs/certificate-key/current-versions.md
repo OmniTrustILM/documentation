@@ -36,6 +36,20 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 |---------------|----------|---------------------------------------------------------|
 | Administrator | `2.19.0` | `hub.omnitrustregistry.com/ilm/frontend-administrator`  |
 
+## Tooling
+
+| Tool                | Version              | Docker Image / Distribution              | Reference                                                                  |
+|---------------------|----------------------|------------------------------------------|----------------------------------------------------------------------------|
+| Kubernetes Operator | `%OPERATOR_VERSION` | `hub.omnitrustregistry.com/ilm/operator` | [Upgrading](installation-guide/deployment/deployment-operator/upgrading.md) |
+| ilmctl              | `%CLI_VERSION`      | Binary and krew plugin                   | [CLI](cli/index.md)                                  |
+
+:::info[Which platform versions an operator build supports]
+The operator's version is independent of the platform release it deploys. The supported
+platform range for this operator build is on the
+[Upgrading](installation-guide/deployment/deployment-operator/upgrading.md) page — there is
+no second matrix.
+:::
+
 ## Connectors
 
 | Connector                      | Version  | Docker Image                                                           |

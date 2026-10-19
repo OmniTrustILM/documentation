@@ -18,7 +18,7 @@ First step is to configure the [`CMP Profile`](./cmp-profile.md). It will create
 
 Configuration of the default `RA Profile` is optional, we will enable CMP protocol for a specific `RA Profile` with name `ilm`. Let's do this in `ilm` `RA Profile` configuration.
 
-We will create `CMP Profile` named `CMP-ILM` using the [Core CMP API](/api/core-cmp/#operation/createCmpProfile):
+We will create `CMP Profile` named `CMP-ILM` using the [Core CMP API](/api/core-cmp#tag/cmp-profile-management/POST/v1/cmpProfiles):
 ```bash
 curl -X POST \
   --cacert [ca-cert] \
@@ -54,7 +54,7 @@ When the `CMP Profile` is successfully created, its `uuid` is sent back, for exa
 
 ## Activate CMP protocol
 
-The `CMP Profile` is disabled by default. To enable it, we need to activate it using the [Core CMP API](/api/core-cmp/#operation/editCmpProfile):
+The `CMP Profile` is disabled by default. To enable it, we need to activate it using the [Core CMP API](/api/core-cmp#tag/cmp-profile-management/PUT/v1/cmpProfiles/{cmpProfileUuid}):
 ```bash
 curl -X PATCH \
   --cacert [ca-cert] \
@@ -68,10 +68,10 @@ You should receive `204` HTTP response when the `CMP Profile` is successfully en
 
 ## Enable CMP protocol for `RA Profile`
 
-Once the `CMP Profile` is configured and enabled, we can enable CMP protocol for the `RA Profile` with name `ilm`. For that purpose, we will use the [`Core RA Profile API`](/api/core-ra-profile/#operation/activateCmpForRaProfile). We will need to configure `Attributes` to issue certificates, if there are any available and supported in the `RA Profile`. These `Attributes` will be statically attached to all requests coming from the CMP client.
+Once the `CMP Profile` is configured and enabled, we can enable CMP protocol for the `RA Profile` with name `ilm`. For that purpose, we will use the [`Core RA Profile API`](/api/core-ra-profile#tag/ra-profile-management/PATCH/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/protocols/cmp/activate/{cmpProfileUuid}). We will need to configure `Attributes` to issue certificates, if there are any available and supported in the `RA Profile`. These `Attributes` will be statically attached to all requests coming from the CMP client.
 
 You can get the list of `Attributes` using the following APIs:
-- [Get issue Attributes](/api/core-ra-profile#tag/RA-Profile-Management/operation/listRaProfileIssueCertificateAttributes)
+- [Get issue Attributes](/api/core-ra-profile#tag/ra-profile-management/GET/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/attributes/issue)
 
 We will enable CMP protocol for `ilm` `RA Profile`:
 ```bash

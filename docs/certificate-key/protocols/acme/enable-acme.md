@@ -20,7 +20,7 @@ First step is to configure the [`ACME Profile`](acme-profile.md). It will create
 
 We do not need to configure default `RA Profile`, we will enable ACME protocol for a specific `RA Profile` with name `ilm`. Let's do this in `ilm` `RA Profile` configuration.
 
-We will create `ACME Profile` named `ACME ILM Profile` using the [Core ACME API](/api/core-acme/#operation/createAcmeProfile):
+We will create `ACME Profile` named `ACME ILM Profile` using the [Core ACME API](/api/core-acme#tag/acme-profile-management/POST/v1/acmeProfiles):
 ```bash
 curl -X POST \
   --cacert [ca-cert] \
@@ -53,11 +53,11 @@ When the `ACME Profile` is successfully created, its `uuid` is sent back:
 
 ## Enable ACME protocol for `RA Profile`
 
-Once the `ACME Profile` is ready, we can enable ACME protocol for the `RA Profile` with name `ilm`. For that purpose, we will use the [`Core RA Profile API`](/api/core-ra-profile/#operation/activateAcmeForRaProfile). We will need to configure `Attributes` to issue and revoke certificates, if there are any available and supported in the `RA Profile`. These `Attributes` will be statically attached to all ACME requests that are processed.
+Once the `ACME Profile` is ready, we can enable ACME protocol for the `RA Profile` with name `ilm`. For that purpose, we will use the [`Core RA Profile API`](/api/core-ra-profile#tag/ra-profile-management/PATCH/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/protocols/acme/activate/{acmeProfileUuid}). We will need to configure `Attributes` to issue and revoke certificates, if there are any available and supported in the `RA Profile`. These `Attributes` will be statically attached to all ACME requests that are processed.
 
 You can get the list of `Attributes` using the following APIs:
-- [Get issue Attributes](/api/core-ra-profile#tag/RA-Profile-Management/operation/listRaProfileIssueCertificateAttributes)
-- [Get revocation Attributes](/api/core-ra-profile#tag/RA-Profile-Management/operation/listRaProfileRevokeCertificateAttributes)
+- [Get issue Attributes](/api/core-ra-profile#tag/ra-profile-management/GET/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/attributes/issue)
+- [Get revocation Attributes](/api/core-ra-profile#tag/ra-profile-management/GET/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/attributes/revoke)
 
 We will enable ACME for `ilm` `RA Profile`:
 ```bash

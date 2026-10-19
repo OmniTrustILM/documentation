@@ -28,4 +28,4 @@ For more information, refer to [Secret Provider](../../connectors/provider-inter
 
 `Vault Profile` is created on top of the `Vault`. For more information, refer to [Vault Profile](./vault-profile.md).
 
-For `Vault Management`, see [Vault Management API](/api/core-vault/).
+For `Vault Management`, see [Vault Management API](/api/core-vault).

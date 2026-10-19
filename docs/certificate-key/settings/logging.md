@@ -8,6 +8,6 @@ Logging settings include options for customizing how logs are handled. See [Logg
 
 The audit and event logs are disabled by default and can be configured using the logging settings.
 
-You can see the current logging settings using [Get logging settings API](/api/core-other#tag/Settings/operation/getLoggingSettings).
+You can see the current logging settings using [Get logging settings API](/api/core-other#tag/settings/GET/v1/settings/logging).
 
-To update the logging settings, use [Update logging settings API](/api/core-other#tag/Settings/operation/updateLoggingSettings).
+To update the logging settings, use [Update logging settings API](/api/core-other#tag/settings/PUT/v1/settings/logging).

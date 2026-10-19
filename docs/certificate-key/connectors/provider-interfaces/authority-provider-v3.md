@@ -180,4 +180,4 @@ A v3 connector reconstructs the CA session from `authorityAttributes` + `raProfi
 
 Authority Provider v3 implements the [Common Interfaces](../common-interfaces/overview.md) plus the v3 Authority Management and Certificate Management interfaces.
 
-The OpenAPI specification of the Authority Provider v3 is published in the platform API reference: [Connector API - Authority Provider v3](/api/connector-authority-provider-v3/).
+The OpenAPI specification of the Authority Provider v3 is published in the platform API reference: [Connector API - Authority Provider v3](/api/connector-authority-provider-v3).

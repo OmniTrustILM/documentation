@@ -42,7 +42,7 @@ The connector's `/v2/info` endpoint returns an `InfoResponse` with two top-level
     "description": "An example connector for demonstration purposes.",
     "metadata": {
       "author": "Example Author",
-      "license": "MIT"
+      "license": "Apache-2.0"
     }
   },
   "interfaces": [
@@ -111,10 +111,10 @@ The `Core` uses the `/v2/connectors/connect` and `/v2/connectors/{uuid}/reconnec
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
+    skinparam topurl /api/
         alt requests
-            Client->>Core [[core-connector/#tag/Connector-Management-v2/operation/connectV2]]: Connect to Connector (v2)
-            Client->>Core [[core-connector/#tag/Connector-Management-v2/operation/reconnectV2]]: Reconnect to Connector (v2)
+            Client->>Core [[core-connector#tag/connector-management-v2/POST/v2/connectors/connect]]: Connect to Connector (v2)
+            Client->>Core [[core-connector#tag/connector-management-v2/POST/v2/connectors/{uuid}/reconnect]]: Reconnect to Connector (v2)
         end
         Core->>Connector: GET /v2/info
         Note over Core,Connector: Retrieve connector identity and interfaces
@@ -129,8 +129,8 @@ The response contains `functionGroups` and `kinds` instead of `connector` and `i
 ### Specification and example
 
 You can find specification and information about the Connector NG `Info` interface on the following locations:
-- [Core Connector API v2](/api/core-connector/#tag/Connector-Management-v2) — `getInfoV2`, `connectV2`, `reconnectV2`
-- [Secret Provider API](/api/connector-secret-provider/) — connector-side `GET /v2/info` schema
+- [Core Connector API v2](/api/core-connector#tag/connector-management-v2) — `getInfoV2`, `connectV2`, `reconnectV2`
+- [Secret Provider API](/api/connector-secret-provider) — connector-side `GET /v2/info` schema
 
 ---
 
@@ -150,14 +150,14 @@ The following diagrams represents the requests and communication flow.
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
+    skinparam topurl /api/
         alt requests
-            Client->>Core [[core-connector/#tag/Connector-Management-API/operation/connect]]: Connect to a Connector
+            Client->>Core [[core-connector#tag/connector-management/PUT/v1/connectors/connect]]: Connect to a Connector
             Note over Client,Core: Connect to the Connector on specified URL and authentication method
-            Client->>Core [[core-connector/#tag/Connector-Management-API/operation/getConnector]]: Get details of a Connector
-            Client->>Core [[core-connector/#tag/Connector-Management-API/operation/editConnector]]: Edit a Connector
+            Client->>Core [[core-connector#tag/connector-management/GET/v1/connectors/{uuid}]]: Get details of a Connector
+            Client->>Core [[core-connector#tag/connector-management/PUT/v1/connectors/{uuid}]]: Edit a Connector
             Note over Client,Core: Update Connector
-            Client->>Core [[core-connector/#tag/Connector-Management-API/operation/reconnect]]: Reconnect to a Connector
+            Client->>Core [[core-connector#tag/connector-management/PUT/v1/connectors/{uuid}/reconnect]]: Reconnect to a Connector
         end
         Core->>Connector: List supported functions of the connector
         Note over Core,Connector: Get information about the Connector
@@ -174,8 +174,8 @@ The registration of the `Connector` may be executed by any external entity.
 ```plantuml
     @startuml
     autonumber
-    skinparam topurl https://docs.otilm.com/api/
-        Connector->>Core [[core-connector/#tag/Connector-Registration-API/operation/register]]: Register a Connector
+    skinparam topurl /api/
+        Connector->>Core [[core-connector#tag/connector-registration/POST/v1/connector/register]]: Register a Connector
         Core->>Connector: List supported functions of the connector
         Note over Core,Connector: Get information about the Connector
         Connector-->>Core: List of supported Function Groups, Kinds, and EndPoints
@@ -186,5 +186,5 @@ The registration of the `Connector` may be executed by any external entity.
 ### Specification and example
 
 You can find specification and information about the legacy `Info` interface on the following locations:
-- [Core Connector API](/api/core-connector/)
-- Connector API specifications, see for example [Authority Provider](/api/connector-authority-provider-v2/)
+- [Core Connector API](/api/core-connector)
+- Connector API specifications, see for example [Authority Provider](/api/connector-authority-provider-v2)

@@ -274,4 +274,4 @@ The following gauges apply to `Deferred Durable` mode and give a real-time view 
 
 ## Related pages
 
-[Core API - Signing Record](/api/core-signing-record/) — The OpenAPI specification for retrieving `Signing Records`
+[Core API - Signing Record](/api/core-signing-record) — The OpenAPI specification for retrieving `Signing Records`
