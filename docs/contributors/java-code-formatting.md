@@ -12,14 +12,14 @@ You do not copy any rules into your repository. They live in the `com.otilm:buil
 
 Both gates run in the `verify` phase. Your existing pipeline already reaches that phase, so no workflow change is needed.
 
-| Gate           | What it checks                                                                                          | How to fix a failure                              |
-|----------------|---------------------------------------------------------------------------------------------------------|---------------------------------------------------|
-| **Spotless**   | The whole canonical style: indentation, line wrapping, import order                                     | `mvn spotless:apply` fixes every violation         |
-| **Checkstyle** | Four things Spotless cannot: `AvoidStarImport`, `NeedBraces`, `UnusedImports`, `RedundantImport`         | By hand, or with your IDE. No command does it      |
+| Gate           | What it checks                                                                                   | How to fix a failure                                                       |
+|----------------|--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| **Spotless**   | The whole canonical style: indentation, line wrapping, import order                              | `mvn spotless:apply` fixes every violation                                 |
+| **Checkstyle** | Four import and brace rules: `AvoidStarImport`, `NeedBraces`, `UnusedImports`, `RedundantImport` | Run `mvn spotless:apply` first, then fix the rest by hand or with your IDE |
 
 The split matters when a build goes red. **A Spotless failure is always mechanical.** Run one command and it is gone.
 
-**A Checkstyle failure is never mechanical.** Spotless has no type information, so it cannot expand a wildcard import into single-type imports, and it will not add braces to a one-line `if`. Those four rules exist to close exactly that gap, and you fix them yourself.
+**A Checkstyle failure is mostly yours to fix.** `mvn spotless:apply` removes unused imports, so run it first. Spotless has no type information, though, so it cannot expand a wildcard import into single-type imports, and it will not add braces to a one-line `if`. You fix those yourself.
 
 :::tip[The one command to remember]
 `mvn spotless:apply`
@@ -33,7 +33,7 @@ A `pre-commit` hook formats your staged Java files before each commit, so most v
 
 Two consequences are worth knowing before your first build:
 
-- **The install replaces any existing `pre-commit` hook, on every build, without asking.** The content is identical each time, so this is invisible unless you keep a hook of your own. If you do, use `-Dgitbuildhook.install.skip=true` so yours survives.
+- **The install replaces any existing `pre-commit` hook, on every build, without asking.** The content is identical each time, so this is invisible unless you keep a hook of your own. If you do, build with `-P -install-git-hooks` so yours survives.
 - Hooks are never committed, so this only ever affects your own machine.
 
 Linked worktrees are handled. The build mirrors the hook into the shared hooks directory that Git actually runs hooks from, because a hook installed into the per-worktree directory would sit there unused.
@@ -70,7 +70,7 @@ Step 1 cannot be done for you. Your IDE and your checkout only honor files that 
 
 ## Keeping your IDE in step
 
-`.editorconfig` mirrors the shared formatter profile, and every major IDE reads it. With it in place, your editor is close enough that Spotless usually has nothing left to correct.
+`.editorconfig` mirrors the shared formatter profile. Every major IDE reads its whitespace settings, but the Java formatting rules are IntelliJ keys. In IntelliJ, your editor comes close enough that Spotless usually has nothing left to correct.
 
 One known gap: long annotation member arrays. The shared profile chops them one element per line, and no IntelliJ setting reproduces that. IntelliJ *preserves* the chopped shape once Spotless has applied it, but it will not *produce* it on freshly typed code — so expect `mvn spotless:apply` to rewrite long annotation arrays you have just written. The same applies to annotation arguments that overflow the margin.
 
@@ -112,11 +112,11 @@ A fresh clone is unaffected, and so is CI on ephemeral runners — both check ou
 
 ## When you need to opt out
 
-| Situation                             | Escape hatch                       |
-|---------------------------------------|------------------------------------|
-| One build, formatting is not the point | `-Dspotless.skip=true`             |
-| One build, lint is not the point       | `-Dcheckstyle.skip=true`           |
-| You want to keep your own hook         | `-Dgitbuildhook.install.skip=true` |
-| One commit, the hook is in the way     | `git commit --no-verify`           |
+| Situation                              | Escape hatch             |
+|----------------------------------------|--------------------------|
+| One build, formatting is not the point | `-Dspotless.skip=true`   |
+| One build, lint is not the point       | `-Dcheckstyle.skip=true` |
+| You want to keep your own hook         | `-P -install-git-hooks`  |
+| One commit, the hook is in the way     | `git commit --no-verify` |
 
 **None of these change your pipeline.** The `verify` gates remain authoritative, so anything you skip locally is caught before merge.
