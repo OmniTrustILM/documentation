@@ -44,15 +44,7 @@ Leave such attributes optional, or give them a default value, and take the subje
 
 ### Request limits
 
-An end entity may submit as many enrollments as the profile allows, and the initial issuance consumes one of them. Renewing a certificate through the platform enrolls again against the same end entity, so once the allowance is used OTPKI refuses the enrollment until the end entity's status is reset to **New**, which reapplies the profile allowance.
-
-The connector performs that reset itself, so renewal works with the default of a single allowed request and no profile change is needed. Raising the number of allowed requests, or allowing renewal before expiration, lets a renewal proceed without a reset, but neither is required.
-
-:::note[The reset needs a permission]
-Resetting the status is an end entity update, so the connector's role needs **Update** on End Entity, see [Create Role and Permissions](./create-role.md). Without it a renewal fails with **Forbidden**.
-
-The connector cannot reset an end entity whose profile has an approval profile attached, see [Approval settings](#approval-settings).
-:::
+An end entity may enroll as many times as its profile allows, once by default. Renewing a certificate through the platform enrolls again against the same end entity, and works at that default: once the allowance is used, the connector resets the end entity's status to **New**, which reapplies it.
 
 ### Password configuration
 
@@ -63,12 +55,15 @@ The connector sets a password on every end entity it creates:
 
 The value is derived from the end entity's login ID, so the connector never stores it and can recompute it for any later operation. When the `OTPKI_LOGIN_PASSWORD_KEY` environment variable is set on the connector, the password is derived from the login ID with that key. When it is unset, the password is the login ID itself.
 
-With the Kubernetes Operator, deliver the key to the connector from a `Secret`, see [Delivering configuration and secrets](../../installation-guide/deployment/deployment-operator/custom-resources/connector.md#delivering-configuration-and-secrets) and the OTPKI Connector sample listed there.
+The key is set when the connector is deployed:
+
+- With Helm, set `otpkiConnector.otpki.loginPasswordKey`, or set `otpkiConnector.existingSecret` to an existing `Secret` that holds the key under `login_password_key`, see [Configurable parameters](../../installation-guide/deployment/deployment-helm/configurable-parameters.md).
+- With the Kubernetes Operator, store the key in a `Secret` and map it to `OTPKI_LOGIN_PASSWORD_KEY` through `spec.secretRefs`, see [Delivering configuration and secrets](../../installation-guide/deployment/deployment-operator/custom-resources/connector.md#delivering-configuration-and-secrets).
 
 :::warning[The key cannot be rotated]
-The derivation has to reproduce the same password for the whole life of an end entity. Setting, changing, or removing `OTPKI_LOGIN_PASSWORD_KEY` changes what the connector derives, so every end entity created under the previous setting keeps a password the connector can no longer reproduce, and operations that authenticate with it fail. Those end entities have to be recreated.
+OTPKI checks the password on every enrollment against the one stored when the end entity was created. Setting, changing, or removing `OTPKI_LOGIN_PASSWORD_KEY` therefore makes renewal, and the issuance of a registered certificate, fail for every end entity created under the previous setting.
 
-Decide the value before the first authority is used, and keep it with the connector's other secrets. Leaving it unset means the password equals the login ID, which is predictable to anyone who can see the end entity — set it unless a deployment has a reason not to.
+Set the key before the first certificate is issued or registered, keep it with the connector's other secrets, and always set it in production: without it, the password is the login ID, which is not secret.
 :::
 
 ### Approval settings
@@ -76,9 +71,9 @@ Decide the value before the first authority is used, and keep it with the connec
 Do not attach an approval profile to the end entity profile, the certificate profile, or the certification authority that an `RA Profile` in the platform uses. An approval profile can be attached to any of the three, and each of them gates a different part of the flow.
 
 :::warning[Approval-gated profiles are refused, not held]
-The platform cannot follow a request through an OTPKI approval, so a certificate that OTPKI issued after the approval would never reach the inventory. The connector therefore refuses an approval-gated request immediately with **Operation not supported**, and hides profiles with an approval profile attached from the `RA Profile` dropdowns. See [Synchronous and asynchronous operations](../../connectors/provider-interfaces/authority-provider-v3.md#synchronous-and-asynchronous-operations).
+The platform cannot follow a request through an OTPKI approval, so a certificate that OTPKI issued after the approval would never reach the inventory. The connector therefore refuses an approval-gated request immediately, and hides profiles with an approval profile attached from the `RA Profile` dropdowns. See [Synchronous and asynchronous operations](../../connectors/provider-interfaces/authority-provider-v3.md#synchronous-and-asynchronous-operations).
 
-An end entity created before the refusal is detected is left in OTPKI awaiting approval. The connector logs its identifier. Remove it in OTPKI, because until then the pending approval keeps the end entity's request allowance reserved.
+A refused request can leave an end entity in OTPKI awaiting approval, and the connector logs its identifier. Remove it there instead of approving it: the end entity keeps its login ID, and an approved request would issue a certificate outside the inventory.
 
 Use dedicated profiles without approvals for the platform, and keep approval workflows on the profiles used by other enrollment channels.
 :::

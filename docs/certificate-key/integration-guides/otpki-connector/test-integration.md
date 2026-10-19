@@ -30,19 +30,17 @@ Renew the issued certificate with a new certificate request, see [Renew Certific
 
 The renewal enrolls again against the end entity created during issuance. A certificate request is always required, renewal with the existing key is not supported.
 
-A renewal straight after issuance is the normal case to test: the first issuance uses the end entity's request allowance, and the connector resets the end entity's status to **New** to renew it. This needs **Update** on End Entity in the connector's role, see [Create Role and Permissions](./create-role.md).
+A renewal straight after issuance is the normal case to test: the first issuance uses the end entity's request allowance, and the connector resets the end entity's status to **New** to renew it.
 
 ## 5. Certificate revocation
 
 Revoke the certificate with a revocation reason, see [Revoke Certificate](../../quick-start/certificate-management/revoke-certificate.mdx).
 
-## 6. CA certificates and CRL
+## 6. CA certificates
 
 Download the certificate chain of the certification authority selected on the `RA Profile`.
 
 The chain comes from OTPKI for that certification authority, and confirms that the platform can build and validate chains for the certificates it manages.
-
-Requesting the CRL fails with **Operation not supported**. This is expected, see [Troubleshooting](./troubleshooting.md).
 
 ## 7. Pre-registration
 

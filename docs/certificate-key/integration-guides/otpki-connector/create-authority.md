@@ -29,8 +29,8 @@ Create an `Authority` that uses the OTPKI Connector, see [Create Authority](../.
 | OAuth scope                | No       | Scope requested with the access token. Leave empty unless the identity provider requires one                         |
 | OAuth audience             | No       | Audience requested with the access token. Leave empty unless the identity provider requires one                      |
 | TLS trust                  | No       | Root CA and intermediate CA certificates to trust when connecting. Leave empty when a public CA is used              |
-| Call deadline (ms)         | No       | Maximum time to wait for a single call to OTPKI. Values outside `1000`-`60000` are clamped to that range. Default `30000`  |
-| Retry max attempts         | No       | How many times a call that only reads from OTPKI is retried when OTPKI is briefly unavailable or does not answer in time. Calls that change data in OTPKI are never retried. Default `3` |
+| Call deadline (ms)         | No       | Maximum time for one call to OTPKI, retries included. Positive values outside `1000`-`60000` are clamped to that range, and zero or a negative value selects the default. Default `30000` |
+| Retry max attempts         | No       | How many times a call that only reads from OTPKI is retried when OTPKI is briefly unavailable. Default `3`           |
 | Retry initial backoff (ms) | No       | Wait time before the first retry. Default `500`                                                                      |
 | Retry max backoff (ms)     | No       | Upper bound on the wait time between retries. Default `5000`                                                         |
 
@@ -38,6 +38,6 @@ Create an `Authority` that uses the OTPKI Connector, see [Create Authority](../.
 Use **TLS trust** when the OTPKI server or the identity provider is served by a private certification authority that is not in the trust store of the connector. The certificates selected here are trusted for both connections, so add the issuing CA certificates of whichever of the two endpoints needs them. The attribute lists only certificates in the platform inventory that are classified as root CA or intermediate CA certificates.
 :::
 
-Only read-only calls are retried. Calls that change state in OTPKI, such as creating an end entity or submitting an enrollment, are never retried, so that a timeout cannot result in a duplicate end entity or a duplicate certificate.
+Calls that change state in OTPKI, such as creating an end entity or submitting an enrollment, are never retried, so that a timeout cannot result in a duplicate end entity or a duplicate certificate.
 
 Saving the `Authority` runs a connection check that lists the certification authorities in OTPKI. A successful result confirms that the connector reaches OTPKI, that the access token is accepted, and that the role of the connector grants at least read access to the certification authorities.
