@@ -1,104 +1,169 @@
 ---
-sidebar_position: 5
+sidebar_position: 4
 ---
 
-# Configure Securosys Primus
+# Securosys Primus
 
-The Securosys sidecar connects the PKCS#11 connector to a Primus HSM or Securosys CloudHSM.
+The Securosys sidecar connects the connector to a Primus HSM or to Securosys CloudHSM through the Primus PKCS#11 provider.
 
 ## What you need
 
-| Item | Purpose |
-|---|---|
-| **Primus PKCS#11 provider** | The licensed provider package for your target architecture. |
-| **`primus.cfg`** | Identifies the HSM endpoints, client, and partition. |
-| **Setup password** | Bootstraps the authenticated client channel. |
-| **PKCS#11 PIN** | Opens a logged-in token session for cryptographic operations. |
+| Item                  | Description                                                                                              |
+|-----------------------|----------------------------------------------------------------------------------------------------------|
+| Primus PKCS#11 provider | The extracted `PrimusAPI_PKCS11` tree from the Securosys download portal, for `linux/amd64` or `linux/arm64` |
+| Setup password        | A time-limited credential from Securosys that enrolls the client once                                     |
+| PKCS#11 password      | The password that logs in to the partition. It is the User PIN of the `Token` in the platform             |
+| Network access        | From the connector pod to the HSM endpoints                                                              |
 
-Securosys supplies provider packages for `linux/amd64` and `linux/arm64`.
+## Build the image
 
-## Finalize the image
+Use the extracted provider tree, the directory that holds `bin/`, `etc/` and `lib/`, as the `vendor` build context, and [build](./sidecar-image-finalization.md#build-the-image) with this `Dockerfile`:
 
-Extract the vendor package and stage the Primus provider tree. Then build with the supplied Securosys Dockerfile.
-
-```bash
-docker build \
-  --build-arg BASE_IMAGE=<SIDECAR_BASE_IMAGE> \
-  --build-context vendor=/path/to/staged-primus-provider \
-  -f deploy/sidecar/finalize/securosys/Dockerfile \
-  -t <PRIVATE_REGISTRY>/pkcs11-sidecar-securosys:<TAG> \
-  deploy/sidecar/finalize/securosys
+```dockerfile
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+USER root
+# The whole tree: ppin, the enrollment tool, needs its etc/ beside it.
+COPY --from=vendor --chown=10001:10001 . /opt/primus/
+COPY --chown=10001:10001 --chmod=0644 config.yaml /etc/otpki/pkcs11-proxy/config.yaml
+RUN ln -sf /opt/primus/lib/libprimusP11.so /opt/pkcs11/module.so && \
+    chmod 0755 /opt/primus/bin/ppin
+ENV PATH="/opt/primus/bin:${PATH}" \
+    LD_LIBRARY_PATH=/opt/primus/lib \
+    SECUROSYS_PKCS11_CONF=/etc/pkcs11-vendor/primus.cfg \
+    SECUROSYS_SECRETS_CONF=/etc/pkcs11-vendor/.secrets.cfg
+USER 10001
 ```
 
-Push the image to your private registry. Deploy it by digest.
+The `modules` block of the proxy configuration is:
 
-## Understand the credentials
-
-**Setup password** — A time-limited bootstrap credential. Its validity begins with first use. You can retrieve the partition secret again while the setup password remains valid.
-
-**Permanent secret** — Authenticates the provider to the partition. The enrollment tool stores it in `.secrets.cfg`.
-
-**PKCS#11 PIN** — Authenticates an individual token session. Core supplies it for each operation that needs a logged-in session.
-
-The documented setup-password validity is three days for on-premises HSMs, one week for CloudHSM, and one year for developer accounts. Confirm the validity for your account with Securosys.
-
-Retrieving the permanent secret does not rotate it. One captured secret can serve multiple connector replicas.
+```yaml
+modules:
+  pkcs11.base:
+  pkcs11.securosys.primus:
+```
 
 ## Prepare the partition configuration
 
-Start from `primus.cfg.example`.
+The provider reads `primus.cfg`, in libconfig syntax, where the trailing semicolons are required. Set the endpoint, the partition and, on paid CloudHSM tiers, the service user, as the [PKCS#11 provider configuration](https://docs.securosys.com/pkcs/Installation/pkcs11_provider_configuration) of Securosys describes:
 
-Set the endpoint, client identifier, partition name, and any service-user setting required by your Securosys tier.
+```text
+version = "1.0";
 
-Keep `connect_on_init` set to `false`. The sidecar can then start while the HSM is unavailable. The profile reports `Disconnected` and recovers when the HSM becomes reachable.
+primus:
+{
+  wait_delay = 250;
+  wait_max_tries = 5;
+  connect_on_init = false;
+
+  hsms:
+  {
+    hsm1:
+    {
+      host = "<HSM_HOST>";
+      port = "<HSM_PORT>";
+      priority = 0;
+      slots:
+      {
+        slot0:
+        {
+          client_id = "pkcs11-proxy";
+          user_name = "<PARTITION>";
+          // proxy_user = "<SERVICE_USER>";
+          id = 1;
+        };
+      };
+    };
+  };
+
+  log:
+  {
+    write_log_file = false;
+    write_syslog = false;
+    trace_timestamp = true;
+    trace_function = true;
+    trace_pid = true;
+    trace_mask = 0x00;
+    trace_level = 4;
+  };
+};
+```
+
+Keep `connect_on_init = false`. The provider then connects at the first session instead of when it loads, so the sidecar starts while the HSM is unreachable, and the Config Profile recovers once the HSM can be reached. With `true`, an unreachable HSM keeps the sidecar from starting.
 
 ## Enroll the client
 
-Run enrollment separately from the connector deployment. Do not use a Helm hook. A later Helm upgrade must not repeat a privileged bootstrap step.
+The provider authenticates to the partition with a permanent secret, kept in `.secrets.cfg`. Create it once per partition, separately from the deployment and not as a Helm hook, by exchanging the setup password with `ppin` as the [Permanent Secret Fetching](https://docs.securosys.com/pkcs/Installation/permanent_secret_management) guide of Securosys describes, including the proxy credentials on CloudHSM tiers with a service user. The HSM can restrict access by source network, so run it from a host that the HSM admits.
 
-Use the chart-provided enrollment Job, or create an equivalent one-time Job from the finalized sidecar image.
-
-1. Obtain the setup password from the security officer.
-2. Store it in a temporary Kubernetes `Secret`.
-3. Start the enrollment Job in the target cluster.
-4. Let the vendor enrollment tool retrieve the permanent secret into `.secrets.cfg`.
-5. Confirm the enrolled client can reach the partition.
-6. Capture `primus.cfg` and `.secrets.cfg` in a long-lived Kubernetes `Secret`.
-7. Delete the temporary setup-password Secret.
-8. Delete the completed Job and its temporary workspace.
-
-Run the Job in the target cluster. The HSM may restrict access by source network, and the operator workstation may not have the same route.
-
-Do not keep the setup password and permanent secret together. The setup password can bootstrap another client while it remains valid. The permanent secret authenticates the enrolled channel.
-
-## Mount the runtime Secret
-
-Create a long-lived Secret containing both files:
+The finalized image contains `ppin`, so you can run it from the image. Put `primus.cfg` into a directory, here `vendor/`, seed `.secrets.cfg` there from the empty template in the image, and make both writable by uid `10001`, the user the image runs as:
 
 ```bash
-kubectl -n <NAMESPACE> create secret generic pkcs11-vendor-securosys \
-  --from-file=primus.cfg=./primus.cfg \
-  --from-file=.secrets.cfg=./.secrets.cfg
+docker run --rm --entrypoint cat registry.example.com/hsm/pkcs11-sidecar-securosys:<TAG> \
+  /opt/primus/etc/.secrets.cfg > vendor/.secrets.cfg
+docker run --rm -it -v "$PWD/vendor:/etc/pkcs11-vendor" --entrypoint /opt/primus/bin/ppin \
+  registry.example.com/hsm/pkcs11-sidecar-securosys:<TAG> \
+  -c /etc/pkcs11-vendor/primus.cfg -s /etc/pkcs11-vendor/.secrets.cfg <OPTIONS>
 ```
 
-Mount it read-only at `/etc/pkcs11-vendor` in the Securosys sidecar.
-
-The sidecar does not need a writable vendor-state volume after enrollment.
+Keep `.secrets.cfg` safe, and do not store the setup password with it: while the setup password is valid, it can enroll another client.
 
 ## Size the session pool
 
-Securosys partition limits can be low, especially on developer tiers. Keep the total configured session capacity below the partition limit.
+A partition accepts a limited number of sessions, and the limit is low on developer tiers. Keep `max_sessions` in the proxy configuration below it; see [Sessions](./deployment.md#sessions).
 
-Session exhaustion appears as retryable backpressure. It is not an authentication failure.
+## Add the sidecar
 
-See [Session sizing and timeouts](./session-sizing-and-timeouts.md).
+With the Helm chart, add an entry to `sidecars`:
+
+```yaml
+sidecars:
+  - name: securosys
+    port: 8053
+    image:
+      registry: registry.example.com
+      repository: hsm
+      name: pkcs11-sidecar-securosys
+      digest: sha256:<DIGEST>
+    trustMaterial:
+      secretName: pkcs11-vendor-securosys
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+```
+
+With a `Connector` resource, add `{"name": "securosys", "proxyAddress": "127.0.0.1:8053"}` to `PKCS11_PROFILES`, and add to the `spec`:
+
+```yaml
+spec:
+  secretRefs:
+    - name: pkcs11-vendor-securosys
+      type: volume
+      mountPath: /etc/pkcs11-vendor-securosys
+  sidecars:
+    - name: proxy-securosys
+      image: registry.example.com/hsm/pkcs11-sidecar-securosys@sha256:<DIGEST>
+      env:
+        - name: PKCS11_PROXY_LISTEN_ADDRESS
+          value: "127.0.0.1:8053"
+      readinessProbe:
+        exec:
+          command: ["bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8053"]
+      livenessProbe:
+        exec:
+          command: ["bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8053"]
+        initialDelaySeconds: 15
+        periodSeconds: 30
+      securityContext:
+        readOnlyRootFilesystem: true
+      volumeMounts:
+        - name: secret-pkcs11-vendor-securosys
+          mountPath: /etc/pkcs11-vendor
+          readOnly: true
+```
 
 ## Verify the integration
 
-1. Test the enrolled client with the vendor tool before starting the sidecar.
-2. Confirm the sidecar starts with `connect_on_init` disabled.
-3. Confirm the `securosys` profile reports `Connected` when the HSM is reachable.
-4. Confirm the expected partition appears.
-5. Create a test key.
-
-If the vendor connectivity test passes but the connector finds no token, check that `primus.cfg` names a partition covered by the captured secret.
+The **Token** attribute of a `Token` on the `securosys` Config Profile offers the partition. When `ppin -t` succeeds but no token is offered, `primus.cfg` names a partition that the enrolled secret does not cover.

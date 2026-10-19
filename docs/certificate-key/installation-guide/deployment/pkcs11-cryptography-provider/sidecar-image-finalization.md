@@ -2,89 +2,87 @@
 sidebar_position: 2
 ---
 
-# Finalize a sidecar image
+# Finalize a Sidecar Image
 
-The distributed sidecar base contains the PKCS#11 proxy, its entrypoint, and a standard directory layout. It contains no commercial vendor library.
+A vendor sidecar runs the PKCS#11 proxy with the PKCS#11 library of its vendor. Commercial libraries are licensed, so no published image contains one: you build the image of each vendor yourself, from the published sidecar base image and the library you obtained under your own agreement with the vendor. This build is called finalization. Keep finalized images in a private registry that you control, and do not publish them.
 
-**Finalization** — The image build in which you add your licensed vendor library to the sidecar base.
+SoftHSM needs no finalization, because its published image is complete.
 
-You build finalized images under your vendor agreement. Store them in a private registry that you control.
+## The base image
 
-The connector repository provides the [shared procedure and vendor finalization files](https://github.com/OmniTrustILM/pkcs11-cryptography-provider/tree/main/deploy/sidecar/finalize).
+The base image `hub.omnitrustregistry.com/ilm-private/pkcs11-sidecar-base` contains the proxy and an entrypoint that checks the library before it starts the proxy. It comes in a glibc and a musl variant:
 
-SoftHSM is different. Its open-source library is already present in the complete SoftHSM image. See [Use SoftHSM](./softhsm.md).
+| Tag                | C library | Use                             |
+|--------------------|-----------|---------------------------------|
+| `<VERSION>-rocky`  | glibc     | Every commercial vendor library |
+| `<VERSION>-alpine` | musl      | Only libraries built for musl   |
 
-## Choose the base variant
+`<VERSION>` is the version of the connector. Pin the base image by digest, and build for the architecture of the vendor library: `linux/amd64` for Utimaco and nShield, `linux/amd64` or `linux/arm64` for Securosys.
 
-**Rocky variant** — Uses a glibc-compatible runtime. Use it for the supported commercial vendor libraries.
+## What the image contains
 
-**Alpine variant** — Uses musl. Use it only for libraries built for musl. The complete SoftHSM image uses this variant.
+| Path                                  | Content                                    | Provided                                |
+|---------------------------------------|--------------------------------------------|-----------------------------------------|
+| `/opt/pkcs11/module.so`               | The vendor PKCS#11 library, or a link to it | In the image                            |
+| `/etc/otpki/pkcs11-proxy/config.yaml` | The [proxy configuration](#the-proxy-configuration) | In the image                    |
+| `/etc/pkcs11-vendor/`                 | Vendor configuration and trust material    | At runtime, read-only, from a Secret    |
+| `/var/lib/pkcs11-vendor/`             | Vendor state that changes at runtime       | At runtime, from a writable volume      |
 
-The image architecture must also match the vendor library.
+The image runs as user `10001`. Give the directories that the vendor software writes at runtime to group `0`, group-writable, so that the image also runs where the cluster assigns the user. Never put credentials, HSM addresses, partition secrets or Security World files into the image.
 
-| Vendor | Supported image architecture |
-|---|---|
-| **Utimaco CryptoServer** | `linux/amd64` |
-| **Securosys Primus** | `linux/amd64` and `linux/arm64` |
-| **Entrust nShield** | `linux/amd64` |
+A sidecar has to keep running while its HSM is unreachable, so that the other Config Profiles in the pod stay in service. The vendor pages give the settings that keep it running.
 
-## Understand the filesystem contract
+## The proxy configuration
 
-| Path | Purpose | Access |
-|---|---|---|
-| `/opt/pkcs11/module.so` | Vendor PKCS#11 library | Read-only |
-| `/etc/otpki/pkcs11-proxy/config.yaml` | Complete proxy configuration | Read-only |
-| `/etc/pkcs11-vendor/` | Vendor configuration and trust material | Read-only |
-| `/var/lib/pkcs11-vendor/` | Vendor writable state | Read-write |
+The proxy reads one complete configuration file and merges nothing, so a finalized image ships the whole file:
 
-The finalized image supplies the library and the complete proxy configuration. Kubernetes supplies configuration, trust material, and writable state at runtime.
+```yaml
+module_path: /opt/pkcs11/module.so
+listen_address: ":8051"
+# Debug logging records proxy operations, including the PIN.
+debug: false
+# The connector addresses each token per request.
+dynamic_routing: true
+session_pool:
+  # Keep below the session limit of the HSM partition.
+  max_sessions: 10
+  idle_timeout: 5m
+  absolute_timeout: 24h
+  reaper_interval: 30s
+  # Bounds opening a session and logging in, not the cryptographic operation.
+  operation_timeout: 30s
+  acquire_timeout: 5s
+modules:
+  pkcs11.base:
+  # The module of the vendor, as given on the vendor page.
+log:
+  level: info
+```
 
-Do not bake credentials, HSM addresses, partition secrets, or Security World files into the image.
-
-## Distinguish the trust material
-
-**Static trust material** — An existing estate artifact that you copy into a Kubernetes `Secret`. Examples include a Utimaco configuration and Entrust Security World files.
-
-**Captured enrollment material** — An artifact produced by a vendor enrollment tool. Run the enrollment separately. Then capture its output in a Kubernetes `Secret`.
-
-Both kinds use the same runtime mechanism. The difference is how you obtain them.
+An environment variable on the sidecar overrides one setting of the file: `PKCS11_PROXY_` followed by the path of the setting in capitals, with underscores for dots, such as `PKCS11_PROXY_LISTEN_ADDRESS` for `listen_address`.
 
 ## Build the image
 
-1. Obtain the vendor package from the vendor's official distribution channel.
-2. Stage only the files named in the vendor walkthrough.
-3. Select a sidecar base that matches the required runtime and architecture.
-4. Build with the supplied vendor Dockerfile.
-5. Pin the base image by digest.
-6. Tag the result in your private registry.
-7. Push the finalized image.
-8. Pin the deployed sidecar by digest.
+Stage the vendor files that the vendor page names in a directory outside version control, because vendor libraries are licensed and Security World files are secret. Put the `Dockerfile` from the vendor page and the proxy configuration, as `config.yaml`, into an empty directory, then build and push the image from there:
 
-Use the vendor page for the expected payload and build command:
+```bash
+docker build --platform linux/amd64 \
+  --build-arg BASE_IMAGE=hub.omnitrustregistry.com/ilm-private/pkcs11-sidecar-base:<VERSION>-rocky@sha256:<DIGEST> \
+  --build-context vendor=/path/to/staged-vendor-files \
+  -t registry.example.com/hsm/pkcs11-sidecar-<VENDOR>:<TAG> .
+docker push registry.example.com/hsm/pkcs11-sidecar-<VENDOR>:<TAG>
+```
 
-- [Configure Utimaco CryptoServer](./utimaco.md)
-- [Configure Securosys Primus](./securosys.md)
-- [Configure Entrust nShield](./nshield.md)
+Deploy the image by its digest.
 
-## Verify the image
+## Check the image
 
-Perform these checks before you deploy it.
+1. Confirm that the library resolves its dependencies. A dependency reported as `not found` is a vendor runtime library that the image lacks:
 
-**Contract check** — Confirm that the expected library exists, is readable, and matches the image architecture.
+   ```bash
+   docker run --rm --entrypoint /usr/bin/ldd registry.example.com/hsm/pkcs11-sidecar-<VENDOR>:<TAG> /opt/pkcs11/module.so
+   ```
 
-**Dependency check** — Confirm that the image can load the vendor library and resolve its shared-library dependencies.
+2. Start the image with its vendor configuration and trust material mounted at `/etc/pkcs11-vendor`, and read its log. The entrypoint names any path it cannot use, and the proxy logs the address it listens on.
 
-**Token check** — Start the sidecar with its runtime configuration and trust material. Confirm that it can list the expected token or slot.
-
-The final token check needs access to the real HSM. A successful image build alone does not prove that the configuration and trust material are correct.
-
-## Keep build and runtime material separate
-
-The licensed library belongs in the finalized image. Configuration and trust material do not.
-
-Use this boundary:
-
-- **Image** — Vendor library and required client tools.
-- **ConfigMap** — Non-sensitive proxy configuration when you need to override the image default.
-- **Secret** — Vendor configuration, trust material, and captured enrollment output.
-- **Persistent volume** — Vendor state that changes after startup, such as nShield key blobs.
+A successful build does not prove that the configuration and the trust material are correct. A `Token` that reports `Connected` in the platform does.

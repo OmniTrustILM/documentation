@@ -1,101 +1,210 @@
 ---
-sidebar_position: 6
+sidebar_position: 5
 ---
 
-# Configure Entrust nShield
+# Entrust nShield
 
-The Entrust sidecar connects the PKCS#11 connector to a network-attached nShield HSM.
-
-nShield stores wrapped key blobs in the client filesystem. This makes its storage requirements different from the other validated HSMs.
+The nShield sidecar connects the connector to a network-attached nShield HSM. Unlike the other HSMs, nShield keeps every generated key as a wrapped key blob in the file system of the client, so the sidecar needs a persistent volume.
 
 ## What you need
 
-| Item | Purpose |
-|---|---|
-| **Security World software** | Supplies the PKCS#11 library, client daemon, enrollment tools, and diagnostic tools. |
-| **Security World files** | Identify the client and its available softcards. |
-| **Appliance identity** | The electronic serial number and KNETI hash used to authenticate the appliance. |
-| **Persistent volume** | Stores the Security World files and every generated key blob. |
+| Item                    | Description                                                                                                                                  |
+|-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| Security World software | The `/opt/nfast` tree of a host installation, for `linux/amd64`. It holds the PKCS#11 library, the `hardserver` daemon and the enrollment tools |
+| Security World files    | `world`, `module_<ESN>`, and a `softcard_<hash>` file for each softcard that the platform uses                                                 |
+| HSM identity            | The address of the HSM, its electronic serial number (ESN) and the hash of its KNETI key                                                      |
+| Persistent volume       | Holds the Security World files and every key blob                                                                                             |
 
-The validated sidecar supports network-attached HSMs on `linux/amd64`.
+PCI-attached HSMs are not supported, because they need device nodes and privileges that the sidecar does not have.
 
-## Finalize the image
+## Build the image
 
-Stage the required files from the installed `/opt/nfast` tree. Then build with the supplied nShield Dockerfile.
+The PKCS#11 library of nShield talks to a local `hardserver` daemon, which holds the authenticated connection to the HSM. The image therefore runs the daemon beside the proxy: the entrypoint starts the program named by `SIDECAR_PRESTART`, starts the proxy once the command named by `SIDECAR_PRESTART_READY` succeeds, and stops the container when either of them exits.
 
-```bash
-docker build --platform linux/amd64 \
-  --build-arg BASE_IMAGE=<SIDECAR_BASE_IMAGE> \
-  --build-context vendor=/path/to/staged-nfast \
-  -f deploy/sidecar/finalize/nshield/Dockerfile \
-  -t <PRIVATE_REGISTRY>/pkcs11-sidecar-nshield:<TAG> \
-  deploy/sidecar/finalize/nshield
+Use the `/opt/nfast` tree as the `vendor` build context, and [build](./sidecar-image-finalization.md#build-the-image) for `linux/amd64` with this `Dockerfile`, beside `config.yaml`, `prestart.sh` and `ready.sh`:
+
+```dockerfile
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+USER root
+COPY --from=vendor --chown=10001:10001 . /opt/nfast/
+COPY --chown=10001:10001 --chmod=0755 prestart.sh /usr/local/bin/nshield-prestart
+COPY --chown=10001:10001 --chmod=0755 ready.sh /usr/local/bin/nshield-ready
+COPY --chown=10001:10001 --chmod=0644 config.yaml /etc/otpki/pkcs11-proxy/config.yaml
+# The key blobs go to kmdata/local, on the persistent volume. kmdata/config stays in the image.
+RUN mkdir -p /opt/nfast/sockets/priv /opt/nfast/hardserver.d /var/lib/pkcs11-vendor/kmdata && \
+    rm -rf /opt/nfast/kmdata && \
+    mkdir -p /opt/nfast/kmdata/config && \
+    ln -s /var/lib/pkcs11-vendor/kmdata /opt/nfast/kmdata/local && \
+    ln -sf /opt/nfast/toolkits/pkcs11/libcknfast.so /opt/pkcs11/module.so && \
+    chmod 0755 /opt/nfast/sockets && \
+    chmod 0770 /opt/nfast/hardserver.d && \
+    chown -R 10001:0 /opt/nfast /var/lib/pkcs11-vendor && \
+    chmod g+w /opt/nfast/sockets /opt/nfast/sockets/priv /opt/nfast/kmdata/config \
+              /var/lib/pkcs11-vendor /var/lib/pkcs11-vendor/kmdata
+ENV NFAST_HOME=/opt/nfast \
+    LD_LIBRARY_PATH=/opt/nfast/lib/64 \
+    NFP_DEVICES="" \
+    CKNFAST_LOADSHARING=1 \
+    SIDECAR_PRESTART=/usr/local/bin/nshield-prestart \
+    SIDECAR_PRESTART_READY=/usr/local/bin/nshield-ready
+USER 10001
 ```
 
-Push the image to your private registry. Deploy it by digest.
+`NFP_DEVICES=""` keeps the daemon from looking for PCI devices, and `CKNFAST_LOADSHARING=1` presents a slot for each softcard beside the slot of the accelerator.
+
+Write `prestart.sh` to:
+
+1. Copy `world`, `module_*` and `softcard_*` from `/etc/pkcs11-vendor` into `/opt/nfast/kmdata/local`, and create the client configuration with `/opt/nfast/bin/cfg-mkdefault -f /opt/nfast/kmdata/config/config` when it does not exist.
+2. Start `/opt/nfast/sbin/hardserver -c` in the background, and wait until `/opt/nfast/bin/chkserv` succeeds.
+3. Enroll the client with `/opt/nfast/bin/nethsmenroll --port=<port> --force <host> <ESN> <KNETI hash>`, taking the values from `NSHIELD_HOST`, `NSHIELD_PORT` (`9004` by default), `NSHIELD_ESN` and `NSHIELD_KNETI_HASH`. Retry until the enrollment succeeds, instead of exiting while the HSM is unreachable.
+4. Stay in the foreground while `hardserver` runs, and stop it on `SIGTERM`.
+
+Write `ready.sh` to exit with `0` only when `/opt/nfast/bin/enquiry` reports a `Module #1` section whose `enquiry reply flags` do not contain `Failed`, that is when the module is usable.
+
+The `modules` block of the proxy configuration is:
+
+```yaml
+modules:
+  pkcs11.base:
+  pkcs11.entrust.nshield:
+```
 
 ## Prepare the Security World Secret
 
-Create a Secret containing the Security World files required by the client.
+Store the Security World files in a Secret:
 
 ```bash
 kubectl -n <NAMESPACE> create secret generic pkcs11-vendor-nshield \
-  --from-file=./world \
-  --from-file=./module_<ESN> \
-  --from-file=./softcard_<HASH>
+  --from-file=./world --from-file=./module_<ESN> --from-file=./softcard_<HASH>
 ```
 
-Mount the Secret read-only at `/etc/pkcs11-vendor` in the nShield sidecar.
+## Configure the persistent volume
 
-The sidecar copies these files into its writable state before the client daemon starts.
+Mount a persistent volume at `/var/lib/pkcs11-vendor`. It holds the Security World files copied from the Secret and a key blob for every key that the HSM generates, so it is as sensitive as the Secret: encrypt it at rest, restrict access to it, and back it up. A storage class whose reclaim policy is `Delete` deletes the keys together with the claim. `ReadWriteOnce` is enough for the single connector pod.
 
-## Configure persistent state
+The sidecar runs as uid `10001`, and a fresh volume belongs to root, so give the pod an `fsGroup` that may write the volume, such as `10001`. On OpenShift, take the `fsGroup` from the range of the namespace.
 
-Mount a persistent volume at `/var/lib/pkcs11-vendor`.
+## Enroll the client
 
-The volume contains:
+The sidecar enrolls the client at every start, so the HSM must permit the source address that the pod presents to it. A rescheduled pod can present another address, depending on the cluster network: keep the egress address predictable, or update the HSM when it changes.
 
-- Security World files copied from the Secret.
-- Wrapped key blobs created for every generated key.
+Take the ESN and the KNETI hash from the HSM administrator, not from the network: the KNETI hash is what authenticates the HSM to the client.
 
-Protect the volume with encryption at rest, restricted access, and regular backups.
+## Run the sidecar without probes
 
-When you use the Kubernetes Operator, configure the volume with a `PersistentVolumeClaim` source and set the pod `fsGroup` to a group that can write it. Use a storage class that matches your recovery and availability requirements.
+The proxy starts only after the HSM has answered, so its port stays closed while the HSM is unreachable, and the sidecar keeps retrying. A probe on the port fails in the meantime: a liveness probe restarts the sidecar, a readiness probe holds up `helm install --wait`, and in a `Connector` resource a readiness probe takes the whole pod out of service, with every other Config Profile. Define no probes for the nShield sidecar. The Helm chart probes every sidecar by default, so disable both probes in the nShield entry, as shown below.
 
-One replica can use `ReadWriteOnce` storage. Multiple replicas must share the same key store through `ReadWriteMany` storage.
+The vendor software writes into its installation tree, so the sidecar also needs a writable root file system.
 
-## Enroll each replica
+## Add the sidecar
 
-The nShield client enrolls when the sidecar starts. The appliance must permit the source address it sees for every replica.
+With the Helm chart, add an entry to `sidecars`. Turn persistence on when you install the release: the chart creates the claim at installation, and a sidecar added to an installed release can only mount an existing claim, named in `writableVolume.persistence.existingClaim`. `helm uninstall` keeps the claim.
 
-Set these values explicitly:
+```yaml
+nodeSelector:
+  kubernetes.io/arch: amd64
+podSecurityContext:
+  fsGroup: 10001
+sidecars:
+  - name: nshield
+    port: 8054
+    image:
+      registry: registry.example.com
+      repository: hsm
+      name: pkcs11-sidecar-nshield
+      digest: sha256:<DIGEST>
+    env:
+      - name: NSHIELD_HOST
+        value: nshield.example.com
+      - name: NSHIELD_ESN
+        value: XXXX-XXXX-XXXX
+      - name: NSHIELD_KNETI_HASH
+        value: "<40 hexadecimal characters>"
+    trustMaterial:
+      secretName: pkcs11-vendor-nshield
+    writableVolume:
+      persistence:
+        enabled: true
+        size: 1Gi
+    probes:
+      readiness:
+        enabled: false
+      liveness:
+        enabled: false
+    securityContext:
+      readOnlyRootFilesystem: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 1Gi                        # includes the hardserver daemon
+```
 
-**`NSHIELD_HOST`** — Appliance hostname or address.
+With a `Connector` resource, create the claim first:
 
-**`NSHIELD_ESN`** — Appliance electronic serial number.
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pkcs11-nshield-kmdata
+  namespace: <NAMESPACE>
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: <STORAGE_CLASS>
+  resources:
+    requests:
+      storage: 1Gi
+```
 
-**`NSHIELD_KNETI_HASH`** — Appliance public key hash.
+Then add `{"name": "nshield", "proxyAddress": "127.0.0.1:8054"}` to `PKCS11_PROFILES`, and add to the `spec`:
 
-Pinning the serial number and KNETI hash authenticates the expected appliance. Do not rely on network discovery in production.
-
-If the estate requires an administrator card quorum, complete that authorization through the estate's approved administrative procedure before deploying the connector.
-
-## Allow enough startup time
-
-The sidecar starts the local client daemon, enrolls the client, and waits for the HSM module to become usable before it starts the proxy.
-
-Allow at least 90 seconds for this pre-start sequence. Configure a startup probe so liveness checks do not restart the container while enrollment is still in progress.
-
-The nShield sidecar needs a writable root filesystem because the vendor software writes inside its installation tree.
+```yaml
+spec:
+  nodeSelector:
+    kubernetes.io/arch: amd64
+  securityContext:
+    fsGroup: 10001
+  secretRefs:
+    - name: pkcs11-vendor-nshield
+      type: volume
+      mountPath: /etc/pkcs11-vendor-nshield
+  volumes:
+    - name: nshield-kmdata
+      mountPath: /var/lib/pkcs11-vendor-nshield
+      persistentVolumeClaim:
+        claimName: pkcs11-nshield-kmdata
+  sidecars:
+    - name: proxy-nshield
+      image: registry.example.com/hsm/pkcs11-sidecar-nshield@sha256:<DIGEST>
+      env:
+        - name: PKCS11_PROXY_LISTEN_ADDRESS
+          value: "127.0.0.1:8054"
+        - name: NSHIELD_HOST
+          value: nshield.example.com
+        - name: NSHIELD_ESN
+          value: XXXX-XXXX-XXXX
+        - name: NSHIELD_KNETI_HASH
+          value: "<40 hexadecimal characters>"
+      securityContext:
+        readOnlyRootFilesystem: false
+      resources:
+        limits:
+          memory: 1Gi
+      volumeMounts:
+        - name: secret-pkcs11-vendor-nshield
+          mountPath: /etc/pkcs11-vendor
+          readOnly: true
+        - name: nshield-kmdata
+          mountPath: /var/lib/pkcs11-vendor
+```
 
 ## Verify the integration
 
-1. Confirm the appliance permits the replica's source address.
-2. Confirm the persistent volume is mounted and writable.
-3. Confirm the client daemon reports a usable module.
-4. Confirm the expected softcard slot appears.
-5. Confirm the `nshield` profile reports `Connected`.
-6. Create a test key.
-7. Restart the pod and confirm that the key remains available.
+1. In the running sidecar, `/usr/local/bin/nshield-ready` exits with `0`.
+2. The **Token** attribute of a `Token` on the `nshield` Config Profile offers a token for each softcard. When it offers only the accelerator, the softcard files did not reach the volume.
+3. After a restart of the pod, a key created before still works.
 
-If the sidecar enrolls but no usable module appears, check the permitted client address, electronic serial number, and KNETI hash.
+When the sidecar enrolls but the module never becomes usable, check the permitted source address, the ESN and the KNETI hash.

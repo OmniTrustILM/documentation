@@ -1,6 +1,6 @@
 {
   "position": 8,
-  "label": "PKCS#11 Cryptography Provider",
+  "label": "PKCS#11 Cryptography Provider Deployment",
   "link": {
     "type": "doc",
     "id": "deployment"

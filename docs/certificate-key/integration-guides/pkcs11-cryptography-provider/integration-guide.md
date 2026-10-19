@@ -4,21 +4,21 @@ sidebar_position: 1
 
 # PKCS#11 Cryptography Provider
 
-The **PKCS#11 Cryptography Provider** connects the platform to hardware security modules (HSMs) through their PKCS#11 interface.
+The **PKCS#11 Cryptography Provider** connects the platform to hardware security modules (HSMs) through their PKCS#11 interface, so that keys are generated and used on the HSM while the platform manages them. One connector can serve several HSMs, including HSMs from different vendors.
 
-One connector can connect to multiple HSMs. The HSMs can come from different vendors.
+The connector implements the [Cryptography Provider v2](../../connectors/provider-interfaces/cryptography-provider-v2.md) interface and supports the following operations:
 
-If you are new to cryptographic keys in the platform, read [Cryptography Provider](https://docs.otilm.com/docs/certificate-key/connectors/provider-interfaces/cryptography-provider) first. Then return here to learn what the PKCS#11 connector adds.
+| Operation                 | Supported                                                                                                                                         |
+|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| Key pair generation       | RSA (2048, 3072 and 4096 bits), ECDSA (P-256, P-384 and P-521), ML-DSA (ML-DSA-44, ML-DSA-65 and ML-DSA-87), SLH-DSA (SHA2 at security categories 1, 3 and 5, for small signatures or fast signing) |
+| Signing and verification  | RSA PKCS#1 v1.5, RSA-PSS and ECDSA with SHA-256, SHA-384 or SHA-512, ML-DSA, SLH-DSA                                                                |
+| Encryption and decryption | RSA only: PKCS#1 v1.5, and OAEP with SHA-1, SHA-256, SHA-384 or SHA-512                                                                           |
+| Random data               | Up to 1 MiB per request                                                                                                                           |
+| Key destruction           | Removes the key from the HSM                                                                                                                      |
 
----
+The connector offers only what the HSM reports: an algorithm, key size or signature scheme appears when the token provides the mechanisms it needs, so the choices depend on the HSM and its firmware. Keys cannot be imported or exported through the platform, and every operation runs synchronously.
 
-## Vendor libraries run in sidecars
-
-HSMs are accessed through vendor-specific PKCS#11 libraries. Commercial libraries are licensed separately, so they are not built into the PKCS#11 connector. Instead, each library runs with a proxy in its own sidecar container. One sidecar contains one vendor library.
-
-This separation keeps the connector vendor-neutral and allows one connector to work with HSMs from several vendors. The Software Cryptography Provider is different: its cryptographic implementation is included directly in the connector image. You finalize each commercial PKCS#11 sidecar with the corresponding vendor library.
-
-## Components
+## How it works
 
 ```plantuml
 @startuml
@@ -65,44 +65,75 @@ component "Utimaco\nHSM" as UtimacoHSM #F7F7F7
 component "Securosys\nHSM" as SecurosysHSM #F7F7F7
 component "Entrust\nHSM" as EntrustHSM #F7F7F7
 
-Core -[#1573B5]-> Connector : cryptographic requests
-UtimacoLibrary -[#1573B5]-> UtimacoHSM : vendor connection
-SecurosysLibrary -[#1573B5]-> SecurosysHSM : vendor connection
-EntrustLibrary -[#1573B5]-> EntrustHSM : vendor connection
+Core -[#1573B5]-> Connector : Cryptographic requests
+UtimacoLibrary -[#1573B5]-> UtimacoHSM : Vendor connection
+SecurosysLibrary -[#1573B5]-> SecurosysHSM : Vendor connection
+EntrustLibrary -[#1573B5]-> EntrustHSM : Vendor connection
 @enduml
 ```
 
-**Core** — Sends key-management and cryptographic requests to the connector.
+The connector loads no PKCS#11 library itself. Each vendor's library runs with a PKCS#11 proxy in its own sidecar container, in the same pod as the connector, and only that sidecar connects to the vendor's HSM. Commercial libraries are licensed separately, so you build each vendor's sidecar image yourself; see [Deploy the PKCS#11 Cryptography Provider](../../installation-guide/deployment/pkcs11-cryptography-provider/deployment.md).
 
-**PKCS#11 connector** — The `Cryptography Provider` implementation that Core calls. It selects a `Config Profile` and coordinates the operation.
+A **Config Profile** names one sidecar. Each `Token` in the platform selects a Config Profile and one token that the HSM behind it presents.
 
-**Connector deployment** — One Kubernetes pod that contains the connector and its sidecars.
+The connector is validated with the following HSMs:
 
-**Config Profile** — Names one proxy sidecar and its local address.
+| HSM                  | Notes                                                                            |
+|----------------------|----------------------------------------------------------------------------------|
+| SoftHSM              | A software token for evaluation and testing. Its sidecar image is published complete. |
+| Utimaco CryptoServer | Standard and QuantumProtect firmware.                                            |
+| Securosys Primus     | Primus HSMs and Securosys CloudHSM.                                               |
+| Entrust nShield      | Network-attached HSMs. Keys are kept as wrapped key blobs on a persistent volume. |
 
-**PKCS#11 proxy sidecar** — Runs beside the connector in the same pod. It loads one vendor library and manages sessions with the selected HSM.
+## Prerequisites
 
-**Vendor PKCS#11 library** — Provides the vendor-specific connection to the HSM.
+Before you start, make sure that:
 
-**HSM** — Stores or protects the key material and performs cryptographic operations.
+- The connector is deployed with the Config Profiles for your HSMs, and registered in the platform. See [Deploy the PKCS#11 Cryptography Provider](../../installation-guide/deployment/pkcs11-cryptography-provider/deployment.md).
+- You know the user PIN of each HSM token that the platform will use.
+- A [`Vault Profile`](../../concept-design/core-components/vault-profile.md) is available in the platform to store the PINs.
 
-## Validated integrations
+## Configuration in the platform
 
-| Integration | Use |
-|---|---|
-| **SoftHSM** | Local evaluation and automated testing. The image is complete and needs no finalization. |
-| **Utimaco CryptoServer** | Physical or simulated CryptoServer deployments. Standard and QuantumProtect firmware profiles are supported. |
-| **Securosys Primus** | Primus HSM and CloudHSM deployments. Enrollment captures the permanent client secret. The setup password remains reusable until it expires. |
-| **Entrust nShield** | Network-attached nShield deployments using a Security World and persistent client-side key blobs. |
+### Store the PIN
 
-The connector discovers the mechanisms that each token actually supports. A mechanism is available only when the selected HSM and its firmware provide it.
+The user PIN of the token is supplied to the connector as a [`Secret`](../../concept-design/core-components/secret.md). Create a `Secret` of type `Generic` through a `Vault Profile`, with the PIN as its content.
 
-## Deploy the connector
+The **User PIN** attribute of the `Token` lists only secrets of this type. The platform resolves the PIN for each request, and the connector does not store it.
 
-The deployment guide takes the connector from vendor images to a verified pod:
+### Create the `Token`
 
-1. [Finalize a sidecar image](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/sidecar-image-finalization) for each commercial HSM vendor you use.
-2. Follow the page for [Utimaco](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/utimaco), [Securosys](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/securosys), [Entrust nShield](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/nshield), or [SoftHSM](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/softhsm).
-3. [Size sessions and timeouts](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/session-sizing-and-timeouts) for your environment.
-4. [Deploy the connector](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/deployment) and verify each `Config Profile`.
-5. Review the [limitations](https://docs.otilm.com/docs/certificate-key/installation-guide/deployment/pkcs11-cryptography-provider/limitations) before production use.
+Create a [`Token`](../../concept-design/core-components/token.md) that uses the connector. The connector defines the following attributes:
+
+| Attribute      | Required | Description                                                                                                                                   |
+|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| Config profile | Yes      | The Config Profile, and so the sidecar and HSM, that serves the token                                                                          |
+| Token          | Yes      | One of the initialized tokens that the selected Config Profile reports. It is stored as a PKCS#11 URI, such as `pkcs11:token=my-token;serial=0123456789abcdef;slot-id=1` |
+| User PIN       | Yes      | The `Generic` secret holding the user PIN of the token                                                                                         |
+
+The status of the `Token` shows whether the connector reaches it: `Connected`, `Disconnected` when the sidecar or the token cannot be reached, `Warning` when the token answers but needs attention, such as a locked PIN, and `Unknown` when it cannot be determined, such as when the HSM has no free session. The status check sends no PIN, so a `Connected` token does not confirm the PIN; the first key operation does.
+
+### Create the `Token Profile`
+
+Create a [`Token Profile`](../../concept-design/core-components/token-profile.md) on the `Token`, with the key usages its keys may have, such as signing and verification for a signing key. For a token that supports ML-DSA, the connector adds one attribute:
+
+| Attribute           | Required | Description                                                                                                                                                                                                                           |
+|---------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ML-DSA signing mode | No       | `pure`, the default, sends the whole message to the HSM. `external-mu`, offered when the token supports it, sends only a 64-byte digest of the message (μ, as defined by FIPS 204), so that messages above the input limit of the HSM can be signed. Both produce standard ML-DSA signatures. Keys of other algorithms ignore the setting |
+
+### Create a test key
+
+Create a [`Key`](../../concept-design/core-components/key.md) in the `Token Profile`. The connector defines the following attributes:
+
+| Attribute                   | Required | Description                                                                                                                                                                                   |
+|-----------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Key Label                   | No       | Label of both halves of the key pair on the HSM. Left empty, the label is the UUID of the key                                                                                                 |
+| Cryptographic Key Algorithm | Yes      | `RSA`, `ECDSA`, `ML-DSA` or `SLH-DSA`, as far as the token supports them. The required parameters of the selected algorithm follow: **RSA Key Size**, **Named Curve**, or **NIST Security Category**, and for SLH-DSA also **Hash Function** and **Signature Generation Mode** |
+| Sensitive                   | No       | Whether the value of the private key can never be read from the HSM in plaintext. Default: enabled                                                                                              |
+| Extractable                 | No       | Whether the HSM lets the private key be exported, wrapped by another key. Default: disabled                                                                                                    |
+
+**Sensitive** and **Extractable** apply to the private key and cannot be changed after the key is created.
+
+A created key confirms the whole path: the connector reaches the HSM, the token accepts the PIN, and the HSM generates the selected algorithm. To test an operation, sign data with the key through the [Cryptographic Operations API](/api/core-cryptographic-operations).
+
+If a step fails, see [Troubleshooting](../../installation-guide/deployment/pkcs11-cryptography-provider/troubleshooting.md).
