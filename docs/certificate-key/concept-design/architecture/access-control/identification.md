@@ -13,11 +13,11 @@ Identification is performed by the [authentication service](https://github.com/O
 
 ## X.509 certificate
 
-A user is identified by the exact client leaf certificate associated with their account; the issuing intermediate or root cannot substitute for the leaf.
+A user is identified by the exact client leaf certificate associated with the user; the issuing intermediate or root CA cannot substitute for the leaf.
 
-Certificate sign-in checks trust and requires an enabled account. Auth's user identification endpoint only looks up the user by certificate fingerprint; it does not validate trust or authenticate the request.
+Certificate sign-in validates the certificate chain and requires an enabled user. The [Identify User](/api/core-auth#tag/user-management/POST/v1/users/identify) operation only looks up the user by certificate fingerprint; it does not validate trust.
 
-For proxy headers, trusted CAs and setup checks, follow [Client certificate authentication](../../../installation-guide/deployment/client-certificate-authentication.md). A supplied invalid certificate assertion fails authentication without trying JWT; requests without one proceed to the next identification method.
+To set up certificate sign-in, follow [Client Certificate Authentication](../../../installation-guide/deployment/client-certificate-authentication.md). A request whose certificate fails validation is rejected without trying JWT; a request without a certificate proceeds to JWT.
 
 ## JSON Web Token (JWT)
 

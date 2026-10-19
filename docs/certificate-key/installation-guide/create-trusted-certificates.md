@@ -4,18 +4,36 @@ sidebar_position: 3
 
 # Create Trusted Certificates
 
-Provide a PEM bundle of public CA certificates for the services that need them:
+The platform trusts the CA certificates in a PEM bundle that you supply when you deploy it. Include:
 
-- Client certificate authentication
-- Outbound TLS connections to infrastructure
-- Connections to integrated technologies
+- the CAs that issue the client certificates users sign in with; see [Client Certificate Authentication](deployment/client-certificate-authentication.md)
+- the CAs that issued the certificates of the infrastructure and integrated technologies the platform connects to over TLS
 
-Choose the intended CA set for each purpose. A shared bundle change can affect both client authentication and outbound HTTPS.
+Publicly trusted CAs need not be included, except for `Auth`: it mounts the whole bundle Secret at `/etc/ssl/certs`, in place of its image's own CA certificates, so it trusts only the CAs in the bundle.
 
-## Select the effective bundle
+## Helm
 
-Use your deployment's existing trusted-certificate configuration. For Operator and Helm fields, Secret mounting behavior and client authentication setup, follow [Client certificate authentication](deployment/client-certificate-authentication.md#existing-client-trust).
+Set the bundle in `global.trusted.certificates` to apply it to every chart, for example with `--set-file global.trusted.certificates=trusted-certificates.pem`; see [Deployment using Helm](deployment/deployment-helm/overview.md). To give a service its own set, set `trusted.certificates` of that chart instead. The global bundle takes precedence when both are set.
+
+The `ilm` chart requires a bundle with at least one certificate. Its default `trusted.certificates` holds only a dummy root CA meant for testing.
+
+## Kubernetes Operator
+
+Create a Secret holding the bundle, and reference it in the `Platform` resource:
+
+```bash
+kubectl create secret generic trusted-ca-bundle -n ilm --from-file=ca.crt=trusted-certificates.pem
+```
+
+```yaml
+spec:
+  common:
+    trustedCertificates:
+      secretRef: trusted-ca-bundle
+```
+
+The bundle is read from the `ca.crt` key; set `caKey` to read another key.
 
 ## Changing trusted certificates
 
-Apply changes through the same deployment configuration and verify the affected connections. For client CA rotation and enforcement across Auth and Core replicas, follow [CA changes and cache timing](deployment/client-certificate-authentication.md#ca-changes-and-cache-timing).
+Change the bundle through the same setting, by running `helm upgrade` with the new bundle or by updating the referenced Secret, and check the connections that depend on it. `Core` reads the bundle when it starts: `helm upgrade` restarts it when the bundle changes, but after updating the Secret referenced in the `Platform` resource, restart `Core` yourself. To change client CAs, follow [Rotate CAs](deployment/client-certificate-authentication.md#rotate-cas).

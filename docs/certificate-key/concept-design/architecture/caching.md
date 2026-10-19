@@ -106,7 +106,7 @@ In practice this means:
 - Credentials revoked **outside** of `Core` are not signalled to the cache. This includes JWTs revoked at the identity provider and client certificates revoked at the issuing CA but not yet reflected in `Core`'s own certificate state. The cached authentication outcome remains valid for that credential until its time-to-live elapses.
 - A role change clears the entire authentication cache on the processing instance, so every cached identity there re-authenticates on its next request — briefly raising load on the authentication service.
 
-Client CA changes also depend on trust updates outside Core. Follow [CA changes and cache timing](../../installation-guide/deployment/client-certificate-authentication.md#ca-changes-and-cache-timing) for rotation and enforcement across Auth and Core replicas.
+A change to the trusted client CAs is not signaled to the authentication cache, so the certificates of a removed CA can stay signed in until their entries expire; see [Rotate CAs](../../installation-guide/deployment/client-certificate-authentication.md#rotate-cas).
 
 ## Operational considerations
 
