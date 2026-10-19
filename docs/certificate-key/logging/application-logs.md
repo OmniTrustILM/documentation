@@ -26,24 +26,9 @@ The format is chosen when Core is deployed, with the `PLATFORM_LOG_FORMAT` envir
 | `ecs`      | JSON in the [Elastic Common Schema](https://www.elastic.co/guide/en/ecs/current/index.html) layout, suited to Elasticsearch, OpenSearch and Kibana. |
 | `logstash` | JSON in the Logstash layout, which most log collectors and log pipelines can read.                                                             |
 
-Any other value stops Core at startup with an error that names the supported values. The Graylog Extended Log Format (GELF) is not supported, because it cannot carry the audit and event records that the JSON formats include.
+Any other value stops Core at startup. The Graylog Extended Log Format (GELF) is not supported, because it cannot carry the audit and event records that the JSON formats include.
 
-With the Helm chart, set `logging.format` in the chart values. An install or upgrade with a value other than `text`, `ecs` or `logstash` fails before Core is changed:
-
-```yaml
-logging:
-  format: "ecs"
-```
-
-With the operator, set it on Core in the platform resource:
-
-```yaml
-spec:
-  core:
-    env:
-      - name: PLATFORM_LOG_FORMAT
-        value: "ecs"
-```
+With the Helm chart, set the `logging.format` value, see [Configurable parameters](../installation-guide/deployment/deployment-helm/configurable-parameters.md#local-parameters). With the operator, set `spec.common.logging.format` in the Platform resource, see [Platform options](../installation-guide/deployment/deployment-operator/custom-resources/platform-options.md#speccommon). Both refuse an unsupported value before Core is changed.
 
 :::tip[Change the log collector at the same time]
 A log collector that expects text lines cannot read JSON lines, and the other way round. When you change the format, change how your log collector parses Core's output in the same rollout.
@@ -56,39 +41,36 @@ The format applies only to the application logs Core writes to its container. Lo
 Every JSON line carries the time, the log level, the name of the logger, the thread and the message. In addition:
 
 - While Core handles a request, each line carries who made the request and what it was, in fields whose names start with `log_actor_` (for example `log_actor_name` and `log_actor_type`) and `log_source_` (for example `log_source_path` and `log_source_ipAddress`).
+- During protocol requests, such as ACME, CMP or SCEP, and some other operations, lines also name the operation and the object it acts on, in fields whose names start with `log_audit_` (for example `log_audit_operation` and `log_audit_resource`).
 - An error carries its stack trace in a single field, instead of on separate lines.
 - In the ECS layout, `service.name` is `core`, and when Core runs on Kubernetes `service.node.name` is the name of the pod that wrote the line, so that lines from different replicas can be told apart.
 
 ### Audit and event logs in JSON format
 
-[Event logs](event-logs.md), and [audit logs](audit-logs.md) whose output includes the console, are part of the application logs. In the text format, each of them is a text line whose message is the log record as JSON. In the JSON formats, the record is included once, as an object in the `log_record` field of the line, with the structure described in [Log Record Structure](log-record-structure.md). The `message` field of the line then holds a short summary: the record's own message, or its operation, resource and result, for example `issue certificates success`.
+[Event logs](event-logs.md), and [audit logs](audit-logs.md) whose output includes the console, are part of the application logs. In the text format, each of them is a text line whose message is the log record as JSON. In the JSON formats, the record is included once, as an object in the `log_record` field of the line, with the structure described in [Log Record Structure](log-record-structure.md). The `message` field of the line then holds a short summary: the record's own message, or its operation, resource and result, for example `revoke certificates success`.
+
+Most audit records are written separately from the request that caused them, so an audit line does not necessarily carry the `log_actor_` and `log_source_` fields of the request. Who performed the operation, and from where, is in the `actor` and `source` of its `log_record`.
 
 ### Storing JSON logs in Elasticsearch or OpenSearch
 
-The `operationData` and `additionalData` fields of a `log_record` hold data whose shape differs from one operation to another; for audit logs, `additionalData` holds the parameters of the request. With dynamic mapping, a field that holds text in one record and an object in another causes Elasticsearch to reject the record, and the number of distinct fields can exceed the limit of the index.
+The `operationData` and `additionalData` fields of a `log_record` hold data whose shape differs from one operation to another; for audit logs, `additionalData` holds the parameters of the request when verbose audit logging is enabled in the [logging settings](../settings/logging.md). With dynamic mapping, a field that holds text in one record and an object in another causes the record to be rejected, and the number of distinct fields can exceed the limit of the index.
 
-Map both fields as `flattened` in the index template (`flat_object` in OpenSearch). They stay searchable, without a mapping for each field inside them:
+Map both fields as [`flattened`](https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/flattened) in Elasticsearch, or as [`flat_object`](https://docs.opensearch.org/latest/field-types/supported-field-types/flat-object/) in OpenSearch. They stay searchable, without a mapping for each field inside them. For example, in the template of the index your log collector writes to:
 
 ```json
-PUT _index_template/core-logs
 {
-  "index_patterns": ["core-logs-*"],
-  "template": {
-    "mappings": {
-      "properties": {
-        "log_record": {
-          "properties": {
-            "operationData": { "type": "flattened" },
-            "additionalData": { "type": "flattened" }
-          }
+  "mappings": {
+    "properties": {
+      "log_record": {
+        "properties": {
+          "operationData": { "type": "flattened" },
+          "additionalData": { "type": "flattened" }
         }
       }
     }
   }
 }
 ```
-
-Replace `core-logs-*` with the index pattern your log collector writes to.
 
 ## Example of a text log
 
@@ -106,30 +88,21 @@ The following is an audit log line in the ECS layout. It is shown formatted for 
 
 ```json
 {
-  "@timestamp": "2026-10-05T12:43:02.826Z",
+  "@timestamp": "2026-10-05T12:43:02.871Z",
   "log": {
     "level": "INFO",
     "logger": "com.otilm.core.service.impl.AuditLogServiceImpl"
   },
   "process": {
     "pid": 1,
-    "thread": { "name": "http-nio-8080-exec-3" }
+    "thread": { "name": "auditLogsListener-1" }
   },
   "service": {
     "name": "core",
     "version": "2.20.0",
     "node": { "name": "core-7d9f6c8b5-x2kqp" }
   },
-  "message": "issue certificates success",
-  "log_actor_type": "USER",
-  "log_actor_name": "jane.admin",
-  "log_actor_uuid": "6a1c5f3e-0d3b-4c9e-9a51-3f0f6e2d1b77",
-  "log_actor_authMethod": "SESSION",
-  "log_source_method": "POST",
-  "log_source_path": "/api/v1/operations/authorities/1f2e8c4a-5b6d-4e7f-8a9b-0c1d2e3f4a5b/raProfiles/9c4d7e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f/certificates/issue",
-  "log_source_contentType": "application/json",
-  "log_source_ipAddress": "10.20.30.40",
-  "log_source_userAgent": "Mozilla/5.0",
+  "message": "revoke certificates success",
   "log_record": {
     "version": "1.1",
     "audited": true,
@@ -142,7 +115,7 @@ The following is an audit log line in the ECS layout. It is shown formatted for 
     },
     "source": {
       "method": "POST",
-      "path": "/api/v1/operations/authorities/1f2e8c4a-5b6d-4e7f-8a9b-0c1d2e3f4a5b/raProfiles/9c4d7e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f/certificates/issue",
+      "path": "/api/v2/operations/authorities/1f2e8c4a-5b6d-4e7f-8a9b-0c1d2e3f4a5b/raProfiles/9c4d7e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f/certificates/0b9d1e2a-7c4f-4a8e-b2d6-5e3f1a9c8d07/revoke",
       "contentType": "application/json",
       "ipAddress": "10.20.30.40",
       "userAgent": "Mozilla/5.0"
@@ -150,11 +123,16 @@ The following is an audit log line in the ECS layout. It is shown formatted for 
     "resource": {
       "type": "certificates",
       "objects": [
-        { "name": "CN=web01.example.com", "uuid": "0b9d1e2a-7c4f-4a8e-b2d6-5e3f1a9c8d07" }
+        { "name": "4d1e9a3c7b2f5e8a", "uuid": "0b9d1e2a-7c4f-4a8e-b2d6-5e3f1a9c8d07" }
       ]
     },
-    "affiliatedResource": null,
-    "operation": "issue",
+    "affiliatedResource": {
+      "type": "raProfiles",
+      "objects": [
+        { "name": "web-servers", "uuid": "9c4d7e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f" }
+      ]
+    },
+    "operation": "revoke",
     "operationResult": "success",
     "message": null,
     "operationData": null,
