@@ -27,7 +27,7 @@ curl -X POST \
   {
     "name": "Network Discovery Provider",
     "version": "v2",
-    "url": "https://network-discovery-provider-service:8080",
+    "url": "http://network-discovery-provider-service:8080",
     "authType": "none"
   }' \
   https://[domain]:[port]/api/v2/connectors
@@ -39,7 +39,7 @@ When there is no error, `Connector` is successfully registered, and its details 
   "uuid": "ef092b12-e181-4734-8e34-73152612a945",
   "name": "Network Discovery Provider",
   "version": "v2",
-  "url": "https://network-discovery-provider-service:8080",
+  "url": "http://network-discovery-provider-service:8080",
   "interfaces": [
     {
       "uuid": "5d1f0c7e-3b2a-4e8f-9c6d-7a1b2c3d4e5f",
@@ -53,7 +53,7 @@ When there is no error, `Connector` is successfully registered, and its details 
 }
 ```
 
-To register it as v1 instead, send `"version": "v1"`.
+To register it as v1 instead, send `"version": "v1"`. An installation may already have registered it as v1, as the Helm chart does when it deploys the provider. A second registration with the same URL and version is refused, so register it as v2 alongside the existing one.
 
 We can use the `uuid` to get details about the `Connector` in the future API calls:
 ```bash
@@ -72,10 +72,10 @@ Follow these steps for register new `Network Discovery Provider`.
 
 1. Log in to the Administration Interface `https://[domain]:[port]/administrator`
 2. Click **Connectors** in the left menu
-3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+3. Click **Create** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>) to open **Create Connector**
 4. Fill in the columns with the attributes:
-    - URL: `https://network-discovery-provider-service:8080`
-    - Authentication Type: `No Auth`
+    - URL: `http://network-discovery-provider-service:8080`
+    - Authentication Type: `None`
 5. Click **Connect**  
 
 Now you can see the details of the connected `Connector` under **Connection Detected**. The **v2** tab is selected and lists the interfaces the `Connector` implements, including `discovery` at version `v2`. Select the **v1** tab instead to register it as v1.

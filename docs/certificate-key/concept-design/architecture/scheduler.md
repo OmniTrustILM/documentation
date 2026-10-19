@@ -21,7 +21,7 @@ The Scheduler supports a range of task types, catering to various aspects of the
 
 | Task type                         | Description                                                      | Reference                                                                                                                                                                       |
 |-----------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Certificate discovery             | Initiates the certificate discovery process based on definitions | [DiscoveryCertificateTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/DiscoveryCertificateTask.java)                     |
+| Discovery                         | Initiates a discovery based on its definition                    | [DiscoveryCertificateTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/DiscoveryCertificateTask.java)                     |
 | Certificate status update         | Update certificate status, validation, and compliance            | [UpdateCertificateStatusTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateCertificateStatusTask.java)               |
 | Update Intune revocation requests | Manages updates of revocation requests in Intune                 | [UpdateIntuneRevocationRequestsTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateIntuneRevocationRequestsTask.java) |
 
@@ -78,9 +78,9 @@ A discovery job creates a [discovery](../modules/discovery.md) each time it runs
 | `Cancelled` by a user                                | Cancelled        |
 | `Failed`, or `Cancelled` for any other reason        | Failed           |
 
-A discovery is cancelled for another reason when it stayed stopped too long, when its `Connector` was force-deleted while the discovery was live, or when the `Connector` reported the run cancelled on its own. None of these was asked for, so the execution fails.
+The other causes of `Cancelled` are listed in [Discovery status](../modules/discovery.md#discovery-status). None of them was asked for, so the execution fails.
 
-A v1 discovery has ended by the time its execution finishes. A v2 discovery runs on after the job has started it, so its execution stays open until the discovery ends. A stopped discovery therefore keeps the execution open until it is resumed and ends, or until it is cancelled because it stayed stopped too long. While an execution is open, the scheduled job cannot be deleted.
+A discovery job's execution stays open until its discovery ends. A stopped discovery keeps it open until it is resumed and ends, or until the stop expires and the discovery is cancelled. While an execution is open, the scheduled job cannot be deleted.
 
 When the discovery cannot be created, the execution fails and says why. A discovery whose `Connector` refuses its configuration ends `Failed`, and so does the execution. A one-time discovery job is removed from the scheduler after an execution that succeeded or was cancelled, and stays in the scheduler after one that failed.
 

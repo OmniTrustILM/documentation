@@ -18,22 +18,18 @@ The connector does not track the operation the request refers to. It never knew 
 
 - A [Discovery Provider v2](/docs/certificate-key/connectors/provider-interfaces/discovery-provider-v2#errors) connector answers it to a status, results, stop, resume or cancel request for a run it does not have, for example after it restarted without persisting the run.
 - An [Authority Provider v3](/docs/certificate-key/connectors/provider-interfaces/authority-provider-v3#cancel) connector answers it to a cancel of an operation it no longer tracks.
+- A [Cryptography Provider v2](/docs/certificate-key/connectors/provider-interfaces/cryptography-provider-v2) connector answers it to a status or cancel request for an asynchronous operation it no longer tracks, and to a request for the result of a key import it never accepted.
 
 ## What the platform does
 
-The answer is definitive, so the platform does not retry the request. For a discovery run:
-
-- On a status or results request, the run cannot be driven any further and ends `Failed` with the message *The connector no longer tracks this run*. The items it already received stay listed on the discovery but are not processed.
-- On a stop, the stop is refused with the same status, and the next status request ends the run `Failed`.
-- On a resume, the run cannot be continued and ends `Failed` with the message *checkpoint lost*, as for [CHECKPOINT_LOST](discovery/CHECKPOINT_LOST.md).
-- On a cancel, the run is already gone from the connector, which is what the cancel asked for. The run ends `Cancelled`.
+The platform does not retry the request. How it settles the operation depends on the interface, as the interface's page describes: a discovery run, for example, ends `Failed`, or `Cancelled` when the request was a cancel.
 
 ## How to fix
 
-- Start a new discovery. A run the connector no longer tracks cannot be recovered.
-- If runs are lost regularly, check whether the connector restarts or scales during a run, and whether it keeps its runs for as long as its interface requires.
+- Repeat the operation if it is still needed, for example by starting a new discovery. An operation the connector no longer tracks cannot be recovered.
+- If operations are lost regularly, check whether the connector restarts or scales while they run, and whether it keeps them for as long as its interface requires.
 
-**For connector developers:** answer `404` with this code only for an operation you cannot rebuild from the request. A discovery run is ended at once, so a connector that can rebuild a run from the attributes and the checkpoint in the request should do so instead.
+**For connector developers:** answer `404` with this code only for an operation you no longer track and cannot rebuild from the request.
 
 ## Example
 

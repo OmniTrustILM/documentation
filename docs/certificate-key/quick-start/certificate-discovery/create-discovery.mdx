@@ -10,7 +10,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 In order to run the discovery process, we need to create new `Discovery`.
 `Discovery` behavior is defined by the `Connector` implementing the `Discovery Provider`.
 
-How a `Discovery` is configured depends on how the `Connector` was registered. A `Connector` registered as v2 discovers the resources we select, certificates, keys or both, and is configured by run `Attributes` and `Attributes` per resource. A `Connector` registered as v1 discovers certificates and is configured by a `Kind` and its `Attributes`. See [Discovery Provider v1 and v2](../../concept-design/modules/discovery.md#discovery-provider-v1-and-v2).
+How a `Discovery` is configured depends on whether the `Connector` was registered as v2 or v1, see [Discovery Provider v1 and v2](../../concept-design/modules/discovery.md#discovery-provider-v1-and-v2).
 
 ## Create `Discovery` using the API
 
@@ -123,7 +123,7 @@ The platform starts the `Discovery` at the `Connector` before it answers. When t
 }
 ```
 
-If the `Connector` could not be reached, the `Discovery` is still created, and it ends `Failed` with the reason in its message.
+If the `Connector` cannot be reached, the request fails and no `Discovery` is created. If the `Connector` fails once it has been asked to start the `Discovery`, for example with a server error or a timeout, the `Discovery` is created and ends `Failed` with the reason in its message.
 
 ### Discovery Provider v1
 
@@ -146,48 +146,24 @@ To get details about the `Connector`, you can use the API call described in [Reg
 This returns the list of applicable attributes for the `Discovery` process, such as:
 ```json
 [
-    {
-        "uuid": "1b6c48ad-c1c7-4c82-91ef-3b61bc9f52ac",
-        "name": "ip",
-        "label": "IPs/Hostnames",
-        "type": "STRING",
-        "required": true,
-        "readOnly": false,
-        "visible": true,
-        "list": false,
-        "description": "Multiple values can be given seperated by comma ','.",
-        "multiSelect": false
-    },
-    {
-        "uuid": "a9091e0d-f9b9-4514-b275-1dd52aa870ec",
-        "name": "port",
-        "content": {
-            "value": 443
-        },
-        "label": "Ports",
-        "type": "INTEGER",
-        "required": false,
-        "readOnly": false,
-        "visible": true,
-        "list": false,
-        "description": "Multiple values can be given seperated by comma ','.",
-        "multiSelect": false
-    },
-    {
-        "uuid": "3c70d728-e8c3-40f9-b9b2-5d7256f89ef0",
-        "name": "allPorts",
-        "content": {
-            "value": false
-        },
-        "label": "All Ports?",
-        "type": "BOOLEAN",
-        "required": false,
-        "readOnly": false,
-        "visible": true,
-        "list": false,
-        "description": "Check to discover certificates from all ports.",
-        "multiSelect": false
-    }
+  {
+    "uuid": "1b6c48ad-c1c7-4c82-91ef-3b61bc9f52ac",
+    "name": "ip",
+    "type": "data",
+    "contentType": "string",
+    "properties": { "label": "IPs/Hostnames", "required": true, ... },
+    ...
+  },
+  {
+    "uuid": "a9091e0d-f9b9-4514-b275-1dd52aa870ec",
+    "name": "port",
+    "type": "data",
+    "contentType": "string",
+    "content": [ { "data": "443", "reference": "443" } ],
+    "properties": { "label": "Ports", "required": false, ... },
+    ...
+  },
+  ...
 ]
 ```
 
@@ -206,22 +182,18 @@ curl -X POST \
     "kind": "IP-Hostname",
     "attributes": [
       {
-        "name": "port",
-        "content": {
-          "value": 443
-        }
-      },
-      {
-        "name": "allPorts",
-        "content": {
-          "value": false
-        }
-      },
-      {
+        "version": "v2",
+        "uuid": "1b6c48ad-c1c7-4c82-91ef-3b61bc9f52ac",
         "name": "ip",
-        "content": {
-          "value": "www.example.com"
-        }
+        "contentType": "string",
+        "content": [ { "data": "www.example.com" } ]
+      },
+      {
+        "version": "v2",
+        "uuid": "a9091e0d-f9b9-4514-b275-1dd52aa870ec",
+        "name": "port",
+        "contentType": "string",
+        "content": [ { "data": "443" } ]
       }
     ]
   }' \
@@ -241,7 +213,7 @@ Follow these steps to create new Network `Discovery`:
 
 1. Click **Discoveries** in the left menu to display the **Discovery Store**
 2. Click **Add** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
-3. In **Add discovery**, fill in:
+3. In **Create Discovery**, fill in:
     - Discovery Name: `ILM Hostname Discovery`
     - Discovery Provider: `Network Discovery Provider`
     - Interface: shown only when the provider exposes more than one discovery interface, as `Discovery (v2)` and so on. Select the one to use

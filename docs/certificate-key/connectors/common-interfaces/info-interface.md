@@ -74,7 +74,7 @@ Each entry describes one implemented interface. The structure is `ConnectorInter
 | `version`  | string          | yes      | Version of the interface implemented by this connector (e.g., `"v2"`)               |
 | `features` | array of string | no       | Optional feature flags — see [Feature flags](#feature-flags) below                  |
 
-The `version` is the letter `v` followed by the version number, such as `"v2"` or `"v3"`. `Core` compares it as an exact string against the versions it implements for the interface, so a bare number such as `"2"` is refused as unsupported.
+The `version` is the letter `v` followed by the version number, such as `"v2"` or `"v3"`. `Core` compares it as an exact string against the versions it implements for the interface: a bare number such as `"2"` is accepted at registration, but `Core` refuses the interface as unsupported when it uses it.
 
 ### Interface codes
 

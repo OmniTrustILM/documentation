@@ -18,14 +18,15 @@ The connector refuses to stop or cancel an operation, because the operation has 
 
 - A [Discovery Provider v2](/docs/certificate-key/connectors/provider-interfaces/discovery-provider-v2#errors) connector answers it to a stop of a run that has already finished or cannot be checkpointed, or to a cancel of a run it can no longer abort.
 - An [Authority Provider v3](/docs/certificate-key/connectors/provider-interfaces/authority-provider-v3#cancel) connector answers it to a cancel the certification authority cannot abort.
+- A [Cryptography Provider v2](/docs/certificate-key/connectors/provider-interfaces/cryptography-provider-v2) connector answers it to a cancel of an asynchronous operation that has already ended or can no longer be abandoned.
 
 ## What the platform does
 
-The platform refuses the request with the same status, and the operation keeps running. A discovery run stays as it was and goes on to end on its own.
+The operation is not interrupted and goes on to end on its own. When a user asked for the stop or cancel, the platform refuses the request with the same status.
 
 ## How to fix
 
-- Wait for the operation to end, then act on its result: delete a finished discovery, or revoke a certificate that was issued.
+- Wait for the operation to end, then act on its result, for example by deleting a finished discovery or revoking a certificate that was issued.
 
 ## Example
 

@@ -51,7 +51,7 @@ This will give us the details about the `Discovery` including its status and pro
 }
 ```
 
-The `status` is one of `inProgress`, `stopped`, `processing`, `completed`, `warning`, `failed` and `cancelled`, described in [Discovery status](../../concept-design/modules/discovery.md#discovery-status). A `Discovery` has finished when its status is `completed`, `warning`, `failed` or `cancelled`. You can check the status periodically until then. A v1 `Discovery` has no `connectorInterface`, `progress` or `itemsDiscovered`, and it is never `stopped` or `cancelled`.
+The `status` is one of `inProgress`, `stopped`, `processing`, `completed`, `warning`, `failed` and `cancelled`, described in [Discovery status](../../concept-design/modules/discovery.md#discovery-status). A `Discovery` has finished when its status is `completed`, `warning`, `failed` or `cancelled`; you can check the status periodically until then. The exception is a v1 `Discovery` that runs past its [time limit](../../concept-design/modules/discovery.md#time-limits): it shows `warning` while its `connectorStatus` is still `inProgress`, and goes on when the `Connector` finishes. A v1 `Discovery` has no `connectorInterface`, `progress` or `itemsDiscovered`, and it is never `stopped` or `cancelled`.
 
 The `progress` counts targets. For the `Network Discovery Provider`, a target is one port on one host: the example above has examined its one target, `www.example.com:443`, and found three certificates and their keys there. A port with nothing listening, or a service that does not answer with TLS, counts as empty, which is normal in a sweep over an address range. A host that refuses the TLS handshake, or a host name that does not resolve, counts as failed: the provider lists why targets failed in the discovery's metadata, under **Why targets failed**, and the `Discovery` ends `warning`.
 
@@ -74,7 +74,7 @@ Each answers `204 No Content` when it is done, and `422 Unprocessable Entity` wh
 
 ### Read the messages
 
-When a v2 `Discovery` ran into problems, its `runMessageCount` is above zero, and its messages say what happened, oldest first:
+The messages of a v2 `Discovery` say what happened, oldest first, and `runMessageCount` counts them. Once the `Discovery` has ended, the last message, with the code `runEnded`, records how it ended. To read them:
 
 ```bash
 curl -X GET \
@@ -99,17 +99,11 @@ Steps for checking `Discovery` status:
 The **Details** tab shows:
 
 - **Discovery Details**, with the **Status**, the **Connector Interface** the discovery runs through, and the **Resources** it targets
-- **Progress**, for a v2 discovery, and for any discovery while it is processing: how many targets the provider has examined, how many held nothing or failed, and what it has found per resource. During processing, a **Platform import** bar shows how many items have been imported
+- **Progress**, for a v2 discovery, and for any discovery while it is processing: how many targets the provider has examined, how many held nothing or failed, what it has found per resource, and during processing how many items have been imported
 - **Import summary**, with the items received, those new to the inventory, imported and not imported
 
-While the discovery is In Progress or Processing, the page refreshes itself every ten seconds, as long as its browser tab is visible and its window has focus. The refresh icon of **Discovery Details** updates the page at any time. Once the discovery has finished, its status becomes Completed, or Warning when something was not imported or a target could not be read.
+The page refreshes itself while the discovery is In Progress or Processing. Once the discovery has finished, its status becomes Completed, or Warning when something was not imported or a target could not be read.
 
-To control a running v2 `Discovery`, use the buttons at the top of the detail. They are shown when the discovery allows the action and you have the permission for it:
+For a v2 `Discovery` whose provider can stop it, the detail offers **Stop** while it is In Progress, **Resume** while it is Stopped, and **Cancel** in either status, to a user with the permission for each. A `Discovery` that cannot be stopped can be cancelled through the API only. **Delete** is available once a v2 `Discovery` has finished.
 
-- **Stop** (pause symbol), while it is In Progress and its provider can stop it
-- **Resume** (play symbol), while it is Stopped
-- **Cancel**, while it is In Progress or Stopped. Confirm with **Cancel discovery** in the **Cancel Discovery** dialog, or click **Keep running**
-
-**Delete** is available once a v2 discovery has finished. Before that, its tooltip says what to do: **Delete (cancel the run first)** while it is In Progress or Stopped, and **Delete (wait for the run to end)** while it is Processing.
-
-The **Messages** tab, with its count, lists the problems the discovery ran into and how often each occurred. Messages are advisory: a discovery with messages has not necessarily failed.
+The **Messages** tab lists the problems the discovery ran into and how often each occurred. Messages are advisory: a discovery with messages has not necessarily failed.

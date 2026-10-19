@@ -25,7 +25,7 @@ The platform runs discoveries against two generations of the `Discovery Provider
 | Progress | — | Reported by the connector while the discovery is in progress |
 | Stop, resume, cancel | — | Supported; stop and resume only where the connector supports them |
 
-A discovery is bound to one generation when it is created and keeps it for its whole life. Discoveries of both generations are listed, opened and deleted the same way, and each one shows which interface it ran through.
+A discovery is bound to one generation when it is created and keeps it for its whole life. Discoveries of both generations are listed and opened the same way, and each one shows which interface it ran through.
 
 A discovery runs through v2 when its `Connector` exposes a `discovery` interface, and through v1 otherwise. A `Connector` exposing more than one `discovery` interface needs the discovery to say which one it uses. The same connector service can serve both generations; it is then registered twice, once for each.
 
@@ -47,7 +47,7 @@ Afterwards, the discovery is switched to the `Processing` state, in which `Core`
 - **Certificates.** A newly discovered certificate is added to the certificate inventory, unless an ignore trigger matches it. A certificate already in the inventory gets the discovery's metadata.
 - **Keys.** A key is added to the key inventory, or found there when it is already known. See [Discovered keys](#discovered-keys).
 
-Where the `Connector` found each certificate and key, such as a host and port, is kept on it as metadata, with the discovery as its source.
+Where the `Connector` found each certificate and key, such as a host and port, is kept on it as metadata, with the discovery as its source. A v2 discovery keeps one item for each reference the `Connector` gives it, so when the `Connector` reports the same certificate or key from several places under one reference, only the first place is kept.
 
 ### Triggers
 
@@ -90,7 +90,7 @@ Stop, resume and cancel need the `stop`, `resume` and `cancel` permissions on `d
 | Cancel    | Yes | Yes | — | — |
 | Delete    | v1 only | — | v1 only | Yes |
 
-A v2 discovery that has not ended cannot be deleted: cancel it first, or, once it is processing and can no longer be cancelled, wait for it to end. A v1 discovery can be deleted at any time, and the platform also asks its `Connector` to remove it. Stop, resume and cancel are not available for v1 discoveries.
+A v2 discovery that has not ended cannot be deleted: cancel it first, or, once it is processing and can no longer be cancelled, wait for it to end. Its `Connector` cannot be deleted either until the discovery has ended, unless the `Connector` is deleted by force, which cancels the discovery. A v1 discovery can be deleted at any time, and the platform also asks its `Connector` to remove it. Stop, resume and cancel are not available for v1 discoveries.
 
 ## Discovery status
 
@@ -100,9 +100,11 @@ A v2 discovery that has not ended cannot be deleted: cancel it first, or, once i
 | Stopped     | The v2 discovery was stopped. It can be resumed or cancelled |
 | Processing  | The `Connector` has finished, and the platform is importing what it found |
 | Completed   | The discovery has finished, and everything it found was processed without a problem |
-| Warning     | The discovery has finished, but something was not imported, or it ran into a problem. Its message, messages and results say what |
-| Failed      | The discovery could not be finished: the `Connector` failed or no longer knows the discovery, or the platform could not drive it. What it found is not imported |
-| Cancelled   | The discovery was cancelled by a user, because it stayed stopped too long, because its `Connector` was force-deleted while the discovery was running, or because the `Connector` cancelled it on its own. What it found is not imported |
+| Warning     | The discovery has finished, but something was not imported, or it ran into a problem. Its message, messages and results say what. A v1 discovery also shows it while it runs past its [time limit](#time-limits) |
+| Failed      | The discovery could not be finished: the `Connector` failed or no longer knows the discovery, or the platform could not drive it |
+| Cancelled   | The discovery was cancelled by a user, because it stayed stopped too long, because its `Connector` was force-deleted while the discovery was running, or because the `Connector` cancelled it on its own |
+
+A discovery that fails or is cancelled before it reaches `Processing` imports nothing it found. One that ends during processing keeps what it had already imported, and the triggers that had already run on it are not undone.
 
 ```plantuml
 @startuml
@@ -125,6 +127,7 @@ Processing --> Warning
 InProgress --> Failed
 Stopped --> Failed
 Processing --> Failed : Work lost
+Processing --> Cancelled : Connector\nforce-deleted
 InProgress --> Cancelled : Cancel
 Stopped --> Cancelled : Cancel or\nstop expired
 @enduml
@@ -138,7 +141,7 @@ A v2 discovery that is processed to the end finishes as `Completed`, unless some
 - **Recovered problems.** A problem the discovery recovered from, such as an import that failed once and then succeeded, is recorded only for information and does not change the outcome.
 - **Import that does not finish.** When importing keeps failing until its retries run out, the processing stops, and the discovery ends `Warning` with the number of items that could not be imported.
 
-A v1 discovery finishes as `Warning` when processing leaves a gap, for example certificates that could not be imported into the inventory, and its message states each gap with a count. When only the `Connector`'s metadata about the discovery could not be stored, a v1 discovery still finishes as `Completed`, and its message ends with "Discovery metadata could not be stored."
+A v1 discovery finishes as `Warning` when processing leaves a gap, for example certificates that could not be imported into the inventory, and its message states each gap with a count.
 
 ### Time limits
 
@@ -146,19 +149,17 @@ A v1 discovery that is still in progress after `DISCOVERY_PROVIDER_MAX_WAIT_TIME
 
 A v2 discovery has no time limit while its `Connector` keeps answering. Two conditions end it instead:
 
-- **Work lost.** A v2 discovery that is in progress or processing, but that the platform no longer has any work scheduled for, ends `Failed` once it is older than `DISCOVERY_WORK_REAP_GRACE` (5 minutes by default). The platform then asks the `Connector` to cancel it.
+- **Work lost.** A v2 discovery the platform can no longer drive ends `Failed`, and the platform asks the `Connector` to cancel it.
 - **Stop expired.** A v2 discovery that stays stopped for longer than `DISCOVERY_RUN_STOPPED_MAX_DURATION` (7 days by default) is cancelled, and the platform asks the `Connector` to cancel it too.
 
 Every ending of a v2 discovery, including `Failed` and `Cancelled`, fires the **Discovery finished** event and notifies the user who started the discovery.
 
 ### Messages
 
-A v2 discovery records the problems it ran into as messages, shown on its **Messages** tab. A problem that happens again is counted on its existing message rather than repeated. Messages are advisory: a message of `info` severity records something the discovery recovered from, while a `warning` makes the discovery end `Warning`. The last message says how the discovery ended.
+A v2 discovery records the problems it ran into as messages. A problem that happens again is counted on its existing message rather than repeated. Messages are advisory: an `info` message records something the discovery recovered from, while a `warning` makes a discovery that is processed to the end finish `Warning`. The last message records how the discovery ended.
 
-A v1 discovery reports in its status message instead, and records a message only when the `Connector`'s metadata about the discovery could not be stored.
-
-The kinds of message are listed in [`DiscoveryMessageCode`](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/model/discovery/DiscoveryMessageCode.java).
+A v1 discovery reports in its status message instead. It records a message only when the `Connector`'s metadata about the discovery could not be stored, and that message does not change how the discovery ends.
 
 ## Results
 
-The results of a discovery list everything it found, certificates and keys, with where each was found, what it became in the inventory, and why it was not imported when it was not. They are shown on the discovery's **Results** tab and listed by `GET /v1/discoveries/{uuid}/items`; see [Get Discovery Results](../../quick-start/certificate-discovery/get-discovery-results.md).
+The results of a discovery list everything it found, certificates and keys, with where each was found, what it became in the inventory, and why it was not imported when it was not. See [Get Discovery Results](../../quick-start/certificate-discovery/get-discovery-results.md) for how to read them.

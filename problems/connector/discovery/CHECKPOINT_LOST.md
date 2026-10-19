@@ -22,12 +22,12 @@ This is different from a run the connector does not know at all, which it answer
 
 ## What the platform does
 
-A retry would get the same answer, so the platform does not retry. The run ends `Failed` with the message *checkpoint lost*. The resume request itself succeeds, because the run was dealt with. The items the run received before it stopped stay listed on the discovery but are not processed.
+The platform does not retry. The resume request succeeds, and the run ends `Failed`. The items it received before it stopped stay listed on the discovery but are not imported.
 
 ## How to fix
 
 - Start a new discovery with the same configuration. A run whose checkpoint is lost cannot be resumed.
-- Resume stopped runs sooner, if the connector discards state after a time. Independently of the connector, the platform cancels a run that stays stopped longer than its configured maximum.
+- Resume stopped discoveries sooner, if the connector discards their state after a time.
 
 ## Example
 
