@@ -23,6 +23,7 @@ export default defineConfig({
   },
   test: {
     environment: 'happy-dom',
+    css: {include: [/TrustNetwork\.module\.css$/]},
     include: ['src/**/*.test.tsx'],
     setupFiles: ['./test/setup.ts'],
     restoreMocks: true,

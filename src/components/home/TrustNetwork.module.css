@@ -193,10 +193,6 @@
   .activeBranch {
     transition: none;
   }
-  .membrane,
-  .signal {
-    animation: none;
-  }
 }
 @media (max-width: 1100px) and (min-width: 761px) {
   .domain {
