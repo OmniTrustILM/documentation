@@ -107,6 +107,8 @@ Once the notification should be sent to the recipient(s), the `Notification` obj
     @enduml
 ```
 
+The notification request carries the resolved recipients, the event's own data as `notificationData` and, when the notification profile enables [event data](../../concept-design/core-components/notification-profile.md#event-data), data about the event's object as `objectData`. The [send notification operation](/api/connector-notification-provider#tag/notification-instances-management/POST/v1/notificationProvider/notifications/{uuid}/notify) defines its structure.
+
 ## Specification and example
 
 The Notification Provider implements [Common Interfaces](../common-interfaces/overview.md) and the following additional interfaces:
