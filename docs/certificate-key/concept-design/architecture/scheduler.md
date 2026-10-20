@@ -21,7 +21,7 @@ The Scheduler supports a range of task types, catering to various aspects of the
 
 | Task type                         | Description                                                      | Reference                                                                                                                                                                       |
 |-----------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Certificate discovery             | Initiates the certificate discovery process based on definitions | [DiscoveryCertificateTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/DiscoveryCertificateTask.java)                     |
+| Discovery                         | Initiates a discovery based on its definition                    | [DiscoveryCertificateTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/DiscoveryCertificateTask.java)                     |
 | Certificate status update         | Update certificate status, validation, and compliance            | [UpdateCertificateStatusTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateCertificateStatusTask.java)               |
 | Update Intune revocation requests | Manages updates of revocation requests in Intune                 | [UpdateIntuneRevocationRequestsTask](https://github.com/OmniTrustILM/core/blob/main/src/main/java/com/otilm/core/tasks/UpdateIntuneRevocationRequestsTask.java) |
 
@@ -67,5 +67,21 @@ The Scheduler meticulously maintains a history of task executions, capturing ess
 - Execution status
 
 Additionally, the execution history may encompass supplementary information and references to objects that were processed by the task.
+
+### Discovery jobs
+
+A discovery job creates a [discovery](../modules/discovery.md) each time it runs, and its execution reports how that discovery ended:
+
+| Discovery ends as                                    | Execution status |
+|------------------------------------------------------|------------------|
+| `Completed` or `Warning`                             | Succeeded        |
+| `Cancelled` by a user                                | Cancelled        |
+| `Failed`, or `Cancelled` for any other reason        | Failed           |
+
+The other causes of `Cancelled` are listed in [Discovery status](../modules/discovery.md#discovery-status). None of them was asked for, so the execution fails.
+
+A discovery job's execution stays open until its discovery ends. A stopped discovery keeps it open until it is resumed and ends, or until the stop expires and the discovery is cancelled. While an execution is open, the scheduled job cannot be deleted.
+
+When the discovery cannot be created, the execution fails and says why. A discovery whose `Connector` refuses its configuration ends `Failed`, and so does the execution. A one-time discovery job is removed from the scheduler after an execution that succeeded or was cancelled, and stays in the scheduler after one that failed.
 
 The Scheduler stands as an essential component within the platform, enabling the systematic execution of management and automation tasks. By mastering the concepts of Scheduled Tasks, Cron Expressions, and Execution History, users gain a thorough understanding of how to utilize this feature effectively.

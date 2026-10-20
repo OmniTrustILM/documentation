@@ -4,6 +4,10 @@ sidebar_position: 9
 
 # Discovery Provider
 
+:::info
+This page describes the v1 `Discovery Provider`, which discovers certificates. [Discovery Provider v2](./discovery-provider-v2.md) discovers certificates and keys, collects results while a run is in progress, and supports stopping, resuming and cancelling a run.
+:::
+
 ## Overview
 
 Certificate discovery, in other words searching for certificates in various location and sources, is important part of the lifecycle management. It provides clear understanding and visibility on all certificates that are used in the infrastructure and therefore should be included in the inventory to start manage them. Discovery can also detect certificates that are not allowed or should not be deployed.
@@ -18,7 +22,7 @@ The history of `Discovery` is maintained in the `Core` for further reference.
 
 ## Provider objects
 
-[`Discovery`](../../concept-design/modules/certificate-discovery.md) objects are managed in the platform through the Discovery Provider implementation.
+[`Discovery`](../../concept-design/modules/discovery.md) objects are managed in the platform through the Discovery Provider implementation.
 Each `Discovery` provides an overview of the configuration and the discovery process, including discovered certificates.
 
 ## Processes
@@ -69,17 +73,21 @@ The following processes are associated with the Discovery Provider and managemen
 
 ### Delete `Discovery`
 
+A v1 `Discovery` can be deleted at any time, including while it is in progress. `Core` removes its own record first, and then asks the `Connector` to remove the discovery. A failure at the `Connector` is logged and does not restore the record.
+
 ```plantuml
     @startuml
     autonumber
     skinparam topurl /api/
         Client -> Core [[core-discovery#tag/discovery-management/DELETE/v1/discoveries/{uuid}]]: Remove Discovery
+        Core -> Core : Remove Discovery and its staged certificates
         Core -> Connector [[connector-discovery-provider#tag/discovery/DELETE/v1/discoveryProvider/discover/{uuid}]]: Delete Discovery
         Connector --> Core: Discovery removed
-        Core -> Core : Remove Discovery
         Core --> Client: Discovery reference removed
     @enduml
 ```
+
+A v2 discovery is deleted differently: it can be deleted only once it has ended, and its `Connector` is never asked to delete anything. See [Discovery Provider v2](./discovery-provider-v2.md#run-lifecycle).
 
 ## Specification and example
 
