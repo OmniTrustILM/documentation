@@ -7,7 +7,7 @@ sidebar_position: 6
 | Property    | Value |
 |-------------|-------|
 | HTTP status | `401 Unauthorized` |
-| Retryable   | Yes |
+| Retryable   | No |
 | Error code  | `UNAUTHORIZED` |
 
 ## Summary
@@ -40,7 +40,6 @@ The request lacks valid authentication credentials. The server cannot identify w
   "errorCode": "UNAUTHORIZED",
   "correlationId": "3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f",
   "timestamp": "2025-09-08T08:00:00Z",
-  "retryable": true,
-  "retryAfterSeconds": 30
+  "retryable": false
 }
 ```

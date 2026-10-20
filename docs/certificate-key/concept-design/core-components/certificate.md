@@ -119,7 +119,7 @@ A registration can be protected with an **authorization secret** (a challenge), 
 - The operator supplies the secret — and, optionally, an expiry window — when registering. It is opt-in; the platform never generates one.
 - The secret is stored **encrypted**; the same secret must be presented with the issue request to complete a `Registered` certificate. Verification is constant-time, and repeated failures lock the registration. The number of failed attempts allowed is a [platform setting](../../settings/platform.md#registration) (five by default).
 - The challenge is a control between the operator and the platform — the authority connector is not involved and never sees the secret.
-- While a registration is `Active`, renewing or rekeying the certificate requires the same secret. See [Renew and rekey with a challenge](#renew-and-rekey-with-a-challenge).
+- While a registration is `Active`, renewing or rekeying the certificate through the platform's renew and rekey operations requires the same secret. See [Renew and rekey with a challenge](#renew-and-rekey-with-a-challenge).
 - A [pre-registered successor](../../quick-start/certificate-management/register-certificate.mdx#register-a-successor) of the certificate has a challenge of its own.
 
 #### Renew and rekey with a challenge
@@ -135,7 +135,7 @@ A certificate that has a registration in the `Active` state can be renewed or re
 
 A `Locked` registration cannot be reset. If the certificate is still `Registered`, it can no longer be completed; if it is issued, it can no longer be renewed or rekeyed this way. Issue a new certificate or [register a successor](../../quick-start/certificate-management/register-certificate.mdx#register-a-successor) instead. The issuance window applies to the first issuance only: once the registered certificate is issued, there is no deadline for renewing or rekeying it.
 
-Renewing a certificate in a location cannot carry the challenge, and neither can a CMP key update through a profile whose challenge source is `Protocol Default`. On a certificate with an `Active` registration, both are refused without counting an attempt. A CMP profile whose challenge source is `Certificate Registration` authenticates key updates with the challenge; see [CMP Profile](../../protocols/cmp/cmp-profile.md#challenge-source).
+Renewing a certificate in a location cannot carry the challenge, and neither can a CMP key update through a profile whose challenge source is `Protocol Default`. On a certificate with an `Active` registration, both are refused without counting an attempt. A CMP profile whose challenge source is `Certificate Registration` authenticates key updates with the challenge; see [CMP Profile](../../protocols/cmp/cmp-profile.md#challenge-source). A SCEP renewal is signed with the key of the certificate it renews and needs no challenge; see [SCEP Profile](../../protocols/scep/scep-profile.md#challenge-source).
 
 #### Registration and issuance flow
 

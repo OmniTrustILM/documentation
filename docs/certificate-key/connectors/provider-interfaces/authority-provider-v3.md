@@ -140,8 +140,8 @@ end
 A cancel targets an in-flight operation. The connector returns one of three outcomes:
 
 - **Aborted** (`204`) — the connector aborted the operation.
-- **Not tracked** (`404`, or `422` with a not-tracked error code) — the connector does not (or no longer) track the operation: already finalized externally, or a stateless implementation.
-- **Refused** (`422` with a point-of-no-return error code) — the CA cannot abort the operation.
+- **Not tracked** (`404` with [`OPERATION_NOT_TRACKED`](/problems/connector/OPERATION_NOT_TRACKED), or `422` with [`REGISTRATION_NOT_FOUND`](/problems/connector/authority/REGISTRATION_NOT_FOUND)) — the connector does not (or no longer) track the operation: already finalized externally, or a stateless implementation.
+- **Refused** (`422` with [`OPERATION_PAST_POINT_OF_NO_RETURN`](/problems/connector/OPERATION_PAST_POINT_OF_NO_RETURN)) — the CA cannot abort the operation.
 
 The connector reports the outcome; the platform decides the resulting certificate state.
 
@@ -176,6 +176,19 @@ Two aspects of registration are handled entirely by the platform and do not invo
 - **Authorization secret (challenge)** — an operator may protect a registration with a secret that must be presented again to complete the issuance. It is a control between the operator and the platform; no connector request or response carries it.
 
 Both, along with the certificate states through registration and completion, are described on the [Certificate state](../../concept-design/core-components/certificate.md#registration-lifecycle) page.
+
+## Errors
+
+The connector answers errors as `application/problem+json`, following [Error Handling](../error-handling.md). These codes are specific to this interface:
+
+| Code | Status | Operations | Answered when |
+|------|--------|------------|---------------|
+| [`CSR_MALFORMED`](/problems/connector/authority/CSR_MALFORMED) | `422` | Issue, renew | The CSR cannot be parsed |
+| [`CSR_SUBJECT_MISMATCH`](/problems/connector/authority/CSR_SUBJECT_MISMATCH) | `422` | Issue against a registration | The subject of the CSR differs from the registered identity |
+| [`REGISTRATION_NOT_FOUND`](/problems/connector/authority/REGISTRATION_NOT_FOUND) | `422` | Any call that replays a registration's `meta` | The CA no longer tracks the registration |
+| [`RENEWAL_SOURCE_NOT_FOUND`](/problems/connector/authority/RENEWAL_SOURCE_NOT_FOUND) | `404` | Renew | The CA has no record of the certificate being renewed |
+| [`REVOCATION_NOT_ALLOWED`](/problems/connector/authority/REVOCATION_NOT_ALLOWED) | `422` | Revoke | The CA refuses the revocation |
+| [`CERTIFICATE_MISMATCH`](/problems/connector/authority/CERTIFICATE_MISMATCH) | `422` | Revoke, identify | The certificate belongs to a different authority |
 
 ## For connector developers
 

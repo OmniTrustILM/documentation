@@ -7,7 +7,7 @@ sidebar_position: 3
 | Property    | Value |
 |-------------|-------|
 | HTTP status | `409 Conflict` |
-| Retryable   | Yes |
+| Retryable   | No |
 | Error code  | `RESOURCE_ALREADY_EXISTS` |
 
 ## Summary
@@ -38,7 +38,6 @@ The operation cannot be completed because a resource with the same unique identi
   "errorCode": "RESOURCE_ALREADY_EXISTS",
   "correlationId": "9c8b7a6d5e4f3c2b1a0d9e8f7c6b5a4d",
   "timestamp": "2025-09-08T10:05:11Z",
-  "retryable": true,
-  "retryAfterSeconds": 30
+  "retryable": false
 }
 ```

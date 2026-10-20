@@ -18,22 +18,27 @@ See the [development lifecycle](/docs/development-lifecycle/overview) for how th
 
 It is designed as a microservice architecture with the ability to be flexible in various occasions.
 
-It is based on the principle that the `Core` is acting as a middleman between the `Client` and the `Connector` providing the logic of all operations. The `Connector` contains the full implementation of a particular technology. It accepts the request from the `Core`, processes it, and sends back the response in a format the `Core` can understand. `Connector` is also designed to be completely independent from other paltform components.
+It is based on the principle that the `Core` is acting as a middleman between the `Client` and the `Connector` providing the logic of all operations. The `Connector` contains the full implementation of a particular technology. It accepts the request from the `Core`, processes it, and sends back the response in a format the `Core` can understand. `Connector` is also designed to be completely independent from other platform components.
 
 ### Architecture
 
 The architecture of the platform is based on the following parts:
 
-| Part                                                          | Brief description                                                                                               |
-|---------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| **[Database](architecture/database.md)**                      | Stores the data. SQL Database is used by default.                                                               |
-| **[Core](architecture/core.md)**                              | This is the brain of the platform. It contains the full logic of request processing.                            |
-| **[Interfaces](architecture/interfaces.md)**                  | Interfaces provided and used by the platform.                                                                   |
-| **[Connector](architecture/connector.md)**                    | Technology implementations that interact with the `Core` to perform the designated operation on the technology. |
-| **[Access Control](architecture/access-control/overview.md)** | Roles and permissions in the platform.                                                                          |
-| **[A^2 Engine](./architecture/attributes/overview.md)**       | A^2 Engine is a component that provides the ability to define and manage attributes.                            |
-| **[Notifications](./architecture/notifications.md)**          | Internal and External notifications.                                                                            |
-| **[Post-Quantum Readiness](./architecture/post-quantum-readiness.md)** | Post-quantum readiness verdict of every cryptographic asset, decided by rules the platform ships. |
+| Part                                                                 | Brief description                                                                                               |
+|----------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| **[Database](architecture/database.md)**                             | Stores the data. SQL Database is used by default.                                                               |
+| **[Core](architecture/core.md)**                                     | This is the brain of the platform. It contains the full logic of request processing.                            |
+| **[Interfaces](architecture/interfaces.md)**                         | Interfaces provided and used by the platform.                                                                   |
+| **[Connector](architecture/connector.md)**                           | Technology implementations that interact with the `Core` to perform the designated operation on the technology. |
+| **[Access Control](architecture/access-control/overview.md)**        | Roles and permissions in the platform.                                                                          |
+| **[A^2 Engine](architecture/attributes/overview.md)**                | A^2 Engine is a component that provides the ability to define and manage attributes.                            |
+| **[Notifications](architecture/notifications.md)**                   | Internal and External notifications.                                                                            |
+| **[Approvals](architecture/approvals.md)**                           | Approval of operations by designated users before the platform executes them.                                   |
+| **[Scheduler](architecture/scheduler.md)**                           | Scheduled execution of platform tasks, such as discoveries and certificate status updates, and their history.   |
+| **[Caching](architecture/caching.md)**                               | In-memory caches that keep authentication, authorization and other lookups fast, and when changes take effect.  |
+| **[Workflows](architecture/workflows.md)**                           | Rules, triggers and actions that automate processing, for example of discovered certificates.                   |
+| **[Columns and Views](architecture/columns-and-views.md)**           | Columns, sorting and saved views of the inventory lists.                                                        |
+| **[Post-Quantum Readiness](architecture/post-quantum-readiness.md)** | Post-quantum readiness verdict of every cryptographic asset, decided by rules the platform ships.               |
 
 See the [Architecture Overview](architecture/overview.md) for more details about the architecture of the platform.
 
@@ -41,31 +46,41 @@ See the [Architecture Overview](architecture/overview.md) for more details about
 
 The platform consists of the following components:
 
-| Components                                                      | Brief description                                                                                                               |
-|-----------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| **[Credential](core-components/credential.md)**                 | Stores the credentials for the Connectors.                                                                                      |
-| **[Authority](core-components/authority.md)**                   | Authority instances representing access to specific certification authority technology.                                         |
-| **[RA Profile](core-components/ra-profile.md)**                 | RA Profile abstracts the configuration of certificate-related attributes and provides a service for the Clients to manage them. |
-| **[Compliance Profile](core-components/compliance-profile.md)** | Collection of rules to be applied on a certificate to determine whether it satisfies the organizational compliance policy       |
-| **[Entity](core-components/entity.md)**                         | Entity representing the end user of the certificates and cryptographic key.                                                     |
-| **[Certificate](core-components/certificate.md)**               | Certificate is an inventory object that contains all information about its lifecycle.                                           |
-| **[Group](core-components/group.md)**                           | Grouping allows to manage multiple certificates with the same characteristics.                                                  |
-| **[Token](core-components/token.md)**                           | Token instance representing access to specific cryptographic device or technology.                                              |
-| **[Key](core-components/key.md)**                               | Cryptographic key object that can be managed and contains relevant information about its lifecycle.                             |
-| **[Token Profile](core-components/token-profile.md)**           | Token Profile abstracts the configuration of cryptographic service for the Clients to request cryptographic operations.         |
-| **[Notification](./core-components/notification.md)**           | Notification instance representing access to specific notification technology.                                                  |
-| **[CBOM](core-components/cbom.md)**                             | Cryptographic Bill of Materials providing inventory and management of cryptographic assets based on CycloneDX specification.    |
+| Components                                                          | Brief description                                                                                                               |
+|---------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| **[Credential](core-components/credential.md)**                     | Stores the credentials for the Connectors.                                                                                      |
+| **[Authority](core-components/authority.md)**                       | Authority instances representing access to specific certification authority technology.                                         |
+| **[RA Profile](core-components/ra-profile.md)**                     | RA Profile abstracts the configuration of certificate-related attributes and provides a service for the Clients to manage them. |
+| **[Compliance Profile](core-components/compliance-profile.md)**     | Collection of rules to be applied on a certificate to determine whether it satisfies the organizational compliance policy       |
+| **[Entity](core-components/entity.md)**                             | Entity representing the end user of the certificates and cryptographic key.                                                     |
+| **[Location](core-components/location.md)**                         | Storage for certificates and keys that the platform manages through an `Entity`.                                                |
+| **[Certificate](core-components/certificate.md)**                   | Certificate is an inventory object that contains all information about its lifecycle.                                           |
+| **[Request Attribute](core-components/request-attribute.md)**       | A value the requester supplies when asking for a certificate, mapped to a field of the certificate request.                     |
+| **[Group](core-components/group.md)**                               | Grouping allows to manage multiple certificates with the same characteristics.                                                  |
+| **[Token](core-components/token.md)**                               | Token instance representing access to specific cryptographic device or technology.                                              |
+| **[Key](core-components/key.md)**                                   | Cryptographic key object that can be managed and contains relevant information about its lifecycle.                             |
+| **[Token Profile](core-components/token-profile.md)**               | Token Profile abstracts the configuration of cryptographic service for the Clients to request cryptographic operations.         |
+| **[Vault](core-components/vault.md)**                               | Connection to a secret provider and the storage where its secrets are kept.                                                     |
+| **[Vault Profile](core-components/vault-profile.md)**               | Configuration for managing the secrets of a `Vault` in a more granular way.                                                     |
+| **[Secret](core-components/secret.md)**                             | A secret stored in a `Vault` and managed through a `Vault Profile`.                                                             |
+| **[Notification](core-components/notification.md)**                 | Notification instance representing access to specific notification technology.                                                  |
+| **[Notification Profile](core-components/notification-profile.md)** | Who receives a notification, how it is delivered, and when.                                                                     |
+| **[Approval Profile](core-components/approval-profile.md)**         | The steps and approvers an operation needs before the platform executes it.                                                     |
+| **[CBOM](core-components/cbom.md)**                                 | Cryptographic Bill of Materials providing inventory and management of cryptographic assets based on CycloneDX specification.    |
+| **[Comment](core-components/comment.md)**                           | Messages attached to an inventory object, with threads and notifications.                                                       |
 
 ### Modules
 
-Platform modules provides the following functionality:
+Platform modules provide the following functionality:
 
-| Module                                                          | Brief description                                                                                         |
-|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| **[Certificate Management](modules/certificate-management.md)** | Provides certificate lifecycle management functions.                                                      |
-| **[Certificate Inventory](modules/certificate-inventory.md)**   | Inventory of all certificates that are consistently visible and managed.                                  |
-| **[Discovery](modules/discovery.md)**               | Searching for certificates and keys in various sources, providing detailed results about what was found.  |
-| **[Dashboards](modules/dashboards.md)**                         | Comprehensive visual dashboard providing quick information about the current certificate inventory state. |
-| **[Key Management](modules/key-management.md)**                 | Provides key lifecycle management functions and cryptographic operations.                                 |
-| **[Key Inventory](modules/key-inventory.md)**                   | Inventory of all keys that are consistently visible and managed in technology-agnostic way.               |
-| **[Cryptographic Asset Inventory](modules/cryptographic-asset-inventory.md)** | Inventory of the cryptographic assets declared by the synchronized `CBOMs`, each listed once. |
+| Module                                                                        | Brief description                                                                                        |
+|-------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| **[Certificate Management](modules/certificate-management.md)**               | Provides certificate lifecycle management functions.                                                     |
+| **[Certificate Inventory](modules/certificate-inventory.md)**                 | Inventory of all certificates that are consistently visible and managed.                                 |
+| **[Discovery](modules/discovery.md)**                                         | Searching for certificates and keys in various sources, providing detailed results about what was found. |
+| **[Dashboards](modules/dashboards.md)**                                       | Visual dashboards providing quick information about the current state of the inventories.                |
+| **[Key Management](modules/key-management.md)**                               | Provides key lifecycle management functions and cryptographic operations.                                |
+| **[Key Inventory](modules/key-inventory.md)**                                 | Inventory of all keys that are consistently visible and managed in technology-agnostic way.              |
+| **[Secret Management](modules/secret-management.md)**                         | Provides secret management operations across vault technologies.                                         |
+| **[Secret Inventory](modules/secret-inventory.md)**                           | Inventory of all secrets that can be managed by the platform.                                            |
+| **[Cryptographic Asset Inventory](modules/cryptographic-asset-inventory.md)** | Inventory of the cryptographic assets declared by the synchronized `CBOMs`, each listed once.            |

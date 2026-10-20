@@ -7,7 +7,7 @@ sidebar_position: 12
 | Property    | Value |
 |-------------|-------|
 | HTTP status | `500 Internal Server Error` |
-| Retryable   | **No** |
+| Retryable   | No |
 | Error code  | `INTERNAL_SERVER_ERROR` |
 
 ## Summary
@@ -27,10 +27,6 @@ This error is **not retryable** — repeating the identical request will likely 
 - Note the `correlationId` from the response and provide it when reporting the issue.
 - Check the application logs for a stack trace or error details associated with the correlation ID.
 - If the problem persists, report it to the platform administrator or file a bug report with the correlation ID and a description of the operation that triggered the error.
-
-:::info
-This is the only common error code where `retryable` is `false`. All other common errors can be retried after addressing the root cause or waiting for the system to recover.
-:::
 
 ## Example
 

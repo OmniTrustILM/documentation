@@ -21,8 +21,8 @@ You only need the sidecars for the HSMs you use. Each sidecar serves one **Confi
 
 You need:
 
-- Access to the private repository `hub.omnitrustregistry.com`, which holds the connector image, the sidecar images and the Helm chart. See [Private repository](../../../current-versions.md#private-repository).
-- A finalized sidecar image for each commercial HSM vendor, in a registry you control. See [Finalize a Sidecar Image](./sidecar-image-finalization.md).
+- Access to the private repository, which holds the connector and sidecar images. See [Private repository](../../../current-versions.md#private-repository).
+- A finalized sidecar image for each commercial HSM vendor, in a registry you control. See [Finalize a Sidecar Image](./sidecar-image-finalization.md), and the vendor pages for [Utimaco CryptoServer](./utimaco.md), [Securosys Primus](./securosys.md) and [Entrust nShield](./nshield.md).
 - Network access from the pod to each HSM.
 - Kubernetes 1.29 or later for the Helm chart, or the [Kubernetes Operator](../deployment-operator/overview.md) for a `Connector` custom resource.
 
@@ -50,7 +50,7 @@ For the HSMs you use, write a values file. The `sidecars` list replaces the defa
 
 [Connector settings](#connector-settings) go under `env`. The chart sets `PORT`, `LOG_LEVEL` and the Config Profiles itself and refuses them there; set the log level with `logging.level`. `helm show values` on the chart lists every value, and the chart package contains `examples/vendors.yaml`, which runs SoftHSM, Utimaco, Securosys and nShield together.
 
-The install notes print the URL of the connector. Register the connector in the platform with that URL.
+The install notes print the URL of the connector. Register the connector in the platform with that URL as a v2 connector, with the **v2** tab of the web interface or `"version": "v2"` in the API, as [Register Connector](../../../quick-start/certificate-discovery/register-connector.mdx) shows.
 
 The pod picks up a changed Secret when it restarts:
 
@@ -110,7 +110,7 @@ spec:
           mountPath: /var/lib/pkcs11-vendor/tokens
   registration:
     name: "PKCS#11 Cryptography Provider"
-    platformUrl: "https://<PLATFORM_HOST>/api"
+    platformUrl: "http://core.<NAMESPACE>.svc.cluster.local:8080/api"
     authType: none
 ```
 
@@ -122,7 +122,7 @@ When you add a vendor sidecar, as the vendor pages show:
 - **Volumes** — the operator mounts each `spec.volumes` entry into the connector container at its `mountPath` and publishes it to the pod under its `name`, which a sidecar mounts at a path of its own.
 - **Pull secrets** — `spec.image.pullSecrets` applies to the whole pod. Add a second Secret for the registry that holds your finalized images.
 
-`platformUrl` includes the `/api` prefix of the platform, and a connector that the operator registers waits for approval in the platform. [The Connector CR](../deployment-operator/custom-resources/connector.md) describes the registration, the conditions and the NetworkPolicy that the operator renders.
+Create the `Connector` in the namespace of the platform: its NetworkPolicy admits only that namespace and the operator. `platformUrl` includes the `/api` prefix of the platform; the example uses the in-cluster address of Core in a platform that the operator runs. A connector that the operator registers waits for approval in the platform. [The Connector CR](../deployment-operator/custom-resources/connector.md) describes the registration, the conditions and the NetworkPolicy that the operator renders.
 
 ## Evaluate with SoftHSM
 

@@ -10,22 +10,23 @@ The ILM platform consists of several services. This allows you to enable the fun
 If you do not need to discover certificates, you should not deploy `Discovery Provider` connectors. The same applies for other connectors that are available. You will use only the connectors that integrates with your technology.
 :::
 
-The following is a list of current versions of the platform and connectors.
+The following is a list of current versions of the platform and connectors. Messaging, PgBouncer and Keycloak Internal are the images that the Helm chart runs; the PostgreSQL, RabbitMQ and Keycloak versions that the Kubernetes Operator was validated with are listed in [Supported versions](installation-guide/deployment/deployment-operator/upgrading.md#supported-versions).
 
 ## Core
 
-| Service               | Version         | Docker Image                                          |
-|-----------------------|-----------------|-------------------------------------------------------|
-| Core                  | `2.20.0`        | `hub.omnitrustregistry.com/ilm/core`                  |
-| Auth                  | `1.8.0`         | `hub.omnitrustregistry.com/ilm/auth`                  |
-| Auth OPA policies     | `1.4.1`         | `hub.omnitrustregistry.com/ilm/auth-opa-policies`     |
-| Scheduler             | `1.2.0`         | `hub.omnitrustregistry.com/ilm/scheduler`             |
-| API Gateway           | `3.9.1`         | `hub.omnitrustregistry.com/ilm/kong`                  |
-| Messaging             | `4.2.0`         | `hub.omnitrustregistry.com/ilm/rabbitmq`              |
-| OPA                   | `1.10.0-static` | `hub.omnitrustregistry.com/ilm/opa`                   |
-| PgBouncer             | `v1.24.1-p1`    | `hub.omnitrustregistry.com/ilm/pgbouncer`             |
-| Provisioning RabbitMQ | `1.0.0`         | `hub.omnitrustregistry.com/ilm/provisioning-rabbitmq` |
+| Service               | Version         | Docker Image                                                 |
+|-----------------------|-----------------|--------------------------------------------------------------|
+| Core                  | `2.20.0`        | `hub.omnitrustregistry.com/ilm/core`                         |
+| Auth                  | `1.8.0`         | `hub.omnitrustregistry.com/ilm/auth`                         |
+| Auth OPA policies     | `1.4.1`         | `hub.omnitrustregistry.com/ilm/auth-opa-policies`            |
+| Scheduler             | `1.2.0`         | `hub.omnitrustregistry.com/ilm/scheduler`                    |
+| API Gateway           | `3.9.1`         | `hub.omnitrustregistry.com/ilm/kong`                         |
+| Messaging             | `4.2.0`         | `hub.omnitrustregistry.com/ilm/rabbitmq`                     |
+| OPA                   | `1.10.0-static` | `hub.omnitrustregistry.com/ilm/opa`                          |
+| PgBouncer             | `v1.24.1-p1`    | `hub.omnitrustregistry.com/ilm/pgbouncer`                    |
+| Provisioning RabbitMQ | `1.0.0`         | `hub.omnitrustregistry.com/ilm/provisioning-rabbitmq`        |
 | Time Quality Monitor  | `1.0.1`         | `hub.omnitrustregistry.com/ilm-private/time-quality-monitor` |
+| Proxy                 | `1.0.1`         | `hub.omnitrustregistry.com/ilm-private/proxy`                |
 
 ## Front Ends
 
@@ -53,26 +54,28 @@ no second matrix.
 
 ## Connectors
 
-| Connector                      | Version  | Docker Image                                                           |
-|--------------------------------|----------|------------------------------------------------------------------------|
-| Common Credential Provider     | `1.4.0`  | `hub.omnitrustregistry.com/ilm/common-credential-provider`             |
-| EJBCA NG Connector             | `1.13.0` | `hub.omnitrustregistry.com/ilm/ejbca-ng-connector`                     |
-| Network Discovery Provider     | `1.7.0`  | `hub.omnitrustregistry.com/ilm/ip-discovery-provider`                  |
-| Cryptosense Discovery Provider | `1.4.1`  | `hub.omnitrustregistry.com/ilm-private/cryptosense-discovery-provider` |
-| PyADCS Connector               | `1.2.1`  | `hub.omnitrustregistry.com/ilm/pyadcs-connector`                       |
-| HashiCorp Vault Connector      | `1.2.1`  | `hub.omnitrustregistry.com/ilm/hashicorp-vault-connector`              |
-| EJBCA Legacy Connector         | `1.5.0`  | `hub.omnitrustregistry.com/ilm-private/ejbca-legacy-ca-connector`      |
-| External Authority Provider    | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/external-authority-provider`    |
-| Keystore Entity Provider       | `1.4.2`  | `hub.omnitrustregistry.com/ilm/keystore-entity-provider`               |
-| X.509 Compliance Provider      | `1.3.1`  | `hub.omnitrustregistry.com/ilm/x509-compliance-provider`               |
-| Software Cryptography Provider | `1.4.0`  | `hub.omnitrustregistry.com/ilm/software-cryptography-provider`         |
-| Email Notification Provider    | `1.3.0`  | `hub.omnitrustregistry.com/ilm/email-notification-provider`            |
-| CT Logs Discovery Provider     | `1.0.3`  | `hub.omnitrustregistry.com/ilm/ct-logs-discovery-provider`             |
-| Webhook Notification Provider  | `1.1.0`  | `hub.omnitrustregistry.com/ilm/webhook-notification-provider`          |
-| OTPKI Connector                | `1.1.0`  | `hub.omnitrustregistry.com/ilm-private/otpki-connector`                |
-| MS ADCS NG Connector           | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/ms-adcs-ng-connector`           |
-| Timestamp Formatting Connector | `1.1.0`  | `hub.omnitrustregistry.com/ilm-private/timestamp-formatting-connector` |
-| PKCS#11 Cryptography Provider  | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/pkcs11-cryptography-provider`  |
+| Connector                      | Version                       | Docker Image                                                           |
+|--------------------------------|-------------------------------|------------------------------------------------------------------------|
+| Common Credential Provider     | `1.4.0`                       | `hub.omnitrustregistry.com/ilm/common-credential-provider`             |
+| EJBCA NG Connector             | `1.13.0`                      | `hub.omnitrustregistry.com/ilm/ejbca-ng-connector`                     |
+| Network Discovery Provider     | `1.7.0`                       | `hub.omnitrustregistry.com/ilm/ip-discovery-provider`                  |
+| Cryptosense Discovery Provider | `1.4.1`                       | `hub.omnitrustregistry.com/ilm-private/cryptosense-discovery-provider` |
+| PyADCS Connector               | `1.2.1`                       | `hub.omnitrustregistry.com/ilm/pyadcs-connector`                       |
+| HashiCorp Vault Connector      | `1.2.1`                       | `hub.omnitrustregistry.com/ilm/hashicorp-vault-connector`              |
+| EJBCA Legacy Connector         | `1.5.0`                       | `hub.omnitrustregistry.com/ilm-private/ejbca-legacy-ca-connector`      |
+| External Authority Provider    | `1.0.0`                       | `hub.omnitrustregistry.com/ilm-private/external-authority-provider`    |
+| Keystore Entity Provider       | `1.4.2`                       | `hub.omnitrustregistry.com/ilm/keystore-entity-provider`               |
+| X.509 Compliance Provider      | `1.3.1`                       | `hub.omnitrustregistry.com/ilm/x509-compliance-provider`               |
+| Software Cryptography Provider | `1.4.0`                       | `hub.omnitrustregistry.com/ilm/software-cryptography-provider`         |
+| Email Notification Provider    | `1.3.0`                       | `hub.omnitrustregistry.com/ilm/email-notification-provider`            |
+| CT Logs Discovery Provider     | `1.0.3`                       | `hub.omnitrustregistry.com/ilm/ct-logs-discovery-provider`             |
+| Webhook Notification Provider  | `1.1.0`                       | `hub.omnitrustregistry.com/ilm/webhook-notification-provider`          |
+| OTPKI Connector                | `1.1.0`                       | `hub.omnitrustregistry.com/ilm-private/otpki-connector`                |
+| MS ADCS NG Connector           | `1.0.0`                       | `hub.omnitrustregistry.com/ilm-private/ms-adcs-ng-connector`           |
+| Timestamp Formatting Connector | `1.1.0`                       | `hub.omnitrustregistry.com/ilm-private/timestamp-formatting-connector` |
+| PKCS#11 Cryptography Provider  | `1.0.0`                       | `hub.omnitrustregistry.com/ilm-private/pkcs11-cryptography-provider`   |
+| PKCS#11 Sidecar Base           | `1.0.0-rocky`, `1.0.0-alpine` | `hub.omnitrustregistry.com/ilm-private/pkcs11-sidecar-base`            |
+| PKCS#11 SoftHSM Sidecar        | `1.0.0`                       | `hub.omnitrustregistry.com/ilm-private/pkcs11-sidecar-softhsm`         |
 
 ## Other
 
@@ -81,10 +84,11 @@ no second matrix.
 | Keycloak Internal | `26.4.2-0` | `hub.omnitrustregistry.com/ilm/keycloak-optimized` |
 | Keycloak Theme    | `0.1.4`    | `hub.omnitrustregistry.com/ilm/keycloak-theme`     |
 | Utils Service     | `1.0.2`    | `hub.omnitrustregistry.com/ilm/utils-service`      |
+| CBOM Repository   | `1.2.0`    | `hub.omnitrustregistry.com/ilm/cbom-repository`    |
 | Curl              | `8.16.0`   | `hub.omnitrustregistry.com/ilm/curl`               |
 | Kubectl           | `2.16.1`   | `hub.omnitrustregistry.com/ilm/kubectl`            |
 
 ## Private repository
 
-Non-public connectors are hosted on internal `hub.omnitrustregistry.com` which serves as a repository of container images and Helm charts.
-Access to `hub.omnitrustregistry.com` is provided based on request.
+Images under `ilm-private`, such as the non-public connectors, are hosted in a private project of `hub.omnitrustregistry.com`, which serves as a repository of container images and Helm charts.
+Access to them is provided based on request.

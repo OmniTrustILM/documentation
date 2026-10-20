@@ -7,7 +7,7 @@ sidebar_position: 1
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-A `Key` can be generated in a `Token Profile`, imported into it from a file, and exported from it later. Import and export are offered only where the `Token Profile`'s cryptography provider supports them for the key's type and algorithm; see [Import and export](../../concept-design/core-components/key.md#import-and-export).
+A `Key` can be generated in a `Token Profile`, imported into it from a file, and exported from it later. Import and export need a `Token Profile` whose token was created on a Cryptography Provider v2 connector that supports them. The Software Cryptography Provider supports both, and the PKCS#11 Cryptography Provider neither. A token created on Cryptography Provider v1 stays on v1 after its connector is upgraded and supports neither, so create a new token to use them. They are offered only for the key types and algorithms the provider supports; see [Import and export](../../concept-design/core-components/key.md#import-and-export).
 
 ## Create or import a key
 

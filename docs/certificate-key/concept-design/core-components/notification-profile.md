@@ -36,6 +36,17 @@ Frequency and maximum repetitions are checked per notification profile, object a
 When certificate expiring event is raised for certificate X, notification system will mark the time of lst notification of the event for certificate X through notification profile X and increment notification counter.
 :::
 
+## Send notifications on events
+
+A notification profile is used only when an event trigger sends it. To send notifications when an event occurs:
+
+1. Create the notification profile with its recipients and, for external delivery, its notification instance and the [event data](#event-data) to include.
+2. Create an [execution](workflow/execution.md) of the type `Send Notification` that uses the profile, and add the execution to an [action](workflow/action.md).
+3. Create a [trigger](workflow/trigger.md) of the type `Event` for the event, and add the action to it. A trigger without [rules](workflow/rule.md) applies to every object of the event; add rules to notify only about some of them.
+4. Associate the trigger with the event: in the [platform events settings](../../settings/events.md) for every object of the event, or on an RA profile, a group or a discovery for its objects only. The [supported events](workflow/event.md#supported-events) list which objects can carry triggers for each event.
+
+The [Event Viewer](workflow/event-viewer.md) shows each trigger evaluation and any notification that failed to send. A notification held back by the frequency or repetitions of the profile still shows as sent.
+
 ## Event data
 
 A notification profile can add data about the object an event concerns to its external notifications. Each category is enabled separately, and all are disabled by default:

@@ -38,7 +38,8 @@ Issuing certificate using `Certbot` for is an easy step. `http-01` challenge typ
 Once the `Apache` server is ready, you can use the following command to request certificate:
 
 ```bash
-certbot -n --apache ** \
+certbot -n --apache \
+  --agree-tos -m admin@example.com \
   -d www.example.com \
   --server https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory
 ```
@@ -66,7 +67,7 @@ The installation and configuration of the DNS resolver in out of scope of this g
 Let's create a file called `dns.ini` and insert the configuration of our DNS resolver including the TSIG secret:
 ```
 dns_rfc2136_server = <your DNS resolver IP address>
-dns_rfc2136_port = <your DNS resolver port>>
+dns_rfc2136_port = <your DNS resolver port>
 dns_rfc2136_name = example.com
 dns_rfc2136_secret = <your DNS TSIG secret>
 dns_rfc2136_algorithm = <algorithm for the signatures>
@@ -76,6 +77,7 @@ Once the the `dns.ini` is created, you can request the certificate with the `dns
 
 ```bash
 certbot certonly -n \
+  --agree-tos -m admin@example.com \
   -d www.example.com \
   --dns-rfc2136 \
   --dns-rfc2136-credentials dns.ini \

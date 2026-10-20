@@ -32,7 +32,7 @@ The **Certificate Format** list offers **PKCS12 – certificate, private key and
 
 - the `Certificate` is issued, and its `Key` holds the private key that matches it
 - that key item is [exportable](../../concept-design/core-components/key.md#exportable), active and enabled; a key is created and imported disabled until you enable it
-- the key's `Token Profile` [exports](../../concept-design/core-components/key.md#import-and-export) the key's algorithm
+- the key's `Token Profile` [exports](../../concept-design/core-components/key.md#import-and-export) the key's algorithm, which needs a token created on a Cryptography Provider v2 connector that exports keys, such as the Software Cryptography Provider
 - you hold the `exportKey` permission on `keys`, among the [permissions a PKCS#12 download needs](../../concept-design/core-components/key.md#permissions)
 
 To download it:

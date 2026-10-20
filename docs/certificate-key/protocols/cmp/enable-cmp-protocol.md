@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # Enable CMP Protocol
 
-Let's assume we would like to enable `CMP Profile` for the `RA Profile` with name `ilm` and know UUID `e4d5552d-f1a6-4ac9-8c7c-7ec74c4b2739`.
+Let's assume we would like to enable `CMP Profile` for the `RA Profile` with name `ilm` and known UUID `e4d5552d-f1a6-4ac9-8c7c-7ec74c4b2739`.
 
 We need to follow simple steps to enable the CMP service:
 - Configure and enable `CMP Profile`
@@ -18,7 +18,7 @@ First step is to configure the [`CMP Profile`](./cmp-profile.md). It will create
 
 Configuration of the default `RA Profile` is optional, we will enable CMP protocol for a specific `RA Profile` with name `ilm`. Let's do this in `ilm` `RA Profile` configuration.
 
-We will create `CMP Profile` named `CMP-ILM` using the [Core CMP API](/api/core-cmp#tag/cmp-profile-management/POST/v1/cmpProfiles):
+We will create `CMP Profile` named `Sample-CMP-Profile` using the [Core CMP API](/api/core-cmp#tag/cmp-profile-management/POST/v1/cmpProfiles):
 ```bash
 curl -X POST \
   --cacert [ca-cert] \
@@ -28,7 +28,7 @@ curl -X POST \
   -H "Accept: application/json" \
   --data '
   {
-    "name": "CMP-ILM",
+    "name": "Sample-CMP-Profile",
     "description": "Sample CMP Profile",
     "variant": "v2",
     "requestProtectionMethod": "sharedSecret",
@@ -42,7 +42,7 @@ When the `CMP Profile` is successfully created, its `uuid` is sent back, for exa
 ```json
 {
   "uuid": "94720dc8-6d94-488b-9949-5dac0485c375",
-  "name": "CMP-ILM",
+  "name": "Sample-CMP-Profile",
   "enabled": false,
   "variant": "v2",
   "description": "Sample CMP Profile",
@@ -54,24 +54,25 @@ When the `CMP Profile` is successfully created, its `uuid` is sent back, for exa
 
 ## Activate CMP protocol
 
-The `CMP Profile` is disabled by default. To enable it, we need to activate it using the [Core CMP API](/api/core-cmp#tag/cmp-profile-management/PUT/v1/cmpProfiles/{cmpProfileUuid}):
+The `CMP Profile` is disabled by default. To enable it, we need to activate it using the [Core CMP API](/api/core-cmp#tag/cmp-profile-management/PATCH/v1/cmpProfiles/{cmpProfileUuid}/enable):
 ```bash
 curl -X PATCH \
   --cacert [ca-cert] \
   --cert [client-cert] \
   --cert-type [type] \
   https://[domain]:[port]/api/v1/cmpProfiles/94720dc8-6d94-488b-9949-5dac0485c375/enable
-  #https://[domain]:[port]/api/v1/cmpProfiles//{cmpProfileUuid}/enable
+  #https://[domain]:[port]/api/v1/cmpProfiles/{cmpProfileUuid}/enable
 ```
 
 You should receive `204` HTTP response when the `CMP Profile` is successfully enabled.
 
 ## Enable CMP protocol for `RA Profile`
 
-Once the `CMP Profile` is configured and enabled, we can enable CMP protocol for the `RA Profile` with name `ilm`. For that purpose, we will use the [`Core RA Profile API`](/api/core-ra-profile#tag/ra-profile-management/PATCH/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/protocols/cmp/activate/{cmpProfileUuid}). We will need to configure `Attributes` to issue certificates, if there are any available and supported in the `RA Profile`. These `Attributes` will be statically attached to all requests coming from the CMP client.
+Once the `CMP Profile` is configured and enabled, we can enable CMP protocol for the `RA Profile` with name `ilm`. For that purpose, we will use the [`Core RA Profile API`](/api/core-ra-profile#tag/ra-profile-management/PATCH/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/protocols/cmp/activate/{cmpProfileUuid}). We will need to configure `Attributes` to issue and revoke certificates, if there are any available and supported in the `RA Profile`. These `Attributes` will be statically attached to all requests coming from the CMP client.
 
 You can get the list of `Attributes` using the following APIs:
 - [Get issue Attributes](/api/core-ra-profile#tag/ra-profile-management/GET/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/attributes/issue)
+- [Get revocation Attributes](/api/core-ra-profile#tag/ra-profile-management/GET/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/attributes/revoke)
 
 We will enable CMP protocol for `ilm` `RA Profile`:
 ```bash
@@ -94,7 +95,7 @@ When succeed, we will receive in the response CMP server endpoint to use:
 ```json
 {
   "uuid": "94720dc8-6d94-488b-9949-5dac0485c375",
-  "name": "CMP-ILM",
+  "name": "Sample-CMP-Profile",
   "cmpAvailable": true,
   "cmpUrl": "https://[domain]:[port]/api/v1/protocols/cmp/raProfile/ilm",
   "issueCertificateAttributes": [],
@@ -102,4 +103,4 @@ When succeed, we will receive in the response CMP server endpoint to use:
 }
 ```
 
-Now we have the CMP protocol enabled for `RA Profile` with name `ilm`, based on the `CMP Profile` with name `CMP-ILM`.
+Now we have the CMP protocol enabled for `RA Profile` with name `ilm`, based on the `CMP Profile` with name `Sample-CMP-Profile`.

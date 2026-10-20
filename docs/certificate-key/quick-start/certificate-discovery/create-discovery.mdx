@@ -12,6 +12,8 @@ In order to run the discovery process, we need to create new `Discovery`.
 
 How a `Discovery` is configured depends on whether the `Connector` was registered as v2 or v1, see [Discovery Provider v1 and v2](../../concept-design/modules/discovery.md#discovery-provider-v1-and-v2).
 
+The `Discovery` imports what it finds as you, the user who creates it. You need the `create` permission on `certificates` to import certificates, and on `keys` to import keys; what you may not create is not imported, and the `Discovery` ends `Warning`.
+
 ## Create `Discovery` using the API
 
 ### Discovery Provider v2

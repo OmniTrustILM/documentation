@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # Enable SCEP for RA Profile
 
-Let's assume we would like to enable `SCEP Profile` for the `RA Profile` with name `ilm` and know UUID `e4d5552d-f1a6-4ac9-8c7c-7ec74c4b2739`.
+Let's assume we would like to enable `SCEP Profile` for the `RA Profile` with name `ilm` and known UUID `e4d5552d-f1a6-4ac9-8c7c-7ec74c4b2739`.
 
 We need to follow simple steps to enable the SCEP service:
 - Configure and enable `SCEP Profile`
@@ -18,7 +18,7 @@ First step is to configure the [`SCEP Profile`](./scep-profile.md). It will crea
 
 Configuration of the default `RA Profile` is optional, we will enable SCEP protocol for a specific `RA Profile` instead of it with name `ilm`. Let's do this in `ilm` `RA Profile` configuration.
 
-We will create `SCEP Profile` named `SCEP ILM Profile` using the [Core SCEP API](/api/core-scep):
+We will create `SCEP Profile` named `Sample-SCEP-Profile` using the [Core SCEP API](/api/core-scep#tag/scep-profile-management/POST/v1/scepProfiles):
 ```bash
 curl -X POST \
   --cacert [ca-cert] \
@@ -28,7 +28,7 @@ curl -X POST \
   -H "Accept: application/json" \
   --data '
   {
-    "name": "SCEP ILM Profile",
+    "name": "Sample-SCEP-Profile",
     "description": "Sample SCEP Profile",
     "caCertificateUuid": "72d7d882-9336-8a77-aa54-8d2fd83f7c37"
   }' \
@@ -40,6 +40,15 @@ When the `SCEP Profile` is successfully created, its `uuid` is sent back:
 {
   "uuid": "26eea9d9-c5d5-4779-8a5d-117b1ce02aa5"
 }
+```
+
+A new `SCEP Profile` is disabled, and a disabled profile refuses every SCEP request. Enable it using the [Core SCEP API](/api/core-scep#tag/scep-profile-management/PATCH/v1/scepProfiles/{uuid}/enable):
+```bash
+curl -X PATCH \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  https://[domain]:[port]/api/v1/scepProfiles/26eea9d9-c5d5-4779-8a5d-117b1ce02aa5/enable
 ```
 
 ## Enable SCEP protocol for `RA Profile`
@@ -61,19 +70,19 @@ curl -X PATCH \
   {
     "issueCertificateAttributes": []
   }' \
-  https://[domain]:[port]/api/v1/authorities/316720f9-ce67-4ccf-bdf6-a81f49b39147/raProfiles/e4d5552d-f1a6-4ac9-8c7c-7ec74c4b2739/scep/activate/26eea9d9-c5d5-4779-8a5d-117b1ce02aa5
-  #https://[domain]:[port]v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/scep/activate/{scepProfileUuid}
+  https://[domain]:[port]/api/v1/authorities/316720f9-ce67-4ccf-bdf6-a81f49b39147/raProfiles/e4d5552d-f1a6-4ac9-8c7c-7ec74c4b2739/protocols/scep/activate/26eea9d9-c5d5-4779-8a5d-117b1ce02aa5
+  #https://[domain]:[port]/api/v1/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/protocols/scep/activate/{scepProfileUuid}
 ```
 
 When succeed, we will receive in the response SCEP server directory endpoint to use:
 ```json
 {
-    "uuid": "06d287f5-2b03-42a6-b40e-b98707ba4851",
-    "name": "SCEP ILM Profile",
+    "uuid": "26eea9d9-c5d5-4779-8a5d-117b1ce02aa5",
+    "name": "Sample-SCEP-Profile",
     "scepAvailable": true,
     "url": "https://[domain]:[port]/api/v1/protocols/scep/raProfile/ilm/pkiclient.exe",
     "issueCertificateAttributes": []
 }
 ```
 
-Now we have the SCEP protocol enabled for `RA Profile` with name `ilm`, based on the `SCEP Profile` with name `SCEP ILM Profile`.
+Now we have the SCEP protocol enabled for `RA Profile` with name `ilm`, based on the `SCEP Profile` with name `Sample-SCEP-Profile`.

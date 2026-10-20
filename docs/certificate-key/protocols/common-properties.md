@@ -31,7 +31,7 @@ Default associations can be set during **profile creation** or modified later wh
 SCEP and CMP profiles have a **Challenge Source** that decides how a client is authenticated when it enrolls:
 
 - **Protocol Default** — the authentication configured on the profile applies.
-- **Certificate Registration** — the client enrolls against a certificate that was [registered](../quick-start/certificate-management/register-certificate.mdx) beforehand, and authenticates with the challenge of that registration. The profile has no secret of its own.
+- **Certificate Registration** — the client enrolls against a certificate that was [registered](../quick-start/certificate-management/register-certificate.mdx) beforehand, and authenticates with the challenge of that registration. The profile has no secret of its own. The challenge is passed to the client out of band, or delivered by an external notification of the [Certificate registered](../concept-design/core-components/workflow/event.md#certificate-registered-event) event.
 
 How a request is matched to a registration is described on the [SCEP Profile](scep/scep-profile.md#challenge-source) and [CMP Profile](cmp/cmp-profile.md#challenge-source) pages. A request that does not match, or whose challenge is wrong, is refused with a generic error that does not say which check failed. The reason is in the platform log and, when a registration was identified, in the event history of its certificate. A wrong challenge counts as a failed attempt toward [locking the registration](../concept-design/core-components/certificate.md#authorization-secret-challenge).
 
