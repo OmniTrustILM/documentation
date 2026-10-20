@@ -4,9 +4,6 @@ sidebar_position: 10
 
 # Register Certificate
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 Pre-registration splits certificate issuance in two. You register the certificate's identity now and issue it later. No key or CSR exists yet.
 
@@ -24,7 +21,7 @@ You do not choose the variant. The platform picks it based on the capabilities o
 ## Register a certificate using the web interface
 
 1. Click **Certificates** in the left menu
-2. Click **Add Certificate** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+2. Click **Add Certificate** (plus symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">+</span></span>)
 3. Select the request type **Pre-register** — register a certificate to be issued later using a challenge secret
 4. Select the `RA Profile`
 5. Fill the **Request Attributes** tab — these values are the identity of the future certificate
@@ -47,7 +44,7 @@ When a challenge was set, the registration carries an authorization state — a 
 ## Complete the registration
 
 1. Click **Certificates** in the left menu and open the `Registered` certificate
-2. Click **Complete** (check symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faCheck} /></span>). The action is enabled only while the registration is `Active` and the issuance window has not elapsed; otherwise the disabled button's tooltip explains why.
+2. Click **Complete** (check symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">✓</span></span>). The action is enabled only while the registration is `Active` and the issuance window has not elapsed; otherwise the disabled button's tooltip explains why.
 3. In the **Complete Certificate Registration** dialog, enter the **Challenge** if the registration set one
 4. Upload the **CSR** — a certificate signing request for the key pair that will back the certificate. Completing a registration always requires a CSR; issuing from a platform key is not supported for registered certificates.
 5. Click **Complete**

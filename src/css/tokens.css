@@ -1,0 +1,39 @@
+:root {
+  color-scheme: light;
+  --ilm-brand-blue: #0073cf;
+  --ilm-brand-grey: #b4b4b4;
+  --ilm-canvas: #f8fafc;
+  --ilm-surface: #fff;
+  --ilm-text: #1f2937;
+  --ilm-muted: #525252;
+  --ilm-border: #e8e8e8;
+  --ilm-control-border: #7d8795;
+  --ilm-accent: #0073cf;
+  --ilm-accent-hover: #005ba6;
+  --ilm-accent-soft: #e6f2ff;
+  --ilm-button: #0073cf;
+  --ilm-button-hover: #005ba6;
+  --ilm-on-button: #fff;
+  --ilm-code-surface: #f1f5f9;
+  --ilm-diagram-surface: #fff;
+  --ilm-radius: 12px;
+  --ilm-radius-small: 6px;
+  --ilm-shadow: 0 8px 28px rgb(15 23 42 / 6%);
+  --ilm-font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ilm-font-mono: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --ilm-canvas: #0a0a0a;
+  --ilm-surface: #171717;
+  --ilm-text: #f5f5f5;
+  --ilm-muted: #d4d4d4;
+  --ilm-border: #262626;
+  --ilm-control-border: #697484;
+  --ilm-accent: #3399ff;
+  --ilm-accent-hover: #79bcff;
+  --ilm-accent-soft: #102b43;
+  --ilm-code-surface: #171717;
+  --ilm-shadow: 0 8px 28px rgb(0 0 0 / 16%);
+}

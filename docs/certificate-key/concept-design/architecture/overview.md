@@ -4,13 +4,15 @@ sidebar_position: 0
 
 # Overview
 
+import PlatformArchitecture from '@site/src/components/PlatformArchitecture';
+
 The architecture of the platform follows microservice approach.
 Each component and each part of the platform is a microservice. Using that approach, the platform is able to scale and maintain the services as needed.
 
 ## Architecture diagram
 
 
-![ILM ingredients](../../../assets/platform-ingredients.png)
+<PlatformArchitecture />
 
 The above diagram explains briefly the architecture of the platform. The platform provides client interfaces to communicate with the `Core`.
 

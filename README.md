@@ -23,9 +23,15 @@ To learn how to work with Docusaurus, refer to the [Docusaurus documentation](ht
 - Use `yarn start` to start a local development server providing a rendered version of your local copy of the documentation. It will be typically available on http://localhost:3000/ and browser window should automatically open up for you.
 - Use `yarn build` for building the documentation. This command generates static content into the `build` directory.
 
+Use Node 24 and a running Docker daemon. A build renders source diagrams locally and downloads the pinned OpenAPI specifications. Keep the lockfile unchanged when installing an existing checkout with `yarn install --frozen-lockfile`.
+
+Run `yarn typecheck` and `yarn coverage` before building, then `yarn verify-api-build` after the build. Coverage enforces an 80% minimum for Node and React code and produces separate LCOV reports for Sonar analysis.
+
+Shared design tokens live in `src/css/tokens.css`. Homepage artwork, architecture diagrams and interactions are maintained as source code. PlantUML diagrams remain fenced blocks in documentation; generated SVGs are build outputs.
+
 > [!NOTE]  
 > You can use `npm` instead of `yarn` for the same purpose. The `yarn` is a package manager that doubles as project manager. It is a good alternative to `npm` and it is recommended to use it for the development of the ILM documentation.
 
 ## How to deploy the documentation
 
-The ILM documentation is deployed to the GitHub pages. The deployment is done automatically by the GitHub Actions when the changes are merged to the `gh-pages` branch.
+The documentation is deployed to GitHub Pages by the workflow on the `documentation` branch. Pull requests build and verify the site before deployment.

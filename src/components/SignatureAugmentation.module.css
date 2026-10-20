@@ -1,0 +1,126 @@
+.figure {
+  margin: 1.5rem 0;
+  min-width: 0;
+  color: var(--ilm-text);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.figure p {
+  margin: 0;
+}
+
+.level {
+  min-width: 0;
+  padding: 0.65rem;
+  border: 1px solid var(--ilm-control-border);
+  border-radius: var(--ilm-radius-small);
+  background: var(--ilm-surface);
+}
+
+.figure header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.level header > span {
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.3rem;
+  background: var(--ilm-accent-soft);
+  color: var(--ilm-accent-hover);
+  font-family: var(--ilm-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.basic {
+  border: 2px solid var(--ilm-accent);
+  background: var(--ilm-accent-soft);
+}
+
+.core {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.core > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  border: 1px solid var(--ilm-accent);
+  border-radius: 0.3rem;
+  background: var(--ilm-surface);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.certificate {
+  display: block;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--ilm-accent);
+  border-radius: 0.2rem;
+}
+
+.additions {
+  margin-top: 0.65rem;
+}
+
+.figure .label {
+  margin-bottom: 0.4rem;
+  color: var(--ilm-muted);
+  font-size: 0.75rem;
+}
+
+.evidence {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.5rem;
+}
+
+.evidence > div {
+  padding: 0.6rem 0.75rem;
+  border-inline-start: 3px solid var(--ilm-accent);
+  background: var(--ilm-canvas);
+  border-radius: 0 var(--ilm-radius-small) var(--ilm-radius-small) 0;
+  overflow-wrap: anywhere;
+}
+
+.evidence p {
+  margin-top: 0.25rem;
+  color: var(--ilm-muted);
+}
+
+.renewal {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--ilm-control-border);
+  border-radius: var(--ilm-radius-small);
+}
+
+.renewal > header {
+  margin-top: 0.75rem;
+}
+
+.renewal > header > span {
+  color: var(--ilm-accent);
+  font-size: 1.25rem;
+}
+
+.renewal > p,
+.figure figcaption {
+  margin-top: 0.65rem;
+  color: var(--ilm-muted);
+}
+
+@media (max-width: 600px) {
+  .core {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

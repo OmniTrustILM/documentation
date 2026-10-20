@@ -1,0 +1,236 @@
+.theme-doc-markdown > h2 {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ilm-border);
+}
+
+.theme-doc-markdown :is(h2, h3, h4) .hash-link {
+  border-radius: var(--ilm-radius-small);
+}
+
+.theme-admonition {
+  --ilm-callout-accent: var(--ilm-muted);
+  --ifm-alert-background-color: color-mix(in srgb, var(--ilm-callout-accent) 6%, var(--ilm-surface));
+  --ifm-alert-border-color: var(--ilm-callout-accent);
+  --ifm-alert-foreground-color: var(--ilm-text);
+  --ifm-alert-padding-horizontal: 1.15rem;
+  --ifm-alert-padding-vertical: 1rem;
+  border: 1px solid color-mix(in srgb, var(--ilm-callout-accent) 25%, var(--ilm-border));
+  border-inline-start: 3px solid var(--ilm-callout-accent);
+  border-radius: var(--ilm-radius);
+  box-shadow: none;
+  color: var(--ilm-text);
+  margin-block: 1.5rem;
+}
+
+.theme-admonition-info {
+  --ilm-callout-accent: var(--ilm-accent);
+}
+
+.theme-admonition-tip {
+  --ilm-callout-accent: #177248;
+}
+
+.theme-admonition-warning {
+  --ilm-callout-accent: #946200;
+}
+
+.theme-admonition-danger {
+  --ilm-callout-accent: #c3343f;
+}
+
+[data-theme='dark'] .theme-admonition {
+  --ifm-alert-background-color: color-mix(in srgb, var(--ilm-callout-accent) 8%, var(--ilm-surface));
+}
+
+[data-theme='dark'] .theme-admonition-tip {
+  --ilm-callout-accent: #70d9a4;
+}
+
+[data-theme='dark'] .theme-admonition-warning {
+  --ilm-callout-accent: #ffd166;
+}
+
+[data-theme='dark'] .theme-admonition-danger {
+  --ilm-callout-accent: #ff9aa3;
+}
+
+/* Native layout: heading and icon precede the content wrapper. */
+.theme-admonition > div:first-child:not(:only-child) {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--ilm-callout-accent);
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.5;
+  margin-bottom: 0.65rem;
+  text-transform: none;
+}
+
+.theme-admonition > div:first-child > span:first-child {
+  display: inline-flex;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.theme-admonition > div:first-child > span:first-child svg {
+  fill: var(--ilm-callout-accent);
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.theme-doc-markdown .theme-admonition a:not(.button),
+.theme-doc-markdown details a:not(.button) {
+  color: var(--ilm-accent-hover);
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+
+.theme-admonition :not(pre) > code {
+  background: var(--ilm-code-surface);
+  color: var(--ilm-text);
+}
+
+.theme-doc-markdown .theme-code-block {
+  --prism-background-color: var(--ilm-code-surface) !important;
+  --prism-color: var(--ilm-text) !important;
+  --ifm-color-emphasis-300: var(--ilm-border);
+  background: var(--ilm-code-surface);
+}
+
+.theme-doc-markdown .theme-code-block button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  justify-content: center;
+  border-color: var(--ilm-control-border);
+  background: var(--ilm-surface);
+  color: var(--ilm-text);
+  opacity: 1;
+}
+
+.theme-doc-markdown .theme-code-block:hover button {
+  opacity: 1;
+}
+
+.theme-doc-markdown .theme-code-block button:hover,
+.theme-doc-markdown .theme-code-block button:focus-visible {
+  border-color: var(--ilm-accent);
+  background: var(--ilm-accent-soft);
+  color: var(--ilm-accent);
+}
+
+.theme-doc-markdown .theme-code-block button:focus-visible {
+  outline-offset: 2px;
+}
+
+/* The native copy control wraps its two state icons in an aria-hidden span. */
+.theme-doc-markdown .theme-code-block button:has(> span[aria-hidden='true']) {
+  margin-inline-start: 0.3rem;
+  background: var(--ilm-button);
+  border-color: var(--ilm-button);
+  color: var(--ilm-on-button);
+}
+
+.theme-doc-markdown .theme-code-block button:has(> span[aria-hidden='true']):hover,
+.theme-doc-markdown .theme-code-block button:has(> span[aria-hidden='true']):focus-visible {
+  background: var(--ilm-button-hover);
+  border-color: var(--ilm-button-hover);
+  color: var(--ilm-on-button);
+}
+
+.theme-doc-markdown .theme-code-block button > span[aria-hidden='true'] {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.theme-doc-markdown .theme-code-block button > span[aria-hidden='true'] > svg {
+  color: inherit;
+}
+
+.theme-doc-markdown .tabs {
+  gap: 0.25rem;
+  max-width: 100%;
+  border-bottom: 1px solid var(--ilm-border);
+  padding: 0.3rem 0.25rem 0;
+  color: var(--ilm-muted);
+}
+
+.theme-doc-markdown .tabs__item {
+  flex-shrink: 0;
+  min-height: 2.75rem;
+  align-items: center;
+  border-radius: var(--ilm-radius-small) var(--ilm-radius-small) 0 0;
+  font-size: 0.9rem;
+  font-weight: 550;
+  padding: 0.7rem 1rem;
+}
+
+.theme-doc-markdown .tabs__item:hover {
+  background: var(--ilm-accent-soft);
+}
+
+.theme-doc-markdown .tabs__item--active {
+  background: var(--ilm-surface);
+  border-bottom-color: var(--ilm-accent);
+  color: var(--ilm-accent);
+  font-weight: 650;
+}
+
+.theme-doc-markdown .tabs__item:focus-visible {
+  outline-offset: -3px;
+}
+
+.theme-doc-markdown details {
+  --ifm-alert-background-color: var(--ilm-surface);
+  --ifm-alert-border-color: var(--ilm-border);
+  --ifm-alert-foreground-color: var(--ilm-text);
+  --docusaurus-details-decoration-color: var(--ilm-border);
+  background: var(--ilm-surface);
+  border: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  color: var(--ilm-text);
+  padding: 0.5rem 1rem;
+  box-shadow: none;
+}
+
+.theme-doc-markdown details > summary {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.25rem 0.5rem 1.4rem;
+  border-radius: var(--ilm-radius-small);
+  font-weight: 600;
+  line-height: 1.75;
+}
+
+.theme-doc-markdown details > summary::before {
+  top: 1rem;
+  border-inline-start-color: var(--ilm-muted);
+}
+
+.theme-doc-markdown details > summary:hover {
+  color: var(--ilm-accent);
+}
+
+.theme-doc-markdown details > summary:focus-visible {
+  outline-offset: 0;
+}
+
+:is(.theme-doc-toc-desktop, .theme-doc-toc-mobile) .table-of-contents__link {
+  display: block;
+  border-inline-start: 2px solid transparent;
+  padding-inline-start: 0.6rem;
+}
+
+:is(.theme-doc-toc-desktop, .theme-doc-toc-mobile) .table-of-contents__link--active {
+  border-inline-start-color: var(--ilm-accent);
+  color: var(--ilm-accent);
+  font-weight: 650;
+}
+
+@media (max-width: 480px) {
+  .theme-admonition {
+    --ifm-alert-padding-horizontal: 0.85rem;
+  }
+
+  .theme-doc-markdown .tabs__item {
+    padding-inline: 0.75rem;
+  }
+}

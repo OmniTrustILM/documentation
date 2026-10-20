@@ -1,0 +1,71 @@
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.125rem 0.375rem 0.125rem 0.75rem;
+  border-bottom: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius) var(--ilm-radius) 0 0;
+  background: var(--ilm-surface);
+}
+
+.title {
+  min-width: 0;
+  color: var(--ilm-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* Keep the header steady while the native BrowserOnly controls hydrate. */
+.actions {
+  min-width: 4.5rem;
+  min-height: 2rem;
+}
+
+.header .controls {
+  position: static;
+  top: auto;
+  right: auto;
+  justify-content: flex-end;
+  min-height: 2rem;
+  column-gap: 0.125rem;
+}
+
+.header .actions .controls > button {
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.25rem;
+}
+
+.header .actions .controls > button > span[aria-hidden='true'] {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.content {
+  min-width: 0;
+  direction: ltr;
+  border-radius: 0 0 var(--ilm-radius) var(--ilm-radius);
+}
+
+.content > pre {
+  border-radius: inherit;
+}
+
+@media (pointer: coarse) {
+  .actions {
+    min-width: 6rem;
+    min-height: 2.75rem;
+  }
+
+  .header .controls,
+  .header .actions .controls > button {
+    min-height: 2.75rem;
+  }
+
+  .header .actions .controls > button {
+    min-width: 2.75rem;
+  }
+}

@@ -4,8 +4,6 @@ sidebar_position: 5
 
 # Create Authority
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 In order to establish a connection with MS ADCS, we need to setup the `Authority` instance.
 
@@ -158,7 +156,7 @@ Follow these steps to create `Authority` to establish `ADCS` instance connection
 
 1. Log in to the Administration Interface `https://[domain]:[port]/administrator`
 2. Click **Authorities** in the left menu 
-3. Click **Add New Authority** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+3. Click **Add New Authority** (plus symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">+</span></span>)
 4. Fill the columns with the attributes:
     - Authority name: `MS ADCS Authority`
     - Authority Provider: `MS ADCS Connector`

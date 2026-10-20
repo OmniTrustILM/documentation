@@ -1,5 +1,6 @@
 ---
 sidebar_position: 12
+description: Understand standardized error responses and problem details.
 ---
 
 # Error Handling

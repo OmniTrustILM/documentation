@@ -1,5 +1,6 @@
 ---
 sidebar_position: 30
+description: Browse available connectors and their supported capabilities.
 ---
 
 # Available Connectors

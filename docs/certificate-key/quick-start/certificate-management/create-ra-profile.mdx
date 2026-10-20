@@ -4,8 +4,6 @@ sidebar_position: 7
 
 # Create RA Profile
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 When the connection with the `Authority` is successfully established, we can create a service for certificate management. We call it `RA Profile`.
 
@@ -117,7 +115,7 @@ When the `RA Profile` is successfully created, its `uuid` is sent back:
 Create `RA Profile` to manage certificates with the specific certificate template.
 
 1. Click **RA Profiles** in the left menu 
-2. Click **Add new RA Profile** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+2. Click **Add new RA Profile** (plus symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">+</span></span>)
 3. Fill the columns with the attributes:
     - RA Profile Name: `ADCS-WebServer`
     - Description: `RA profile for webserver certificates`

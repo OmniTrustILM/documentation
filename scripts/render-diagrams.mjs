@@ -8,6 +8,7 @@ import plantumlEncoder from 'plantuml-encoder';
 import {normalizePuml} from '../src/lib/normalizePuml.mjs';
 import {plantumlFilename} from '../src/lib/plantumlHash.mjs';
 import {verifyRender} from '../src/lib/verifyRender.mjs';
+import {applyPlantumlSvgTheme} from '../src/lib/plantumlTheme.mjs';
 import {startServer, DOCKER_IMAGE} from './plantuml-server.mjs';
 
 const ROOT = path.resolve(fileURLToPath(import.meta.url), '../..');
@@ -175,7 +176,10 @@ export async function main() {
     const referenced = new Set(diagrams.keys());
 
     // Content-hash cache: only render diagrams whose SVG is not already on disk.
-    const missing = [...diagrams].filter(([fn]) => !existsSync(path.join(OUT_DIR, fn)));
+    const missing = [...diagrams].filter(([fn, {source}]) => {
+        const file = path.join(OUT_DIR, fn);
+        return !existsSync(file) || !verifyRender(readFileSync(file, 'utf8'), {source}).ok;
+    });
 
     if (missing.length > 0) {
         const {baseUrl, stop} = await startServer();
@@ -183,13 +187,13 @@ export async function main() {
         try {
             await mapPool(missing, CONCURRENCY, async ([fn, {source, encoded, file}]) => {
                 const {status, svg} = await fetchSvg(baseUrl, encoded);
-                const res = verifyRender(svg, {errored: status !== 200});
+                const res = verifyRender(svg, {errored: status !== 200, source});
                 if (!res.ok) {
                     const snippet = source.split('\n').slice(0, 3).join('\n');
                     failures.push(`  ${fn} (${file}): ${res.reason} [HTTP ${status}]\n    ${snippet}`);
                     return;
                 }
-                writeFileSync(path.join(OUT_DIR, fn), svg, 'utf8');
+                writeFileSync(path.join(OUT_DIR, fn), applyPlantumlSvgTheme(svg), 'utf8');
             });
         } finally {
             await stop();

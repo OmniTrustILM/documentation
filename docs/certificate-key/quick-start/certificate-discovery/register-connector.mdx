@@ -4,8 +4,6 @@ sidebar_position: 1
 
 # Register Connector
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 In order to start using the platform with any specific technology, we must register the `Connector`.
 We would like to discover certificates and keys, and such `Connector` must therefore implement the `Discovery Provider`.
@@ -72,7 +70,7 @@ Follow these steps for register new `Network Discovery Provider`.
 
 1. Log in to the Administration Interface `https://[domain]:[port]/administrator`
 2. Click **Connectors** in the left menu
-3. Click **Create** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>) to open **Create Connector**
+3. Click **Create** (plus symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">+</span></span>) to open **Create Connector**
 4. Fill in the columns with the attributes:
     - URL: `http://network-discovery-provider-service:8080`
     - Authentication Type: `None`

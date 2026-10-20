@@ -1,0 +1,59 @@
+.card {
+  --ifm-link-hover-decoration: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  align-items: start;
+  gap: 0.6rem 1rem;
+  min-width: 0;
+  padding: 1.4rem;
+  border: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  background: var(--ilm-surface);
+  color: var(--ilm-text);
+  transition:
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+.card:hover,
+.card:focus-visible {
+  border-color: var(--ilm-accent);
+  color: var(--ilm-text);
+  box-shadow: var(--ilm-shadow);
+  transform: translateY(-2px);
+}
+.card:focus-visible {
+  outline: 3px solid var(--ilm-accent);
+  outline-offset: 3px;
+}
+.card .title {
+  margin: 0;
+  font-size: 1.12rem;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+.arrow {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--ilm-accent);
+  margin-top: 0.2rem;
+}
+.card .description {
+  grid-column: 1 / -1;
+  color: var(--ilm-muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin: 0;
+  white-space: normal;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+  .card:hover,
+  .card:focus-visible {
+    transform: none;
+  }
+}

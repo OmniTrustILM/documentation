@@ -18,14 +18,6 @@ Open the *AD FS Management console* on the Windows Server and follow the steps b
 6. Review all settings and click **`Next`**.
 7. Keep the **`Configure claims issuance policy for this application`** checkbox checked and click **`Close`** to add the new relying party trust.
 
-<center>
-    <div style={{width: "80%"}}>
-
-        ![AD FS console](../../../assets/adfs/adfs-console.png)
-
-    </div>
-</center>
-
 The new relying party trust is now added to the list of relying party trusts. Users can authenticate using the new relying party trust, however, no user attributes are sent to the service provider. For that, we need to set up claim mapping.
 
 ## Setup claim issuance policy
@@ -42,14 +34,6 @@ Open the *AD FS Management console* on the Windows Server. In the list of **`Rel
 
 This rule will provide claims about the user's name in the format `username/domain`.
 
-<center>
-    <div style={{width: "80%"}}>
-
-        ![AD FS claim Name ID](../../../assets/adfs/claim-adfs-name-id.png)
-
-    </div>
-</center>
-
 ### User attributes
 
 1. Click on **`Add Rule...`** to open the **`Add Transform Claim Rule Wizard`**.
@@ -63,14 +47,6 @@ This rule will provide claims about the user's name in the format `username/doma
 
 This rule will provide claims about the user's email address, given name, and surname from the Active Directory data.
 
-<center>
-    <div style={{width: "80%"}}>
-
-        ![AD FS claim User attribute](../../../assets/adfs/claim-adfs-user-attributes.png)
-
-    </div>
-</center>
-
 ### Group membership
 
 1. Click on **`Add Rule...`** to open the **`Add Transform Claim Rule Wizard`**.
@@ -82,14 +58,6 @@ This rule will provide claims about the user's email address, given name, and su
 7. Click **`Finish`**.
 
 This rule will provide claims about the user's group membership in the format of the group name.
-
-<center>
-    <div style={{width: "80%"}}>
-
-        ![AD FS claim Group](../../../assets/adfs/claim-adfs-group.png)
-
-    </div>
-</center>
 
 :::info[Group membership]
 The group membership rule will provide claims about the user's group membership only in case the user is a member of the selected group. If you want to provide claims about multiple groups, you need to create a separate rule for each group. The group name should match the role name in the platform, or it will be created as a new role, depending on the platform configuration.

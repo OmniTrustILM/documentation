@@ -4,8 +4,6 @@ sidebar_position: 3
 
 # Create Discovery
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 In order to run the discovery process, we need to create new `Discovery`.
 `Discovery` behavior is defined by the `Connector` implementing the `Discovery Provider`.
@@ -214,7 +212,7 @@ When the `Discovery` process is successfully created, its `uuid` is sent back:
 Follow these steps to create new Network `Discovery`:
 
 1. Click **Discoveries** in the left menu to display the **Discovery Store**
-2. Click **Add** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+2. Click **Add** (plus symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">+</span></span>)
 3. In **Create Discovery**, fill in:
     - Discovery Name: `ILM Hostname Discovery`
     - Discovery Provider: `Network Discovery Provider`

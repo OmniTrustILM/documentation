@@ -1,0 +1,57 @@
+.diagram {
+  margin-block: 2rem;
+}
+.layers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.layer {
+  border: 1px solid var(--ilm-border);
+  background: var(--ilm-surface);
+  border-radius: var(--ilm-radius);
+  padding: 1.25rem;
+  position: relative;
+}
+.layer h3 {
+  color: var(--ilm-accent);
+  font-size: 1.05rem;
+  margin: 0 0 0.5rem;
+}
+.layer p {
+  font-size: 0.8rem;
+  color: var(--ilm-muted);
+}
+.layer ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+.layer li {
+  border-top: 1px solid var(--ilm-border);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+.layer + .layer::before {
+  content: '→';
+  position: absolute;
+  left: -1.35rem;
+  top: 1.25rem;
+  color: var(--ilm-accent);
+}
+.diagram figcaption {
+  font-size: 0.8rem;
+  color: var(--ilm-muted);
+  margin-top: 1rem;
+}
+@media (max-width: 700px) {
+  .layers {
+    grid-template-columns: 1fr;
+  }
+  .layer + .layer::before {
+    content: '↓';
+    left: 50%;
+    top: -1.45rem;
+  }
+}

@@ -1,0 +1,151 @@
+.figure {
+  margin: 1.75rem 0;
+  border: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  background: var(--ilm-surface);
+  color: var(--ilm-text);
+  min-width: 0;
+  overflow: hidden;
+}
+.header {
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--ilm-border);
+}
+.header h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+}
+.header p,
+.caption {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--ilm-muted);
+}
+.wide > figure {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+.canvas {
+  width: 100%;
+  min-width: 54rem;
+  height: auto;
+  display: block;
+  font-family: var(--ilm-font-sans);
+  font-size: 15px;
+}
+.canvas text {
+  fill: var(--ilm-text);
+}
+.canvas marker path {
+  fill: none;
+  stroke: var(--ilm-accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.component > rect {
+  fill: var(--ilm-surface);
+  stroke: var(--ilm-control-border);
+  stroke-width: 1;
+}
+.enclosure > rect {
+  fill: var(--ilm-canvas);
+  stroke: var(--ilm-control-border);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+}
+.entityName {
+  font-weight: 700;
+}
+.symbol {
+  fill: none;
+  stroke: var(--ilm-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.exchange > path,
+.activation > path {
+  fill: none;
+  stroke: var(--ilm-accent);
+  stroke-width: 1.8;
+}
+.exchange > path {
+  stroke-dasharray: 5 4;
+}
+.exchange text {
+  paint-order: stroke;
+  stroke: var(--ilm-surface);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+.activation > rect {
+  fill: var(--ilm-accent-soft);
+  stroke: var(--ilm-accent);
+  stroke-width: 1.5;
+}
+.activation text {
+  font-weight: 600;
+}
+.details {
+  border-top: 1px solid var(--ilm-border);
+  padding: 0.8rem 1.1rem;
+}
+.details > summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.reference {
+  padding: 1rem 0 0;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.reference h4 {
+  font-size: 0.95rem;
+  margin-block: 1.1rem 0.6rem;
+}
+.entityTree {
+  display: grid;
+  gap: 0.6rem;
+}
+.scope,
+.textNode {
+  border: 1px solid var(--ilm-control-border);
+  border-radius: var(--ilm-radius-small);
+  padding: 0.75rem;
+  background: var(--ilm-surface);
+}
+.scope {
+  border-style: dashed;
+  background: var(--ilm-canvas);
+}
+.scope > p {
+  margin: 0.3rem 0 0;
+  color: var(--ilm-muted);
+}
+.scope > :is(.scope, .textNode),
+.textNode > .textNode {
+  margin-top: 0.65rem;
+}
+.exchanges {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.exchanges li {
+  padding: 0.4rem 0;
+}
+.caption {
+  padding: 0.9rem 1.1rem;
+  border-top: 1px solid var(--ilm-border);
+}
+@media (max-width: 640px) {
+  .wide .canvas {
+    min-width: 0;
+  }
+  .header {
+    padding: 1rem;
+  }
+}

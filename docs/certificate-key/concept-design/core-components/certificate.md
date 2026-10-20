@@ -139,9 +139,9 @@ Renewing a certificate in a location cannot carry the challenge, and neither can
 
 #### Registration and issuance flow
 
-The diagram below traces the whole flow, from registration through issuance completion, across the operator, the platform, and (when the authority supports it) the connector and CA.
+The diagrams below trace the whole flow, from registration through issuance completion, across the operator, the platform, and (when the authority supports it) the connector and CA.
 
-```plantuml
+```plantuml Certificate registration
 @startuml
 autonumber
 actor Operator
@@ -172,6 +172,19 @@ else Platform-level (connector has no registration support)
 end
 Core -> Core : state = Registered
 Core --> Operator : Registered certificate
+
+@enduml
+```
+
+Issuance continues from the `Registered` placeholder returned above, using its registration metadata and the authorization secret when a challenge is configured. The numbering continues from the registration diagram.
+
+```plantuml Issuance completion after certificate registration
+@startuml
+autonumber 15
+actor Operator
+participant "Core" as Core
+participant "Connector" as Conn
+participant "CA" as CA
 
 == Issuance completion ==
 Operator -> Core : Issue (CSR + authorization secret)

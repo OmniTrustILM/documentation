@@ -4,15 +4,13 @@ sidebar_position: 14
 
 # Import Certificates and Keys
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUpload } from '@fortawesome/free-solid-svg-icons'
 
 A file with certificates and keys can be imported into the inventory in one step. The platform reads the file, lists what it holds, and imports the entries you select: certificates into the certificate inventory, and keys into a `Token Profile`. Keys can be imported only into a `Token Profile` whose token was created on a Cryptography Provider v2 connector that imports keys. The Software Cryptography Provider does, the PKCS#11 Cryptography Provider does not, and a token created on Cryptography Provider v1 imports none. See [Import and export](../../concept-design/core-components/key.md#import-and-export) for how key material is protected.
 
 ## Import a file
 
 1. Click **Certificates** in the left menu
-2. Click **Import certificates and keys** (upload symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faUpload} /></span>)
+2. Click **Import certificates and keys** (upload symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">↑</span></span>)
 3. Choose the file, or paste its content. The platform recognizes the format from the content:
     - PKCS#12, in any composition
     - JKS and JCEKS key stores

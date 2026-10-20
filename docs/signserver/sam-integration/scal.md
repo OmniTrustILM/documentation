@@ -2,6 +2,8 @@
 sidebar_position: 3
 ---
 
+import ScalArchitecture from '@site/src/components/ScalArchitecture';
+
 # Sole Control Assurance Level
 
 **EN 419 241-1 identifies two levels of sole control assurance:**
@@ -13,11 +15,7 @@ sidebar_position: 3
 
 In case of SCAL1, the user relies on the server signing application to ensure that the appropriate signing key is selected. The functionality supporting signature activation and ensuring sole control is implemented as part of the server signing application.
 
-<div class="text--center">
-
-![SCAL1](../../assets/sam-integration/SCAL1.png "SCAL1")
-
-</div>
+<ScalArchitecture view="scal1" />
 
 ## Sole Control Assurance Level 2 (SCAL2)
 
@@ -26,8 +24,4 @@ In case of SCAL1, the user relies on the server signing application to ensure th
 
 SCAL2 provides greater assurance of sole control by requiring code within the HSM to implement signature activation, called signature activation module. This code is certified to the same security level as the HSM’s general cryptographic functions. The signature activation data passes, in protected form using the signature activation protocol, from the signer’s device to the HSM to ensure that the user’s signing keys can’t be abused, even if the TSP’s server signing application were to be compromised.
 
-<div class="text--center">
-
-![SCAL2](../../assets/sam-integration/SCAL2.png "SCAL2")
-
-</div>
+<ScalArchitecture view="scal2" />

@@ -43,5 +43,10 @@ target/
 /superpowers
 /.superpowers
 
+# Local quality reports
+/coverage-node/
+/coverage-ui/
+/.scannerwork/
+
 # draw.io auto-backup temp files
 *.bkp

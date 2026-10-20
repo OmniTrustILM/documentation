@@ -43,7 +43,7 @@ Example of SAML Assertion providing user's email address:
 
 The configuration of Mappers depends on your AD FS configuration. The following is a typical configuration to map the user's first name, last name, email, and groups from AD FS to Keycloak.
 
-To create Mappers, go to the Identity Provider configuration and switch to the Mappers tab. Click the `Add mapper` button and define the mappers as shown below:
+To create Mappers, go to the Identity Provider configuration and switch to the Mappers tab. Click `Add mapper` and use the field values below. The JSON configuration at the end of this page provides the same mappings for automated setup.
 
 ### Attribute: firstName
 
@@ -55,14 +55,6 @@ To create Mappers, go to the Identity Provider configuration and switch to the M
 6. Name Format: **ATTRIBUTE_FORMAT_BASIC**
 7. User Attribute Name: **firstName**
 
-<center>
-    <div style={{width: "80%"}}>
-
-        ![Keycloak mapper First Name](../../../assets/adfs/mapper-keycloak-firstname.png)
-
-    </div>
-</center>
-
 ### Attribute: lastName
 
 1. Name: **Attribute: lastName**
@@ -72,14 +64,6 @@ To create Mappers, go to the Identity Provider configuration and switch to the M
 5. Friendly Name: *keep empty*
 6. Name Format: **ATTRIBUTE_FORMAT_BASIC**
 7. User Attribute Name: **lastName**
-
-<center>
-    <div style={{width: "80%"}}>
-
-        ![Keycloak mapper Last Name](../../../assets/adfs/mapper-keycloak-lastname.png)
-
-    </div>
-</center>
 
 ### Attribute: email
 
@@ -91,14 +75,6 @@ To create Mappers, go to the Identity Provider configuration and switch to the M
 6. Name Format: **ATTRIBUTE_FORMAT_BASIC**
 7. User Attribute Name: **email**
 
-<center>
-    <div style={{width: "80%"}}>
-
-        ![Keycloak mapper Email](../../../assets/adfs/mapper-keycloak-email.png)
-
-    </div>
-</center>
-
 ### Attribute: groups
 
 1. Name: **Attribute: groups**
@@ -109,14 +85,6 @@ To create Mappers, go to the Identity Provider configuration and switch to the M
 6. Name Format: **ATTRIBUTE_FORMAT_BASIC**
 7. User Attribute Name: **groups**
 
-<center>
-    <div style={{width: "80%"}}>
-
-        ![Keycloak mapper Groups](../../../assets/adfs/mapper-keycloak-groups.png)
-
-    </div>
-</center>
-
 ## Export service provider metadata
 
 After you have configured the Identity Provider and Mappers, you need to export the SAML 2.0 service provider metadata. This metadata will be used to configure the AD FS.
@@ -125,14 +93,6 @@ After you have configured the Identity Provider and Mappers, you need to export 
 2. Click on the link `SAML 2.0 Service Provider Metadata` to download the metadata file.
 
 The metadata file contains the information about the Identity Provider, including the public key used to sign the SAML assertions.  
-
-<center>
-    <div style={{width: "80%"}}>
-
-        ![Keycloak mapper Groups](../../../assets/adfs/keycloak-saml-metadata.png)
-
-    </div>
-</center>
 
 :::tip[Metadata validation]
 Before you proceed with the AD FS configuration, validate the metadata file to ensure that it contains the correct information. You can use online tools like [SAML Metadata Validator](https://www.samltool.com/validate_xml.php) to validate the metadata file. It should contain the correct entity ID, public key, and attribute mappings.

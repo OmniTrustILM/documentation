@@ -25,6 +25,8 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           yarn install --frozen-lockfile
+          yarn typecheck
+          yarn coverage
           yarn build
           yarn verify-api-build
   gh-release:
@@ -56,6 +58,8 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           yarn install --frozen-lockfile
+          yarn typecheck
+          yarn coverage
           yarn build
           yarn verify-api-build
       - name: Upload Build Artifact
