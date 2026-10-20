@@ -13,9 +13,12 @@ Every cryptographic key management and operation in the platform are achieved th
 Operations on `Key` includes:
 
 - **Create / Destroy**
+- **Import / Export**
 - **Encrypt / Decrypt**
 - **Sign / Verify**
 - **Generate random data**
+
+Key material is imported and exported without the platform keeping it; see [Import and export](../core-components/key.md#import-and-export).
 
 ## Support for PQC algorithms
 
