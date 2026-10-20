@@ -46,10 +46,10 @@ The connector's `/v2/info` endpoint returns an `InfoResponse` with two top-level
     }
   },
   "interfaces": [
-    { "code": "info", "version": "2", "features": [] },
-    { "code": "health", "version": "2", "features": [] },
-    { "code": "metrics", "version": "1", "features": ["openMetrics"] },
-    { "code": "authority", "version": "2", "features": [] }
+    { "code": "info", "version": "v2", "features": [] },
+    { "code": "health", "version": "v2", "features": [] },
+    { "code": "metrics", "version": "v1", "features": ["openMetrics"] },
+    { "code": "authority", "version": "v2", "features": [] }
   ]
 }
 ```
@@ -71,8 +71,10 @@ Each entry describes one implemented interface. The structure is `ConnectorInter
 | Field      | Type            | Required | Description                                                                          |
 |------------|-----------------|----------|--------------------------------------------------------------------------------------|
 | `code`     | string          | yes      | Interface identifier — see [Interface codes](#interface-codes) below                 |
-| `version`  | string          | yes      | Version of the interface implemented by this connector (e.g., `"2"`)                |
+| `version`  | string          | yes      | Version of the interface implemented by this connector (e.g., `"v2"`)               |
 | `features` | array of string | no       | Optional feature flags — see [Feature flags](#feature-flags) below                  |
+
+The `version` is the letter `v` followed by the version number, such as `"v2"` or `"v3"`. `Core` compares it as an exact string against the versions it implements for the interface: a bare number such as `"2"` is accepted at registration, but `Core` refuses the interface as unsupported when it uses it.
 
 ### Interface codes
 
@@ -84,7 +86,7 @@ The `code` field must be one of the following values defined by the `ConnectorIn
 | `health`        | Health          | Health status with Kubernetes liveness/readiness probes  |
 | `metrics`       | Metrics         | Prometheus/OpenMetrics metrics endpoint                  |
 | `authority`     | Authority       | Certification authority operations                       |
-| `discovery`     | Discovery       | Certificate discovery                                    |
+| `discovery`     | Discovery       | Discovery of certificates and keys                       |
 | `entity`        | Entity          | End-entity and location management                       |
 | `compliance`    | Compliance      | Compliance rules                                         |
 | `cryptography`  | Cryptography    | Cryptographic key management and operations              |
@@ -99,8 +101,14 @@ Feature flags are optional capability indicators that signal connector behaviour
 |--------------------|-----------------------|------------------------------------------------------------------------------|
 | `stateless`        | any                   | The connector does not require a persistence layer (e.g., no database)       |
 | `openMetrics`      | `metrics`             | Metrics are exposed in OpenMetrics format (in addition to Prometheus text)   |
+| `asynchronous`     | `cryptography`        | Accepts asynchronous execution, with status and cancel endpoints             |
+| `keyImport`        | `cryptography`        | Imports protected key material into a token                                  |
+| `keyExport`        | `cryptography`        | Exports keys created or imported as exportable, as protected key material    |
 | `secretVersioning` | `secret`              | Supports versioning of secrets, keeping a history of previous values         |
 | `secretRotation`   | `secret`              | Supports triggering rotation of secrets                                      |
+| `discoveryStopResume` | `discovery`        | Supports stopping a running discovery with a resumable checkpoint and resuming it later — see [Discovery Provider v2](../provider-interfaces/discovery-provider-v2.md#stop-resume-and-cancel) |
+
+A flag is either informational or enforced. `Core` handles an informational flag's behavior whether or not the connector lists it; `stateless` and `openMetrics` are informational. An enforced flag is opt-in: the capability counts as supported only when the connector lists the flag on that interface, and `Core` never invokes it otherwise. The other flags in this table are enforced.
 
 ### Processes
 

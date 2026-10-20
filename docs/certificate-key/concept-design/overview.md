@@ -64,7 +64,7 @@ Platform modules provides the following functionality:
 |-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
 | **[Certificate Management](modules/certificate-management.md)** | Provides certificate lifecycle management functions.                                                      |
 | **[Certificate Inventory](modules/certificate-inventory.md)**   | Inventory of all certificates that are consistently visible and managed.                                  |
-| **[Certificate Discovery](modules/certificate-discovery.md)**   | Searching for certificates in various sources providing detailed results about discovered certificates.   |
+| **[Discovery](modules/discovery.md)**               | Searching for certificates and keys in various sources, providing detailed results about what was found.  |
 | **[Dashboards](modules/dashboards.md)**                         | Comprehensive visual dashboard providing quick information about the current certificate inventory state. |
 | **[Key Management](modules/key-management.md)**                 | Provides key lifecycle management functions and cryptographic operations.                                 |
 | **[Key Inventory](modules/key-inventory.md)**                   | Inventory of all keys that are consistently visible and managed in technology-agnostic way.               |
