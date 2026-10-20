@@ -6,7 +6,7 @@ sidebar_position: 15
 
 `Token` holds information about the connection to specific cryptographic technology that can be used to manage keys and request cryptographic operations.
 
-The information held by the `Token` varies depending on the `Kind` of the underneath `Cryptography Provider` and is defined by the `Connector`.
+The information held by the `Token` is defined by the `Connector`.
 `Cryptography Provider` uses `Attributes` to get the data needed to establish the connection with the `Token`.
 
 `Token` has the following parameters:
@@ -14,13 +14,13 @@ The information held by the `Token` varies depending on the `Kind` of the undern
 | Parameter               | Description                                                                             |
 |-------------------------|-----------------------------------------------------------------------------------------|
 | Name                    | Name of the `Token`                                                                     |
-| `Cryptography Provider` | Identification of `Connector` implementing the `Cryptography Provider` `Function Group` |
-| `Kind`                  | `Kind` of the technology implemented by the `Connector`                                 |
-| `Attributes`            | `Attributes` defined by `Connector` implementation and the specific `Kind`              |
+| `Cryptography Provider` | Identification of `Connector` implementing the `Cryptography Provider` interface        |
+| `Kind`                  | `Kind` of the technology implemented by a Cryptography Provider v1 `Connector`          |
+| `Attributes`            | `Attributes` defined by the `Connector` implementation                                  |
 
 ### `Cryptography Provider`
 
-For more information, refer to [Cryptography Provider](../../connectors/provider-interfaces/cryptography-provider.md) description.
+A `Token` is bound to the interface version its `Connector` reports at creation. The `Token` keeps that version for its whole life. A `Token` on the default [Cryptography Provider v2](../../connectors/provider-interfaces/cryptography-provider-v2.md) lives only in the platform. That `Token` is usable as soon as the `Connector` reaches it. A `Token` on the deprecated [Cryptography Provider v1](../../connectors/provider-interfaces/cryptography-provider.md) also has a copy in its `Connector`. That copy is activated before use.
 
 ### `Token Profile`
 
