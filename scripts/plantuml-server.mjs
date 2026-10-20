@@ -2,8 +2,8 @@
 
 import {spawnSync} from 'node:child_process';
 
-// plantuml-server v1.2026.6 (tag: jetty), pinned by digest for reproducible renders.
-export const DOCKER_IMAGE = 'plantuml/plantuml-server@sha256:5b9968b8723e03ef585396b257127337ca5f91e58ccbffc88f085bd649a717dc';
+// plantuml-server v1.2026.9 (tag: jetty), pinned by digest for reproducible renders.
+export const DOCKER_IMAGE = 'plantuml/plantuml-server@sha256:065c66adc6728ba6dd353a29d4ada73f8358b68549a0f710c4bf46b43c103618';
 
 // A tiny pre-encoded diagram ("Bob -> Alice : hello") used only to probe readiness.
 const READY_ENCODED = 'SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1oW00';
