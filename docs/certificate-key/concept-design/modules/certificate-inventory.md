@@ -23,3 +23,7 @@ See [Import Certificates and Keys](../../quick-start/certificate-management/impo
 ## Certificate details
 
 See [`Certificate`](../core-components/certificate.md) for more information.
+
+## Columns and views
+
+The columns, sorting and saved views of the list are described in [Columns and Views](../architecture/columns-and-views.md).
