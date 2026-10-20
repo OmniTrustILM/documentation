@@ -16,15 +16,16 @@ The following is a list of current versions of the platform and connectors.
 
 | Service               | Version         | Docker Image                                          |
 |-----------------------|-----------------|-------------------------------------------------------|
-| Core                  | `2.19.0`        | `hub.omnitrustregistry.com/ilm/core`                  |
-| Auth                  | `1.7.0`         | `hub.omnitrustregistry.com/ilm/auth`                  |
+| Core                  | `2.20.0`        | `hub.omnitrustregistry.com/ilm/core`                  |
+| Auth                  | `1.8.0`         | `hub.omnitrustregistry.com/ilm/auth`                  |
 | Auth OPA policies     | `1.4.1`         | `hub.omnitrustregistry.com/ilm/auth-opa-policies`     |
-| Scheduler             | `1.1.1`         | `hub.omnitrustregistry.com/ilm/scheduler`             |
+| Scheduler             | `1.2.0`         | `hub.omnitrustregistry.com/ilm/scheduler`             |
 | API Gateway           | `3.9.1`         | `hub.omnitrustregistry.com/ilm/kong`                  |
 | Messaging             | `4.2.0`         | `hub.omnitrustregistry.com/ilm/rabbitmq`              |
 | OPA                   | `1.10.0-static` | `hub.omnitrustregistry.com/ilm/opa`                   |
 | PgBouncer             | `v1.24.1-p1`    | `hub.omnitrustregistry.com/ilm/pgbouncer`             |
 | Provisioning RabbitMQ | `1.0.0`         | `hub.omnitrustregistry.com/ilm/provisioning-rabbitmq` |
+| Time Quality Monitor  | `1.0.1`         | `hub.omnitrustregistry.com/ilm-private/time-quality-monitor` |
 
 ## Front Ends
 
@@ -34,7 +35,7 @@ The Operator Web was merged with the Administrator Web in the version `2.2.0`.
 
 | Front End     | Version  | Docker Image                                            |
 |---------------|----------|---------------------------------------------------------|
-| Administrator | `2.19.0` | `hub.omnitrustregistry.com/ilm/frontend-administrator`  |
+| Administrator | `2.20.0` | `hub.omnitrustregistry.com/ilm/frontend-administrator`  |
 
 ## Tooling
 
@@ -55,22 +56,23 @@ no second matrix.
 | Connector                      | Version  | Docker Image                                                           |
 |--------------------------------|----------|------------------------------------------------------------------------|
 | Common Credential Provider     | `1.4.0`  | `hub.omnitrustregistry.com/ilm/common-credential-provider`             |
-| EJBCA NG Connector             | `1.12.0` | `hub.omnitrustregistry.com/ilm/ejbca-ng-connector`                     |
-| Network Discovery Provider     | `1.6.1`  | `hub.omnitrustregistry.com/ilm/ip-discovery-provider`                  |
+| EJBCA NG Connector             | `1.13.0` | `hub.omnitrustregistry.com/ilm/ejbca-ng-connector`                     |
+| Network Discovery Provider     | `1.7.0`  | `hub.omnitrustregistry.com/ilm/ip-discovery-provider`                  |
 | Cryptosense Discovery Provider | `1.4.1`  | `hub.omnitrustregistry.com/ilm-private/cryptosense-discovery-provider` |
-| PyADCS Connector               | `1.2.0`  | `hub.omnitrustregistry.com/ilm/pyadcs-connector`                       |
-| HashiCorp Vault Connector      | `1.2.0`  | `hub.omnitrustregistry.com/ilm/hashicorp-vault-connector`              |
+| PyADCS Connector               | `1.2.1`  | `hub.omnitrustregistry.com/ilm/pyadcs-connector`                       |
+| HashiCorp Vault Connector      | `1.2.1`  | `hub.omnitrustregistry.com/ilm/hashicorp-vault-connector`              |
 | EJBCA Legacy Connector         | `1.5.0`  | `hub.omnitrustregistry.com/ilm-private/ejbca-legacy-ca-connector`      |
 | External Authority Provider    | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/external-authority-provider`    |
 | Keystore Entity Provider       | `1.4.2`  | `hub.omnitrustregistry.com/ilm/keystore-entity-provider`               |
 | X.509 Compliance Provider      | `1.3.1`  | `hub.omnitrustregistry.com/ilm/x509-compliance-provider`               |
-| Software Cryptography Provider | `1.3.2`  | `hub.omnitrustregistry.com/ilm/software-cryptography-provider`         |
-| Email Notification Provider    | `1.2.1`  | `hub.omnitrustregistry.com/ilm/email-notification-provider`            |
-| CT Logs Discovery Provider     | `1.0.2`  | `hub.omnitrustregistry.com/ilm/ct-logs-discovery-provider`             |
-| Webhook Notification Provider  | `1.0.0`  | `hub.omnitrustregistry.com/ilm/webhook-notification-provider`          |
+| Software Cryptography Provider | `1.4.0`  | `hub.omnitrustregistry.com/ilm/software-cryptography-provider`         |
+| Email Notification Provider    | `1.3.0`  | `hub.omnitrustregistry.com/ilm/email-notification-provider`            |
+| CT Logs Discovery Provider     | `1.0.3`  | `hub.omnitrustregistry.com/ilm/ct-logs-discovery-provider`             |
+| Webhook Notification Provider  | `1.1.0`  | `hub.omnitrustregistry.com/ilm/webhook-notification-provider`          |
 | OTPKI Connector                | `1.1.0`  | `hub.omnitrustregistry.com/ilm-private/otpki-connector`                |
 | MS ADCS NG Connector           | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/ms-adcs-ng-connector`           |
-| Timestamp Formatting Connector | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/timestamp-formatting-connector` |
+| Timestamp Formatting Connector | `1.1.0`  | `hub.omnitrustregistry.com/ilm-private/timestamp-formatting-connector` |
+| PKCS#11 Cryptography Provider  | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/pkcs11-cryptography-provider`  |
 
 ## Other
 

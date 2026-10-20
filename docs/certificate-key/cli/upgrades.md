@@ -14,17 +14,17 @@ There are two separate upgrade operations. Use the right one for your intent.
 
 | What to upgrade | Command | Effect |
 |---|---|---|
-| The operator (controller) | `ilmctl upgrade --version vY` | Re-applies a newer pinned operator manifest (CRDs + controller). Reports CRD/RBAC deltas before applying. |
-| A Platform instance | `ilmctl platform upgrade NAME --to vY` | Patches `spec.version` forward only. Rejected if `--to` ≤ `observedVersion`. |
+| The operator (controller) | `ilmctl upgrade --version vX.Y.Z` | Re-applies a newer pinned operator manifest (CRDs + controller). Reports CRD/RBAC deltas before applying. |
+| A Platform instance | `ilmctl platform upgrade NAME --to X.Y.Z` | Patches `spec.version` forward only. Rejected if `--to` ≤ `observedVersion`. |
 
 ## Upgrading the operator
 
 ```console
 # Preview the upgrade (server-side dry run — validates, does not apply).
-$ ilmctl upgrade --version v1.0.0 --dry-run=server
+$ ilmctl upgrade --version v1.1.0 --dry-run=server
 
 # Apply the upgrade.
-$ ilmctl upgrade --version v1.0.0
+$ ilmctl upgrade --version v1.1.0
 
 # Omit --version to move to the latest published operator release.
 $ ilmctl upgrade
@@ -50,13 +50,16 @@ published checksums, so they are applied as fetched.
 
 ```console
 # Forward-only: --to must be strictly higher than the current observedVersion.
-$ ilmctl platform upgrade ilm --to v2.19.0
+$ ilmctl platform upgrade ilm --to 2.20.0
 
 # A major bump of managed database/messaging/Keycloak is held by the operator
 # until you explicitly acknowledge it.
-$ ilmctl platform upgrade ilm --to v2.19.0 --ack-database
-$ ilmctl platform upgrade ilm --to v2.19.0 --ack-database --ack-messaging
+$ ilmctl platform upgrade ilm --to X.Y.Z --ack-database
+$ ilmctl platform upgrade ilm --to X.Y.Z --ack-database --ack-messaging
 ```
+
+Platform versions are written without a `v` prefix, exactly as the operator's
+bill of materials names them.
 
 ## Managed-infra upgrade guard
 
@@ -71,9 +74,22 @@ or `KeycloakUpgradeBlocked` condition on the Platform. Acknowledge with:
 | `--ack-messaging` | Managed RabbitMQ major upgrade |
 | `--ack-keycloak` | Managed Keycloak major upgrade |
 
+Each flag sets `upgradeAcknowledged: true` on that managed block, and the
+acknowledgement stays in the spec. Set it back to `false` once the upgrade
+completes, so a later major bump is held again:
+
+```console
+$ kubectl patch platform ilm -n ilm --type=merge \
+    -p '{"spec":{"database":{"managed":{"upgradeAcknowledged":false}}}}'
+```
+
 ## Version skew
 
-`ilmctl version` declares the operator version range supported by the embedded BOM.
-An out-of-range operator version or `--version` flag produces a **warning**, not a
-hard failure, so existing clusters remain accessible even if the CLI is slightly
-ahead or behind the operator.
+`ilmctl` embeds the operator's bill of materials (BOM) from the operator release it
+was built against, and the BOM lists the platform versions that release supports.
+`ilmctl platform upgrade --to` refuses a version outside that list unless you pass
+`--force`, which prints a warning and patches the version anyway, and `ilmctl check`
+and `ilmctl diagnostics analyze` warn about a Platform running a version outside it. The operator
+`--version` of `ilmctl init` and `ilmctl upgrade` is not checked against the BOM, so
+the CLI can still install, upgrade and inspect an operator that is newer or older
+than the one it was built against.

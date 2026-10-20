@@ -10,13 +10,13 @@ A `Connector` deploys one provider service and, when you ask it to, registers th
 
 A connector is a provider service the platform calls out to — a compliance provider, a certificate authority integration, a timestamping service. It runs as its own workload with its own image, and the platform talks to it over HTTP.
 
-The `Connector` custom resource (`otilm.com/v1alpha1`, short name `conn`) is how the operator deploys one. From a single object it renders a Deployment, a Service, and a dedicated ServiceAccount, plus a PodDisruptionBudget and a Prometheus ServiceMonitor when you ask for them. It then keeps all of that converged, exactly as it does for a `Platform`.
+The `Connector` custom resource (`otilm.com/v1alpha1`, short name `conn`) is how the operator deploys one. From a single object it renders a Deployment, a Service, a dedicated ServiceAccount, and a NetworkPolicy, plus a PodDisruptionBudget and a Prometheus ServiceMonitor when you ask for them. It then keeps all of that converged, exactly as it does for a `Platform`.
 
 Registration is separate and optional. Deploying a connector makes it *reachable*; registering it makes the platform *aware* of it, so it appears in the administration UI and can be used. Omit `spec.registration` and the operator only deploys — useful when the platform registers the connector by some other route, or when you are bringing a workload up before a platform exists.
 
 ## A minimal Connector
 
-`spec.image` and `spec.service` are the only two blocks the CRD requires. The probes and the environment below are optional; this sample sets them because its image serves health on a legacy path:
+`spec.image` and `spec.service` are the only two blocks the CRD requires. The probes, the health check and the environment below are optional. This sample sets them because its image serves health on a legacy path:
 
 ```yaml
 apiVersion: otilm.com/v1alpha1
@@ -46,6 +46,9 @@ spec:
       path: /v1/health
       periodSeconds: 10
       failureThreshold: 45
+  # The v1 path alone spares each check a /v2/health request.
+  healthCheck:
+    path: /v1/health
   env:
     - name: SERVER_PORT
       value: "8080"
@@ -60,8 +63,8 @@ Apply it and watch the phase:
 ```bash
 kubectl apply -f connector.yaml
 kubectl get connectors -n default
-# NAME                       PHASE     READY   ENDPOINT                                                    AGE
-# x509-compliance-provider   Running   1       http://x509-compliance-provider.default.svc.cluster.local:8080   …
+# NAME                       PHASE     READY   HEALTHY   ENDPOINT                                                         AGE
+# x509-compliance-provider   Running   1       True      http://x509-compliance-provider.default.svc.cluster.local:8080   …
 ```
 
 ## Registering with the platform
@@ -81,11 +84,11 @@ spec:
         content: "complianceProvider"
 ```
 
-`name`, `platformUrl`, and `authType` are all required. The operator supplies the connector's URL itself — the in-cluster Service address, `http://<name>.<namespace>.svc.cluster.local:<service.port>` — so the platform reaches the connector over the cluster network and you never write that address down.
+`name`, `platformUrl`, and `authType` are all required. The operator supplies the connector's URL itself — the in-cluster Service address, `http://<name>.<namespace>.svc.cluster.local:<service.port>` — so the platform reaches the connector over the cluster network and you never write that address down. That holds when the connector runs in the platform's namespace: the connector's NetworkPolicy admits only its own namespace and the operator, so a platform in another namespace needs the extra policy described in [Network isolation](#network-isolation).
 
 Registration runs exactly once. The operator skips it while the connector is any phase other than `Running`, and skips it again on every later reconcile once `status.registration.uuid` is set, so a rolling update or a spec change never re-registers an already-known connector.
 
-A failed registration is retried only when retrying can help. A 5xx response or a network error is retryable, so the operator requeues with exponential backoff from 5 seconds up to a 5-minute ceiling. A 4xx response is not: the request itself is wrong, the operator stops retrying, and `Degraded` stays `True` with reason `RegistrationFailed` until you fix the spec.
+A failed registration is retried only when retrying can help. A 5xx, 408 or 429 response or a network error is retryable, so the operator requeues with exponential backoff from 5 seconds up to a 5-minute ceiling. Any other 4xx response is a rejection: the request itself is wrong, the operator stops retrying, and `Degraded` stays `True` with reason `RegistrationFailed` until you fix the spec.
 
 That condition tells you the registration failed and with which HTTP status — and deliberately nothing more. The operator never reads the platform's error body, because that body can echo request and identity material which would then flow into the connector's status, a `Warning` event, and the operator's logs. A transport failure is reported as a generic phrase for the same reason: the request URL carries the platform's address. To find out *why* the platform rejected the registration, read the platform's own logs and audit trail for the corresponding request.
 
@@ -145,7 +148,7 @@ The connector's own configuration reaches it in four ways, none of which require
 | `spec.env` | Non-sensitive `{name, value}` environment variables, set directly on the container. |
 | `spec.secretRefs` | Consume a `Secret` as environment (`type: env`) or mount it as a volume (`type: volume`), with per-key mapping. |
 | `spec.configMapRefs` | The same, for a `ConfigMap`. |
-| `spec.volumes` | Extra `emptyDir` volumes mounted into the container by name and `mountPath`. |
+| `spec.volumes` | Extra volumes mounted into the container by name and `mountPath`, each an `emptyDir` or an existing `PersistentVolumeClaim`. |
 
 A reference names an object and chooses how it is consumed. With `type: env` a `keys` list maps an individual key to an environment-variable name; with `type: volume` the object is mounted whole at `mountPath`, and a `keys` entry can place a key at a specific `path` inside it:
 
@@ -169,6 +172,144 @@ Values are projected by reference — through `secretKeyRef` or a volume mount �
 
 Referenced objects are watched. The operator recomputes a checksum over every referenced `Secret` and `ConfigMap` on each reconcile and stamps it on the pod template, so editing a referenced object rolls the connector automatically; `status.configChecksum` is the value it last stamped. A reference that does not resolve is not a silent failure either: the connector goes `Failed`, `Degraded` becomes `True` with reason `MissingSecret` or `MissingConfigMap`, `Available` goes `False` with the same reason, and a `Warning` event names the object. The operator then requeues and self-heals as soon as the object appears — no restart, no reapply.
 
+## Volumes that outlive the pod
+
+A volume entry takes one source. An `emptyDir` is created fresh for each pod and lost with it, which suits scratch space and a cache. A `persistentVolumeClaim` names a claim you created in the same namespace, and its contents survive the pod:
+
+```yaml
+spec:
+  volumes:
+    - name: vendor-state
+      mountPath: /var/lib/vendor
+      persistentVolumeClaim:
+        claimName: vendor-state
+```
+
+The claim is yours: you choose its size, its storage class and its access mode. For HSM appliance state shared by several connector replicas, use a `ReadWriteMany` claim; otherwise run one replica. Naming neither source leaves an `emptyDir`.
+
+The operator mounts the volume into the connector container at `mountPath` and publishes it to the pod under `name`, which is how a `spec.sidecars` container mounts the same volume at a path of its own.
+
+A claim holding key material an HSM client wrote — wrapped blobs, an enrolled client identity — is as sensitive as the `Secret` that seeded it, and deserves the same handling: restricted access to the namespace, and a backup story that accounts for what the volume contains.
+
+## Rolling out a change
+
+A new image tag, an edited `Secret`, an edited `ConfigMap` — each of them rolls the pod. Under the apps/v1 default the old pod keeps serving until the new one reports Ready, so for the length of that handover two connector pods run at once.
+
+That overlap is a hazard for a connector that is the sole writer of something outside the cluster. Two pods sharing one HSM token can each find a key missing and each create it, which leaves two keys under one identifier. Where the device limits how many clients may connect, the new pod cannot connect at all while the old one holds the slot, and the rollout stalls until someone breaks the cycle by hand. `spec.replicas: 1` does not avoid this: with a single replica the default bounds resolve to "start the new pod, keep the old one", which is the overlap itself.
+
+`spec.strategy` is how a connector says it cannot overlap. `Recreate` terminates the old pod before the new one starts:
+
+```yaml
+spec:
+  strategy:
+    type: Recreate
+```
+
+A zero-surge rolling update narrows the overlap rather than removing it:
+
+```yaml
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+```
+
+Kubernetes counts a pod as unavailable the moment it begins terminating, so it creates the replacement while the old pod is still shutting down and still holding whatever it holds. The overlap lasts as long as that shutdown. Zero surge suits a connector that wants a shorter window, or one that runs above a single replica; a sole writer needs `Recreate`.
+
+Zero surge costs a gap in service, so Kubernetes requires `maxUnavailable` to be at least 1; the operator fills that in when you set `maxSurge: 0` and leave `maxUnavailable` out. Left unset, `spec.strategy` renders nothing and the connector rolls the apps/v1 way — the right choice for a connector that holds nothing exclusively.
+
+The operator writes the strategy only when the custom resource names one, so deleting the field later leaves the running Deployment with the strategy it already has. Set `type: RollingUpdate` with no bounds to return to the apps/v1 default.
+
+## Giving every container a shared group
+
+`spec.securityContext.fsGroup` adds one group to every container's supplementary groups. The kubelet also applies it as the group owner of mounted volumes, though only for volume types and CSI drivers that support ownership management. A sidecar whose contract names a fixed uid and gid needs it:
+
+```yaml
+spec:
+  securityContext:
+    fsGroup: 10001
+```
+
+There is no default, deliberately. On OpenShift the `restricted-v2` SCC allocates `fsGroup` from the namespace's own range and rejects a value outside it, so pinning one there needs a namespace range that admits the value or a custom SCC. Leave the field out and the pod carries no `fsGroup` at all, which is what most connectors want.
+
+## Checking what the connector depends on
+
+Readiness tells Kubernetes that the connector's process serves. Readiness leaves out what the connector depends on, such as an HSM, a database or a remote CA. An outage there must keep the pod in its Service. A `Running` connector can therefore still fail every operation.
+
+The `Healthy` condition closes that gap. The operator asks a `Running` connector's own health endpoint on a period and records the answer:
+
+- `True` when the connector reports itself up.
+- `False` when it reports any other status.
+- `Unknown` when the operator holds no report.
+
+`kubectl get connectors` shows the condition as the `HEALTHY` column. The phase, `Available` and registration follow the Deployment alone.
+
+The default check asks `/v2/health` and falls back to `/v1/health`. A connector on either interface therefore needs no configuration. A named path is checked alone:
+
+```yaml
+spec:
+  healthCheck:
+    path: /v1/health
+    periodSeconds: 60
+    timeoutSeconds: 5
+```
+
+`enabled: false` turns the check off and removes the condition.
+
+:::note[NetworkPolicy]
+The check is a request from the operator's pod to the connector's Service. The connector's own NetworkPolicy admits the operator; see [Network isolation](#network-isolation). With that policy turned off, a NetworkPolicy of yours that selects the connector must admit the operator. Otherwise `Healthy` stays `Unknown`, and each check holds one of the operator's reconcile workers until it times out.
+:::
+
+## Network isolation
+
+A connector serves its API without authentication, so the operator renders a `networking.k8s.io/v1` NetworkPolicy for each `Connector`, named after it. The policy admits traffic to the connector's Service port from two sources:
+
+- pods in the connector's own namespace, so run a connector in its platform's namespace, where Core runs, or next to the proxy in front of it;
+- the operator's pods, which [check the connector's health](#checking-what-the-connector-depends-on).
+
+All other inbound traffic is dropped. Outbound traffic is not restricted.
+
+The policy is on by default. Turn it off on a CNI that does not enforce NetworkPolicy, or when you manage the connector's isolation yourself:
+
+```yaml
+spec:
+  networkPolicy:
+    enabled: false   # default true
+```
+
+The operator only ever changes or deletes the policy it created. If a NetworkPolicy of yours already carries the connector's name, the operator leaves it as it is, renders none of its own, and reports a `NetworkPolicyNotOwned` warning event; rename or delete yours to let the operator manage the connector's policy.
+
+NetworkPolicies add up, so a source the policy does not cover needs one more policy of your own, not the operator's policy turned off. These sources need one:
+
+- Prometheus scraping the connector's ServiceMonitor from another namespace;
+- a platform or a proxy that runs in another namespace than the connector;
+- clients outside the cluster, when `service.type` is `NodePort` or `LoadBalancer`.
+
+For example, to let Prometheus in the `monitoring` namespace scrape `x509-compliance-provider`:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: x509-compliance-provider-allow-monitoring
+spec:
+  podSelector:
+    matchLabels:
+      otilm.com/connector: x509-compliance-provider
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+```
+
+:::note[How the operator recognizes itself]
+The policy matches the operator by its namespace and by the `app.kubernetes.io/name: ilm-operator` label that every install channel puts on the operator's pod. The operator reads its namespace from its own pod when it starts. Run outside a cluster, it has none, and the policy admits only the connector's namespace. A Helm `nameOverride` changes that label, so the policy no longer admits the operator.
+:::
+
 ## The shipped samples
 
 Five ready-to-edit `Connector` samples ship with the operator:
@@ -191,7 +332,7 @@ kubectl describe connector <name> -n <namespace>   # phase, conditions, registra
 kubectl get events -n <namespace> --sort-by=.lastTimestamp | tail
 ```
 
-The printed columns are the phase, the ready replica count, the in-cluster endpoint, and the age. `status` additionally records `currentImage` (the image actually resolved), `configChecksum`, `observedGeneration`, and — once registration succeeds — `registration`.
+The printed columns are the phase, the ready replica count, the `Healthy` condition, the in-cluster endpoint, and the age. `status` additionally records `currentImage` (the image actually resolved), `configChecksum`, `observedGeneration`, and `registration`.
 
 ### Phase
 
@@ -209,7 +350,7 @@ A connector that is not `Running` is requeued every 30 seconds, so a transient p
 
 ### Conditions
 
-The operator sets three condition types. Each carries a `reason` you can match on, and the reasons below are the complete vocabulary:
+The operator sets the condition types below. Each carries a `reason` you can match on, and the reasons below are the complete vocabulary:
 
 | Condition | Reason | Status | What it means |
 |---|---|---|---|
@@ -220,12 +361,17 @@ The operator sets three condition types. Each carries a `reason` you can match o
 | `Available` | `AllReplicasReady` | `True` | Every desired replica is ready. |
 | `Available` | `ReplicaFailure` | `False` | The Deployment cannot bring pods up. |
 | `Available` | `MissingSecret` / `MissingConfigMap` | `False` | A referenced object does not exist. |
-| `Degraded` | `Running` | `False` | The connector is healthy. This is the condition you want to see. |
+| `Degraded` | `Running` | `False` | Every replica is ready and nothing has failed. This is the condition you want to see. |
 | `Degraded` | `ReplicaFailure` | `True` | The Deployment's pods are failing — read the pod events and logs. |
 | `Degraded` | `RegistrationFailed` | `True` | The platform rejected the registration, or it could not be reached. The message carries the HTTP status only — the reason lives in the platform's own logs. |
 | `Degraded` | `MissingSecret` / `MissingConfigMap` | `True` | A referenced object does not exist. The message names it. |
+| `Healthy` | `Up` | `True` | The connector reports itself up. |
+| `Healthy` | `Degraded` / `Down` / `OutOfService` / `Unknown` | `False` | The reason names the status the connector reports. |
+| `Healthy` | `NotRunning` | `Unknown` | The operator asks only a `Running` connector. |
+| `Healthy` | `NoAnswer` | `Unknown` | The connector gave no complete answer. |
+| `Healthy` | `NoHealthReport` | `Unknown` | The connector answered without a health report, as from a missing endpoint. The message carries the HTTP status. |
 
-`Degraded=False` with reason `Running` is the healthy resting state — a `Degraded` condition is always present once the connector has been up, so read its `status`, not its presence.
+`Degraded=False` with reason `Running` is the resting state — a `Degraded` condition is always present once the connector has been up, so read its `status`, not its presence.
 
 Registration records its outcome separately, in `status.registration`:
 
@@ -237,7 +383,7 @@ status:
     registeredAt: "2026-08-17T09:14:22Z"
 ```
 
-A `uuid` means the platform accepted the connector. `status` is the platform's own view of it, and it is one of `waitingForApproval`, `connected`, `failed`, or `offline`. The operator writes the block once, when registration succeeds, and does not poll it afterwards — so it records the outcome of registration rather than the connector's live health. Live health is what the conditions are for.
+A `uuid` means the platform accepted the connector. `status` is then the platform's own view of it, and it is one of `waitingForApproval`, `connected`, `failed`, or `offline`. `failed` without a `uuid` is a 4xx rejection the operator recorded for the current generation. Only a spec change retries it (annotations don't bump the generation). The block records the outcome of registration rather than the connector's live health. Live health is what the conditions are for.
 
 ## Removing a Connector
 
@@ -245,7 +391,7 @@ A `uuid` means the platform accepted the connector. `status` is the platform's o
 kubectl delete connector <name> -n <namespace>
 ```
 
-The operator adds the `otilm.com/finalizer` finalizer before it does any work, so deletion is orderly rather than abrupt: the finalizer holds the object while the operator emits a deletion event and releases it. The Deployment, Service, ServiceAccount, PodDisruptionBudget, and ServiceMonitor all carry owner references to the `Connector`, so Kubernetes garbage-collects them once the object is gone.
+The operator adds the `otilm.com/finalizer` finalizer before it does any work, so deletion is orderly rather than abrupt: the finalizer holds the object while the operator emits a deletion event and releases it. The Deployment, Service, ServiceAccount, NetworkPolicy, PodDisruptionBudget, and ServiceMonitor all carry owner references to the `Connector`, so Kubernetes garbage-collects them once the object is gone.
 
 :::note[Deleting a Connector does not de-register it]
 The operator never calls the platform on delete, so a connector that was registered stays in the platform's connector inventory. Remove it there as a separate step.

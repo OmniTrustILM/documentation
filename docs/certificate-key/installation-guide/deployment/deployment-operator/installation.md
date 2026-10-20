@@ -173,6 +173,8 @@ An idle manager after a fresh install is healthy — the operator acts only once
 
 Upgrade the operator through the channel you installed it with — `helm upgrade` with the newer chart version, a server-side apply of the newer release manifest (which carries the CRD updates with it), or `make install` and `make deploy` again from the newer source checkout. Upgrading the operator never moves a running platform: a platform stays pinned to its resolved version until you change `spec.version` yourself. How the two layers — the operator binary and the platform version — upgrade together is covered in [Upgrading](./upgrading.md).
 
+An operator upgrade can also render new objects for the custom resources you already run. Each `Connector` and `Proxy` gets a NetworkPolicy on the first reconcile after the upgrade, unless a NetworkPolicy of yours already carries its name, and that policy drops traffic from other namespaces except the operator's own. If something in another namespace calls a connector or a proxy, Prometheus for example, read [Network isolation](./custom-resources/connector.md#network-isolation) before you upgrade.
+
 ## Remove the operator
 
 To remove the operator, undo the path you installed it with — and if you mean to remove the platforms too, delete those first ([Remove the platform](./custom-resources/platform.md#remove-the-platform)):

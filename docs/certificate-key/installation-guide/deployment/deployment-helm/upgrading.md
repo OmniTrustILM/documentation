@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # Upgrading
 
 :::warning[Before upgrading]
@@ -13,6 +17,58 @@ Platform can be installed from scratch anytime when you have a backup of your da
 The following contains important information and instructions about upgrading Helm charts.
 
 Upgrading Helm chart is done by running the `helm upgrade` command. The command upgrades the platform to the specified version. The command can be used to upgrade the platform to the same version with changed parameters.
+
+## Moving credentials to existing Secrets
+
+Before selecting an `existingSecret` option, create the complete credential bundle in the release namespace under a new name that differs from the chart-managed Secret. For example, Core's `database.existingSecret` must not be `core-secret`, and the shared `global.messaging.existingSecret` must not be `messaging-secret`. The same rule applies to each component's generated Secret name and to standalone messaging bundles.
+
+Then update the corresponding references and upgrade using the selected fixed chart version. Selecting an external reference removes the generated credential Secret from the chart. Helm can delete that previously managed resource during upgrade, so pointing the reference back to its old name would leave the workload without credentials. Charts reject these name collisions; an existing Secret is not a request to retain the previous chart-managed resource.
+
+## To 2.20.0
+
+:::warning[Before upgrading]
+- If you run `helm upgrade` with `--wait` or `--atomic`, set `--timeout` above Core's startup budget, for example `35m`. See [Longer Core startup](#longer-core-startup).
+- With an external broker, create the `provider.discovery-work` queue. See [Messaging queue for discovery work](#messaging-queue-for-discovery-work).
+- If a CBOM repository URL is set in the platform settings, upgrade cbom-repository to 1.2.0 or later before or together with the platform: Core 2.20.0 pages it with a cursor that 1.1.0 does not serve.
+:::
+
+### Longer Core startup
+
+Core migrates the `discovery_certificate` table at startup. On a large installation this takes minutes, and requests that touch discovered certificates wait until it finishes, so plan a maintenance window. To estimate the size:
+
+```sql
+SELECT count(*), pg_size_pretty(pg_total_relation_size('core.discovery_certificate'))
+FROM core.discovery_certificate;
+```
+
+The startup budget (`image.probes.startup.failureThreshold` × `periodSeconds`) is raised to about 30 minutes. If you override either value, keep the product above the migration time. With `--wait` or `--atomic`, a shorter `--timeout` fails the upgrade mid-migration, and `--atomic` then starts the previous Core on a partly migrated database.
+
+### Connector registration on upgrade
+
+`helm upgrade` now registers the enabled connectors and the new interfaces of upgraded ones, as `helm install` does. In 2.20.0 it adds `Software-Cryptography-Provider-v2` next to the existing v1 registration; keep both. If Core or a connector is not ready within 150 seconds, the job skips the registration: register it by hand or run `helm upgrade` again.
+
+- A connector you delete in the platform but keep enabled in your values is registered again, waiting for approval. Disable it in your values to keep it removed.
+- Disabling a connector in your values does not remove its registration.
+
+### Messaging queue for discovery work
+
+Core 2.20.0 reads discovery work from a new queue, `provider.discovery-work`. The bundled broker needs no action. With external messaging (`global.messaging.external.enabled: true`), set it up on your broker before the upgrade:
+
+- a durable queue `provider.discovery-work`;
+- the messages Core publishes to the `ilm` exchange with the routing key `provider.discovery-work`, routed into it;
+- permission for Core's broker user (`global.messaging.coreUsername`) to read from it.
+
+On a topic-based broker such as Azure Service Bus, that is a durable subscription `provider.discovery-work` on the `ilm` topic, filtered on `sys.Label = 'provider.discovery-work'`: Core sends the routing key as the message label. On RabbitMQ, it is a queue on the platform virtual host (`messaging.virtualHost`, `/` by default) bound to the `ilm` exchange, for example with [rabbitmqadmin v2](https://github.com/rabbitmq/rabbitmqadmin-ng):
+
+```bash
+rabbitmqadmin --vhost / queues declare --name provider.discovery-work --type classic --durable true
+rabbitmqadmin --vhost / exchanges bind --source ilm --destination-type queue \
+  --destination provider.discovery-work --routing-key provider.discovery-work
+rabbitmqctl set_permissions -p / <core-username> '' '^ilm(-proxy)?$' \
+  '^core(\..+|-.+)?$|^provider\.(status-poll|discovery-work)$|^time-quality\.(config-request|results)$'
+```
+
+`rabbitmqctl set_permissions` replaces all of the user's permissions on the virtual host; the patterns above are the ones the bundled broker grants Core.
 
 ## To 2.19.0
 
@@ -39,6 +95,12 @@ The default RabbitMQ virtual host has changed from `czertainly` to `/` (the Rabb
 | `messaging.virtualHost`    | `czertainly`       | `/`         |
 | `bootstrap.exchange`       | `czertainly`       | `ilm`       |
 | `bootstrap.proxy.exchange` | `czertainly-proxy` | `ilm-proxy` |
+
+:::note[The old names are identifiers, not stale branding]
+Left at the defaults above, a pre-2.19.0 deployment created three separate objects in RabbitMQ: the virtual host `czertainly`, the main exchange `czertainly` — a different object that happens to carry the same name — and the proxy exchange `czertainly-proxy`. If your values file set `messaging.virtualHost`, `bootstrap.exchange` or `bootstrap.proxy.exchange`, your deployment created the names you chose instead.
+
+Whichever names yours has, they stay until you migrate. Type them exactly as they exist in the broker wherever you inspect, override, or delete the old topology — that is what RabbitMQ resolves, regardless of the platform having been renamed to ILM.
+:::
 
 #### Fresh installation
 
@@ -122,7 +184,7 @@ Perform the steps below in the order shown. In particular, run the Keycloak migr
 | Deployment                    | Configuration                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 |-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Fresh installation            | The new ILM realm is automatically created. No manual changes are required.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Upgrade from previous version | The existing CZERTAINLY realm must be renamed and its clients, default role, audience mapper, and built-in client URLs updated to match the new ILM identifiers in the realm JSON shipped with this release. Use the provided Python script [update_realm_from_2.17.0_to_2.18.0.py](https://github.com/OmniTrustILM/helm-charts/tree/main/charts/keycloak-internal/scripts/update_realm_from_2.17.0_to_2.18.0.py). The script will prompt you for the Keycloak URL, admin username, and password. It is idempotent (safe to run multiple times) and serves as documentation for the necessary changes — every UUID is preserved, only human-readable identifiers and URLs are updated, so existing users, sessions, group memberships, and client secrets are not affected. |
+| Upgrade from previous version | The existing `CZERTAINLY` realm must be renamed and its clients, default role, audience mapper, and built-in client URLs updated to match the new `ILM` identifiers in the realm JSON shipped with this release. Use the provided Python script [update_realm_from_2.17.0_to_2.18.0.py](https://github.com/OmniTrustILM/helm-charts/tree/main/charts/keycloak-internal/scripts/update_realm_from_2.17.0_to_2.18.0.py). The script will prompt you for the Keycloak URL, admin username, and password. It is idempotent (safe to run multiple times) and serves as documentation for the necessary changes — every UUID is preserved, only human-readable identifiers and URLs are updated, so existing users, sessions, group memberships, and client secrets are not affected. |
 
 The script connects via the Keycloak Admin REST API, so it works against any Keycloak (chart-managed or external) and does not depend on any specific database access.
 

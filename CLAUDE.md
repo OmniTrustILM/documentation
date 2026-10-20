@@ -50,7 +50,7 @@ work. If a release makes the build fail with a `SIGABRT` heap-limit crash (which
 infrastructure flakiness), raise both together after confirming with one cold build:
 `yarn clear && NODE_OPTIONS=--max_old_space_size=<limit> yarn build`.
 
-### Remote docs (five synced sets)
+### Remote docs
 
 These directories are **not authored here**. `docusaurus-plugin-remote-content` downloads them from their source repositories at a pinned ref, so local edits are overwritten on the next download — fix errors upstream.
 
@@ -64,11 +64,9 @@ These directories are **not authored here**. `docusaurus-plugin-remote-content` 
 
 The two operator entries share `operatorDocsRef` and are always re-pinned together. The `_category_.json` in each target directory **is** authored here — it is not in any `documents` array, so a download never touches it.
 
-The operator, cli and devenv pages follow two rules, enforced upstream: every page carries `sidebar_position` front matter, and links are relative within the synced set (same-directory, or one level between `docs/site/` and `docs/site/custom-resources/` in the operator set) — everything else is an absolute URL. (The helm set predates both rules and carries no front matter.) `markdown.hooks.onBrokenMarkdownLinks` is `'throw'`, so a link violation fails `yarn build` rather than printing a warning nobody reads.
+The synced pages follow two rules: every page carries `sidebar_position` front matter, and links are relative within the synced set (same-directory, or one level between `docs/site/` and `docs/site/custom-resources/` in the operator set) — everything else is an absolute URL. `markdown.hooks.onBrokenMarkdownLinks` is `'throw'`, so a link violation fails `yarn build` rather than printing a warning nobody reads.
 
-> **The helm set is pinned behind its fix.** `charts/ilm/docs/overview.md` carried a link out of its own directory (`../../messaging-rabbitmq`), which was hand-patched here after a sync — the exact failure mode the `'throw'` flip exists to prevent. The upstream fix is merged on `helm-charts` `main` but is **not** in the `2.19.0` tag that `chartVersion` pins, so `download-remote-helm-docs` must not be re-run until `chartVersion` advances. If it is, the build now fails loudly instead of regressing silently.
-
-> **The three new pins are merge commits, not tags.** `operatorDocsRef`, `cliDocsRef` and `devenvDocsRef` name the merge commits that first published each synced set, because none of the three repositories has cut a release containing its docs yet. The operator and cli release runbooks move them to `v` + `operatorVersion` / `v` + `cliVersion` at the next release. `cli/commands.md` is generated upstream by `make docs` — never edit it here.
+> **The operator and cli pins are release tags; the devenv pin is a commit.** `operatorDocsRef` and `cliDocsRef` name the release tags (`v` + `operatorVersion` / `v` + `cliVersion`), which the operator and cli release runbooks move. The development environment publishes no releases, so `devenvDocsRef` names the commit that last changed its `docs/site/`. `cli/commands.md` is generated upstream by `make docs` — never edit it here.
 
 ## Architecture
 

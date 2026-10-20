@@ -83,7 +83,11 @@ Auth ..> Pem
 @enduml
 ```
 
-The Core API is published on host port `8280` (mapped to container port `8080`). The Local API, used to register the first administrator, answers only requests from the `core` container's own localhost, so it is not reachable through the published port — call it with `docker exec` (see [Authentication](#authentication)). State lives in bind mounts under the repository root: the PostgreSQL data under `./data/postgres`, the broker state and logs under `./data/rabbitmq`, and the trusted CA bundle at `./secrets/trusted_certificates.pem`.
+The Core API is published on host port `8280` (mapped to container port `8080`). The Local API, used to register the first
+administrator, answers only requests from the `core` container's own localhost, so it is not reachable through the published
+port — call it with `docker exec` (see [Authentication](#authentication)). State lives in bind mounts under the repository
+root: the PostgreSQL data under `./data/postgres`, the broker state and logs under `./data/rabbitmq`, and the trusted CA bundle
+at `./secrets/trusted_certificates.pem`. The SoftHSM sidecar's token lives in a docker volume.
 
 ## Prerequisites
 
@@ -120,6 +124,8 @@ Create a `.env` file in the root of the repository and update the values. The `.
 | `SMTP_PASSWORD` | Password for the SMTP server. Used with the `email-notification-provider` service. |
 | `GITHUB_USERNAME` | Username for the GitHub account to get the packages, if necessary. |
 | `GITHUB_PASSWORD` | Password for the GitHub account to get the packages, if necessary. |
+| `SOFTHSM_USER_PIN` | User PIN of the SoftHSM sidecar's token. |
+| `SOFTHSM_SO_PIN` | Security Officer PIN of the SoftHSM sidecar's token. |
 
 ### Trusted CA certificates
 
@@ -168,9 +174,10 @@ The Compose files define profiles that can be used to start the required service
 | `core` | `opa` `rabbitmq` `auth` `opa-bundle-server` `scheduler` `core` | Starts the core services of the platform. |
 | `database` | `postgres` | Starts the PostgreSQL database. |
 | `core-dev` | `opa` `rabbitmq` `auth` `opa-bundle-server` `scheduler` | Starts services that are needed for the development of the Core service. |
-| `all` | Every service — each service definition in both Compose files carries the `all` profile. | Starts all services. |
+| `all` | Every service except `pkcs11-cryptography-provider` and `pkcs11-sidecar-softhsm`. | Starts all services that build locally or pull from a public registry. |
 
-Each service can also be started separately using the profile named `[service name]-standalone`. The one exception is the `utils` service, whose dedicated profile is named `utils`.
+Most of the services can also be started separately using the profile named `[service name]-standalone`.
+
 
 ### Developing the Core service
 
@@ -216,9 +223,25 @@ The `./data/postgres` directory contains the data of the PostgreSQL database. Re
 
 The `rabbitmq` service mounts `./rabbitmq/definitions.json` and `./rabbitmq/rabbitmq.conf` into the container. On boot the broker imports the topology (the vhost, the `ilm` exchange, the queues and their bindings, and the `guest` admin user) from `definitions.json`. The data directory is bind-mounted at `./data/rabbitmq/data` so broker state persists across restarts.
 
-:::warning[Wipe persisted broker state after a topology change]
+:::note[Restart the broker after adding a queue or binding]
 
-If you upgrade an existing development environment that already has data in `./data/rabbitmq/data` and the broker logs `PRECONDITION_FAILED` errors during the definitions import (typically because previously created queues have different attributes than the new declarations), wipe the persisted state and restart:
+The import runs only at broker boot, and `definitions.json` is bind-mounted — editing it does not change the service configuration, so `docker compose up` leaves an already-running broker untouched and reports it as up-to-date. After pulling or making an additive topology change, restart the broker so it re-imports:
+
+```bash
+docker compose -f ilm-compose.yml --profile core restart rabbitmq
+```
+
+Confirm the new topology is live:
+
+```bash
+docker compose -f ilm-compose.yml --profile core exec rabbitmq rabbitmqctl list_queues name
+```
+
+:::
+
+:::warning[Wipe persisted broker state after a conflicting topology change]
+
+Adding queues and bindings merges cleanly into an existing broker, so a restart is enough. A wipe is needed only for a *conflicting* change: if the broker logs `PRECONDITION_FAILED` errors during the definitions import (typically because previously created queues have different attributes than the new declarations), wipe the persisted state and restart:
 
 ```bash
 docker compose -f ilm-compose.yml down
@@ -299,7 +322,7 @@ Certificates that should be trusted by the `auth` service must be added to `trus
 
 ## Scripts
 
-The `scripts/` directory contains helper scripts for one-time setup tasks. They run on the host and need `curl`; `timestamping-setup.sh` additionally requires `jq` and `base64`.
+The `scripts/` directory contains helper scripts for one-time setup tasks. They run on the host and need `curl`.
 
 ### bootstrap-first-admin.sh
 
@@ -313,13 +336,19 @@ Registers the first administrator account by POSTing `scripts/first-admin.json` 
 ./scripts/bootstrap-first-admin.sh --ilm-host http://localhost:8081
 ```
 
-`--ilm-host` is the script's only option.
+The account is registered with the dummy certificate bundled in `scripts/first-admin.json`. To register a different certificate, pass `--client-cert-pem`.
+
+```bash
+./scripts/bootstrap-first-admin.sh --client-cert-pem /path/to/admin.cert.pem
+```
 
 ### timestamping-setup.sh
 
-End-to-end provisioning script that creates all the platform objects required for a timestamping environment: five connectors, a SoftKeyStore credential, an EJBCA authority, a soft token and token profile, a Time Quality configuration, a vault instance and vault profile, a mapped user and role, and two TSA sets (non-qualified and qualified), each with a key pair, RA profile, certificate, TSP profile, signing profile, and Basic credential.
+End-to-end provisioning script that creates all the platform objects required for a timestamping environment: five connectors, a SoftKeyStore credential, an EJBCA authority, a token and token profile on the chosen cryptography provider, a Time Quality configuration, a vault instance and vault profile, a mapped user and role, and two TSA sets (non-qualified and qualified), each with a key pair, RA profile, certificate, TSP profile, signing profile, and Basic credential.
 
-The connector services it registers must already be running — start them with the `all` profile or their `[service name]-standalone` profiles. The defaults expect the Compose port mappings: `common-credential-provider` on `8200`, `ejbca-ng-connector` on `8210`, `software-cryptography-provider` on `8230`, and `timestamp-formatting-connector` on `8270`.
+The connector services it registers must already be running — start them with their `[service name]-standalone` profiles. The defaults expect the Compose port mappings: `common-credential-provider` on `8200`, `ejbca-ng-connector` on `8210`, `software-cryptography-provider` on `8230`, and `timestamp-formatting-connector` on `8270`.
+
+`--crypto-provider` chooses where the TSA keys live. `software-v2`, the default, and `software-v1` register `software-cryptography-provider` as a v2 or a v1 connector. `pkcs11` registers `pkcs11-cryptography-provider`, on `8290` by default, and reads the token user PIN from the environment variable that `--pin-env` names.
 
 ```bash
 ./scripts/timestamping-setup.sh \
@@ -330,8 +359,28 @@ The connector services it registers must already be running — start them with 
 
 The `--certificate-dn` value is used directly as the certificates' common name prefix — the issued CNs are `<value>-non-qualified` and `<value>-qualified`, so pass a bare name, not a `CN=` string.
 
+`--key-algorithm` and `--key-spec` take the cryptography provider's own algorithm codes and key-spec field names. `--signature-scheme` and `--signature-digest` choose the signature where the key's algorithm leaves it open. `--issuer-ca` uploads a root CA certificate to Core and trusts it. `--set-name` names a set's objects and, in place of `--certificate-dn`, its certificates' CN prefix.
+
+Pass `--json-summary <file>` to additionally write the names and UUIDs of every provisioned object as JSON, for scripts and test suites that would otherwise have to scrape the printed summary. Runs that share the file each add their sets to it. The file contains the TSP Basic credential password, so on POSIX filesystems it is created with owner-only (0600) permissions — keep it out of version control. Some Windows setups do not enforce POSIX modes — Git Bash, and WSL writing to a Windows drive under `/mnt` mounted without the `metadata` option. There `chmod` reports success while the file stays group- and world-readable. (WSL's own Linux filesystem does enforce them normally.) The script therefore checks the mode that actually stuck and warns when it is not 0600 — protect the file yourself when you see that warning.
+
+The flag has one side effect on provisioning. A TSP Basic credential that already exists is normally reused untouched, and the API never returns its stored password. With `--json-summary` the credential is therefore rotated to `--tsp-credential-password` before the summary is written, so the reported password is one that works — which invalidates the password any current consumer of that credential holds. Without the flag no rotation happens.
+
+The rotation is not effective the instant the script exits. The platform stores the secret in Vault asynchronously and evicts its credential cache from the resulting event, so a TSP request fired immediately after reading the summary can still be authenticated against the previous password and rejected with a 401. The width of that window is not specified — retry on a 401 rather than treating the first one as a failure.
+
 Run `./scripts/timestamping-setup.sh --help` for the full option list (connector ports, EJBCA profiles, object name bases, polling tunables, and more).
 
 ## Connectors and technologies
 
 To have a complete setup, you need a technology available for the connectors. For example, if you would like to work with the Authority Provider functions, you should have an appropriate connector running that is able to communicate with the target technology.
+
+## PKCS#11 connector and its sidecars
+
+The `pkcs11-cryptography-provider-standalone` profile starts the PKCS#11 connector together
+with SoftHSM proxy sidecar. `pkcs11/profiles.json` lists one config profile per sidecar,
+and the connector offers those names as the `profile` token attribute.
+
+SoftHSM needs no additional configuration — the sidecar initializes its token on the first start.
+
+The sidecar image is not built here. It is published from the connector repository to
+`hub.omnitrustregistry.com/ilm-private`, so `docker login hub.omnitrustregistry.com` and read
+access to the `ilm-private` project are prerequisites of this profile.

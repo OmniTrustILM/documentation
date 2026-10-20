@@ -12,6 +12,8 @@ and Git-friendly.
 
 ```console
 $ ilmctl platform generate \
+    --name ilm \
+    --host ilm.example.com \
     --profile managed-ha \
     --db-mode managed \
     > platform.yaml
@@ -21,13 +23,15 @@ $ kubectl apply -f platform.yaml
 ```
 
 `generate` writes to stdout by default. The output includes comments showing the
-effective value for each configurable field and its source (`flag`, `profile`, or
-`default`), so the committed file is self-documenting.
+effective value for each configurable field and its source (`flag`, `profile`,
+`default`, or `placeholder`), so the committed file is self-documenting. Replace every
+placeholder before you commit.
 
-You can also apply in one step:
+`--apply` is refused while placeholders remain. With external provisioning nothing is
+left to replace, so you can also apply in one step:
 
 ```console
-$ ilmctl platform generate --profile managed-ha --db-mode managed --apply
+$ ilmctl platform generate --name ilm --host ilm.example.com --profile managed-ha --provisioning-mode external --apply
 ```
 
 ## Server-side apply and field-manager conflicts
@@ -41,8 +45,8 @@ intentionally want `ilmctl` to take ownership, pass `--force-conflicts`.
 ## Dry-run
 
 `apply`, `init`, `upgrade`, `delete`, and `edit` accept `--dry-run=client|server`
-(absence means perform the action). `platform generate --dry-run=server` validates
-the rendered CR against the API server (CEL validation) without persisting it.
+(absence means perform the action). `platform generate --apply --dry-run=server`
+validates the rendered CR against the API server (CEL validation) without persisting it.
 
 ## Connector and Proxy CRs
 

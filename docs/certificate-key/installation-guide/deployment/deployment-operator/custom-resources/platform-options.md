@@ -12,7 +12,7 @@ The fields on `spec` itself; [How configuration is organized](./platform.md#how-
 
 | Field | Default | Purpose |
 |---|---|---|
-| `version` | the operator's default bundle | The platform version bundle ([Upgrading](../upgrading.md#how-a-version-is-resolved)). |
+| `version` | the operator's default bundle | The platform version bundle, or `develop` to follow the newest bundle on a development build of the operator ([Upgrading](../upgrading.md#how-a-version-is-resolved)). |
 | `common` | — | Fleet-wide configuration (see below). |
 | `database` | *required* | The database connection — `external` or `managed`, plus `pgBouncer`. |
 | `messaging` | *required* | The AMQP broker — `external` or `managed`, plus `management.expose`, `timeQuality.enabled` (default `false`), and `migrationAcknowledgedForVersion` for an external-broker migration. |
@@ -22,7 +22,7 @@ The fields on `spec` itself; [How configuration is organized](./platform.md#how-
 | `networkPolicy` | enabled | Default-deny isolation (opt-out), plus `ingressNamespace` (default `ingress-nginx`). |
 | `core` | — | Core overrides, plus `clientCertHeader` (operator-filled `ssl-client-cert`), `timeQualityMonitor`, and `instanceId` — which admission accepts only on a single-replica Core: not alongside `autoscaling`, and under `highAvailability.enabled` only with an explicit `core.replicas: 1`, because one id shared by several replicas would emit identical certificate serial numbers. |
 | `provisioning` | `external` | Remote-proxy provisioning wiring; `deploy` renders the bundled service. |
-| `auth` | — | Auth overrides, plus `create.createUnknownUsers`/`createUnknownRoles` (both `false`) and `syncPolicy` (`create-only`). |
+| `auth` | — | Auth overrides, plus `create.createUnknownUsers`/`createUnknownRoles` (both `false`; `registerAdmin.password` turns `createUnknownUsers` on) and `syncPolicy` (`create-only`). |
 | `scheduler` / `authOpaPolicies` / `feAdministrator` / `utils` / `gateway` | — | Component overrides. `utils.enabled` is opt-in; `gateway` adds `cors`, `logging.request`, and `trustedIps`; `feAdministrator` adds `url`. |
 | `edge` | none | The external HTTPS edge — Ingress or Gateway API, plus TLS. |
 | `registerAdmin` | off | First-administrator bootstrap, by certificate and/or password. Both methods are walked through in [Read back the generated credentials](./platform.md#read-back-the-generated-credentials). |
@@ -40,6 +40,7 @@ Fleet-wide configuration, applied to every component. [Cross-component configura
 | `hostName` | The canonical public FQDN: the edge host, Keycloak's `KC_HOSTNAME`, the OIDC URIs, and the CORS origin. |
 | `proxy` | The outbound HTTP(S) proxy for all components: `enabled` sets `PROXY_ENABLED`, and `http`, `https`, and `noProxy` are injected only when non-empty. |
 | `logging.level` | The platform log level (default `INFO`). |
+| `logging.format` | Core's console log format: `text`, or one JSON object per line with `ecs` or `logstash`. Unset leaves Core's default (`text`). Renders on 2.20.0 and later only. |
 | `trustedCertificates` | The CA bundle, by `secretRef` plus an optional `caKey`. |
 | `initContainers` / `sidecars` / `volumes` / `volumeMounts` / `additionalPorts` | Fleet-wide pod-template passthrough, SCC-hardened. |
 | `additionalEnvFrom` | Whole-Secret and whole-ConfigMap `envFrom` — names only, never values. |
@@ -62,9 +63,9 @@ Shared by every component.
 | `resources` | Container requests and limits. |
 | `env` | Non-sensitive inline env, appended last-wins. |
 | `secretRefs` / `configMapRefs` | Mount or inject Secrets and ConfigMaps, as env or volume, with key mapping. |
-| `volumes` | Extra emptyDir volumes mounted into the main container. |
+| `volumes` | Extra volumes mounted into the main container, each an emptyDir or an existing PersistentVolumeClaim. |
 | `probes` | Liveness, readiness, and startup overrides. |
-| `securityContext` | `runAsNonRoot` and `readOnlyRootFilesystem`, both defaulting to true; always SCC-hardened on a fill-don't-replace basis. |
+| `securityContext` | `runAsNonRoot` and `readOnlyRootFilesystem`, both defaulting to true, plus an optional pod-level `fsGroup` with no default; always SCC-hardened on a fill-don't-replace basis. |
 | `podAnnotations` / `podLabels` | Pod-template metadata. |
 | `nodeSelector` / `affinity` / `tolerations` | Scheduling. |
 | `initContainers` / `sidecars` | Appended, SCC-hardened. |
