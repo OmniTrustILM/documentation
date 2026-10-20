@@ -131,7 +131,7 @@ This method is intended mainly for migrating ILM from one Appliance to another A
 
 First, do a Backup on the old ILM Appliance as described above.
 
-Start a brand new instance of Appliance, [upgrade OS](#os-upgrades).
+Start a brand new instance of Appliance, [upgrade OS](./upgrading.md#os-upgrades).
 
 Extract backups of `/home/ilm` and `/etc/ilm-ansible/vars/`.
 
