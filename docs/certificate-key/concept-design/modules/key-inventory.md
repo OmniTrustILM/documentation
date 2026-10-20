@@ -41,3 +41,7 @@ A `Key` usually comes from a `Token Profile`, where it is created or imported. A
 - **Where it was found.** Where the provider found the key is kept on it as metadata, with the discovery as its source, from every discovery that finds it.
 
 A discovered key starts `Active` and enabled, with no key usages. Without a token, only the platform's record of the key can change: you can edit it, enable or disable it, update its key usages, mark it compromised and then destroy it, or delete it. Signing, verification, encryption, decryption and export are not available, because no token holds the key.
+
+## Columns and views
+
+The columns, sorting and saved views of the list are described in [Columns and Views](../architecture/columns-and-views.md).
