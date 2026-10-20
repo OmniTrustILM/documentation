@@ -63,3 +63,19 @@ test('accepts XML-escaped href values without treating images as navigation link
     const svg = '<svg viewBox="0 0 300 100"><image href="data:image/png;base64,bytes"/><a target="_top" xlink:href="https://example.test/?a=1&amp;b=2"><text>Open</text></a></svg>';
     assert.deepEqual(verifyRender(svg, {source}), {ok: true});
 });
+
+for (const entity of ['amp', 'quot', 'apos', 'lt', 'gt']) {
+    test(`preserves literal &${entity}; text inside an XML-escaped link`, () => {
+        const source = `A -> B : [["https://example.test/?value=&${entity};" Open]]`;
+        const svg = `<svg viewBox="0 0 300 100"><a target="_top" href="https://example.test/?value=&amp;${entity};"><text>Open</text></a></svg>`;
+        assert.deepEqual(verifyRender(svg, {source}), {ok: true});
+    });
+}
+
+test('rejects entity text that would only match the source link after a second decode', () => {
+    const source = 'A -> B : [["https://example.test/?value=<item>" Open]]';
+    const svg = '<svg viewBox="0 0 300 100"><a target="_top" href="https://example.test/?value=&amp;lt;item&amp;gt;"><text>Open</text></a></svg>';
+    const result = verifyRender(svg, {source});
+    assert.equal(result.ok, false);
+    assert.match(result.reason, /link/i);
+});

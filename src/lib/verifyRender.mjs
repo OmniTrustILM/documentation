@@ -9,9 +9,16 @@ function isPlantumlErrorImage(svg) {
         /An error has occurred/.test(svg);
 }
 
+const XML_ATTRIBUTE_ENTITIES = {
+    '&amp;': '&',
+    '&quot;': '"',
+    '&apos;': "'",
+    '&lt;': '<',
+    '&gt;': '>',
+};
+
 function xmlAttribute(value) {
-    return value.replaceAll('&amp;', '&').replaceAll('&quot;', '"').replaceAll('&apos;', "'")
-        .replaceAll('&lt;', '<').replaceAll('&gt;', '>');
+    return value.replaceAll(/&(?:amp|quot|apos|lt|gt);/g, (entity) => XML_ATTRIBUTE_ENTITIES[entity]);
 }
 
 function missingRenderedLinks(svg, source) {
