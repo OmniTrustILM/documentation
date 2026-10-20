@@ -47,6 +47,8 @@ Once the first administrator is created, you can access the Administrator Interf
 Use the following URL with the client certificate authentication (first administrator):
 `https://[domain]:[port]/administrator`
 
+For certificate sign-in, the TLS terminator in front of the platform must forward the client certificate; see [Client Certificate Authentication](deployment/client-certificate-authentication.md).
+
 After successfully logging in, you can start administering and using the platform.
 
 :::info[Changing administrator web base URL context]

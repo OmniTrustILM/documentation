@@ -4,37 +4,36 @@ sidebar_position: 3
 
 # Create Trusted Certificates
 
-:::success[Publicly trusted certificates]
-Publicly trusted certificates are included in the system trust store by default. Such certificates do not need to be included in the trusted certificates as the system will automatically consider them as trusted. 
-:::
+The platform trusts the CA certificates in a PEM bundle that you supply when you deploy it. Include:
 
-In order to establish trust with internal certificates, we need to create set of trusted certificates.
-This set includes:
-- CA certificates issuing client certificates for authentication to the platform
-- CA certificates that issued infrastructure certificates to establish authenticated TLS connection
-- any other certificate that should be trusted between the services and integrated technologies
+- the CAs that issue the client certificates users sign in with; see [Client Certificate Authentication](deployment/client-certificate-authentication.md)
+- the CAs that issued the certificates of the infrastructure and integrated technologies the platform connects to over TLS
 
-Trusted certificates are configured in the platform through the list of PEM-encoded certificates:
-- in Ingress resources to authenticate users provided client-certificate
-- in `Core` service to trust internally managed CA certificates
-- in `Connectors` to establish trust with the technology
+Publicly trusted CAs need not be included, except for `Auth`: it mounts the whole bundle Secret at `/etc/ssl/certs`, in place of its image's own CA certificates, so it trusts only the CAs in the bundle.
 
-:::info[Different set of trusted certificates for different services]
-The list of trusted certificates is globally applied to all services that supports custom trust lists. However, it is possible to apply different sets of trusted certificates to different services. In such case, the trusted certificates should not be configured as a global parameter for the Helm chart, but instead included as a parameter for each particular chart and sub-chart. See [ILM Helm Charts](https://github.com/OmniTrustILM/helm-charts) for more information.
-:::
+## Helm
 
-## Mandatory certificates in the list
+Set the bundle in `global.trusted.certificates` to apply it to every chart, for example with `--set-file global.trusted.certificates=trusted-certificates.pem`; see [Deployment using Helm](deployment/deployment-helm/overview.md). To give a service its own set, set `trusted.certificates` of that chart instead. The global bundle takes precedence when both are set.
 
-The list of trusted certificate must always include at least the following certificates:
-- CA certificates issuing client certificates for authentication to the platform
+The `ilm` chart requires a bundle with at least one certificate. Its default `trusted.certificates` holds only a dummy root CA meant for testing.
 
-**Therefore, the set of trusted certificates must always contain at least one item.**
+## Kubernetes Operator
+
+Create a Secret holding the bundle, and reference it in the `Platform` resource:
+
+```bash
+kubectl create secret generic trusted-ca-bundle -n ilm --from-file=ca.crt=trusted-certificates.pem
+```
+
+```yaml
+spec:
+  common:
+    trustedCertificates:
+      secretRef: trusted-ca-bundle
+```
+
+The bundle is read from the `ca.crt` key; set `caKey` to read another key.
 
 ## Changing trusted certificates
 
-When you need to change the list of trusted certificates (add / remove trusted certificates), the changes must be applied to the deployment of the platform.
-This is done automatically installing and upgrading using [Helm chart](deployment/deployment-helm/overview.md).
-
-:::warning[Management of trusted certificates]
-Be sure that all changes in the list of trusted certificates are properly propagated in the deployment when managing the list manually or externally to Helm chart.
-:::
+Change the bundle through the same setting, by running `helm upgrade` with the new bundle or by updating the referenced Secret, and check the connections that depend on it. `Core` reads the bundle when it starts: `helm upgrade` restarts it when the bundle changes, but after updating the Secret referenced in the `Platform` resource, restart `Core` yourself. To change client CAs, follow [Rotate CAs](deployment/client-certificate-authentication.md#rotate-cas).

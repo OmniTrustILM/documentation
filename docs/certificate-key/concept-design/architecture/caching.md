@@ -129,6 +129,8 @@ In practice this means:
 - Credentials revoked **outside** of `Core` are not signaled to the cache. This includes JWTs revoked at the identity provider. The cached authentication outcome remains valid for that credential until its time-to-live elapses.
 - A role change clears the entire authentication cache on the processing instance, so every cached identity there re-authenticates on its next request — briefly raising load on the authentication service. It also clears the authorization cache there, so the next checks go to OPA until the cache warms up again.
 
+A change to the trusted client CAs is not signaled to the authentication cache, so the certificates of a removed CA can stay signed in until their entries expire; see [Rotate CAs](../../installation-guide/deployment/client-certificate-authentication.md#rotate-cas).
+
 ## Operational considerations
 
 Because caches are held in memory on each `Core` instance, they are not shared across a high-availability deployment: each instance maintains its own cache, and an entry evicted on one instance remains on the others until it expires or is independently evicted there.

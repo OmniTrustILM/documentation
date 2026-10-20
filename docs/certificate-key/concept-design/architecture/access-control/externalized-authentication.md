@@ -13,6 +13,8 @@ External authentication can be performed using various mechanisms, including, bu
 - single-sign on using SAML 2.0 or OAuth 2.0
 - OpenID Connect
 
+For certificate authentication, the TLS terminator verifies that the client holds the certificate's private key, and `Auth` validates the certificate chain and identifies the registered user. To set it up, follow [Client Certificate Authentication](../../../installation-guide/deployment/client-certificate-authentication.md).
+
 The identity of the authenticated user is forwarded to the [authentication service](./identification.md), which performs identification against the platform's user store. To keep this hot path fast, `Core` caches successful authentication outcomes; see [Caching](../caching.md).
 
 :::info

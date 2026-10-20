@@ -24,7 +24,7 @@ The priority order is fixed:
 
 When multiple methods are present in a request, the first one in the priority order above takes precedence.
 
-The client certificate header name is controlled by the `auth.header.certificate` deployment parameter. See [Configurable parameters](../../certificate-key/installation-guide/deployment/deployment-helm/configurable-parameters.md) for its current default and configuration.
+The client certificate header and its setup are described in [Client Certificate Authentication](../../certificate-key/installation-guide/deployment/client-certificate-authentication.md). A request whose certificate fails validation is rejected; it does not fall back to bearer or Basic authentication.
 
 ### Rejection and the 401 challenge
 
