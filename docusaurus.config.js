@@ -143,6 +143,7 @@ const config = {
           { to: '/docs/certificate-key/integration-guides/adfs/configure-ilm', from: '/docs/certificate-key/integration-guides/adfs/configure-czertainly' },
           { to: '/docs/certificate-key/integration-guides/intune/authorize-ilm', from: '/docs/certificate-key/integration-guides/intune/authorize-czertainly' },
           { to: '/docs/certificate-key/integration-guides/keycloak/theme', from: '/docs/certificate-key/integration-guides/keycloak/czertainly-theme' },
+          { to: '/docs/certificate-key/concept-design/modules/discovery', from: '/docs/certificate-key/concept-design/modules/certificate-discovery' },
         ],
         createRedirects: function (existingPath) {
           // do not redirect root

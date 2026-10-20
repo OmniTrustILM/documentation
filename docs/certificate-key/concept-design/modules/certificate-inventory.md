@@ -14,9 +14,11 @@ The platform offers the following list of operations from the Certificate Invent
 | Operation               | Description                                         |
 |-------------------------|-----------------------------------------------------|
 | Issue new `Certificate` | Issue new `Certificate` from selected `RA Profile`. |
-| Upload `Certificate`    | Upload an existing `Certificate`.                   |
-| Download `Certificate`  | Download `Certificate` in the selected format.      |
+| Import `Certificate`    | Import certificates and their keys from a file.     |
+| Download `Certificate`  | Download `Certificate`, or PKCS#12 with its key.    |
 | Delete `Certificate`    | Removes the `Certificate` from inventory.           |
+
+See [Import Certificates and Keys](../../quick-start/certificate-management/import-certificates-and-keys.mdx) and [Download Certificate](../../quick-start/certificate-management/download-certificate.mdx).
 
 ## Certificate details
 

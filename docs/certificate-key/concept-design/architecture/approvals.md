@@ -12,7 +12,7 @@ It's important to note that approvals are handled at the platform level and are 
 
 The approval process is orchestrated through an entity known as the [`Approval Profile`](../core-components/approval-profile.md). This profile defines the sequential steps involved in obtaining an approval and designates the responsible approvers for each step.
 
-Upon initiation of an approval request, the platform triggers notifications to the approvers specified in the corresponding Approval Profile. These approvers possess the authority to either grant or decline the approval request. Additionally, they can provide accompanying comments to elaborate on their decision.
+Upon initiation of an approval request, the platform triggers notifications to the approvers specified in the corresponding Approval Profile. These approvers possess the authority to either grant or decline the approval request. Additionally, they can provide accompanying comments to elaborate on their decision. This comment is part of the approval decision and is separate from the [comment threads](../core-components/comment.md) that users can write on an approval object.
 
 The approval process reaches its conclusion when the request is either approved, rejected, or it expires due to a lack of action.
 

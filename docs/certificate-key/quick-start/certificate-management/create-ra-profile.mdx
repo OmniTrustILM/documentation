@@ -144,27 +144,38 @@ Request attributes define what the requester fills in on the certificate request
     - **Label** — the name shown to the requester on the request form
     - **Description** — optional help text shown to the requester explaining what to enter
     - **Content type** — the data type of the value the requester provides
-    - **Required**, **List**, **Multi select** — checkboxes controlling how the form field behaves
-5. Pick the **Mapping target** — where the value lands in the certificate:
+    - **Required**, **List**, **Multi select**, **Read Only** — checkboxes controlling how the form field behaves; a read-only attribute needs a **Default value**
+    - **Validation pattern**, **Validation error message** and **Validation description** — an optional regular expression the value must match
+    - **JSON Schema** — an optional inline JSON Schema (draft 2020-12) the value must conform to, with **Schema error message** and **Schema description**; remote references are not supported. It applies to string and text attributes and suits extension values written in JER
+5. In the **Mapping targets** section, pick the **Target** — where the value lands in the certificate. Use **Add mapping target** to write the same value to several targets; the targets are applied in the order listed:
     - **RDN (subject)** — a component of the certificate subject name (e.g. CN, O); select the **RDN** below. Careful with the codes: `SN` is **Surname** (`2.5.4.4`), not serial number — the subject **Serial Number** (`SERIALNUMBER`, `2.5.4.5`) is a separate entry, and neither has any relationship to the issued certificate's serial number. A mispick is a valid mapping that no validation will reject.
     - **Subject Alternative Name** — select the **SAN type** below: `dNSName`, `rfc822Name (email)`, `iPAddress`, `uniformResourceIdentifier`, `otherName`, `directoryName`, or `registeredID`; for `otherName`, also fill **otherName OID** and **otherName value encoding**
-    - **Certificate extension** — select the **Extension** below
+    - **Certificate extension** — select the **Extension** below; Key Usage, Extended Key Usage and Subject Alternative Name are not offered here
+    - **Key Usage** — select the **Permitted key usages**; mark the attribute as a list
+    - **Extended Key Usage** — select the **Permitted purposes**; mark the attribute as a list
 6. Choose the **Value source**:
     - **Free input** — the requester types any value
     - **Static list** — the requester picks from a fixed set of values you define below; add them in the **Static list values** section with **Add value** (at least one value, values must be unique)
 7. Click **Save** to add the attribute; repeat for every attribute you need. Use **Edit** and **Remove** on the rows to adjust the set later.
-8. Click **Update** — changes are saved when you click Update
+8. Choose the **Merge mode** — how the attributes authored here combine with the ones the authority connector declares:
+    - **Static only** — only the attributes authored here are used (the default)
+    - **Connector only** — only the connector's attributes are used
+    - **Merge** — both are combined; where both define an attribute, the connector's definition wins
+9. If the connector supplies attributes, you can attach a different value source to one of them in **Value-source bindings**: click to add a binding, pick the **Connector attribute** (or enter its **Attribute UUID** or **Attribute name**) and choose the **Value source**. The platform default set applies only when the resulting set is empty, as shown in the **Request Attributes** widget of the profile
+10. Click **Update** — changes are saved when you click Update
+
+See [Merge mode](../../concept-design/core-components/request-attribute.md#merge-mode) for how the sets combine.
 
 :::info
-The options offered for **RDN** and **Extension** come from the OID registry: built-in system entries plus the entries you register under [Custom OIDs](../../settings/oid.md). The common standards-track extensions are built in; a vendor-specific `Certificate Extension` OID must be registered there before you can map an attribute to it.
+The options offered for **RDN**, **Extension** and **Permitted purposes** come from the OID registry: built-in system entries plus the entries you register under [Custom OIDs](../../settings/oid.md). The common standards-track extensions are built in; a vendor-specific `Certificate Extension` OID must be registered there before you can map an attribute to it. To write an extension's value in JER, the OID needs an [ASN.1 module](../../settings/oid.md#asn1-modules-and-jer-values).
 :::
 
 :::note[Validation on save]
-The set is validated when you click **Update**: every attribute must declare a field mapping, mapped attributes must use string or text content, RDN codes and extension OIDs must be known to the OID registry, and an extension OID may appear only once per attribute. Failures are reported per attribute with the reason.
+The set is validated when you click **Update**: every attribute must declare a field mapping, attributes mapped to an RDN, SAN or extension must use string or text content, RDN codes and extension OIDs must be known to the OID registry, and an extension OID may appear only once per attribute. Failures are reported per attribute with the reason.
 :::
 
 ## Configure external CSR validation
 
 When a client supplies its own CSR, the profile validates it against the resolved request-attribute set in strict or lenient mode — see [External CSR validation](../../concept-design/core-components/ra-profile.md#external-csr-validation) for what the modes mean and what is checked.
 
-To configure it, open the profile detail and switch to the **Validation** tab. The **Request Validation** widget shows the effective mode. Click **Edit Request Validation Settings**; the switch **Use Platform Request Validation Settings** controls whether the profile follows the platform default or sets its own mode.
+To configure it, open the profile detail and switch to the **Validation** tab. The **Request Validation** widget shows the effective mode. Click the pencil icon (**Edit Request Validation Settings**); the switch **Use Platform Request Validation Settings** controls whether the profile follows the platform default or sets its own mode. With the switch off, choose **Strict** (non-compliant external CSRs are rejected) or **Lenient** (non-compliant external CSRs are accepted).
