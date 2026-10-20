@@ -7,7 +7,7 @@ export const apiVersion = '2.19.0';
 export const chartVersion = '2.19.0';
 
 /** CSC component OpenAPI document, versioned independently of the platform. */
-export const cscVersion = '1.7.0';
+export const cscVersion = '1.8.0';
 
 /** Kubernetes Operator, substituted into docs as %OPERATOR_VERSION%. */
 export const operatorVersion = '1.0.0';

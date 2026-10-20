@@ -45,6 +45,8 @@ The CSC component is deployed as containerized microservices, which can be scale
 The main configuration file `application.yml` needs to be mounted to container on location `/opt/cscapi/application.yml`.
 Additional files and configuration need to be provided based on the settings in `application.yml`
 
+With SignServer 7.9.0 or later, use CSC component 1.8.0 or later: SignServer rejects the signing requests of earlier versions.
+
 The database should be created and configured before running the CSC component. Currently supported databases are:
 - PostgreSQL
 - MySQL
