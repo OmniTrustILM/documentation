@@ -4,11 +4,10 @@ sidebar_position: 1
 
 import DocCardList from '@theme/DocCardList';
 
-# Overview
+# Connectors
 
-`Connector` plays an important role in the platform, providing the functionality for a specific technology, even when proprietary. For more information, see [`Connector`](../concept-design/architecture/connector.md).
-You can also find more information in the [Architecture](../concept-design/architecture/connector.md).
+Connectors integrate the platform with technology-specific services, including certification authorities, key stores, discovery services and vaults. They expose consistent interfaces while handling the details of each technology. Read the [connector architecture](../concept-design/architecture/connector.md) to understand their role.
 
-The following sections provides detail information about the interfaces and processes associated with the `Connector`:
+Explore the shared contracts, provider interfaces and operational guidance below.
 
 <DocCardList/>

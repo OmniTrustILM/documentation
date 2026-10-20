@@ -1,113 +1,292 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+@import './tokens.css';
+@import './search.css';
+@import './reading.css';
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #0073CF;
-  --ifm-secondary-color: #B4B4B4;
-  /*--ifm-color-primary: #1473b5;*/
-  --ifm-color-primary-dark: rgb(33, 175, 144);
-  --ifm-color-primary-darker: rgb(31, 165, 136);
-  --ifm-color-primary-darkest: rgb(26, 136, 112);
-  --ifm-color-primary-light: rgb(70, 203, 174);
-  --ifm-color-primary-lighter: rgb(102, 212, 189);
-  --ifm-color-primary-lightest: rgb(146, 224, 208);
-  --ifm-code-font-size: 95%;
+  --ifm-color-primary: var(--ilm-accent);
+  --ifm-color-primary-dark: #0068bb;
+  --ifm-color-primary-darker: #0062b0;
+  --ifm-color-primary-darkest: #005291;
+  --ifm-color-primary-light: #0c83e4;
+  --ifm-color-primary-lighter: #2190e9;
+  --ifm-color-primary-lightest: #51a8ed;
+  --ifm-color-secondary: var(--ilm-brand-grey);
+  --ifm-secondary-color: var(--ilm-brand-grey);
+  --ifm-background-color: var(--ilm-canvas);
+  --ifm-background-surface-color: var(--ilm-surface);
+  --ifm-font-color-base: var(--ilm-text);
+  --ifm-font-color-secondary: var(--ilm-muted);
+  --ifm-heading-color: var(--ilm-text);
+  --ifm-font-family-base: var(--ilm-font-sans);
+  --ifm-font-family-monospace: var(--ilm-font-mono);
+  --ifm-font-size-base: 100%;
+  --ifm-line-height-base: 1.65;
+  --ifm-heading-line-height: 1.22;
+  --ifm-heading-font-weight: 600;
+  --ifm-link-color: var(--ilm-accent);
+  --ifm-link-hover-color: var(--ilm-accent-hover);
+  --ifm-color-content: var(--ilm-text);
+  --ifm-color-content-secondary: var(--ilm-muted);
+  --ifm-color-emphasis-200: var(--ilm-border);
+  --ifm-menu-color: var(--ilm-muted);
+  --ifm-menu-color-active: var(--ilm-accent);
+  --ifm-menu-color-background-active: var(--ilm-accent-soft);
+  --ifm-menu-color-background-hover: var(--ilm-accent-soft);
+  --ifm-navbar-height: 4.5rem;
+  --ifm-navbar-background-color: var(--ilm-surface);
+  --ifm-navbar-shadow: 0 1px 0 var(--ilm-border);
+  --ifm-footer-background-color: var(--ilm-surface);
+  --ifm-footer-color: var(--ilm-muted);
+  --ifm-footer-link-color: var(--ilm-muted);
+  --ifm-footer-title-color: var(--ilm-text);
+  --ifm-toc-border-color: var(--ilm-border);
+  --ifm-hr-background-color: var(--ilm-border);
+  --ifm-global-radius: var(--ilm-radius-small);
+  --ifm-card-background-color: var(--ilm-surface);
+  --ifm-card-border-radius: var(--ilm-radius);
+  --ifm-card-box-shadow: var(--ilm-shadow);
+  --ifm-code-font-size: 90%;
+  --ifm-code-background: var(--ilm-accent-soft);
+  --ifm-pre-background: var(--ilm-code-surface);
+  --ifm-table-border-color: var(--ilm-border);
+  --ifm-table-head-background: var(--ilm-surface);
+  --ifm-table-stripe-background: var(--ilm-canvas);
+  --doc-sidebar-width: 290px;
+}
 
-  --ifm-badge-background-color: #1473b5;
+[data-theme='dark'] {
+  --ifm-color-primary-dark: #198cff;
+  --ifm-color-primary-darker: #0b85ff;
+  --ifm-color-primary-darkest: #006de0;
+  --ifm-color-primary-light: #4da6ff;
+  --ifm-color-primary-lighter: #66b2ff;
+  --ifm-color-primary-lightest: #99ccff;
+}
 
-  --ifm-button-background-color: #0073CF;
+body {
+  background: var(--ilm-canvas);
+  color: var(--ilm-text);
+}
+
+:focus-visible {
+  outline: 3px solid var(--ilm-accent);
+  outline-offset: 3px;
+}
+
+.main-wrapper,
+.theme-doc-markdown,
+.theme-doc-sidebar-container {
+  min-width: 0;
+}
+
+.navbar {
+  border-bottom: 1px solid var(--ilm-border);
+  box-shadow: none;
+}
+
+.navbar__title {
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+}
+
+.navbar__link {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.dropdown__menu,
+.navbar-sidebar {
+  background: var(--ilm-surface);
+  border-color: var(--ilm-border);
+}
+
+.dropdown__menu {
+  border: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  box-shadow: var(--ilm-shadow);
+}
+
+.theme-doc-sidebar-container {
+  background: var(--ilm-surface);
+  border-color: var(--ilm-border);
+}
+
+.theme-doc-sidebar-menu {
+  padding: 0.75rem 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.theme-doc-sidebar-menu .menu__link {
+  border-radius: var(--ilm-radius-small);
+  min-height: 2.4rem;
+  overflow-wrap: anywhere;
+  padding: 0.55rem 0.75rem;
+}
+
+.theme-doc-sidebar-menu .menu__list-item-collapsible {
+  border-radius: var(--ilm-radius-small);
+}
+
+.theme-doc-markdown {
+  overflow-wrap: anywhere;
+}
+
+.theme-doc-markdown h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  letter-spacing: -0.035em;
+  margin-bottom: 1.25rem;
+}
+
+.theme-doc-markdown h2 {
+  font-size: 1.65rem;
+  letter-spacing: -0.025em;
+  margin-top: 2.6rem;
+}
+
+.theme-doc-markdown h3 {
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+  margin-top: 2rem;
+}
+
+.theme-doc-markdown :is(p, ul, ol) {
+  line-height: 1.75;
+}
+
+.theme-doc-markdown a:not(.hash-link):not(.button):not(.theme-doc-card-container) {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.theme-doc-markdown :is(img, video) {
+  height: auto;
+  max-width: 100%;
+}
+
+.theme-doc-markdown .tableViewport {
+  background: var(--ilm-surface);
+  border: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  margin: 1.5rem 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.theme-doc-markdown .tableViewport > table {
+  border: 0;
+  border-collapse: collapse;
+  display: table;
+  margin: 0;
+  width: 100%;
+}
+
+.theme-doc-markdown :is(th, td) {
+  border-color: var(--ilm-border);
+  border-left: 0;
+  border-top: 0;
+  font-size: 0.9rem;
+  overflow-wrap: normal;
+  padding: 0.75rem 0.9rem;
+  vertical-align: top;
+}
+
+.theme-doc-markdown th {
+  background: var(--ilm-surface);
+  font-weight: 600;
+}
+
+.theme-doc-markdown pre {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-wrap: normal;
+}
+
+.theme-doc-markdown pre code {
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.theme-doc-markdown .theme-code-block {
+  border: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  box-shadow: none;
+}
+
+.theme-doc-markdown .theme-code-block pre {
+  background: var(--ilm-code-surface) !important;
 }
 
 .docusaurus-highlight-code-line {
-  background-color: rgba(0, 0, 0, 0.1);
+  background: var(--ilm-accent-soft);
   display: block;
   margin: 0 calc(-1 * var(--ifm-pre-padding));
   padding: 0 var(--ifm-pre-padding);
 }
 
-html[data-theme='dark'] .docusaurus-highlight-code-line {
-  background-color: rgba(0, 0, 0, 0.3);
+.theme-doc-markdown blockquote {
+  background: var(--ilm-accent-soft);
+  border-left-color: var(--ilm-brand-blue);
+  border-radius: 0 var(--ilm-radius-small) var(--ilm-radius-small) 0;
+  color: var(--ilm-text);
+  padding: 1rem 1.25rem;
 }
 
-.buttonTextWhite {
-  color: #fff;
-}
-.buttonTextWhite:hover {
-  color: #fff;
+.theme-doc-markdown .alert {
+  border-radius: var(--ilm-radius);
+  box-shadow: none;
 }
 
-.row .col {
-  padding: 10px;
+.theme-doc-toc-desktop {
+  font-size: 0.8rem;
 }
 
-.messageText {
-  fill: red;
-  stroke: none;
-  font-family: 'trebuchet ms', verdana, arial;
-  font-size: 14px;
+.table-of-contents__link {
+  color: var(--ilm-muted);
+  overflow-wrap: anywhere;
 }
 
-.pseudo-icon {
-  opacity: 0.8;
-  padding: 0.25rem;
-  margin: 0 0.5rem;
+.table-of-contents__link--active,
+.table-of-contents__link:hover {
+  color: var(--ilm-accent);
 }
 
-.pseudo-icon:hover {
-  opacity: 1;
+.pagination-nav__link {
+  background: var(--ilm-surface);
+  border-color: var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  padding: 1rem 1.25rem;
 }
 
-.pseudo-icon::before {
-  content: '';
-  display: block;
-  width: 32px;
-  height: 32px;
-  opacity: 0.8;
-  background-repeat: no-repeat;
+.pagination-nav__sublabel,
+.theme-doc-footer {
+  color: var(--ilm-muted);
+  font-size: 0.8rem;
 }
 
-.github-icon::before {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' aria-hidden='true' focusable='false' fill='%23000000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' d='M12.026 2c-5.509 0-9.974 4.465-9.974 9.974 0 4.406 2.857 8.145 6.821 9.465.499.09.679-.217.679-.481 0-.237-.008-.865-.011-1.696-2.775.602-3.361-1.338-3.361-1.338-.452-1.152-1.107-1.459-1.107-1.459-.905-.619.069-.605.069-.605 1.002.07 1.527 1.028 1.527 1.028.89 1.524 2.336 1.084 2.902.829.091-.645.351-1.085.635-1.334-2.214-.251-4.542-1.107-4.542-4.93 0-1.087.389-1.979 1.024-2.675-.101-.253-.446-1.268.099-2.64 0 0 .837-.269 2.742 1.021a9.582 9.582 0 0 1 2.496-.336 9.554 9.554 0 0 1 2.496.336c1.906-1.291 2.742-1.021 2.742-1.021.545 1.372.203 2.387.099 2.64.64.696 1.024 1.587 1.024 2.675 0 3.833-2.33 4.675-4.552 4.922.355.308.675.916.675 1.846 0 1.334-.012 2.41-.012 2.737 0 .267.178.577.687.479C19.146 20.115 22 16.379 22 11.974 22 6.465 17.535 2 12.026 2z' clip-rule='evenodd'%3E%3C/path%3E%3C/svg%3E");
+.button--primary {
+  --ifm-button-background-color: var(--ilm-button);
+  --ifm-button-border-color: var(--ilm-button);
+  --ifm-button-color: var(--ilm-on-button);
 }
 
-html[data-theme='dark'] .github-icon::before {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' aria-hidden='true' focusable='false' fill='%23b4b4b4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' d='M12.026 2c-5.509 0-9.974 4.465-9.974 9.974 0 4.406 2.857 8.145 6.821 9.465.499.09.679-.217.679-.481 0-.237-.008-.865-.011-1.696-2.775.602-3.361-1.338-3.361-1.338-.452-1.152-1.107-1.459-1.107-1.459-.905-.619.069-.605.069-.605 1.002.07 1.527 1.028 1.527 1.028.89 1.524 2.336 1.084 2.902.829.091-.645.351-1.085.635-1.334-2.214-.251-4.542-1.107-4.542-4.93 0-1.087.389-1.979 1.024-2.675-.101-.253-.446-1.268.099-2.64 0 0 .837-.269 2.742 1.021a9.582 9.582 0 0 1 2.496-.336 9.554 9.554 0 0 1 2.496.336c1.906-1.291 2.742-1.021 2.742-1.021.545 1.372.203 2.387.099 2.64.64.696 1.024 1.587 1.024 2.675 0 3.833-2.33 4.675-4.552 4.922.355.308.675.916.675 1.846 0 1.334-.012 2.41-.012 2.737 0 .267.178.577.687.479C19.146 20.115 22 16.379 22 11.974 22 6.465 17.535 2 12.026 2z' clip-rule='evenodd'%3E%3C/path%3E%3C/svg%3E");
+.button--primary:hover {
+  --ifm-button-background-color: var(--ilm-button-hover);
+  --ifm-button-border-color: var(--ilm-button-hover);
+  --ifm-button-color: var(--ilm-on-button);
 }
 
-.discord-icon::before {
-  width: 32px;
-  height: 25px;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 28 22' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M17.967 0c-.278.497-.525 1.01-.741 1.537a20.488 20.488 0 0 0-6.401 0A14.164 14.164 0 0 0 10.085 0c-1.998.341-3.94.953-5.773 1.817A24.22 24.22 0 0 0 .12 18.015a23.2 23.2 0 0 0 7.085 3.62 18.01 18.01 0 0 0 1.552-2.432 13.48 13.48 0 0 1-2.39-1.16c.207-.138.404-.293.587-.462a16.296 16.296 0 0 0 14.143 0c.196.168.392.322.587.462-.76.46-1.56.853-2.39 1.174.433.87.938 1.702 1.51 2.487a22.977 22.977 0 0 0 7.072-3.62 24.066 24.066 0 0 0-4.193-16.197A22.487 22.487 0 0 0 17.967 0ZM9.386 14.745a2.712 2.712 0 0 1-2.516-2.796 2.697 2.697 0 0 1 2.516-2.795A2.697 2.697 0 0 1 11.9 11.95a2.697 2.697 0 0 1-2.515 2.796Zm9.28 0a2.712 2.712 0 0 1-2.516-2.796 2.698 2.698 0 0 1 2.515-2.795 2.684 2.684 0 0 1 2.516 2.795 2.684 2.684 0 0 1-2.516 2.796Z' fill='%23000000'%3E%3C/path%3E%3C/svg%3E");
+.footer {
+  border-top: 1px solid var(--ilm-border);
+  font-size: 0.85rem;
 }
 
-html[data-theme='dark'] .discord-icon::before {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 28 22' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M17.967 0c-.278.497-.525 1.01-.741 1.537a20.488 20.488 0 0 0-6.401 0A14.164 14.164 0 0 0 10.085 0c-1.998.341-3.94.953-5.773 1.817A24.22 24.22 0 0 0 .12 18.015a23.2 23.2 0 0 0 7.085 3.62 18.01 18.01 0 0 0 1.552-2.432 13.48 13.48 0 0 1-2.39-1.16c.207-.138.404-.293.587-.462a16.296 16.296 0 0 0 14.143 0c.196.168.392.322.587.462-.76.46-1.56.853-2.39 1.174.433.87.938 1.702 1.51 2.487a22.977 22.977 0 0 0 7.072-3.62 24.066 24.066 0 0 0-4.193-16.197A22.487 22.487 0 0 0 17.967 0ZM9.386 14.745a2.712 2.712 0 0 1-2.516-2.796 2.697 2.697 0 0 1 2.516-2.795A2.697 2.697 0 0 1 11.9 11.95a2.697 2.697 0 0 1-2.515 2.796Zm9.28 0a2.712 2.712 0 0 1-2.516-2.796 2.698 2.698 0 0 1 2.515-2.795 2.684 2.684 0 0 1 2.516 2.795 2.684 2.684 0 0 1-2.516 2.796Z' fill='%23b4b4b4'%3E%3C/path%3E%3C/svg%3E");
-}
-
-.navbar-sidebar .pseudo-icon {
-  padding: 0.3rem 0.5rem;
-  margin: 0;
-}
-
-.navbar-sidebar .pseudo-icon::after {
-  content: 'GitHub';
-  margin-left: 12px;
-}
-
-.navbar-sidebar .github-icon {
-  margin-top: 2rem;
-}
-
-.navbar-sidebar .github-icon::after {
-  content: 'GitHub';
-}
-
-.navbar-sidebar .discord-icon::after {
-  content: 'Discord';
+.footer--dark {
+  --ifm-footer-background-color: var(--ilm-surface);
+  --ifm-footer-color: var(--ilm-muted);
+  --ifm-footer-link-color: var(--ilm-muted);
+  --ifm-footer-title-color: var(--ilm-text);
 }
 
 .img-center {
@@ -116,15 +295,104 @@ html[data-theme='dark'] .discord-icon::before {
   width: 100%;
 }
 
-/*
- * Build-time-rendered PlantUML diagrams are embedded as
- * <object type="image/svg+xml" data="/img/plantuml/…">, not as <img>: an SVG referenced by <img>
- * renders non-interactively, which would kill the [[…]] links diagrams carry into the API
- * reference. Diagrams narrower than the column keep their natural size; wider ones scale down to
- * fit so they never overflow the content area.
- */
-.plantumlDiagram {
-  display: block;
+.plantumlFigure {
+  background: var(--ilm-surface);
+  border: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  margin: 1.75rem 0;
   max-width: 100%;
+  overflow: hidden;
+}
+
+.plantumlDiagram {
+  background: var(--ilm-diagram-surface);
+  display: block;
   height: auto;
+  max-width: 100%;
+}
+
+.plantumlCaption,
+.plantumlActions {
+  color: var(--ilm-muted);
+  font-size: 0.8rem;
+  padding: 0.8rem 1rem;
+}
+
+.plantumlCaption {
+  border-top: 1px solid var(--ilm-border);
+}
+
+.plantumlActions {
+  padding-top: 0;
+}
+
+@media (max-width: 996px) {
+  .navbar-sidebar {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .navbar-sidebar__brand {
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--ifm-navbar-height);
+  }
+
+  .navbar-sidebar__close {
+    order: 2;
+  }
+
+  .navbar-sidebar__items {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+  }
+
+  .theme-doc-sidebar-menu .menu__link {
+    min-height: 2.75rem;
+  }
+
+  .theme-doc-markdown h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .theme-doc-markdown :is(th, td) {
+    padding: 0.65rem 0.75rem;
+  }
+
+  .theme-doc-markdown .tabs__item {
+    padding-inline: 0.75rem;
+  }
+
+  .pagination-nav {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ifm-transition-fast: 0ms;
+    --ifm-transition-slow: 0ms;
+  }
+
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+}
+
+.theme-doc-markdown .badge:not([class*='badge--']) {
+  --ifm-badge-background-color: var(--ilm-accent-soft);
+  --ifm-badge-border-color: var(--ilm-border);
+  --ifm-badge-color: var(--ilm-accent-hover);
+  border-radius: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.4;
+  margin: 0.1rem 0.15rem 0.1rem 0;
+  padding: 0.2rem 0.5rem;
+  white-space: nowrap;
+  overflow-wrap: normal;
 }

@@ -1,13 +1,11 @@
-// The published API reference, as data. Routes and navbar menus are both generated from this list
-// by src/lib/apiCatalog.mjs, so an API is added or removed in exactly one place.
+// The published API reference, as data. Routes and the API hub share this catalog.
 //
 // Each entry is [id, label]. The id is the route segment (/api/<id>) and, by default, also the
 // document name: doc-openapi-<id>.yaml. An entry that names its document differently adds a third
 // element, and an entry served from somewhere other than the platform document base adds `source`
 // on its group.
 //
-// Entry order within a group is the order of the navbar menu. A group with a single entry renders
-// as a plain navbar link, a group with more as a dropdown.
+// Entry order within a group is preserved in the API hub.
 
 /** @typedef {[id: string, label: string, document?: string]} CatalogEntry */
 /** @typedef {{label: string, source?: 'csc', entries: CatalogEntry[]}} CatalogGroup */

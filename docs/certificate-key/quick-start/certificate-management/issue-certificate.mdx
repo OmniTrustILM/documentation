@@ -4,9 +4,6 @@ sidebar_position: 9
 
 # Issue Certificate
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { faUpload} from '@fortawesome/free-solid-svg-icons'
 
 The `RA Profile` serves as a single point of the particular certificate management service. The `RA Profile` is used to perform operations on top of the certificates.
 
@@ -69,7 +66,7 @@ When the profile validates leniently and the uploaded CSR does not comply with t
 Upload an existing certificate, together with its private key when you have one, by importing it:
 
 1. Click **Certificates** in the left menu
-2. Click **Import certificates and keys** (upload symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faUpload} /></span>)
+2. Click **Import certificates and keys** (upload symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">↑</span></span>)
 3. Continue as described in [Import Certificates and Keys](./import-certificates-and-keys.mdx)
 
 ## Create new certificate
@@ -77,7 +74,7 @@ Upload an existing certificate, together with its private key when you have one,
 Select the correct `RA Profile` and issue a new `Certificate`:
 
 1. Click **Certificates** in the left menu
-2. Click **Add Certificate** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+2. Click **Add Certificate** (plus symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">+</span></span>)
 3. Keep the request type **Request now** — the certificate request is submitted to the authority immediately
 4. Select the `RA Profile`: `ADCS-WebServer`
 5. Choose the **Key Source**:

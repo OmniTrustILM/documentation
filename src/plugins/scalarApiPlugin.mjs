@@ -2,6 +2,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {apiCatalog} from '../data/apiCatalog.mjs';
 import {resolveApiCatalog} from '../lib/apiCatalog.mjs';
+import {apiSitePath, buildApiCatalogView} from '../lib/apiCatalogView.mjs';
 import {materializeApiSpecs} from '../../scripts/fetch-api-specs.mjs';
 import {copyScalarRuntime, resolveScalarPackage} from '../../scripts/copy-scalar-runtime.mjs';
 import {loadApiAnchorSets} from '../../scripts/api-anchors.mjs';
@@ -12,6 +13,7 @@ const ROOT = path.resolve(HERE, '../..');
 const STATIC_DIR = path.join(ROOT, 'static');
 const SPEC_DIR = path.join(STATIC_DIR, 'api-specs');
 const ROUTE_COMPONENT = path.resolve(HERE, '../components/ScalarApiReference');
+const CATALOG_COMPONENT = path.resolve(HERE, '../components/ApiCatalog');
 
 /**
  * Publish every API reference as a Scalar page.
@@ -39,6 +41,15 @@ export default function scalarApiPlugin(context, versions) {
         },
 
         async contentLoaded({content, actions}) {
+            const entries = buildApiCatalogView({catalog, manifest: content.manifest, baseUrl: context.baseUrl});
+            actions.addRoute({
+                path: apiSitePath(context.baseUrl, '/api'),
+                component: CATALOG_COMPONENT,
+                exact: true,
+                modules: {
+                    entries: await actions.createData('api-catalog.json', JSON.stringify(entries)),
+                },
+            });
             const routes = buildApiRoutes({
                 catalog,
                 manifest: content.manifest,
@@ -50,7 +61,7 @@ export default function scalarApiPlugin(context, versions) {
 
             await Promise.all(routes.map(async ({id, anchors, ...route}) => {
                 // Split the anchor list out of the route props: it is only read while rendering its
-                // own page, and inlining 48 of them would weigh down every page on the site.
+                // own page, rather than carrying every reference's fragments on every site page.
                 actions.addRoute({
                     ...route,
                     modules: {

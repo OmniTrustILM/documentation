@@ -4,8 +4,6 @@ sidebar_position: 1
 
 # Register Connectors
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 In order to start using the platform with any specific technology, we must register the `Connector`.
 We need two `Connectors`:
@@ -74,7 +72,7 @@ Follow these steps to register new `Common Credential Provider`.
 
 1. Log in to the Administration Interface `https://[domain]:[port]/administrator`
 2. Click **Connectors** in the left menu
-3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">+</span></span>)
 4. Fill the columns with the attributes:
    - URL: `http://common-credential-provider-service:8080`
    - Authentication Type: `No Auth`
@@ -93,7 +91,7 @@ Follow these steps to register new `MS ADCS Connector`.
 
 1. Log in to the Administration Interface `https://[domain]:[port]/administrator`
 2. Click **Connectors** in the left menu
-3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">+</span></span>)
 4. Fill the columns with the attributes:
     - URL: `http://ms-adcs-connector-service:8080`
     - Authentication Type: `No Auth`

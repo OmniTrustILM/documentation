@@ -1,4 +1,4 @@
-// Resolve the API catalog into routes, document URLs and navbar items.
+// Resolve the API catalog into routes, document URLs and navigation data.
 //
 // Everything here is pure: it turns the catalog data plus the published versions into the shapes
 // the Docusaurus config, the plugin and the download script each need.

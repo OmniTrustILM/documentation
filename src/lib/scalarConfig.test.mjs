@@ -39,6 +39,10 @@ test('opts out of telemetry, which Scalar enables by default', () => {
     assert.equal(buildScalarConfiguration(ENTRY, {baseUrl: '/'}).telemetry, false);
 });
 
+test('uses the documentation font stack without downloading Scalar fonts', () => {
+    assert.equal(buildScalarConfiguration(ENTRY, {baseUrl: '/'}).withDefaultFonts, false);
+});
+
 test('leaves the theme toggle to Docusaurus and keeps the download link', () => {
     const config = buildScalarConfiguration(ENTRY, {baseUrl: '/'});
     assert.equal(config.hideDarkModeToggle, true);

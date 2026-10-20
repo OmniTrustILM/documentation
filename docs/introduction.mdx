@@ -3,62 +3,45 @@ sidebar_position: 1
 slug: /
 ---
 
-import DocCard from '@theme/DocCard';
+import PlatformArchitecture from '@site/src/components/PlatformArchitecture';
 
 # Introduction
 
-ILM is a platform for effective and efficient trust lifecycle management and automation for companies of any size and individuals. One of its goals is to provide an easy and affordable way to secure digital communication and support information security in more and more connected world.
+ILM is an open-source platform for trust lifecycle management. It helps you manage certificates, cryptographic keys, secrets and signing services across your infrastructure, with a consistent approach to inventory, access control, integration and automation.
 
-It is designed and developed by a team of PKI and information security enthusiasts with practical point of view on the certificate and cryptographic key management in hybrid environments. PKI is the backbone of security in our daily communication and its security and easy management should be available to everyone.
+Start with the concepts, connect to an existing installation, or choose how to deploy. You do not need prior platform experience to explore the documentation.
+
+## Choose your starting point
+
+| What you want to do | Where to start |
+|---|---|
+| Understand the platform | [Concept and design](./certificate-key/concept-design/overview.md) |
+| Try an existing installation | [Quick start](./certificate-key/quick-start/overview.md) |
+| Install the platform | [Deployment options](./certificate-key/installation-guide/deployment/deployment-options.md) |
+| Connect external services | [Connectors](./certificate-key/connectors/overview.md) |
+| Build an integration | [API reference](/api) |
+| Contribute to the project | [Contributor guides](./contributors/overview.mdx) |
 
 ## Trust Lifecycle Components
 
-The platform offer management and automation of the following trust lifecycle components:
+| Area | What you can explore |
+|---|---|
+| [Certificates](./certificate-key/concept-design/modules/certificate-management.md) | Discover, issue, renew, distribute and revoke certificates across connected certification authorities and environments. |
+| [Cryptographic keys](./certificate-key/concept-design/modules/key-management.md) | Create and manage keys, cryptographic operations and technology providers. |
+| [Secrets](./certificate-key/concept-design/modules/secret-management.md) | Store, version and synchronize secrets across vault technologies, using profiles and compliance rules. |
+| [Signing with SignServer](./signserver/introduction.mdx) | Configure production signing and validation services across supported formats and technologies. |
+| [Native timestamping](./signing/introduction.mdx) | Explore the native signing area and its timestamping preview. |
 
-| Component                                              | Short description                                                                                                                                                                                                                                                                                                                                                                                  |
-|--------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Digital Certificates](/docs/certificate-key/introduction) | Digital certificate management and automation that supports various types of certificates and can connect to multiple certification authorities. Discovering certificates in hybrid infrastructures and locations. Issuing and distributing certificates to entities. Renew and rekey options for expiring certificates. Supporting standard interfaces for certificate management and automation. |
-| [Cryptographic Keys](/docs/certificate-key/introduction)   | Cryptographic key management and automation supporting various cryptographic technologies for consistent and secure generation of keys and cryptographic operations. Support for encryption/decryption, signing/verification, using symmetric and asymmetric keys. Experimental support for PQC algorithms. Management and automation using standard interfaces and protocols.                     |
-| [Digital Signature](/docs/signing/introduction)            | Remote digital signing management and automation for multiple digital signature formats and technologies. Validation of produced digital signatures. Compliant to standards and regulations. Supporting standard interfaces and protocols for remote signing.                                                                                                                                      |
-| [Digital Secrets](/docs/certificate-key/concept-design/modules/secret-management) | Secret management and automation across various vault technologies. Storing, versioning, and synchronizing secrets of multiple types. Binding secrets to vault profiles and evaluating them against compliance rules. Managing secrets through standard interfaces.                                                                                                                                 |
+The [cryptographic asset inventory](./certificate-key/concept-design/modules/cryptographic-asset-inventory.md) combines assets declared by synchronized Cryptographic Bills of Materials (CBOMs). It helps you inspect the cryptography in use and understand each asset's post-quantum readiness verdict.
 
 ## Cloud-native Architecture
 
-The platform is developed as a cloud-native application. It is designed to be deployed on Kubernetes cluster and it is using cloud-native technologies and approaches.
-Each component of the platform is a micro-service and the main approach is to keep each service as a simple container that can be easily replaced or scaled.
+The platform uses a modular microservice architecture and is designed for Kubernetes deployments. Interfaces connect clients to Core, which applies access control and application logic. Connectors provide consistent interfaces to technology-specific services.
 
-The platform is split into several parts:
+<PlatformArchitecture />
 
-- **interfaces** that is used to communicate with the platform and its services
-- **core** services that provide the main functionality of the platform
-- **connectors** that are used to connect to external systems and services
-
-For more information, refer to the [Concept and Design](/docs/certificate-key/concept-design/overview) section.
-
-![Platform ingredients](./assets/platform-ingredients.png)
+Read the [architecture overview](./certificate-key/concept-design/architecture/overview.md) for the request flow and component responsibilities. The [deployment guide](./certificate-key/installation-guide/deployment/deployment-options.md) explains the available installation approaches.
 
 ## Community and Contribution
 
-Anyone can join us in building innovative trust lifecycle management tools that can be freely used by anyone.
-
-Contribution is important to enhance the platform and make it more affordable and available for all of us using digital assets:
-- [Submit a feature request, bug report, ideas and more](https://github.com/OmniTrustILM/ilm/issues/new/choose)
-- [Create a pull request and be recognized](https://github.com/OmniTrustILM/ilm/blob/main/CONTRIBUTING.md)
-- [Discuss your ideas with other](https://github.com/OmniTrustILM/ilm/discussions)
-- [Chat with us](https://discord.gg/XYsSZKjSt4)
-
-You can help us to build the community by spreading and sharing information about the platform with others.
-You can follow us on [LinkedIn](https://www.linkedin.com/company/omnitrustsecurity) and [GitHub](https://github.com/OmniTrustILM/ilm).
-
-export const item = {
-    type: 'link',
-    href: '/docs/contributors/overview',
-    label: 'Contributors',
-    description: 'Guides and information for contributors.'
-}
-
-<section className='row'>
-        <article className="col col--6 margin-bottom--lg">
-            <DocCard item={item} />
-        </article>
-</section>
+The project welcomes questions, feedback and contributions. Explore the [community](./community/overview.mdx), join the [discussions](https://github.com/OmniTrustILM/ilm/discussions), or read the [contributor guides](./contributors/overview.mdx) to get involved.

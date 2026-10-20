@@ -1,0 +1,242 @@
+.illustration {
+  min-width: 0;
+}
+.domains {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 590px;
+  aspect-ratio: 580 / 520;
+  margin: 0 auto;
+}
+.organism {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.membrane {
+  stroke: var(--ilm-border);
+  stroke-width: 1;
+  transform-origin: 50% 50%;
+  animation: breathe 12s ease-in-out infinite;
+}
+.filaments {
+  stroke: color-mix(in srgb, var(--ilm-accent) 25%, var(--ilm-border));
+  stroke-width: 0.8;
+  fill: none;
+}
+.branch,
+.activeBranch {
+  fill: none;
+  stroke: var(--ilm-accent);
+  stroke-width: 1.1;
+  opacity: 0.22;
+  transition:
+    opacity 180ms ease,
+    stroke-width 180ms ease;
+}
+.activeBranch {
+  opacity: 0.9;
+  stroke-width: 1.4;
+}
+.signal {
+  stroke-dasharray: 8 240;
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: signal 7s linear infinite;
+}
+.nucleusContour {
+  fill: none;
+  stroke: var(--ilm-accent);
+  stroke-width: 0.8;
+  opacity: 0.25;
+}
+.nucleus {
+  fill: var(--ilm-surface);
+  stroke: var(--ilm-accent);
+  stroke-width: 1;
+}
+.coreLabel {
+  font-size: 31px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  fill: var(--ilm-accent);
+}
+.coreCaption {
+  font-size: 12px;
+  fill: var(--ilm-muted);
+}
+.domain {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  min-height: 64px;
+  min-width: 0;
+  text-align: left;
+  background: var(--ilm-surface);
+  color: var(--ilm-text);
+  border: 1px solid var(--ilm-border);
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  box-shadow: 0 5px 24px color-mix(in srgb, var(--ilm-accent) 5%, transparent);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+.domain:hover,
+.domain[aria-pressed='true'],
+.domain:focus-visible {
+  border-color: var(--ilm-accent);
+  box-shadow: 0 5px 30px color-mix(in srgb, var(--ilm-accent) 9%, transparent);
+}
+.domain small {
+  display: block;
+  color: var(--ilm-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  margin-top: 3px;
+}
+.domain > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.domainNumber {
+  font-size: 0.72rem;
+  color: var(--ilm-accent);
+  background: var(--ilm-accent-soft);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+}
+.domain[data-domain='certificates'] {
+  top: 12%;
+  left: 0;
+}
+.domain[data-domain='keys'] {
+  top: 18%;
+  right: 0;
+}
+.domain[data-domain='secrets'] {
+  bottom: 16%;
+  right: 0;
+}
+.domain[data-domain='signing'] {
+  bottom: 12%;
+  left: 0;
+}
+.caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ilm-border);
+  color: var(--ilm-muted);
+  font-size: 0.8rem;
+}
+.caption button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: var(--ilm-muted);
+  font: inherit;
+  cursor: pointer;
+  padding: 6px 0 6px 6px;
+}
+.caption button:hover {
+  color: var(--ilm-accent);
+}
+.domain:focus-visible,
+.caption button:focus-visible {
+  outline: 3px solid var(--ilm-accent);
+  outline-offset: 3px;
+}
+.stage[data-motion='paused'] * {
+  animation-play-state: paused;
+}
+@keyframes breathe {
+  50% {
+    transform: scale(1.025) rotate(1deg);
+  }
+}
+@keyframes signal {
+  to {
+    stroke-dashoffset: -248;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .domain,
+  .branch,
+  .activeBranch {
+    transition: none;
+  }
+  .membrane,
+  .signal {
+    animation: none;
+  }
+}
+@media (max-width: 1100px) and (min-width: 761px) {
+  .domain {
+    font-size: 0.75rem;
+    padding: 10px;
+    gap: 8px;
+  }
+  .domain small {
+    display: none;
+  }
+  .domainNumber {
+    width: 22px;
+    height: 22px;
+  }
+}
+@media (max-width: 500px) {
+  .stage {
+    aspect-ratio: auto;
+  }
+  .organism {
+    height: auto;
+    width: 100%;
+  }
+  .domains {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: -12px;
+  }
+  .domain {
+    position: static;
+    padding: 10px;
+    min-height: 62px;
+    font-size: 0.8rem;
+  }
+  .domain small {
+    font-size: 0.72rem;
+  }
+  .caption {
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+}

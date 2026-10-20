@@ -29,6 +29,7 @@ export function buildScalarConfiguration(entry, {baseUrl}) {
         agent: {disabled: true, hideAddApi: true},
 
         telemetry: false,
+        withDefaultFonts: false,
         hideDarkModeToggle: true,
         documentDownloadType: 'direct',
         _integration: 'docusaurus',

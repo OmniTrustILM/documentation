@@ -3,10 +3,9 @@ const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
 import remarkFindReplacePlugin from './src/plugins/remarkFindReplacePlugin.mjs';
 import remarkSimplePlantumlPlugin from './src/plugins/remarkSimplePlantumlPlugin.mjs';
+import rehypeResponsiveTables from './src/plugins/rehypeResponsiveTables.mjs';
 import plantumlRenderPlugin from './src/plugins/plantumlRenderPlugin.mjs';
 import scalarApiPlugin from './src/plugins/scalarApiPlugin.mjs';
-import {apiCatalog} from './src/data/apiCatalog.mjs';
-import {resolveApiCatalog, buildApiNavbarItems} from './src/lib/apiCatalog.mjs';
 import {
   apiVersion,
   chartVersion,
@@ -18,14 +17,11 @@ import {
   devenvDocsRef,
 } from './src/data/versions.mjs';
 
-// Routes and navbar menus for all published APIs come from src/data/apiCatalog.mjs.
-const apiNavbarItems = buildApiNavbarItems(resolveApiCatalog(apiCatalog, {apiVersion, cscVersion}));
-
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'ILM Documentation',
-  tagline: 'Security and trust assurance and automation in ever connected world',
+  tagline: 'Digital trust, continuously renewed',
   url: 'https://docs.otilm.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -199,6 +195,7 @@ const config = {
             ],
             remarkSimplePlantumlPlugin,
           ],
+          rehypePlugins: [rehypeResponsiveTables],
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -210,98 +207,47 @@ const config = {
   themeConfig:
   /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
       ({
+        colorMode: {respectPrefersColorScheme: true},
         docs: {
           sidebar: {
             hideable: true,
           },
         },
         navbar: {
-          title: 'ILM Documentation',
+          title: 'ILM Docs',
           logo: {
             alt: 'ILM Logo',
             src: 'img/ot-sign-color.svg',
             srcDark: 'img/ot-sign-white.svg',
           },
           items: [
-            // {
-            //   type: 'doc',
-            //   docId: 'intro',
-            //   position: 'left',
-            //   label: 'Tutorial',
-            // },
-            // {to: '/blog', label: 'Blog', position: 'left'},
-            {
-              label: 'Docs',
-              position: 'left',
-              to: '/docs',
-            },
-            {
-              label: 'Development Lifecycle',
-              position: 'left',
-              to: '/docs/development-lifecycle/overview',
-            },
-            ...apiNavbarItems,
-            {
-              href: 'https://github.com/OmniTrustILM/ilm/discussions',
-              className: 'pseudo-icon github-icon',
-              position: 'right',
-            },
-            {
-              href: 'https://discord.gg/XYsSZKjSt4',
-              className: 'pseudo-icon discord-icon',
-              position: 'right',
-            },
-            {
-              href: 'https://securedbyintegrity.com/platform/identity-lifecycle-management-ilm/',
-              label: 'About ILM',
-              position: 'right',
-            },
+            {label: 'Learn', position: 'left', to: '/docs'},
+            {label: 'Deploy', position: 'left', to: '/docs/certificate-key/installation-guide/deployment/deployment-options'},
+            {label: 'API reference', position: 'left', to: '/api'},
+            {label: 'Community', position: 'left', to: '/docs/community/overview'},
+            {label: 'GitHub', position: 'right', href: 'https://github.com/OmniTrustILM/ilm'},
           ],
         },
         footer: {
-          style: 'dark',
-          // links: [
-          //   {
-          //     title: 'Docs',
-          //     items: [
-          //       {
-          //         label: 'Tutorial',
-          //         to: '/docs/intro',
-          //       },
-          //     ],
-          //   },
-          //   {
-          //     title: 'Community',
-          //     items: [
-          //       {
-          //         label: 'Stack Overflow',
-          //         href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-          //       },
-          //       {
-          //         label: 'Discord',
-          //         href: 'https://discordapp.com/invite/docusaurus',
-          //       },
-          //       {
-          //         label: 'Twitter',
-          //         href: 'https://twitter.com/docusaurus',
-          //       },
-          //     ],
-          //   },
-          //   {
-          //     title: 'More',
-          //     items: [
-          //       {
-          //         label: 'Blog',
-          //         to: '/blog',
-          //       },
-          //       {
-          //         label: 'GitHub',
-          //         href: 'https://github.com/facebook/docusaurus',
-          //       },
-          //     ],
-          //   },
-          // ],
-          copyright: `Copyright © 2018 - ${new Date().getFullYear()} Identity Lifecycle Management Built with Docusaurus`,
+          style: 'light',
+          links: [
+            {title: 'Explore', items: [
+              {label: 'Platform overview', to: '/docs'},
+              {label: 'Quick start', to: '/docs/certificate-key/quick-start/overview'},
+              {label: 'API reference', to: '/api'},
+            ]},
+            {title: 'Operate', items: [
+              {label: 'Deployment', to: '/docs/certificate-key/installation-guide/deployment/deployment-options'},
+              {label: 'Connectors', to: '/docs/certificate-key/connectors/overview'},
+              {label: 'Current versions', to: '/docs/certificate-key/current-versions'},
+            ]},
+            {title: 'Connect', items: [
+              {label: 'Discussions', href: 'https://github.com/OmniTrustILM/ilm/discussions'},
+              {label: 'Contribute', to: '/docs/contributors/overview'},
+              {label: 'OmniTrust', href: 'https://www.omnitrust.com/ilm/'},
+            ]},
+          ],
+          copyright: `Copyright © 2018–${new Date().getFullYear()} OmniTrust. Built with Docusaurus.`,
         },
         prism: {
           theme: lightCodeTheme,

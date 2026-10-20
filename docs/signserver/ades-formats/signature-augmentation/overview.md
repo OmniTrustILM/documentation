@@ -2,14 +2,17 @@
 sidebar_position: 1
 ---
 
+import SignatureAugmentation from '@site/src/components/SignatureAugmentation';
+
 # Signature Augmentation
 
 Signature augmentation is the process of extending existing signature to a higher Baseline. The augmentation typically extends the B-B or B-T signature by adding additional validation material and timestamps which eventually extend the validity of the signature. The augmentation process is necessary to achieve longer period of validity of signed data (for example for digital archives).
 
 Only existing Baseline-B signature can be extended. The B-B signature contains signed attributes that cannot be changed further without breaking the integrity of the signature. Once the B-B signature exists, it can be extended to any of the B-T, B-LT, or B-LTA signature level without having access to the signers private key. Depending on the augmentation level, validation data and/or new timestamps are included in the signature unsigned attributes.
 
-The following diagram from the **ETSI EN 319 102-1** shows the building blocks of the signature and augmentation:
-![Signature augmentation process](../../../assets/ades-formats/augmentation.png "Signature augmentation process")
+The following schematic summarizes the building blocks and augmentation levels described in **ETSI EN 319 102-1**. Each level retains the material from the preceding level.
+
+<SignatureAugmentation />
 
 See [Electronic Signatures and Trust Infrastructures (ESI); Procedures for Creation and Validation of AdES Digital Signatures; Part 1: Creation and Validation](https://www.etsi.org/deliver/etsi_en/319100_319199/31910201/) for more information about the augmentation process.
 

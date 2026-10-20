@@ -2,15 +2,13 @@
 sidebar_position: 5
 ---
 
+import ScalArchitecture from '@site/src/components/ScalArchitecture';
+
 # SAM Crypto Token
 
 Remote signing using the SCAL2 and ILM Signing is possible by integrating the SAM and the signing back-end of the remote signing solution. We call it **SAMCryptoToken**. It is a special implementation of the CryptoToken for the signing component, which contains necessary functions and interfaces to communicate with the SAM and the user’s device.
 
-<div class="text--center">
-
-![SCAL-ILM](../../assets/sam-integration/SCAL-ILM.png "SCAL-ILM")
-
-</div>
+<ScalArchitecture view="integration" />
 
 What is happening when user would like to sign the data within the context of the signing component and SCAL2? The typical signature process is as follows:
 

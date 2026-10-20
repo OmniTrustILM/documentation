@@ -37,3 +37,29 @@ test('a valid diagram that merely mentions "Syntax Error" passes', () => {
 test('non-200 response (errored flag) fails', () => {
     assert.equal(verifyRender('<svg viewBox="0 0 601 352"></svg>', {errored: true}).ok, false);
 });
+
+test('rejects a rendered diagram that silently discarded a source API link', () => {
+    const source = 'skinparam topurl /api/\nClient -> Core [[core-auth#tag/auth/GET/v1/auth]]: Authenticate';
+    const result = verifyRender('<svg viewBox="0 0 300 100"></svg>', {source});
+    assert.equal(result.ok, false);
+    assert.match(result.reason, /link/i);
+});
+
+test('checks the exact linked API operation including path parameter braces', () => {
+    const source = 'skinparam topurl /api/\nClient -> Core : [["core-auth#tag/auth/GET/v1/auth/{uuid}" Authenticate]]';
+    const correct = '<svg viewBox="0 0 300 100"><a target="_top" href="/api/core-auth#tag/auth/GET/v1/auth/{uuid}"><text>Authenticate</text></a></svg>';
+    assert.deepEqual(verifyRender(correct, {source}), {ok: true});
+    assert.equal(verifyRender(correct.replace('/{uuid}', ''), {source}).ok, false);
+});
+
+test('requires embedded diagram links to navigate the surrounding documentation page', () => {
+    const source = 'skinparam topurl /api/\nA -> B : [["core-auth#tag/auth" Authenticate]]';
+    const svg = '<svg viewBox="0 0 300 100"><a target="_blank" href="/api/core-auth#tag/auth"><text>Authenticate</text></a></svg>';
+    assert.equal(verifyRender(svg, {source}).ok, false);
+});
+
+test('accepts XML-escaped href values without treating images as navigation links', () => {
+    const source = 'A -> B : [["https://example.test/?a=1&b=2" Open]]';
+    const svg = '<svg viewBox="0 0 300 100"><image href="data:image/png;base64,bytes"/><a target="_top" xlink:href="https://example.test/?a=1&amp;b=2"><text>Open</text></a></svg>';
+    assert.deepEqual(verifyRender(svg, {source}), {ok: true});
+});

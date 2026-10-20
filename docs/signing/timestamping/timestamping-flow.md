@@ -12,6 +12,29 @@ A timestamp request is a short conversation: a client asks the platform to certi
 
 The diagram shows every stage a request passes through, from the moment it reaches the TSP endpoint to the moment the response goes back to the caller. Authentication happens first, before any of the timestamping logic runs.
 
+The compact overview follows a granted request. A failed check can reject the request; authentication failures return HTTP 401 before timestamp processing. The detailed sequence below keeps the step numbers used in the walkthrough.
+
+```plantuml Timestamp request overview
+@startuml
+start
+:Authenticate caller;
+:Parse request and authorize profiles;
+:Validate request and resolve\ncertificate, key, chain, and connector;
+:Check time quality and\nsigning certificate;
+:Generate serial number\nand capture genTime;
+:Build data, sign, and assemble\nthe timestamp token;
+:Record signing per policy;
+note right
+  A record write failure does not
+  fail the timestamp response.
+end note
+:Return granted timestamp response;
+stop
+@enduml
+```
+
+**Detailed request sequence**
+
 ```plantuml
 @startuml
 skinparam sequence {

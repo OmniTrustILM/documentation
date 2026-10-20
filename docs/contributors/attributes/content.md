@@ -697,101 +697,134 @@ An `Attribute` with `RESOURCE OBJECT` content type must also specify the `resour
 
 ## Content model
 
-The following diagram represents the content model inherited from the `AttributeContent`. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/otilm/api/model/common/attribute).
+The following diagrams represent the content model inherited from the `AttributeContent`. Details can be found in the [Interfaces repository](https://github.com/OmniTrustILM/interfaces/tree/main/src/main/java/com/otilm/api/model/common/attribute).
 
-```plantuml
+The model is shown in three views: inheritance for each API version, followed by the shared content data relationships. The data view repeats only the content classes that own structured data.
+
+**V2 content inheritance**
+
+```plantuml V2 attribute content inheritance
 @startuml
-    scale 3/4
-    left to right direction
+left to right direction
+hide empty members
 
-    abstract AttributeContent
+abstract AttributeContent
 
-    package "V2 Content" {
-        class BaseAttributeContentV2
+package "V2 Content" {
+    class BaseAttributeContentV2
 
-        class BooleanAttributeContentV2
-        class StringAttributeContentV2
-        class IntegerAttributeContentV2
-        class FloatAttributeContentV2
-        class TextAttributeContentV2
-        class DateAttributeContentV2
-        class DateTimeAttributeContentV2
-        class TimeAttributeContentV2
-        class FileAttributeContentV2
-        class ObjectAttributeContentV2
-        class CodeBlockAttributeContentV2
-        class SecretAttributeContentV2 #LightCoral
-        class CredentialAttributeContentV2 #LightCoral
-    }
+    class BooleanAttributeContentV2
+    class StringAttributeContentV2
+    class IntegerAttributeContentV2
+    class FloatAttributeContentV2
+    class TextAttributeContentV2
+    class DateAttributeContentV2
+    class DateTimeAttributeContentV2
+    class TimeAttributeContentV2
+    class FileAttributeContentV2
+    class ObjectAttributeContentV2
+    class CodeBlockAttributeContentV2
+    class SecretAttributeContentV2 #LightCoral
+    class CredentialAttributeContentV2 #LightCoral
+}
 
-    package "V3 Content" {
-        class BaseAttributeContentV3
+AttributeContent <-- BaseAttributeContentV2 : extends
 
-        class BooleanAttributeContentV3
-        class StringAttributeContentV3
-        class IntegerAttributeContentV3
-        class FloatAttributeContentV3
-        class TextAttributeContentV3
-        class DateAttributeContentV3
-        class DateTimeAttributeContentV3
-        class TimeAttributeContentV3
-        class FileAttributeContentV3
-        class ObjectAttributeContentV3
-        class CodeBlockAttributeContentV3
-        class ResourceObjectContent #LightGreen
-    }
+BaseAttributeContentV2 <-- BooleanAttributeContentV2 : extends
+BaseAttributeContentV2 <-- StringAttributeContentV2 : extends
+BaseAttributeContentV2 <-- IntegerAttributeContentV2 : extends
+BaseAttributeContentV2 <-- FloatAttributeContentV2 : extends
+BaseAttributeContentV2 <-- TextAttributeContentV2 : extends
+BaseAttributeContentV2 <-- DateAttributeContentV2 : extends
+BaseAttributeContentV2 <-- DateTimeAttributeContentV2 : extends
+BaseAttributeContentV2 <-- TimeAttributeContentV2 : extends
+BaseAttributeContentV2 <-- FileAttributeContentV2 : extends
+BaseAttributeContentV2 <-- ObjectAttributeContentV2 : extends
+BaseAttributeContentV2 <-- CodeBlockAttributeContentV2 : extends
+BaseAttributeContentV2 <-- SecretAttributeContentV2 : extends
+BaseAttributeContentV2 <-- CredentialAttributeContentV2 : extends
+@enduml
+```
 
-    package "Content Data" {
-        class FileAttributeContentData
-        class CodeBlockAttributeContentData
-        class SecretAttributeContentData
-        class CredentialAttributeContentData
-        class ResourceObjectContentData
-        class ResourceSimpleContentData
-        class ResourceCertificateContentData
-        class ResourceSecretContentData
-    }
+**V3 content inheritance**
 
-    AttributeContent <-- BaseAttributeContentV2 : extends
-    AttributeContent <-- BaseAttributeContentV3 : extends
+```plantuml V3 attribute content inheritance
+@startuml
+left to right direction
+hide empty members
 
-    BaseAttributeContentV2 <-- BooleanAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- StringAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- IntegerAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- FloatAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- TextAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- DateAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- DateTimeAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- TimeAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- FileAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- ObjectAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- CodeBlockAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- SecretAttributeContentV2 : extends
-    BaseAttributeContentV2 <-- CredentialAttributeContentV2 : extends
+abstract AttributeContent
 
-    BaseAttributeContentV3 <-- BooleanAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- StringAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- IntegerAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- FloatAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- TextAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- DateAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- DateTimeAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- TimeAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- FileAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- ObjectAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- CodeBlockAttributeContentV3 : extends
-    BaseAttributeContentV3 <-- ResourceObjectContent : extends
+package "V3 Content" {
+    class BaseAttributeContentV3
 
-    FileAttributeContentV2 *-- FileAttributeContentData
-    FileAttributeContentV3 *-- FileAttributeContentData
-    CodeBlockAttributeContentV2 *-- CodeBlockAttributeContentData
-    CodeBlockAttributeContentV3 *-- CodeBlockAttributeContentData
-    SecretAttributeContentV2 *-- SecretAttributeContentData
-    CredentialAttributeContentV2 *-- CredentialAttributeContentData
-    ResourceObjectContent *-- ResourceObjectContentData
-    ResourceObjectContentData <-- ResourceSimpleContentData : extends
-    ResourceObjectContentData <-- ResourceCertificateContentData : extends
-    ResourceObjectContentData <-- ResourceSecretContentData : extends
+    class BooleanAttributeContentV3
+    class StringAttributeContentV3
+    class IntegerAttributeContentV3
+    class FloatAttributeContentV3
+    class TextAttributeContentV3
+    class DateAttributeContentV3
+    class DateTimeAttributeContentV3
+    class TimeAttributeContentV3
+    class FileAttributeContentV3
+    class ObjectAttributeContentV3
+    class CodeBlockAttributeContentV3
+    class ResourceObjectContent #LightGreen
+}
+
+AttributeContent <-- BaseAttributeContentV3 : extends
+
+BaseAttributeContentV3 <-- BooleanAttributeContentV3 : extends
+BaseAttributeContentV3 <-- StringAttributeContentV3 : extends
+BaseAttributeContentV3 <-- IntegerAttributeContentV3 : extends
+BaseAttributeContentV3 <-- FloatAttributeContentV3 : extends
+BaseAttributeContentV3 <-- TextAttributeContentV3 : extends
+BaseAttributeContentV3 <-- DateAttributeContentV3 : extends
+BaseAttributeContentV3 <-- DateTimeAttributeContentV3 : extends
+BaseAttributeContentV3 <-- TimeAttributeContentV3 : extends
+BaseAttributeContentV3 <-- FileAttributeContentV3 : extends
+BaseAttributeContentV3 <-- ObjectAttributeContentV3 : extends
+BaseAttributeContentV3 <-- CodeBlockAttributeContentV3 : extends
+BaseAttributeContentV3 <-- ResourceObjectContent : extends
+@enduml
+```
+
+**Shared content data**
+
+```plantuml Shared attribute content data relationships
+@startuml
+left to right direction
+hide empty members
+
+class FileAttributeContentV2
+class FileAttributeContentV3
+class CodeBlockAttributeContentV2
+class CodeBlockAttributeContentV3
+class SecretAttributeContentV2 #LightCoral
+class CredentialAttributeContentV2 #LightCoral
+class ResourceObjectContent #LightGreen
+
+package "Content Data" {
+    class FileAttributeContentData
+    class CodeBlockAttributeContentData
+    class SecretAttributeContentData
+    class CredentialAttributeContentData
+    class ResourceObjectContentData
+    class ResourceSimpleContentData
+    class ResourceCertificateContentData
+    class ResourceSecretContentData
+}
+
+FileAttributeContentV2 *-- FileAttributeContentData
+FileAttributeContentV3 *-- FileAttributeContentData
+CodeBlockAttributeContentV2 *-- CodeBlockAttributeContentData
+CodeBlockAttributeContentV3 *-- CodeBlockAttributeContentData
+SecretAttributeContentV2 *-- SecretAttributeContentData
+CredentialAttributeContentV2 *-- CredentialAttributeContentData
+ResourceObjectContent *-- ResourceObjectContentData
+ResourceObjectContentData <-- ResourceSimpleContentData : extends
+ResourceObjectContentData <-- ResourceCertificateContentData : extends
+ResourceObjectContentData <-- ResourceSecretContentData : extends
 @enduml
 ```
 

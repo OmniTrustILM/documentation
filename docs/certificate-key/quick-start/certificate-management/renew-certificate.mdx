@@ -4,8 +4,6 @@ sidebar_position: 11
 
 # Renew Certificate
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRetweet} from '@fortawesome/free-solid-svg-icons'
 
 `Certificate` can be renewed with a new certificate signing request (CSR), or with the CSR it was issued from when the platform has it. When the connector of the authority offers renew attributes, the renewal also takes them.
 
@@ -49,7 +47,7 @@ Follow these steps to renew a `Certificate`:
 
 1. Click **Certificates** in the left menu 
 2. In the **List of Certificates** select the `Certificate` to renewal
-3. Click **Renew** (symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faRetweet} /></span>)
+3. Click **Renew** (symbol <span style={{color: '#1473b5',}}><span aria-hidden="true">↻</span></span>)
 4. Upload a new certificate signing request (CSR file), unless you renew with the existing one
 5. Fill the **Renew Attributes** tab, when the dialog shows it
 6. Enter the **Challenge** when the dialog asks for it, which it does while the certificate has an `Active` registration

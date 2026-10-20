@@ -9,6 +9,25 @@ function isPlantumlErrorImage(svg) {
         /An error has occurred/.test(svg);
 }
 
+function xmlAttribute(value) {
+    return value.replaceAll('&amp;', '&').replaceAll('&quot;', '"').replaceAll('&apos;', "'")
+        .replaceAll('&lt;', '<').replaceAll('&gt;', '>');
+}
+
+function missingRenderedLinks(svg, source) {
+    const topUrl = source.match(/skinparam\s+topurl\s+(\S+)/i)?.[1] ?? '';
+    const expected = [...source.matchAll(/\[\[(?:"([^"\n]+)"|([^\s\]]+))/g)]
+        .map((match) => match[1] ?? match[2])
+        .map((url) => /^(?:https?|file):/.test(url) ? url : topUrl + url);
+    const rendered = new Set();
+    for (const [tag] of svg.matchAll(/<a\b[^>]*>/g)) {
+        if (!/\btarget=["']_top["']/.test(tag)) continue;
+        const href = tag.match(/\b(?:xlink:)?href=(["'])(.*?)\1/);
+        if (href) rendered.add(xmlAttribute(href[2]));
+    }
+    return [...new Set(expected)].filter((url) => !rendered.has(url));
+}
+
 /** @param {string} svg */
 export function parseSvgViewBox(svg) {
     const m = svg.match(/viewBox\s*=\s*"\s*([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s*"/);
@@ -18,11 +37,11 @@ export function parseSvgViewBox(svg) {
 
 /**
  * @param {string} svg
- * @param {{errored?: boolean}} [opts] `errored` set when the server returned a non-200 response.
+ * @param {{errored?: boolean, source?: string}} [opts] Source links must survive SVG rendering.
  * @returns {{ok: boolean, reason?: string}}
  */
 export function verifyRender(svg, opts = {}) {
-    const {errored = false} = opts;
+    const {errored = false, source = ''} = opts;
     if (errored) {
         return {ok: false, reason: 'server returned a non-200 response for this diagram'};
     }
@@ -38,5 +57,8 @@ export function verifyRender(svg, opts = {}) {
     if (!(vb.width > 0 && vb.height > 0)) {
         return {ok: false, reason: `degenerate viewBox ${vb.width}x${vb.height}`};
     }
+    const missing = missingRenderedLinks(svg, source);
+    if (missing.length)
+        return {ok: false, reason: `missing rendered link(s) or surrounding-page target: ${missing.join(', ')}`};
     return {ok: true};
 }

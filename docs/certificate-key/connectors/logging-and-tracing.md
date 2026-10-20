@@ -1,5 +1,6 @@
 ---
 sidebar_position: 13
+description: Correlate requests and trace operations across connectors and services.
 ---
 
 # Logging and Tracing

@@ -36,17 +36,31 @@ Integration consists of the following steps:
 
 ## Login using AD FS
 
-After successful integration, you will be able to see additional login button in Keycloak login screen with the name of the configured identity provider display name, e.g. `AD FS`.
+The identity-provider **Display name** configured in Keycloak determines the sign-in option shown to users. For the example in this guide, the option is `AD FS`.
 
-<center>
-    <div style={{width: "40%"}}>
+1. Open the ILM administrator interface and choose the configured OIDC sign-in method.
+2. On the Keycloak sign-in page, choose the AD FS identity provider by its configured display name.
+3. Authenticate with AD FS. Keycloak maps the returned SAML claims and completes the platform's OIDC sign-in.
+4. Verify that the expected user attributes and roles are available in ILM.
 
-        ![AD FS login button](../../../assets/adfs/adfs-ilm-login.png)
+```plantuml AD FS sign-in through the Keycloak identity broker
+@startuml
+actor "User" as User
+participant "ILM administrator\ninterface" as ILM
+participant "Keycloak\nidentity broker" as Keycloak
+participant "AD FS\nidentity provider" as ADFS
+User -> ILM : Choose configured OIDC sign-in
+ILM -> Keycloak : OIDC authorization request
+User -> Keycloak : Select configured AD FS provider
+Keycloak -> ADFS : SAML authentication request
+ADFS -> User : Authenticate user
+ADFS --> Keycloak : SAML assertion
+Keycloak -> Keycloak : Map claims to user attributes
+Keycloak --> ILM : Complete OIDC authorization flow
+@enduml
+```
 
-    </div>
-</center>
-
-When you click on the button, you will be redirected to the AD FS login page where you can authenticate using your AD FS credentials.
+The sign-in method and provider labels depend on your deployment configuration. The protocol relationships and field values in this guide remain the reference when a user-interface layout changes.
 
 ## Troubleshooting
 

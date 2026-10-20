@@ -1,55 +1,440 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  background-color: var(--ifm-color-primary);
+.home {
+  color: var(--ilm-text);
+  background: var(--ilm-canvas);
 }
-
-@media screen and (max-width: 966px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.home h1,
+.home h2,
+.home h3 {
+  font-weight: 550;
 }
-
-.heroTitle {
-  font-size: 2.5rem;
-  font-weight: 700;
-  /*color: #2c3e50;*/
-  color: #ffffff;
-  margin-bottom: 1rem;
+.home p {
+  color: var(--ilm-muted);
 }
-
-.heroSubtitle {
-  font-size: 1.5rem;
-  font-weight: 300;
-  /*color: #7f8c8d;*/
-  color: #ffffff;
-  margin-bottom: 2rem;
+.hero,
+.detail,
+.journey,
+.visibility,
+.architecture,
+.resources {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 48px;
 }
-
-.blueButton {
-  background-color: var(--ifm-secondary-color);
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+  padding-block: 80px 48px;
 }
-
-.blueButton:hover {
-  background-color: color-mix(
-          in srgb,
-          var(--ifm-color-secondary) 50%,
-          black 50%
-  );
+.intro h1 {
+  font-size: clamp(3.25rem, 5.9vw, 5.5rem);
+  line-height: 1.03;
+  letter-spacing: -0.065em;
+  margin-block: 24px 28px;
 }
-.buttons {
+.intro h1 em {
+  color: var(--ilm-accent);
+  font-style: normal;
+}
+.home .eyebrow {
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ilm-accent);
   display: flex;
   align-items: center;
+  gap: 10px;
+}
+.eyebrow > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.home .lead {
+  font-size: 1.2rem;
+  color: var(--ilm-text);
+  max-width: 27rem;
+  line-height: 1.6;
+}
+.context {
+  max-width: 27rem;
+  font-size: 0.95rem;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+.primary,
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.primary {
+  color: white;
+  background: var(--ilm-button);
+  padding: 15px 20px;
+  border-radius: 6px;
+}
+.primary:hover {
+  background: var(--ilm-button-hover);
+  color: white;
+  text-decoration: none;
+}
+.textLink {
+  color: var(--ilm-accent);
+}
+.footnote {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 0.75rem;
+  margin: 40px 0 0;
+}
+.footnote > span {
+  flex: 1;
+  max-width: 100px;
+  height: 1px;
+  background: var(--ilm-border);
+}
+.detail {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding-block: 34px;
+  border-block: 1px solid var(--ilm-border);
+}
+.home .detailLabel {
+  font-size: 0.8rem;
+  color: var(--ilm-accent);
+  margin: 0;
+}
+.detail h2 {
+  font-size: 1.3rem;
+  letter-spacing: -0.025em;
+  margin: 0 0 8px;
+}
+.detail p {
+  font-size: 0.875rem;
+  margin: 0;
+  max-width: 36rem;
+}
+.detail > div > a {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.8rem;
+}
+.journey,
+.architecture {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 64px;
+  padding-block: 88px;
+}
+.journey h2,
+.visibility h2,
+.architecture h2 {
+  font-size: clamp(1.85rem, 3vw, 2.7rem);
+  line-height: 1.15;
+  letter-spacing: -0.045em;
+  margin-bottom: 20px;
+}
+.routes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 36px;
+}
+.routes > a {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 26px 0;
+  border-top: 1px solid var(--ilm-border);
+  color: var(--ilm-text);
+}
+.routes > a:hover {
+  text-decoration: none;
+}
+.routes > a:hover h3 {
+  color: var(--ilm-accent);
+}
+.routes > a > span:last-child {
+  margin-left: auto;
+  color: var(--ilm-accent);
+}
+.number {
+  color: var(--ilm-accent);
+  font-size: 0.75rem;
+  margin-top: 5px;
+}
+.routes h3 {
+  font-size: 1.25rem;
+  margin: 0 0 9px;
+}
+.routes p {
+  font-size: 0.85rem;
+  margin: 0;
+}
+.visibility {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 64px;
+  padding-block: 70px;
+  border-block: 1px solid var(--ilm-border);
+}
+.visibility p,
+.architecture p {
+  max-width: 33rem;
+}
+.inventoryArt {
+  overflow: clip;
+  position: relative;
+  height: 300px;
+  display: grid;
+  place-items: center;
+}
+.inventoryOrbit {
+  position: absolute;
+  width: 270px;
+  height: 270px;
+  border: 1px solid var(--ilm-border);
+  border-radius: 50%;
+  transform: rotate(-25deg) scaleY(0.72);
+}
+.inventoryOrbit:nth-child(2) {
+  transform: rotate(35deg) scaleY(0.72);
+  width: 320px;
+  height: 320px;
+}
+.inventoryCore {
+  background: var(--ilm-accent-soft);
+  border: 1px solid var(--ilm-border);
+  color: var(--ilm-accent);
+  border-radius: 28px 42px 30px 48px;
+  padding: 40px 26px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.inventoryOne,
+.inventoryTwo,
+.inventoryThree {
+  position: absolute;
+  background: var(--ilm-surface);
+  border: 1px solid var(--ilm-border);
+  border-radius: 30px;
+  padding: 9px 17px;
+  font-size: 0.8rem;
+}
+.inventoryOne {
+  top: 25px;
+  left: 12%;
+}
+.inventoryTwo {
+  right: 0;
+  top: 100px;
+}
+.inventoryThree {
+  bottom: 20px;
+  left: 16%;
+}
+.architecture {
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+}
+.architectureArt {
+  margin: 0;
+  padding: 32px;
+  text-align: center;
+}
+.environments {
+  display: flex;
   justify-content: center;
+  gap: 16px;
+  font-size: 0.75rem;
+  padding-bottom: 35px;
+  position: relative;
+}
+.environments::after {
+  content: '';
+  height: 35px;
+  width: 1px;
+  background: var(--ilm-border);
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+}
+.environments > span {
+  border-bottom: 1px solid var(--ilm-border);
+  padding-bottom: 12px;
+}
+.platform {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 20px;
+  background: var(--ilm-surface);
+  border: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  font-size: 0.75rem;
+}
+.platform strong {
+  color: var(--ilm-accent);
+  font-size: 1.3rem;
+  border-inline: 1px solid var(--ilm-border);
+  padding-inline: 20px;
+}
+.architectureArt figcaption {
+  margin-top: 25px;
+  font-size: 0.8rem;
+  color: var(--ilm-muted);
+}
+.resources {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  border-top: 1px solid var(--ilm-border);
+  padding-block: 35px 60px;
+}
+.resources > a {
+  color: var(--ilm-text);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+.resources > a:hover h2 {
+  color: var(--ilm-accent);
+}
+.resources h2 {
+  font-size: 0.9rem;
+  margin: 0 0 10px;
+}
+.resources p {
+  font-size: 0.75rem;
+  margin: 0;
 }
 
-.introImage {
-  width: 300px;
+@media (max-width: 1100px) {
+  .hero,
+  .detail,
+  .journey,
+  .visibility,
+  .architecture,
+  .resources {
+    padding-inline: 32px;
+  }
+  .actions {
+    gap: 18px;
+  }
+  .detail {
+    grid-template-columns: 100px 1fr;
+  }
+  .detail > a {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .journey,
+  .visibility,
+  .architecture {
+    gap: 36px;
+  }
+  .platform {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+@media (max-width: 760px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-top: 44px;
+  }
+  .intro h1 {
+    font-size: clamp(3.1rem, 10vw, 5rem);
+  }
+  .lead,
+  .context {
+    max-width: 34rem;
+  }
+  .footnote {
+    margin-top: 26px;
+  }
+  .detail {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .detail > a {
+    grid-column: auto;
+  }
+  .journey,
+  .visibility,
+  .architecture {
+    grid-template-columns: 1fr;
+    padding-block: 50px;
+    gap: 24px;
+  }
+  .visibility > div:last-child {
+    grid-row: 1;
+  }
+  .inventoryArt {
+    max-width: 450px;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .architectureArt {
+    padding: 10px 0;
+  }
+  .platform {
+    flex-wrap: nowrap;
+  }
+  .resources {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 30px;
+  }
+}
+@media (max-width: 420px) {
+  .hero,
+  .detail,
+  .journey,
+  .visibility,
+  .architecture,
+  .resources {
+    padding-inline: 20px;
+  }
+  .actions {
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .routes {
+    grid-template-columns: 1fr;
+  }
+  .routes > a {
+    padding-block: 20px;
+  }
+  .inventoryOrbit:nth-child(2) {
+    width: 260px;
+    height: 260px;
+  }
+  .platform {
+    gap: 8px;
+    padding-inline: 10px;
+  }
+  .platform strong {
+    padding-inline: 10px;
+    font-size: 1.1rem;
+  }
+  .resources {
+    grid-template-columns: 1fr;
+  }
 }

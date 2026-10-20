@@ -1,0 +1,82 @@
+.reference {
+  min-width: 0;
+  color: var(--ilm-text);
+}
+.header {
+  padding: 1.5rem clamp(1rem, 3vw, 3rem);
+  border-bottom: 1px solid var(--ilm-border);
+  background: var(--ilm-surface);
+}
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  font-size: 0.8rem;
+  color: var(--ilm-muted);
+  margin-bottom: 1.5rem;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.heading h1 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.release {
+  font-size: 0.72rem;
+  color: var(--ilm-muted);
+  margin-bottom: 0.35rem;
+}
+.download {
+  display: inline-flex;
+  gap: 0.65rem;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.status,
+.error {
+  margin: 1.5rem clamp(1rem, 3vw, 3rem);
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--ilm-border);
+  border-radius: var(--ilm-radius);
+  background: var(--ilm-accent-soft);
+  color: var(--ilm-text);
+  font-size: 0.9rem;
+}
+.error p {
+  margin-bottom: 0.8rem;
+}
+.error button {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--ilm-border);
+  border-radius: 0.5rem;
+  font: inherit;
+  background: var(--ilm-surface);
+  color: var(--ilm-accent);
+  cursor: pointer;
+}
+.renderer {
+  min-width: 0;
+}
+.status {
+  display: block;
+}
+.announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

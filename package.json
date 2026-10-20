@@ -19,17 +19,18 @@
     "verify-controls": "node scripts/verify-controls.mjs",
     "update-api-anchors": "node scripts/update-api-anchors.mjs",
     "prebuild": "yarn render-diagrams && yarn verify-controls",
-    "test": "node --test",
-    "coverage": "node --test --experimental-test-coverage --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --test-coverage-exclude='**/*.test.mjs' --test-coverage-exclude='src/data/**' --test-coverage-exclude='scripts/plantuml-server.mjs' --test-coverage-exclude='scripts/render-diagrams.mjs'"
+    "test": "yarn test:unit && yarn test:ui",
+    "coverage": "yarn coverage:node && yarn coverage:ui",
+    "test:unit": "node --test scripts/*.test.mjs src/lib/*.test.mjs src/plugins/*.test.mjs",
+    "test:ui": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "coverage:node": "mkdir -p coverage-node && node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage-node/lcov.info --experimental-test-coverage --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --test-coverage-exclude='**/*.test.mjs' --test-coverage-exclude='src/data/**' --test-coverage-exclude='scripts/plantuml-server.mjs' --test-coverage-exclude='scripts/render-diagrams.mjs' scripts/*.test.mjs src/lib/*.test.mjs src/plugins/*.test.mjs",
+    "coverage:ui": "vitest run --coverage"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
     "@docusaurus/plugin-client-redirects": "^3.10.2",
     "@docusaurus/preset-classic": "^3.10.2",
-    "@fortawesome/fontawesome-free": "^7.3.1",
-    "@fortawesome/fontawesome-svg-core": "^7.3.1",
-    "@fortawesome/free-solid-svg-icons": "^7.3.1",
-    "@fortawesome/react-fontawesome": "^3.5.0",
     "@mdx-js/react": "^3.1.0",
     "@scalar/api-reference": "1.75.0",
     "clsx": "^2.0.0",
@@ -42,7 +43,18 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.2",
-    "@docusaurus/types": "^3.10.2"
+    "@docusaurus/types": "^3.10.2",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitest/coverage-v8": "4.1.11",
+    "happy-dom": "21.0.3",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "vite": "7.3.7",
+    "vitest": "4.1.11"
   },
   "engines": {
     "node": ">=24.0"
@@ -51,7 +63,8 @@
     "postcss-selector-parser": "^7.1.6",
     "serialize-javascript": "^7.0.5",
     "tinypool": "^2.1.2",
-    "uuid": "^11.1.1"
+    "uuid": "^11.1.1",
+    "vite": "7.3.7"
   },
   "browserslist": {
     "production": [
