@@ -142,6 +142,24 @@ To register a certificate extension in the UI:
 
 The `OID` and category cannot be changed after creation.
 
+## Reading extensions back
+
+Two endpoints of the [Certificate API](/api/core-certificate) list the extensions of a certificate, so a client does not have to parse the certificate itself. Both need the `Detail` permission on the certificate.
+
+- `GET /v1/certificates/{uuid}/extensions` lists the extensions of the issued certificate. A certificate without stored content returns an empty list.
+- `GET /v1/certificates/{uuid}/request/extensions` lists the extensions the requester asked for in the certificate request. A certificate without a stored request returns an empty list.
+
+Every extension is listed, in the order it is encoded, whether or not the OID is registered. An entry has these fields:
+
+- `oid` — the extension OID in dotted notation.
+- `critical` — whether the extension is marked critical.
+- `der` — the extension value as Base64-encoded DER, in the same form a `DER` value takes when [mapping an extension](#custom-certificate-extensions).
+- `jer` — the value decoded to [JER](#asn1-modules-and-jer-values). It is present only when the OID has an ASN.1 module, registered as a Custom OID or [shipped by Core](#shipped-modules), and the value decodes against it. Otherwise the entry carries `der` only; an extension whose value cannot be decoded does not hide the others.
+
+A member left out of the encoding because it has its `DEFAULT` value reads back as that value. A Basic Constraints extension whose value is the empty sequence (`30 00`) reads as `{"cA":false}`.
+
+The request endpoint shows what was *requested*. The issued certificate may not match it, so do not read the request list as the contents of the certificate.
+
 ## System OIDs
 
 The built-in **System OIDs** cover the common RDN attribute types (such as `CN`, `O`, `OU`, or `C`), the common extended-key-usage purposes (such as server authentication, client authentication, or code signing), and the common standards-track [certificate extensions](#built-in-certificate-extensions).
