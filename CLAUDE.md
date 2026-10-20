@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Documentation site for ILM (Identity Lifecycle Management) — an open-source trust lifecycle management platform. Built with **Docusaurus 3.7** and deployed to GitHub Pages at https://docs.otilm.com.
+Documentation site for ILM (Identity Lifecycle Management) — an open-source trust lifecycle management platform. Built with **Docusaurus 3** and deployed to GitHub Pages at https://docs.otilm.com.
 
 ## Commands
 
@@ -30,6 +30,10 @@ yarn coverage               # Unit tests with coverage thresholds enforced
 > re-renders diagrams live as docs change during dev. To render against an already-running server instead, set
 > `PLANTUML_SERVER_URL` (e.g. `PLANTUML_SERVER_URL=http://127.0.0.1:8080 yarn build`).
 
+The image is pinned by digest in two places that must stay in sync: `DOCKER_IMAGE` in
+`scripts/plantuml-server.mjs` and the `image-digest` default in `.github/actions/plantuml/action.yml`.
+Renovate does not track either, so update both by hand. Changing the pin re-renders every diagram.
+
 The build downloads every OpenAPI document in the catalog from `https://api.otilm.com/` into
 `static/api-specs/`. The build is therefore network-dependent. The documents are **not** rendered at build
 time — Scalar renders them in the browser.
@@ -49,6 +53,12 @@ The heap limit is set in two places that must stay in sync: the `NODE_OPTIONS` a
 work. If a release makes the build fail with a `SIGABRT` heap-limit crash (which reads like CI
 infrastructure flakiness), raise both together after confirming with one cold build:
 `yarn clear && NODE_OPTIONS=--max_old_space_size=<limit> yarn build`.
+
+### Dependency overrides
+
+`resolutions` in `package.json` forces patched versions of transitive dependencies that Docusaurus 3 otherwise
+pulls in only at vulnerable major versions. Remove an entry once Docusaurus depends on a fixed version: drop it,
+run `yarn install`, and check what `yarn why <package>` reports.
 
 ### Remote docs
 

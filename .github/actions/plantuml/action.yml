@@ -6,7 +6,7 @@ description: >
 inputs:
   image-digest:
     description: sha256 digest of the pinned plantuml/plantuml-server image
-    default: sha256:5b9968b8723e03ef585396b257127337ca5f91e58ccbffc88f085bd649a717dc
+    default: sha256:065c66adc6728ba6dd353a29d4ada73f8358b68549a0f710c4bf46b43c103618
 
 runs:
   using: composite
@@ -14,14 +14,14 @@ runs:
     # Rendered SVGs are content-hashed and gitignored. Restore them so unchanged diagrams are
     # reused; restore-keys falls back to an older cache so only new/edited diagrams re-render.
     - name: Cache rendered PlantUML SVGs
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: static/img/plantuml
         key: plantuml-svg-${{ inputs.image-digest }}-${{ hashFiles('docs/**/*.md', 'docs/**/*.mdx') }}
         restore-keys: |
           plantuml-svg-${{ inputs.image-digest }}-
     - name: Cache PlantUML server image
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ~/.cache/plantuml/image.tar
         key: plantuml-server-${{ inputs.image-digest }}

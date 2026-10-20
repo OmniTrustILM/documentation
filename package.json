@@ -23,32 +23,34 @@
     "coverage": "node --test --experimental-test-coverage --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --test-coverage-exclude='**/*.test.mjs' --test-coverage-exclude='src/data/**' --test-coverage-exclude='scripts/plantuml-server.mjs' --test-coverage-exclude='scripts/render-diagrams.mjs'"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.7.0",
-    "@docusaurus/plugin-client-redirects": "^3.7.0",
-    "@docusaurus/preset-classic": "^3.7.0",
-    "@fortawesome/fontawesome-free": "^7.2.0",
-    "@fortawesome/fontawesome-svg-core": "^7.2.0",
-    "@fortawesome/free-solid-svg-icons": "^7.2.0",
-    "@fortawesome/react-fontawesome": "^3.3.0",
+    "@docusaurus/core": "^3.10.2",
+    "@docusaurus/plugin-client-redirects": "^3.10.2",
+    "@docusaurus/preset-classic": "^3.10.2",
+    "@fortawesome/fontawesome-free": "^7.3.1",
+    "@fortawesome/fontawesome-svg-core": "^7.3.1",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
+    "@fortawesome/react-fontawesome": "^3.5.0",
     "@mdx-js/react": "^3.1.0",
-    "@scalar/api-reference": "1.64.0",
+    "@scalar/api-reference": "1.75.0",
     "clsx": "^2.0.0",
     "docusaurus-plugin-remote-content": "^4.0.0",
     "plantuml-encoder": "^1.4.0",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "yaml": "^2.9.0"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.7.0",
-    "@docusaurus/types": "^3.7.0"
+    "@docusaurus/module-type-aliases": "^3.10.2",
+    "@docusaurus/types": "^3.10.2"
   },
   "engines": {
     "node": ">=24.0"
   },
   "resolutions": {
-    "webpack": "5.105.4"
+    "postcss-selector-parser": "^7.1.6",
+    "serialize-javascript": "^7.0.5",
+    "uuid": "^11.1.1"
   },
   "browserslist": {
     "production": [
