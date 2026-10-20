@@ -7,7 +7,7 @@ sidebar_position: 7
 | Property    | Value |
 |-------------|-------|
 | HTTP status | `403 Forbidden` |
-| Retryable   | Yes |
+| Retryable   | No |
 | Error code  | `FORBIDDEN` |
 
 ## Summary
@@ -39,7 +39,6 @@ The caller is authenticated but does not have permission to perform the requeste
   "errorCode": "FORBIDDEN",
   "correlationId": "4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a",
   "timestamp": "2025-09-08T13:45:00Z",
-  "retryable": true,
-  "retryAfterSeconds": 30
+  "retryable": false
 }
 ```

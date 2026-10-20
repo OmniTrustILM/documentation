@@ -62,15 +62,15 @@ The issuance request is accepted and queued; it runs asynchronously, so the resp
 
 Poll the certificate detail for that `uuid` until its state becomes `Issued`, then read the signed certificate from the detail response.
 
+When the profile validates leniently and the uploaded CSR does not comply with the request attributes, the response also carries `requestAttributeWarnings`, a list of messages. The certificate is issued all the same; the warnings are informational. The field is empty when there is nothing to report. See [Warnings under lenient validation](../../concept-design/core-components/ra-profile.md#warnings-under-lenient-validation).
+
 ## Upload existing certificate
 
-Upload the existing certificate to the platform.
+Upload an existing certificate, together with its private key when you have one, by importing it:
 
-
-1. Click **Certificates** in the left menu 
-2. Click **Upload Certificate** (upload symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faUpload} /></span>)
-3. Upload the certificate (CRT file)
-4. Click **Submit** to upload the certificate to the platform
+1. Click **Certificates** in the left menu
+2. Click **Import certificates and keys** (upload symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faUpload} /></span>)
+3. Continue as described in [Import Certificates and Keys](./import-certificates-and-keys.mdx)
 
 ## Create new certificate
 
@@ -83,6 +83,8 @@ Select the correct `RA Profile` and issue a new `Certificate`:
 5. Choose the **Key Source**:
     - **External** — upload your own certificate request (CSR file)
     - **Existing Key** — the platform builds and signs the request from a platform key: select the **Token Profile** and the **Key**, and fill the **Signature Attributes** tab. For a hybrid certificate, switch on **Include Alternative Key**, select the **Alternative Token Profile** and **Alternative Key**, and fill the **Alternative Signature Attributes** tab.
+        - To generate the key in the same step, select **+ Add new** in the **Key** list and create the key in **Add New Key**. Switch on **Exportable**, when the form shows it, to [download the certificate with its private key](./download-certificate.mdx) after issuance; it cannot be switched on later.
+        - A new key is created disabled. Enable it under **Keys** before clicking **Create**, or the request is refused.
 6. With **Existing Key**, fill the **Request Attributes** tab — its values define the content of the certificate request
 7. Fill the **Connector Attributes** and **Custom Attributes** tabs, if needed
 8. Click **Create**
@@ -94,5 +96,5 @@ The **Request Attributes** tab shows the resolved set for the selected `RA Profi
 :::
 
 :::note[External CSR validation]
-With the **External** key source, the uploaded CSR is validated against the profile's resolved request-attribute set, in strict or lenient mode — see [External CSR validation](../../concept-design/core-components/ra-profile.md#external-csr-validation). Violations appear in the red **Compliance errors** panel on the form.
+With the **External** key source, the uploaded CSR is validated against the profile's resolved request-attribute set, in strict or lenient mode — see [External CSR validation](../../concept-design/core-components/ra-profile.md#external-csr-validation). Under strict validation, violations appear in the red **Compliance errors** panel on the form and the request is not submitted. Under lenient validation, the request is accepted and the form stays open with the warning **Certificate request accepted with warnings**, listing what does not comply. Click **Open certificate** to continue to the certificate, or **Close**. Warnings are raised for an uploaded CSR only: a request built from an **Existing Key** raises none.
 :::

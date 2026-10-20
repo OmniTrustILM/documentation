@@ -1316,7 +1316,7 @@ Scaffold a Platform CR
 
 ### Synopsis
 
-Scaffold a Platform custom resource. A --profile seeds defaults (minimal|external|managed-ha); any explicit flag always overrides the profile, and the effective values are echoed as YAML comments. Use --apply to server-side apply directly, or --dry-run=server to validate against the cluster's CEL rules.
+Scaffold a Platform custom resource. A --profile seeds defaults (minimal|external|managed-ha); any explicit flag always overrides the profile, and the effective values are echoed as YAML comments. Use --apply to server-side apply directly, or --dry-run=server to validate against the cluster's CEL rules; --apply is refused while the output still holds placeholders.
 
 ```
 ilmctl platform generate [flags]
@@ -1344,7 +1344,7 @@ ilmctl platform generate [flags]
       --profile string             Profile: minimal|external|managed-ha (default "external")
       --provisioning-mode string   Provisioning mode: external|deploy
       --tls-source string          TLS source: internal|letsEncrypt|issuerRef|secret
-      --version string             Platform version bundle (default: operator newest)
+      --version string             Platform version bundle (default: the operator's default version)
 ```
 
 ### Options inherited from parent commands
@@ -2221,7 +2221,7 @@ Upgrade the ILM operator to a newer manifest
 
 ### Synopsis
 
-Re-apply a newer operator manifest. This upgrades the OPERATOR, not a Platform instance (use `platform upgrade NAME --to vX` for that). Reports CRD/RBAC deltas before applying. With no source flag the latest published operator release is used; release manifests are verified against the release checksums before anything is applied.
+Re-apply a newer operator manifest. This upgrades the OPERATOR, not a Platform instance (use `platform upgrade NAME --to X.Y.Z` for that). Reports CRD/RBAC deltas before applying. With no source flag the latest published operator release is used; release manifests are verified against the release checksums before anything is applied.
 
 ```
 ilmctl upgrade [flags]

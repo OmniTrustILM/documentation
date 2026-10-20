@@ -8,7 +8,7 @@ sidebar_position: 12
 
 Connector NG exposes a `Metrics` interface that provides standard [Prometheus](https://prometheus.io/docs/instrumenting/exposition_formats/) / [OpenMetrics](https://openmetrics.io/) metrics. These metrics can be scraped by observability solutions and collectors (Prometheus, Grafana Agent, OpenTelemetry Collector, etc.).
 
-This interface is optional for all Connector NG implementations. If implemented, each connector must support at least one exposition format — Prometheus text, OpenMetrics, or both.
+This interface is mandatory for every Connector NG. The connector lists it in its [Info](info-interface.md#connector-ng) response as `metrics`, version `v1`, and `Core` refuses to register a connector that does not. Each connector must support at least one exposition format — Prometheus text, OpenMetrics, or both.
 
 When a connector supports the [OpenMetrics](https://openmetrics.io/) exposition format, it must advertise the `openMetrics` [feature flag](info-interface.md#feature-flags) in its `Info` interface response.
 

@@ -6,13 +6,23 @@ sidebar_position: 9
 
 How you upgrade the platform depends on how you deployed it. Upgrading should always be performed with caution. The upgrade process is **irreversible**, so it is essential to create backups of the database and of your deployment's configuration before proceeding.
 
+## Upgrading to 2.20.0
+
+Whatever your deployment, check the following before you upgrade to 2.20.0:
+
+- **Maintenance window** — at its first start, Core migrates the discovered certificates in its database, which can take minutes on a large installation. Plan a maintenance window, see [Longer Core startup](deployment/deployment-helm/upgrading.md#longer-core-startup).
+- **External message broker** — before you upgrade, create the `provider.discovery-work` queue, its binding and Core's permission to read from it, as the notes for [Helm](deployment/deployment-helm/upgrading.md#messaging-queue-for-discovery-work) and the [Kubernetes Operator](deployment/deployment-operator/upgrading.md#worked-example-2190-to-2200) describe.
+- **CBOM Repository** — if a CBOM Repository URL is set in [Platform Settings](../settings/platform.md#util-settings), upgrade the CBOM Repository to 1.2.0 or later, before the platform or together with it. On the virtual appliance, set `ilm_cbom_repository_version`, see [Kubernetes upgrades](deployment/deployment-appliance/upgrading.md#kubernetes-upgrades).
+- **Proxies** — upgrade every proxy to 1.0.1, which Core 2.20.0 relies on. A `Proxy` resource of the Kubernetes Operator takes its version from the operator, see the [Operator notes](deployment/deployment-operator/upgrading.md#worked-example-2190-to-2200).
+- **Pinned images** — an image whose tag or digest you set yourself stays at that version, and so does a connector deployed outside the Helm chart. Move each to its version in [Current Versions](../current-versions.md), including Auth 1.8.0. A Helm values file created with `helm show values` sets the `image.tag` of Core.
+
 ## Choose your upgrade path
 
 | Deployment | Upgrade guide |
 |---|---|
 | Kubernetes Operator | [Upgrading](deployment/deployment-operator/upgrading.md) |
 | Helm chart | [Upgrading a Helm deployment](#upgrading-a-helm-deployment) below, and the chart's own [Upgrading](deployment/deployment-helm/upgrading.md) notes |
-| Virtual appliance | [Operations](deployment/deployment-appliance/operations.md) |
+| Virtual appliance | [Upgrading](deployment/deployment-appliance/upgrading.md) |
 
 ## Upgrading a Helm deployment
 

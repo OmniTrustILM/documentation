@@ -7,7 +7,7 @@ sidebar_position: 1
 | Property    | Value |
 |-------------|-------|
 | HTTP status | `422 Unprocessable Entity` |
-| Retryable   | Yes |
+| Retryable   | No |
 | Error code  | `VALIDATION_FAILED` |
 
 ## Summary
@@ -37,8 +37,7 @@ Inspect the `causes` array in the response body — it is included as an additio
   "errorCode": "VALIDATION_FAILED",
   "correlationId": "f5a2e0e0c1ec41d4b7208b5b0c7bc7d9",
   "timestamp": "2025-09-08T12:41:22Z",
-  "retryable": true,
-  "retryAfterSeconds": 30,
+  "retryable": false,
   "causes": [
     {
       "name": "csr",

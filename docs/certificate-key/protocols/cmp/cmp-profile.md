@@ -10,6 +10,7 @@ sidebar_position: 3
 |--------------------------------|-------------------------------------------------------------------------------------------------|---------------|-----------------------------------------------|
 | **Name**                       | `CMP Profile` Name                                                                              |               | <span class="badge badge--success">Yes</span> |
 | **Description**                | Description of the `CMP Profile`                                                                |               | <span class="badge badge--danger">No</span>   |
+| **Challenge Source**           | How requests are authenticated: with the protection configured on the profile, or with the challenge of a certificate registration. See [Challenge source](#challenge-source) | `Protocol Default` | <span class="badge badge--danger">No</span> |
 | **Variant**                    | Variant of the CMP protocol defining the behaviour                                              |               | <span class="badge badge--success">Yes</span> |
 | **Request Protection Method**  | One of available protection methods for the CMP requests                                        |               | <span class="badge badge--success">Yes</span> |
 | **Shared Secret**              | Shared secret for the protection of CMP message when request protection method is shared secret |               | <span class="badge badge--danger">No</span>   |
@@ -36,6 +37,19 @@ The platform supports the following protection methods for CMP requests and resp
 The following restrictions apply for the protection methods configuration:
 - If the `Response Protection Method` is set to `Shared Secret`, the `Shared Secret` protection method must be configured also for the `Request Protection Method`
 - If the `Request Protection Method` is set to `Signature`, the `Signature` protection method must be used also for the `Response Protection Method`
+
+## Challenge source
+
+With the challenge source `Protocol Default`, requests are authenticated by the `Request Protection Method` of the profile: with its **Shared Secret**, or by a signature.
+
+With `Certificate Registration`, a request names a [registered certificate](../../quick-start/certificate-management/register-certificate.mdx) by its UUID in the `senderKID`, and the challenge of that registration is the shared secret of the message protection. Initialization (`ir`), certification (`cr`) and key update (`kur`) requests, and their `pollReq` and `certConf` messages, are authenticated this way. Once the protection is verified, the subject and SANs of the request must equal the registered identity. See [Challenge source](../common-properties.md#challenge-source) for how a failed request is refused.
+
+The following restrictions apply to a profile with the challenge source `Certificate Registration`:
+- The variant must be `CMPv2`
+- The `Request Protection Method` must be `Shared Secret`, and no shared secret is configured on the profile
+- The `Response Protection Method` can be either `Shared Secret` or `Signature`
+- Revocation requests (`rr`) are refused
+- The `senderKID` of a key update must be the UUID of the certificate being updated. After a successful key update the registration follows the new certificate, so the next key update names the UUID of the new certificate
 
 ## Request signing certificate
 

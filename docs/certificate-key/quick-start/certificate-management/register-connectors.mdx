@@ -28,7 +28,7 @@ curl -X POST \
   --data '
   {
     "name": "Common Credential Provider",
-    "url", "https://common-credential-provider-service:8080"",
+    "url": "http://common-credential-provider-service:8080",
     "authType": "none"
   }' \
   https://[domain]:[port]/api/v1/connectors
@@ -53,7 +53,7 @@ curl -X POST \
   --data '
   {
     "name": "MS ADCS Connector",
-    "url", "https://ms-adcs-conector-service:8080"",
+    "url": "http://ms-adcs-connector-service:8080",
     "authType": "none"
   }' \
   https://[domain]:[port]/api/v1/connectors
@@ -76,7 +76,7 @@ Follow these steps to register new `Common Credential Provider`.
 2. Click **Connectors** in the left menu
 3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
 4. Fill the columns with the attributes:
-   - URL: `https://common-credential-provider-service:8080`
+   - URL: `http://common-credential-provider-service:8080`
    - Authentication Type: `No Auth`
 5. Click **Connect**
 
@@ -95,7 +95,7 @@ Follow these steps to register new `MS ADCS Connector`.
 2. Click **Connectors** in the left menu
 3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
 4. Fill the columns with the attributes:
-    - URL: `https://ms-adcs-connector-service:8080`
+    - URL: `http://ms-adcs-connector-service:8080`
     - Authentication Type: `No Auth`
 5. Click **Connect**  
 

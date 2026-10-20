@@ -7,7 +7,7 @@ sidebar_position: 11
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRetweet} from '@fortawesome/free-solid-svg-icons'
 
-`Certificate` can be renewed. The renewal operation does not need additional `Attributes` or any information other than certificate signing request. This is one of advantages of `RA Profile`.
+`Certificate` can be renewed with a new certificate signing request (CSR), or with the CSR it was issued from when the platform has it. When the connector of the authority offers renew attributes, the renewal also takes them.
 
 :::info
 Only the `Certificate` that is bound to `RA Profile` can be renewed.
@@ -25,10 +25,10 @@ curl -X POST \
   -H "Accept: application/json" \
   --data '
   {
-    "pkcs10": "MIICzTCCAbcCAQAwWjFYMAgGA1UEAwwBeDANBgkqhkiG9w0BCQETADAHBgNVBAsTADAHBgNVBAoTADAHBgNVBAkTADAHBgNVBAcTADAHBgNVBAgTADAHBgNVBBETADAHBgNVBAYTADCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANJ2sKsyNhQWrF3QTgJnL9GO8g4WEiJjlY6Cp6Q5dhUrjv6i2m0pL9uFovopbXkPCW8UuDda5ws79PRhRHEPhuPwdTy/UMXLYoiTnjAYP5jalp4UQ/di7tT5BBUxPPzGAMNWVw0IEKlgJnw67xqYP3nbY9u3LEcbBxfAadLR7RVQNJebyRVXLIWstWGMtuVoDcT+I8pdoLEuSlJE2RXiyPXZSvlm8m2qs5912zNbrA3Mi8b/jU/H+lbS5RZ/sphIhrgWpBH4nq8g95VYwcBNhhmcpyUDeeLDHhWpJwlx8p+g+At6u/PMnEvPfnlQ9MZaFTc6PWTKtGAE+lv0803TZjUCAwEAAaAwMC4GCSqGSIb3DQEJDjEhMB8wHQYDVR0OBBYEFEWyex+1M1ZaTYBL0ERQAnBSnld2MAsGCSqGSIb3DQEBCwOCAQEAWO1hjH5f0BPOnR0zmmmf8riNQGwTs+/ySCn5oMQjzoyNDHOB95ZdhYih7UM5u5LKJxEvrX2AJxeAttYsCZhjwkmUutzg6cWqhmpKTHVeRWpqD00u/FBy6hpUdhRCi4FEYIXTkjFnMzrp+M7bQmjuDKgFVO4NMwophKCJoJifh8JE1Fz2jmO/mixLyUAgFIAuC1Odxakx6wyQnwfwX3Xi2zQtHC/bTH2u8XqpPD+epWUqKK5P02vk2kPq2y6e1BpNl6vdvS6Qy73/qX34vIfwf3guJhp99oESmW4TkR3ccT1Dbv9JJCZoyvJ6RSUi+skz4IGQ6YqVDoRp+qREpW+Dlw=="
+    "request": "MIICzTCCAbcCAQAwWjFYMAgGA1UEAwwBeDANBgkqhkiG9w0BCQETADAHBgNVBAsTADAHBgNVBAoTADAHBgNVBAkTADAHBgNVBAcTADAHBgNVBAgTADAHBgNVBBETADAHBgNVBAYTADCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANJ2sKsyNhQWrF3QTgJnL9GO8g4WEiJjlY6Cp6Q5dhUrjv6i2m0pL9uFovopbXkPCW8UuDda5ws79PRhRHEPhuPwdTy/UMXLYoiTnjAYP5jalp4UQ/di7tT5BBUxPPzGAMNWVw0IEKlgJnw67xqYP3nbY9u3LEcbBxfAadLR7RVQNJebyRVXLIWstWGMtuVoDcT+I8pdoLEuSlJE2RXiyPXZSvlm8m2qs5912zNbrA3Mi8b/jU/H+lbS5RZ/sphIhrgWpBH4nq8g95VYwcBNhhmcpyUDeeLDHhWpJwlx8p+g+At6u/PMnEvPfnlQ9MZaFTc6PWTKtGAE+lv0803TZjUCAwEAAaAwMC4GCSqGSIb3DQEJDjEhMB8wHQYDVR0OBBYEFEWyex+1M1ZaTYBL0ERQAnBSnld2MAsGCSqGSIb3DQEBCwOCAQEAWO1hjH5f0BPOnR0zmmmf8riNQGwTs+/ySCn5oMQjzoyNDHOB95ZdhYih7UM5u5LKJxEvrX2AJxeAttYsCZhjwkmUutzg6cWqhmpKTHVeRWpqD00u/FBy6hpUdhRCi4FEYIXTkjFnMzrp+M7bQmjuDKgFVO4NMwophKCJoJifh8JE1Fz2jmO/mixLyUAgFIAuC1Odxakx6wyQnwfwX3Xi2zQtHC/bTH2u8XqpPD+epWUqKK5P02vk2kPq2y6e1BpNl6vdvS6Qy73/qX34vIfwf3guJhp99oESmW4TkR3ccT1Dbv9JJCZoyvJ6RSUi+skz4IGQ6YqVDoRp+qREpW+Dlw=="
   }' \
-  https://[domain]:[port]/api/v2/operations/authorities/e045a12a-e114-45ed-90b8-bac7e750e803/raProfiles/166b5cf52-63f2-11ec-90d6-0242ac120003/certificates/renew
-  #https://[domain]:[port]/api/v2/operations/authorities/{authorityUuid}/raProfiles{raProfileUuid}/certificates/renew
+  https://[domain]:[port]/api/v2/operations/authorities/e045a12a-e114-45ed-90b8-bac7e750e803/raProfiles/166b5cf5-63f2-11ec-90d6-0242ac120003/certificates/3f6e2a10-8c4b-4d2e-9a71-5b0c8e2d4f19/renew
+  #https://[domain]:[port]/api/v2/operations/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/certificates/{certificateUuid}/renew
 ```
 
 The renewal request is accepted and queued; it runs asynchronously, so the response returns only the certificate's `uuid` — the `certificateData` field is left empty and the signed certificate is not returned here:
@@ -41,6 +41,8 @@ The renewal request is accepted and queued; it runs asynchronously, so the respo
 
 Poll the certificate detail for that `uuid` until its state becomes `Issued`, then read the signed certificate from the detail response.
 
+The request can also carry the renewal `attributes`, when the connector offers them, and the `authorizationSecret` that a certificate with an `Active` registration needs; see [Renew and rekey with a challenge](../../concept-design/core-components/certificate.md#renew-and-rekey-with-a-challenge).
+
 ## Renew `Certificate` using the Web Interface
 
 Follow these steps to renew a `Certificate`:
@@ -48,7 +50,13 @@ Follow these steps to renew a `Certificate`:
 1. Click **Certificates** in the left menu 
 2. In the **List of Certificates** select the `Certificate` to renewal
 3. Click **Renew** (symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faRetweet} /></span>)
-4. Upload the certificate signing request (CSR file)
-5. Click **Renew**
+4. Upload a new certificate signing request (CSR file), unless you renew with the existing one
+5. Fill the **Renew Attributes** tab, when the dialog shows it
+6. Enter the **Challenge** when the dialog asks for it, which it does while the certificate has an `Active` registration
+7. Click **Renew**
+
+A refusal, such as a wrong challenge or a locked registration, stays in the dialog with the reason. The **Rekey** dialog asks for the **Challenge** the same way.
 
 The `Certificate` has been successfully renewed and information is update in the inventory. You can check the `Certificate` status.
+
+To pre-register the successor of the certificate instead of renewing it, use **Register instead of renewing now** in the same dialog. See [Register a successor](register-certificate.mdx#register-a-successor).

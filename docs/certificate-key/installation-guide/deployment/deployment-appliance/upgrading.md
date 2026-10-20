@@ -31,11 +31,11 @@ The following table shows which versions of Virtual Appliance are based on which
 | from 2.17.0        |  Trixie (13)   | 2030-06-30           |
 
 Rather than upgrading OS on the existing appliance, we recommend to deploy a new version of the appliance and migrate ILM to it. This way you can be sure that all components are working correctly and you can easily rollback to the old appliance in case of any problem. In this case you follow this steps:
- * [backup](#backup) ILM database,
+ * [backup](./operations.md#backup) ILM database,
  * deploy new appliance and [upgrade OS](#os-upgrades),
  * migrate configuration of ILM components by copying files from `/etc/ilm-ansible/vars/` to the new appliance (before version 2.17.0 it is `/etc/czertainly-ansible/vars/`),
  * copy home directory of `ilm` user from old appliance to the new one (before version 2.17.0 it is `czertainly` user),
- * [restore](#restore) database (see below),
+ * [restore](./operations.md#restore) database,
  * re-run ILM installation from the main menu.
 
 ## Kubernetes upgrades
@@ -63,7 +63,7 @@ By changing these variables, you can control the versions of the respective comp
 It is possible to upgrade reasonably old versions of ILM just by raising the version number in [ILM configuration](./TUI/main-menu.md#configure-ilm) and executing [ILM Installation](./TUI/main-menu.md#install-ilm). It is posible even upgrade to ILM version which exceedes version of ilm-appliance-tools and version if the Appliance itself. But before doing so it is recommended to check official [upgrade instructions](../deployment-helm/upgrading) for upgrade path for your specific version.
 
 
-We strongly recommend first performing [OS packages upgrades](#os-packages-upgrades) to upgrade OS components and to get the latest version of [ILM Appliance Tools](#versioning). If you upgrade the Tools first you get support for all new ILM components directly in TUI.
+We strongly recommend first performing [OS packages upgrades](#os-packages-upgrades) to upgrade OS components and to get the latest version of [ILM Appliance Tools](./operations.md#versioning). If you upgrade the Tools first you get support for all new ILM components directly in TUI.
 
 ### To 2.19.0
 

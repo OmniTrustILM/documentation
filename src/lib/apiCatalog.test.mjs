@@ -14,20 +14,26 @@ const VERSIONS = {apiVersion: '9.9.9', cscVersion: '1.2.3'};
  */
 const PUBLISHED_ROUTES = [
     '/api/core-acme/', '/api/core-approval/', '/api/core-attribute/', '/api/core-auth/',
-    '/api/core-authority/', '/api/core-certificate/', '/api/core-client-operations/',
-    '/api/core-cmp/', '/api/core-compliance-profile/', '/api/core-compliance-v2/',
+    '/api/core-authority/', '/api/core-cbom/', '/api/core-certificate/',
+    '/api/core-client-operations/',
+    '/api/core-cmp/', '/api/core-comment/', '/api/core-compliance-profile/',
+    '/api/core-compliance-v2/',
     '/api/core-connector/', '/api/core-credential/', '/api/core-cryptographic-operations/',
-    '/api/core-discovery/', '/api/core-entity/', '/api/core-group/', '/api/core-key/',
+    '/api/core-discovery/', '/api/core-entity/', '/api/core-group/', '/api/core-inspection/',
+    '/api/core-key/',
     '/api/core-local/', '/api/core-location/', '/api/core-notification/', '/api/core-other/',
+    '/api/core-proxy/',
     '/api/core-ra-profile/', '/api/core-scep/', '/api/core-scheduler/', '/api/core-secret/',
     '/api/core-signing-profile/', '/api/core-signing-record/',
     '/api/core-time-quality-configuration/', '/api/core-token/', '/api/core-token-profile/',
+    '/api/core-trusted-certificate/',
     '/api/core-tsp-profile/', '/api/core-vault/', '/api/core-vault-profile/',
     '/api/core-workflows/',
     '/api/connector-authority-provider-legacy/', '/api/connector-authority-provider-v2/',
     '/api/connector-authority-provider-v3/', '/api/connector-compliance-provider/',
     '/api/connector-compliance-provider-v2/', '/api/connector-credential-provider/',
-    '/api/connector-cryptography-provider/', '/api/connector-discovery-provider/',
+    '/api/connector-cryptography-provider/', '/api/connector-cryptography-provider-v2/',
+    '/api/connector-discovery-provider/', '/api/connector-discovery-provider-v2/',
     '/api/connector-entity-provider/', '/api/connector-notification-provider/',
     '/api/connector-secret-provider/', '/api/connector-signature-formatting-provider/',
     '/api/messaging-time-quality/',
@@ -38,7 +44,7 @@ const PUBLISHED_ROUTES = [
 test('publishes exactly the routes the site published before', () => {
     const routes = resolveApiCatalog(apiCatalog, VERSIONS).map((entry) => entry.route);
     assert.deepEqual(routes.slice().sort(), PUBLISHED_ROUTES.slice().sort());
-    assert.equal(routes.length, 52);
+    assert.equal(routes.length, 59);
 });
 
 test('derives document URLs from the entry id', () => {
@@ -77,7 +83,7 @@ test('renders a multi-entry group as a dropdown and a single-entry group as a li
 
     const core = items.find((item) => item.label === 'Core API');
     assert.equal(core.position, 'left');
-    assert.equal(core.items.length, 34);
+    assert.equal(core.items.length, 39);
     assert.deepEqual(core.items[0], {label: 'ACME', to: '/api/core-acme/'});
     assert.equal(core.to, undefined);
 

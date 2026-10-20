@@ -23,9 +23,9 @@ kubectl get platform -n ilm
 
 ```text
 NAME   PHASE        VERSION   READY   AGE
-ilm    Progressing  2.19.0    False   20s
+ilm    Progressing  2.20.0    False   20s
 # …shortly after the required workloads report ready…
-ilm    Running      2.19.0    True    2m
+ilm    Running      2.20.0    True    2m
 ```
 
 The list view shows **Phase**, **Version** (`.status.observedVersion`), **Ready** (the `Available` condition), and **Age**. Adding `-o wide` shows one more column, **Edge** (the `EdgeReady` condition):
@@ -77,7 +77,7 @@ A condition is **absent entirely** when the feature it reports is not part of th
 | **`AdminCertReady`** | The `registerAdmin.certificate` `source: generated` administrator certificate reconciled through cert-manager. Non-fatal `False` with `CertManagerNotInstalled` while waiting; absent for `source: provided` (you supply the Secret, so nothing is issued) or a disabled certificate method. The certificate administrator is then registered **in-pod** by `Core`'s `postStart` hook, because `Core`'s local-admin API is localhost-only — so there is no separate registration condition to look for. |
 | **`AdminUserReady`** | The `registerAdmin.password` Keycloak realm user, carrying the superadmin attribute, was ensured through the Keycloak admin API. `False` with `WaitingForKeycloak` (managed Keycloak or its generated admin credentials not ready yet) or `WaitingForPassword` (the referenced password Secret or key is not present yet), both self-healing; `AdminUserFailed` on an admin-API failure, which requeues. `True` with reason `Ready`. Absent when the password method is disabled. |
 | **`OIDCConfigured`** | The outcome of the `Core`-to-Keycloak OIDC wiring — managed Keycloak only. Three reasons: **`WaitingForKeycloak`**, deferred until the managed Keycloak and its generated admin credentials are ready (non-fatal, self-healing); **`Configured`**, the Keycloak-generated client secret was fetched and relayed into the operator-owned Secret `Core` reads in-pod to self-register its OIDC provider; and **`OIDCConfigFailed`**, a fetch or relay failure, which requeues. Never drives the phase to `Degraded`. Absent for an external or unmanaged Keycloak. |
-| **`DatabaseReady`** | Managed PostgreSQL (CloudNativePG) provisioning. `False` with `CloudNativePGNotInstalled` (the CRD is not served) or `WaitingForDatabase` (the `Cluster` or its generated app Secret is not ready yet); `True` once the `Cluster` reports Ready. Adjunct — never blocks `Available`. Absent for an external database. |
+| **`DatabaseReady`** | Managed PostgreSQL (CloudNativePG) provisioning. `False` with `CloudNativePGNotInstalled` (the CRD is not served) or `WaitingForDatabase` (the `Cluster`, its generated app Secret, or the `Database` holding a managed Keycloak's schema is not ready yet); `True` once all of them are. Adjunct — never blocks `Available`. Absent for an external database. |
 | **`MessagingReady`** | Managed RabbitMQ provisioning. `False` with `RabbitMQNotInstalled` or `TopologyOperatorNotInstalled` (a CRD is not served) or `WaitingForMessaging`; `True` once the cluster and the `core`-user Secret exist. Adjunct. Absent for an external broker. |
 | **`KeycloakReady`** | Managed Keycloak provisioning. `False` with `KeycloakOperatorNotInstalled` (the CRD is not served), `WaitingForDatabase` (a managed Keycloak shares the platform database, so its provisioning is deliberately deferred until that database is ready — otherwise its pods crash-loop against a Postgres not yet accepting connections), `WaitingForKeycloak` (the `Keycloak` CR is applied but not yet Ready), or `RealmImportConfigMapMissing` (a configured `keycloak.managed.realmImport` ConfigMap **does not exist** — the Keycloak still provisions, only the realm import is deferred); `True` once the `Keycloak` CR reports Ready. Adjunct, and every one of those four is self-healing. A realm-import ConfigMap that *does* exist but lacks the configured key, or holds malformed realm JSON, is **not** this condition — that is a deterministic mistake and degrades the platform with `ManagedKeycloakError`. Absent for an external or unmanaged Keycloak. |
 | **`ServiceMonitorsReady`** | Per-component Prometheus `ServiceMonitor` rendering, for components that set `metrics.serviceMonitor.enabled`. `False` with reason `PrometheusOperatorNotInstalled` when the `monitoring.coreos.com` CRD is not served — non-fatal, and the rest of the platform is unaffected. Absent when no component requests a `ServiceMonitor`. |
@@ -103,7 +103,7 @@ Every upstream dependency is **detected, never assumed**. When a required CRD is
 |---|---|---|---|
 | `CertManagerNotInstalled` | `EdgeReady`, `AdminCertReady` | The cert-managed edge and its certificate; the generated administrator certificate | cert-manager |
 | `GatewayAPINotInstalled` | `EdgeReady` | The Gateway API route, for `edge.type: gatewayAPI` | the Gateway API CRDs |
-| `CloudNativePGNotInstalled` | `DatabaseReady` | The managed PostgreSQL `Cluster` and its pooler | CloudNativePG |
+| `CloudNativePGNotInstalled` | `DatabaseReady` | The managed PostgreSQL `Cluster`, its pooler, and the `Database` holding a managed Keycloak's schema | CloudNativePG, 1.26 or newer with a managed Keycloak |
 | `RabbitMQNotInstalled` | `MessagingReady` | The managed `RabbitmqCluster` | the RabbitMQ Cluster Operator |
 | `TopologyOperatorNotInstalled` | `MessagingReady` | The managed vhost, users, exchanges, queues, and bindings | the Messaging Topology Operator |
 | `KeycloakOperatorNotInstalled` | `KeycloakReady` | The managed `Keycloak` instance | the Keycloak Operator |
@@ -164,7 +164,7 @@ Once the upstream operator is installed and the managed resource is applied, the
 
 | Reason | On condition | What it is waiting for | Where to look |
 |---|---|---|---|
-| `WaitingForDatabase` | `DatabaseReady`, `KeycloakReady` | The CloudNativePG `Cluster` to report Ready and its generated app Secret to exist. It appears on `KeycloakReady` too, because a managed Keycloak shares the platform database and is deliberately not provisioned until that database accepts connections | `kubectl get cluster -n ilm` |
+| `WaitingForDatabase` | `DatabaseReady`, `KeycloakReady` | The CloudNativePG `Cluster` to report Ready, its generated app Secret to exist, and, with a managed Keycloak, the `<platform>-db-app` `Database` to report Keycloak's schema applied, which needs CloudNativePG 1.26 or newer. It appears on `KeycloakReady` too, because a managed Keycloak shares the platform database and is deliberately not provisioned until that database accepts connections and holds its schema | `kubectl get cluster,database -n ilm` |
 | `WaitingForMessaging` | `MessagingReady` | The `RabbitmqCluster` and the `core`-user Secret the Messaging Topology Operator mints | `kubectl get rabbitmqcluster -n ilm` |
 | `WaitingForKeycloak` | `KeycloakReady`, `OIDCConfigured`, `AdminUserReady` | The `Keycloak` CR to report Ready, and its generated admin credentials | `kubectl get keycloak -n ilm` |
 | `RealmImportConfigMapMissing` | `KeycloakReady` | The configured `keycloak.managed.realmImport` ConfigMap to be **created**. The Keycloak itself provisions regardless; only the realm import waits | the ConfigMap named in `keycloak.managed.realmImport` |
@@ -173,6 +173,7 @@ The operator reports what it can see; the upstream operator owns the detail of *
 
 ```bash
 kubectl describe cluster ilm-db -n ilm                  # CloudNativePG
+kubectl describe database ilm-db-app -n ilm             # CloudNativePG, a managed Keycloak's schema
 kubectl describe rabbitmqcluster ilm-messaging -n ilm   # RabbitMQ
 kubectl describe keycloak ilm-keycloak -n ilm           # Keycloak
 kubectl get pvc -n ilm                                  # a Pending PVC is the usual cause
@@ -191,7 +192,7 @@ Version moves have their own vocabulary, and it splits cleanly into the two cate
 
 **Refused — `Degraded`, and terminal until you edit the spec:**
 
-- **`UnsupportedVersion`** — `spec.version` names a version this operator build does not carry. The message lists the versions it does support, so a live cluster tells you the answer. Upgrade the operator, or correct the value.
+- **`UnsupportedVersion`** — `spec.version` names a version this operator build does not carry. The message lists the versions it does support, so a live cluster tells you the answer. Upgrade the operator, or correct the value. A released operator reports `develop` this way too: only development builds accept it.
 - **`DowngradeForbidden`** — `spec.version` is older than the running `status.observedVersion`. Nothing is applied and the running version keeps serving. Upgrades are forward-only; returning to an older version means restoring from a backup.
 - **The messaging-migration refusals** — `ExternalMessagingMigrationRequired`, `SteppingStoneRequired`, `MigrationTimeQualityMonitorEnabled`, `WorkloadKindSwitchPending`, `MigrationVirtualHostPinned`, `MigrationRunningVersionUnrecorded`, `MigrationSourceVersionUnknown`, `MigrationInputsChanged`, and `MigrationWorkloadKindChanged`. Each comes from a spec the operator cannot act on, each carries an actionable message naming its own remedy, and each is accompanied by a `Warning` event with the same text. What each one means and how to clear it is in [Upgrading](./upgrading.md#preconditions-the-engine-enforces).
 

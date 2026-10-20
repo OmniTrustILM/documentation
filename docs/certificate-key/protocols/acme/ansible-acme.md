@@ -56,7 +56,8 @@ At the beginning of the playbook file, we define default values that are used ac
   tasks:
     - name: Set vars
       ansible.builtin.set_fact:
-        acme_directory: "https://[domain]:[port]/api/v1/protocols/acme/ilm/directory"
+        acme_directory: "https://[domain]:[port]/api/v1/protocols/acme/raProfile/ilm/directory"
+        acme_domain: "www.example.com"
         acme_version: 2
         acme_register_account: true
         acme_web_dir: "/var/www/html"
@@ -67,7 +68,7 @@ At the beginning of the playbook file, we define default values that are used ac
     - name: Set default ACME method
       ansible.builtin.set_fact:
         acme_method: 'http-01'
-        when: acme_method is not defined
+      when: acme_method is not defined
 ```
 
 ### Register ACME account
@@ -94,6 +95,30 @@ First, we will create private RSA key pair which will be associated with later r
       register: acme_account
       when: acme_register_account
 ```
+
+### External Account Binding
+
+Add the `external_account_binding` option to the `acme_account` task. For the `kid` and the key, see [Set up an ACME client](external-account-binding.md#set-up-an-acme-client):
+
+```yaml
+    - name: Register ACME Account with external binding
+      community.crypto.acme_account:
+        account_key_src: "tmp/acme_account_key"
+        acme_directory: "{{ acme_directory }}"
+        acme_version: "{{ acme_version }}"
+        state: present
+        terms_agreed: true
+        contact:
+          - "mailto:{{ acme_account_email }}"
+        external_account_binding:
+          kid: "[kid]"
+          alg: HS256
+          key: "{{ eab_key }}"
+      register: acme_account
+      when: acme_register_account
+```
+
+Keep the key in a vaulted variable.
 
 ### Generate private key and prepare CSR
 
@@ -129,7 +154,7 @@ Now, we need to submit the certificate signing request to ACME server and regist
         account_key_src: "tmp/acme_account_key"
         account_email: "{{ acme_account_email }}"
         csr: "tmp/{{ acme_domain }}.csr"
-        dest: "tmp/{{ acme_domain }}}.crt"
+        dest: "tmp/{{ acme_domain }}.crt"
         acme_directory: "{{ acme_directory }}"
         acme_version: "{{ acme_version }}"
         terms_agreed: true

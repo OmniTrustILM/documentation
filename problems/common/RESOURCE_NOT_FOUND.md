@@ -7,7 +7,7 @@ sidebar_position: 2
 | Property    | Value |
 |-------------|-------|
 | HTTP status | `404 Not Found` |
-| Retryable   | Yes |
+| Retryable   | No |
 | Error code  | `RESOURCE_NOT_FOUND` |
 
 ## Summary
@@ -38,7 +38,6 @@ The requested resource does not exist or is not accessible with the current cred
   "errorCode": "RESOURCE_NOT_FOUND",
   "correlationId": "3d8e1a2b4c5f6e7d8a9b0c1d2e3f4a5b",
   "timestamp": "2025-09-08T14:20:00Z",
-  "retryable": true,
-  "retryAfterSeconds": 30
+  "retryable": false
 }
 ```

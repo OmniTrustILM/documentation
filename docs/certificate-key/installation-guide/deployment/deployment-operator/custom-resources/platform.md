@@ -128,8 +128,8 @@ Omitting `spec.version` — the platform version, distinct from those engine ver
 ```bash
 kubectl get platform -n ilm -w
 # NAME   PHASE         VERSION   READY   AGE
-# ilm    Progressing   2.19.0    False   …
-# ilm    Running       2.19.0    True    …
+# ilm    Progressing   2.20.0    False   …
+# ilm    Running       2.20.0    True    …
 ```
 
 `READY` is the `Available` condition — `Core` and `auth` both ready — and `Running` means that readiness was measured, not assumed. Reaching it takes a few minutes on a first install, because the managed database, broker, and Keycloak are provisioned and become ready in turn.
@@ -228,7 +228,7 @@ curl --cacert ilm-ca.crt --cert admin.crt --key admin.key https://<host>/api/v1/
 
 `--cacert` is what makes the internal CA trusted for this call; `-k` skips that verification instead, which is fine for a smoke test and wrong for anything else.
 
-**Password (a Keycloak realm user) — `registerAdmin.password`.** The operator creates an idempotent Keycloak realm user carrying the **superadmin** attribute (`attributes.groups: ["superadmin"]`, which the operator's default realm surfaces as the `roles` claim `Core` grants superadmin on), with the password read from `registerAdmin.password.secretRef`. The administrator then signs in with a username and password through OIDC. This method requires `keycloak.mode: managed`, because the operator needs the Keycloak admin API to create the user, and its outcome is reported by the `AdminUserReady` condition. The requirement is enforced at admission, not at reconcile: enabling `registerAdmin.password` on any other Keycloak mode makes `kubectl apply` fail outright with `registerAdmin.password requires keycloak.mode=managed`, so nothing is created and no condition is ever set. The operator **never mints or logs the password** — it reads the Secret read-only and hands the value to Keycloak once.
+**Password (a Keycloak realm user) — `registerAdmin.password`.** The operator creates an idempotent Keycloak realm user carrying the **superadmin** attribute (`attributes.groups: ["superadmin"]`, which the operator's default realm surfaces as the `roles` claim `Core` grants superadmin on), with the password read from `registerAdmin.password.secretRef`. The administrator then signs in with a username and password through OIDC. This method creates the administrator only in Keycloak, so the operator also turns on `auth.create.createUnknownUsers`, letting ILM create the administrator's own user record at the first sign-in with the superadmin role from the token. The setting covers every OIDC sign-in, so any other user who can sign in gets a user record the same way. With a realm you import yourself (`keycloak.managed.realmImport`), the token carries that role only if the realm stores the `groups` attribute and its `ilm` client maps `groups` to the `roles` claim, as the operator's default realm does. Keep `groups` writable by administrators only — `unmanagedAttributePolicy: ADMIN_EDIT`, or a declared `groups` attribute whose `edit` permission is `admin` alone. Never use `ENABLED`: it lets any user set their own `groups` and sign in as superadmin. This method requires `keycloak.mode: managed`, because the operator needs the Keycloak admin API to create the user, and its outcome is reported by the `AdminUserReady` condition. The requirement is enforced at admission, not at reconcile: enabling `registerAdmin.password` on any other Keycloak mode makes `kubectl apply` fail outright with `registerAdmin.password requires keycloak.mode=managed`, so nothing is created and no condition is ever set. The operator **never mints or logs the password** — it reads the Secret read-only and hands the value to Keycloak once.
 
 `certificate` defaults **on**, the historical single behavior. Set `certificate.enabled: false` to run password-only, or enable both sub-blocks to let the administrator sign in either way. The full `registerAdmin` field list is in the annotated [`platform-cr-reference.yaml`](https://github.com/OmniTrustILM/operator/blob/main/docs/design/examples/platform-cr-reference.yaml).
 
@@ -320,7 +320,7 @@ Anything that applies to *every* component lives under `spec.common`; a per-comp
 
 `database` and `messaging` are required; `keycloak` is optional. Each picks its mode independently:
 
-- **`external`** — you run the service and give the operator the connection coordinates plus a credentials `Secret` (`credentials.secretRef`). No upstream operator is needed. The in-Secret key names are mappable (`usernameKey`/`passwordKey`), so a Vault, External Secrets, or CloudNativePG-shaped Secret works without renaming keys. An external broker has one protocol requirement: it must speak **AMQP 1.0**, and `messaging.brokerType` names the dialect — `rabbitmq`, the default, or `servicebus` for Azure Service Bus.
+- **`external`** — you run the service and give the operator the connection coordinates plus a credentials `Secret` (`credentials.secretRef`). No upstream operator is needed. The in-Secret key names are mappable (`usernameKey`/`passwordKey`), so a Vault, External Secrets, or CloudNativePG-shaped Secret works without renaming keys. An external broker has one protocol requirement: it must speak **AMQP 1.0**, and `messaging.brokerType` names the dialect — `rabbitmq`, the default, or `servicebus` for Azure Service Bus. An external database shared with a managed Keycloak must already contain the `keycloak` schema, which Keycloak does not create: run `CREATE SCHEMA IF NOT EXISTS keycloak AUTHORIZATION <database user>` once in the `database.name` database, where `<database user>` is the user in the credentials Secret.
 - **`managed`** — the operator renders the upstream custom resource (a CloudNativePG `Cluster`, a `RabbitmqCluster` plus its topology, or a `Keycloak`) and **reads back** the generated coordinates and credentials by reference. You create **no** credentials Secret for that dependency.
 
 Mixing is common — keep the database on the managed-Postgres service you already run while letting the operator run the broker and Keycloak:
@@ -366,11 +366,11 @@ spec:
 
 A complete, validated example is [`platform_managed_postgres.yaml`](https://github.com/OmniTrustILM/operator/blob/main/config/samples/platform_managed_postgres.yaml).
 
-**Prerequisite.** The operator detects the `postgresql.cnpg.io` CRDs; it does not install them. Until CloudNativePG is present the platform reports `DatabaseReady=False` with reason `CloudNativePGNotInstalled` and waits. The installer script covers all four upstream operators at their validated versions — see [Upstream operator prerequisites](../installation.md#upstream-operator-prerequisites).
+**Prerequisite.** The operator detects the `postgresql.cnpg.io` CRDs; it does not install them. Until CloudNativePG is present the platform reports `DatabaseReady=False` with reason `CloudNativePGNotInstalled` and waits. The installer script covers all four upstream operators at their validated versions — see [Upstream operator prerequisites](../installation.md#upstream-operator-prerequisites). With a managed Keycloak sharing the database, CloudNativePG must be 1.26 or newer, the first release whose `Database` resource manages schemas.
 
-**What the operator creates.** A CloudNativePG `Cluster` named `<platform>-db` (for example `ilm-db`) with an `ilm` application database and owner role, plus a PgBouncer `Pooler` named `<platform>-db-pooler` unless you opt out. CloudNativePG generates the `<platform>-db-app` Secret (keys `username` and `password`); the operator reads it back and wires Core, scheduler, and auth to the resolved endpoint — the pooler Service by default, the cluster's `<platform>-db-rw` Service when the pooler is off — and to that Secret through `secretKeyRef`, exactly as it wires an external database. You create **no** database Secret in managed mode.
+**What the operator creates.** A CloudNativePG `Cluster` named `<platform>-db` (for example `ilm-db`) with an `ilm` application database and owner role, plus a PgBouncer `Pooler` named `<platform>-db-pooler` unless you opt out. With a managed Keycloak sharing the database it also creates a CloudNativePG `Database` named `<platform>-db-app`, which creates Keycloak's `keycloak` schema in the `ilm` database on a new or an existing cluster alike. CloudNativePG generates the `<platform>-db-app` Secret (keys `username` and `password`); the operator reads it back and wires Core, scheduler, and auth to the resolved endpoint — the pooler Service by default, the cluster's `<platform>-db-rw` Service when the pooler is off — and to that Secret through `secretKeyRef`, exactly as it wires an external database. You create **no** database Secret in managed mode.
 
-**`DatabaseReady` condition.** Adjunct, like `EdgeReady` — it never blocks the platform's `Available` condition. `False/CloudNativePGNotInstalled` when the CRD is absent, `False/WaitingForDatabase` while the cluster is provisioning or its app Secret has not been generated, `True` once the cluster is Ready and the app Secret exists.
+**`DatabaseReady` condition.** Adjunct, like `EdgeReady` — it never blocks the platform's `Available` condition. `False/CloudNativePGNotInstalled` when the CRD is absent, `False/WaitingForDatabase` while the cluster is provisioning, its app Secret has not been generated, or a managed Keycloak's schema has not been applied, `True` once all of them are in place.
 
 **Deletion.** With the default `Retain`, deleting the platform leaves the CloudNativePG cluster and its data intact and a `Warning` event names the retained database. With `Delete`, the operator deletes the cluster and CloudNativePG then reclaims its volumes. The managed cluster carries **no owner reference** and is excluded from the operator's prune, so a transient reconcile error can never delete your database.
 
@@ -405,7 +405,7 @@ A complete, validated example is [`platform_managed_rabbitmq.yaml`](https://gith
 
 **Prerequisite.** The operator detects the `rabbitmq.com` CRDs; it does not install them. Until the Cluster Operator is present the platform reports `MessagingReady=False` with reason `RabbitMQNotInstalled`; until the Messaging Topology Operator is present, reason `TopologyOperatorNotInstalled`. Neither is a hard failure.
 
-**What the operator creates.** A `RabbitmqCluster` named `<platform>-messaging` plus the full messaging topology the platform requires. The topology is **version-bundled**: for the default 2.19.0 bundle it is 1 vhost (`/`), 5 users (`administrator`, `provisioner`, `proxy`, `core`, `monitor`), their 5 permission sets, 2 exchanges (`ilm` direct and `ilm-proxy` topic), 11 queues (the 7 `core`/`core.*` queues, `provider.status-poll`, and the 3 `time-quality.*` queues), and 10 bindings. Every vhost-bound object name is scoped by the vhost — `<cluster>-default-…` for `/` — while users are broker-global and unscoped, so their generated Secret names stay stable. The 2.18.0 bundle ships the `czertainly` vhost with unscoped names, 2 `czertainly*` exchanges, 10 queues, and 9 bindings; the legacy 2.17.0 bundle ships a single user.
+**What the operator creates.** A `RabbitmqCluster` named `<platform>-messaging` plus the full messaging topology the platform requires. The topology is **version-bundled**: for the default 2.20.0 bundle it is 1 vhost (`/`), 5 users (`administrator`, `provisioner`, `proxy`, `core`, `monitor`), their 5 permission sets, 2 exchanges (`ilm` direct and `ilm-proxy` topic), 12 queues (the 7 `core`/`core.*` queues, `provider.status-poll`, `provider.discovery-work`, and the 3 `time-quality.*` queues), and 11 bindings. Every vhost-bound object name is scoped by the vhost — `<cluster>-default-…` for `/` — while users are broker-global and unscoped, so their generated Secret names stay stable. The 2.19.0 bundle has no `provider.discovery-work` queue, so 11 queues and 10 bindings. The 2.18.0 bundle ships the `czertainly` vhost with unscoped names, 2 `czertainly*` exchanges, 10 queues, and 9 bindings; the legacy 2.17.0 bundle ships a single user.
 
 The Messaging Topology Operator generates one `<user>-user-credentials` Secret per user; the operator wires Core and scheduler to the `<platform>-messaging` Service and the **core-user** Secret through `secretKeyRef`, exactly as it wires an external broker. You create **no** broker Secret in managed mode.
 
@@ -632,9 +632,9 @@ spec:
     env: [ { name: EXTRA_FLAG, value: "true" } ]   # non-sensitive inline env only
     secretRefs: []                  # mount or inject your own Secrets — see the key mapping below
     configMapRefs: []
-    volumes: []                     # emptyDir volumes mounted into the main container
+    volumes: []                     # additional volumes mounted into the main container
     probes: { liveness: {}, readiness: {}, startup: {} }
-    securityContext: {}             # always SCC-hardened (fill-don't-replace)
+    securityContext: {}             # readOnlyRootFilesystem plus the pod-level fsGroup; always SCC-hardened (fill-don't-replace)
     podAnnotations: {}              # for example Vault Agent or service-mesh injection
     podLabels: {}
     nodeSelector: {}
@@ -724,7 +724,7 @@ The worked shape is [`platform_core_statefulset.yaml`](https://github.com/OmniTr
 |---|---|---|---|
 | `internal` (default) | a self-signed CA created by the operator, through cert-manager | yes | — |
 | `letsEncrypt` | ACME; needs `letsEncrypt.email`, and `environment` is `production` by default | yes | [`platform_edge_letsencrypt.yaml`](https://github.com/OmniTrustILM/operator/blob/main/config/samples/platform_edge_letsencrypt.yaml) |
-| `issuerRef` | any existing `Issuer` or `ClusterIssuer` | yes | [`platform_edge_issuerref.yaml`](https://github.com/OmniTrustILM/operator/blob/main/config/samples/platform_edge_issuerref.yaml) |
+| `issuerRef` | any existing `Issuer` or `ClusterIssuer`, or an external issuer named by its own `kind` and `group` | yes | [`platform_edge_issuerref.yaml`](https://github.com/OmniTrustILM/operator/blob/main/config/samples/platform_edge_issuerref.yaml) |
 | `secret` | a bring-your-own TLS Secret | **no** | [`platform_edge_byo_secret.yaml`](https://github.com/OmniTrustILM/operator/blob/main/config/samples/platform_edge_byo_secret.yaml) |
 
 For the three cert-manager sources, `tls.secretRef` is optional and only renames the Secret cert-manager populates, which otherwise defaults to `ilm-ingress-tls`. For `source: secret` it is required and names the Secret you created. With `source: internal` the CA the operator generates lands in the `ca-keypair` Secret in the platform's namespace — that is the certificate to add to a trust store, and the same CA that signs a generated administrator certificate.
@@ -800,7 +800,7 @@ To project *every* key of a Secret or ConfigMap as env across the whole fleet in
 
 `networkPolicy.enabled` defaults to **true** — this is opt-out isolation. Omit the `spec.networkPolicy` block entirely and the operator still renders a safe default-deny set (`networking.k8s.io/v1`):
 
-- an **ingress default-deny** that allows only same-namespace traffic to the platform's pods, denying cross-namespace and external ingress;
+- an **ingress default-deny** that admits traffic to the platform's pods only from the same namespace and from the operator's pods, denying all other cross-namespace and external ingress;
 - an **edge allow** permitting ingress to the api-gateway on its consumer port from the ingress controller's namespace;
 - **permissive egress**, so managed-infrastructure and external connectivity is never broken.
 
@@ -812,6 +812,8 @@ spec:
 ```
 
 Set `ingressNamespace` to your ingress controller's namespace — for example a Gateway API implementation's namespace. The policies carry no connection coordinates, only label selectors and that namespace name. Tighter, allow-listed egress is a deliberate future hardening step, not on by default: the ingress default-deny is the high-value, low-risk isolation, while a too-strict egress is the easiest way to break connectivity to managed or external infrastructure.
+
+The operator is admitted because it calls Core itself when a `Connector` registers through the in-cluster address `http://core.<namespace>.svc.cluster.local:8080/api`. It is matched by its namespace, which it reads from its own pod at startup, and by the `app.kubernetes.io/name: ilm-operator` label; a Helm `nameOverride` changes that label. A `Connector` and a `Proxy` render their own policies on the same model; see [Network isolation](./connector.md#network-isolation).
 
 ## Provisioning the bundled service
 
@@ -841,7 +843,8 @@ A platform version bundle that predates the bundled service renders nothing for 
 
 The operator runs on OpenShift unchanged — it neither detects nor special-cases it.
 
-- **SCC `restricted-v2` out of the box.** Every pod the operator renders, and the operator's own, is non-root, sets **no `runAsUser`** so OpenShift assigns the namespace's allocated UID, drops **all** capabilities, sets `seccompProfile: RuntimeDefault`, and forbids privilege escalation. It therefore runs under the default `restricted-v2` SCC with no custom SCC and no extra RBAC. An override in the custom resource cannot weaken this: the security context is fill-**and**-force.
+- **SCC `restricted-v2` out of the box.** Every pod the operator renders, and the operator's own, is non-root, sets **no `runAsUser`** so OpenShift assigns the namespace's allocated UID, drops **all** capabilities, sets `seccompProfile: RuntimeDefault`, and forbids privilege escalation. It therefore runs under the default `restricted-v2` SCC with no custom SCC and no extra RBAC. An override in the custom resource cannot weaken **those** guarantees: the security context is fill-**and**-force.
+- **`fsGroup` is the one field that can put a pod outside the default SCC.** `securityContext.fsGroup` has no default, deliberately. `restricted-v2` allocates `fsGroup` from the namespace's own range and rejects a value outside it, so pinning one on OpenShift needs a namespace range that admits the value or a custom SCC. Leave it unset and the pod carries no `fsGroup` at all.
 - **Install** through OperatorHub, using the bundled OLM package, or with the Helm chart.
 - **Edge.** Use `edge.type: ingress` — the OpenShift router reconciles the `Ingress` and publishes the Route for you — or `edge.type: gatewayAPI`. A native OpenShift `Route` edge type is **not yet supported**. The cert-manager TLS modes work as on any cluster; OpenShift has a Red Hat cert-manager operator.
 - **Managed infrastructure.** The CloudNativePG, RabbitMQ, Keycloak, and cert-manager operators all install from OperatorHub, and the operator detects their CRDs and waits exactly as it does elsewhere.

@@ -74,6 +74,7 @@ Everything that applies to **every** component now lives under one consolidated 
 | `global.hostName` / `hostName` | `spec.common.hostName` (canonical public FQDN) | COVERED |
 | `additionalEnv.variables` | `spec.additionalEnv` | COVERED |
 | `logging.level` | `spec.common.logging.level` | COVERED |
+| `logging.format` | `spec.common.logging.format` | COVERED |
 | `logging.audit` | — | UNMAPPED (platform-config, not operator-modeled) |
 | `global.httpProxy` / `httpsProxy` / `noProxy` | `spec.common.proxy.{http,https,noProxy}` (+ `enabled`) | COVERED |
 | `javaOpts` (if set) | per-component `JAVA_OPTS` **env** on `core`, `scheduler`, `provisioning.deploy` — **and on `auth`, where it does nothing**: `auth` is a .NET (ASP.NET Core) service, so delete that entry and use the .NET runtime's own `DOTNET_*` variables if you need to tune it. The special-case `spec.javaOpts` was **removed** | COVERED (mapped to env; not on fe/opa/gateway) |
@@ -81,9 +82,9 @@ Everything that applies to **every** component now lives under one consolidated 
 | `global.additionalEnv.secrets` / `configMaps` | `spec.common.additionalEnvFrom.{secrets,configMaps}` (NAMES only) | PARTIAL (`# TODO`) |
 
 :::danger[The converter does not emit `spec.version` — you must add it]
-`spec.version` selects a *tested bundle*: the env-variable names the operator wires, the managed-RabbitMQ topology it declares, and the **default** component image tags. **The converter never emits it**, because nothing in a `values.yaml` states which platform release it belongs to — and a CR with no `spec.version` resolves to the operator's **default** bundle (2.19.0), not to the release your chart is running.
+`spec.version` selects a *tested bundle*: the env-variable names the operator wires, the managed-RabbitMQ topology it declares, and the **default** component image tags. **The converter never emits it**, because nothing in a `values.yaml` states which platform release it belongs to — and a CR with no `spec.version` resolves to the operator's **default** bundle (2.20.0), not to the release your chart is running.
 
-So a migration off a 2.18.0 chart that omits it runs **2.18.0 images under 2.19.0 wiring and topology**, and off a 2.17.0 chart it does not work at all — 2.19.0 renames the platform log-level variable and adds two more, and 2.17.0's messaging topology is a different layout entirely.
+So a migration off a 2.18.0 chart that omits it runs **2.18.0 images under 2.20.0 wiring and topology**, and off a 2.17.0 chart it does not work at all — 2.19.0 renamed the platform log-level variable and added two more, and 2.17.0's messaging topology is a different layout entirely.
 
 **Add `spec.version` to the generated CR by hand, set to the platform release your chart is running**, before you apply anything:
 

@@ -7,7 +7,7 @@ sidebar_position: 4
 | Property    | Value |
 |-------------|-------|
 | HTTP status | `400 Bad Request` |
-| Retryable   | Yes |
+| Retryable   | No |
 | Error code  | `BAD_REQUEST` |
 
 ## Summary
@@ -39,7 +39,6 @@ The server could not understand the request because of malformed syntax, missing
   "errorCode": "BAD_REQUEST",
   "correlationId": "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d",
   "timestamp": "2025-09-08T09:15:30Z",
-  "retryable": true,
-  "retryAfterSeconds": 30
+  "retryable": false
 }
 ```

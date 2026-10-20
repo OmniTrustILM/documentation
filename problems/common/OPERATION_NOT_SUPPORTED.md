@@ -7,7 +7,7 @@ sidebar_position: 9
 | Property    | Value |
 |-------------|-------|
 | HTTP status | `501 Not Implemented` |
-| Retryable   | Yes |
+| Retryable   | No |
 | Error code  | `OPERATION_NOT_SUPPORTED` |
 
 ## Summary
@@ -39,7 +39,6 @@ The requested operation is not implemented or supported by this connector or ser
   "errorCode": "OPERATION_NOT_SUPPORTED",
   "correlationId": "6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c",
   "timestamp": "2025-09-08T15:10:00Z",
-  "retryable": true,
-  "retryAfterSeconds": 30
+  "retryable": false
 }
 ```

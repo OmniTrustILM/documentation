@@ -41,9 +41,19 @@ For more information follow [win-acme settings](https://www.win-acme.com/referen
 `win-acme` supports various sources plugins for binding (`IIS`, `Exchange` etc.) and validation plugins to prove the identity (HTTP, WebDAV, DNS etc.). For details how to use them, please visit: [win-acme source plugins](https://www.win-acme.com/reference/plugins/source/) and [win-acme validation plugins](https://www.win-acme.com/reference/plugins/validation/).
 :::
 
+## External Account Binding
+
+Pass the `kid` and the key to `win-acme` with the following arguments. For the `kid` and the key, see [Set up an ACME client](external-account-binding.md#set-up-an-acme-client):
+
+```powershell
+wacs.exe `
+  --eab-key-identifier [kid] `
+  --eab-key [key]
+```
+
 ## Using `win-acme` with `IIS` and self-hosted HTTP challenge
 
-Once each pre-requisite and configuration are set up, you can run `win-acme` executable file *`wascs.exe`* with administrator privileges (to enable automatic detection of `IIS` services) and follow these steps:
+Once each pre-requisite and configuration are set up, you can run `win-acme` executable file *`wacs.exe`* with administrator privileges (to enable automatic detection of `IIS` services) and follow these steps:
 
 ### Interactive mode
 
@@ -79,9 +89,9 @@ For all `win-acme` command line arguments, refer to [win-acme documentation](htt
 
 ### Interactive mode
 
-- Run `win-acme` executable file *`wascs.exe`* with administrator privileges
+- Run `win-acme` executable file *`wacs.exe`* with administrator privileges
 - Please choose from the menu: **`O`** (*More Options*)
-- Please choose from the menu> **`T`** (*(Re)Create Scheduled Task*)
+- Please choose from the menu: **`T`** (*(Re)Create Scheduled Task*)
 - Please specify the user you want the task to be run under (user with administrator privileges is recommended to allow automatic binding configuration on the `IIS` server)
 - The scheduled task for automatic renewal of all certificates managed by `win-acme` is now created
 

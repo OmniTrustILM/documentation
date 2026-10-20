@@ -14,7 +14,7 @@ When an ILM service returns an error, the response body includes a `type` field 
 Problem types are grouped by category:
 
 - **Common** — General errors that can occur in any ILM service or connector.
-- **Connector** — Connector-specific errors (defined per connector).
+- **Connector** — Errors of connector operations. A problem type specific to one interface is grouped under that interface, for example **Discovery**.
 
 ## Example response
 
@@ -28,8 +28,7 @@ Problem types are grouped by category:
   "errorCode": "VALIDATION_FAILED",
   "correlationId": "f5a2e0e0c1ec41d4b7208b5b0c7bc7d9",
   "timestamp": "2025-09-08T12:41:22Z",
-  "retryable": true,
-  "retryAfterSeconds": 30
+  "retryable": false
 }
 ```
 

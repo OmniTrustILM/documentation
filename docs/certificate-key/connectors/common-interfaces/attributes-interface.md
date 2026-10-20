@@ -14,7 +14,7 @@ For more information, refer to [Connector Architecture](../../concept-design/arc
 
 ### How it works
 
-In Connector NG, the `Attributes` interface is **consolidated and per-operation**. Instead of a single attributes endpoint for the whole connector, each operation endpoint that requires user input exposes a dedicated `/attributes` sub-endpoint directly beneath it.
+In Connector NG, the `Attributes` interface is **consolidated and per-operation**. Instead of a single attributes endpoint for the whole connector, each operation that requires user input has its own attribute-schema endpoint, whose path ends in `/attributes`.
 
 There is no separate `/validate` endpoint — attribute validation is the responsibility of the `Core` based on the attribute definitions returned by the connector. Validation should be also part of operation at connector side but Core cannot enforce that behavior.
 
@@ -28,19 +28,15 @@ This per-operation `/attributes` listing (which attributes an operation needs) i
 
 ### Endpoint pattern
 
-Each connector endpoint that supports attributes exposes `/attributes` as a sub-resource:
+The provider API defines the method and the request of each attribute-schema endpoint, so take both from its API reference. For example:
 
-| Operation endpoint                                    | Attributes endpoint                                            |
-|-------------------------------------------------------|----------------------------------------------------------------|
-| `POST /v1/authority`                                  | `GET /v1/authority/attributes`                                 |
-| `POST /v1/authority/raProfile/{operation}`            | `GET /v1/authority/raProfile/{operation}/attributes`           |
-| `POST /v1/cryptographyProvider/tokens/{uuid}/keys/{keyUuid}/sign` | `GET /v1/cryptographyProvider/tokens/{uuid}/keys/{keyUuid}/sign/attributes` |
+| Provider API | Endpoint | Request body |
+|---|---|---|
+| Discovery Provider v2 | [`GET /v2/discoveryProvider/{resource}/attributes`](/api/connector-discovery-provider-v2#tag/discovery-metadata-v2/GET/v2/discoveryProvider/{resource}/attributes) | None: the schema needs no context |
+| Authority Provider v3 | [`POST /v3/authorityProvider/certificates/issue/attributes`](/api/connector-authority-provider-v3#tag/certificate-management-v3/POST/v3/authorityProvider/certificates/issue/attributes) | `authorityAttributes` and `raProfileAttributes`, the context the schema depends on |
+| Cryptography Provider v2 | [`POST /v2/cryptographyProvider/operations/sign/attributes`](/api/connector-cryptography-provider-v2#tag/cryptographic-operations-v2/POST/v2/cryptographyProvider/operations/sign/attributes) | `tokenAttributes`, `tokenProfileAttributes` and `keyMeta`, the context the schema depends on |
 
-#### Request — list attributes
-
-`GET /{operation-path}/attributes`
-
-Returns the list of `Attributes` required or accepted by the operation. Returns an empty list if no attributes are needed.
+Each endpoint returns the list of `Attributes` required or accepted by the operation, or an empty list if no attributes are needed.
 
 #### Response codes
 
@@ -70,8 +66,8 @@ This approach:
     autonumber
     skinparam topurl /api/
         Client->>Core: Request operation (e.g., issue certificate)
-        Core->>Connector: GET /{operation-path}/attributes
-        Note over Core,Connector: Retrieve attributes definition for this operation
+        Core->>Connector: List attributes of the operation
+        Note over Core,Connector: Method and request as the provider API defines
         Connector-->>Core: Return list of Attributes
         Core-->>Client: Return list of Attributes
     @enduml

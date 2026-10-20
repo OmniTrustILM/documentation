@@ -46,12 +46,14 @@ $ ilmctl deps install --only cnpg,rabbitmq,keycloak
 #    The release manifests are verified against the release checksums.txt first.
 $ ilmctl init --wait
 #    Or pin the release:
-$ ilmctl init --version v1.0.0 --wait
+$ ilmctl init --version v1.1.0 --wait
 #    Development only — install from a commit or a local checkout (checksum-free):
 $ ilmctl init --ref <commit-sha> --wait
 
 # 4. Generate a Platform CR.
 $ ilmctl platform generate \
+    --name ilm \
+    --host ilm.example.com \
     --profile managed-ha \
     --db-mode managed \
     --messaging-mode managed \
@@ -59,10 +61,12 @@ $ ilmctl platform generate \
     --keycloak-mode managed \
     > platform.yaml
 
-# 5. Review the file, commit it to Git, then apply.
+# 5. Replace the values the header comments mark as placeholders (here the
+#    provisioning bootstrap Secret), review the file, commit it to Git, then apply.
 $ kubectl apply -f platform.yaml
-#    Or combine steps 4-5:
-$ ilmctl platform generate --profile managed-ha --db-mode managed --apply
+#    --apply is refused while placeholders remain. With external provisioning
+#    nothing is left to replace, so steps 4-5 combine into one:
+$ ilmctl platform generate --name ilm --host ilm.example.com --profile managed-ha --provisioning-mode external --apply
 
 # 6. Wait for the platform to become available.
 $ ilmctl platform wait ilm --for=condition=Available --timeout 10m

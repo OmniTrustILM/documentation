@@ -8,11 +8,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 In order to start using the platform with any specific technology, we must register the `Connector`.
-We would like to do the certificate discovery and such `Connector` must therefore implement the `Discovery Provider` `Function Group`.
+We would like to discover certificates and keys, and such `Connector` must therefore implement the `Discovery Provider`.
+
+The `Network Discovery Provider` implements both generations of the `Discovery Provider`. Registered as v2, it discovers certificates and the public keys they carry, and its discoveries can be stopped, resumed and cancelled. Registered as v1, it discovers certificates. See [Discovery Provider v1 and v2](../../concept-design/modules/discovery.md#discovery-provider-v1-and-v2).
 
 ## Register `Connector` using the API
 
-The connector can be registered using the `Connector` API:
+The connector can be registered as v2 using the `Connector` API:
 
 ```bash
 curl -X POST \
@@ -24,28 +26,44 @@ curl -X POST \
   --data '
   {
     "name": "Network Discovery Provider",
-    "url", "https://network-discovery-provider-service:8080",
+    "version": "v2",
+    "url": "http://network-discovery-provider-service:8080",
     "authType": "none"
   }' \
-  https://[domain]:[port]/api/v1/connectors
+  https://[domain]:[port]/api/v2/connectors
 ```
 
-When there is no error, `Connector` is successfully registered, and its `uuid` is sent back:
+When there is no error, `Connector` is successfully registered, and its details are sent back, including its `uuid` and the interfaces it implements:
 ```json
 {
-  "uuid": "ef092b12-e181-4734-8e34-73152612a945"
+  "uuid": "ef092b12-e181-4734-8e34-73152612a945",
+  "name": "Network Discovery Provider",
+  "version": "v2",
+  "url": "http://network-discovery-provider-service:8080",
+  "interfaces": [
+    {
+      "uuid": "5d1f0c7e-3b2a-4e8f-9c6d-7a1b2c3d4e5f",
+      "code": "discovery",
+      "version": "v2",
+      "features": ["discoveryStopResume"]
+    },
+    ...
+  ],
+  ...
 }
 ```
 
-We can use that to get details about the `Connector` in the future API calls:
+To register it as v1 instead, send `"version": "v1"`. An installation may already have registered it as v1, as the Helm chart does when it deploys the provider. A second registration with the same URL and version is refused, so register it as v2 alongside the existing one.
+
+We can use the `uuid` to get details about the `Connector` in the future API calls:
 ```bash
 curl -X GET \
   --cacert [ca-cert] \
   --cert [client-cert] \
   --cert-type [type] \
   -H "Accept: application/json" \
-  https://[domain]:[port]/api/v1/connectors/ef092b12-e181-4734-8e34-73152612a945
-  #https://[domain]:[port]/api/v1/connectors/{uuid}
+  https://[domain]:[port]/api/v2/connectors/ef092b12-e181-4734-8e34-73152612a945
+  #https://[domain]:[port]/api/v2/connectors/{uuid}
 ```
 
 ## Register `Connector` using the Web Interface
@@ -54,13 +72,13 @@ Follow these steps for register new `Network Discovery Provider`.
 
 1. Log in to the Administration Interface `https://[domain]:[port]/administrator`
 2. Click **Connectors** in the left menu
-3. Click **Add new connector** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+3. Click **Create** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>) to open **Create Connector**
 4. Fill in the columns with the attributes:
-    - URL: `https://network-discovery-provider-service:8080`
-    - Authentication Type: `No Auth`
+    - URL: `http://network-discovery-provider-service:8080`
+    - Authentication Type: `None`
 5. Click **Connect**  
 
-Now you can see the details of the connected `Connector`. 
+Now you can see the details of the connected `Connector` under **Connection Detected**. The **v2** tab is selected and lists the interfaces the `Connector` implements, including `discovery` at version `v2`. Select the **v1** tab instead to register it as v1.
 
 6. Fill in the `Connector` name: `Network Discovery Provider`
 7. Click **Create** to make the `Connector` available to other components

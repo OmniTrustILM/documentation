@@ -7,13 +7,129 @@ sidebar_position: 3
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
-In order to run the certificate discovery process, we need to create new `Discovery`.
-`Discovery` behavior is defined by the `Connector` implementing `Discovery Provider` `Function Group`.
+In order to run the discovery process, we need to create new `Discovery`.
+`Discovery` behavior is defined by the `Connector` implementing the `Discovery Provider`.
+
+How a `Discovery` is configured depends on whether the `Connector` was registered as v2 or v1, see [Discovery Provider v1 and v2](../../concept-design/modules/discovery.md#discovery-provider-v1-and-v2).
+
+The `Discovery` imports what it finds as you, the user who creates it. You need the `create` permission on `certificates` to import certificates, and on `keys` to import keys; what you may not create is not imported, and the `Discovery` ends `Warning`.
 
 ## Create `Discovery` using the API
 
-`Discovery` can be created using the `Discovery` API. However, before creating it, we need know the required `Attributes` for the `Discovery`.
-We can get that using the following request:
+### Discovery Provider v2
+
+First, we find out what the `Connector` can discover:
+
+```bash
+curl -X GET \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Accept: application/json" \
+  https://[domain]:[port]/api/v1/discoveries/ef092b12-e181-4734-8e34-73152612a945/resources
+  #https://[domain]:[port]/api/v1/discoveries/{connectorUuid}/resources
+```
+
+The `Network Discovery Provider` discovers the certificates it finds on a host, and the public keys they carry:
+
+```json
+[
+  { "resource": "certificates" },
+  { "resource": "keys" }
+]
+```
+
+Next, we get the `Attributes` that configure the run:
+
+```bash
+curl -X GET \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Accept: application/json" \
+  https://[domain]:[port]/api/v1/discoveries/ef092b12-e181-4734-8e34-73152612a945/attributes
+  #https://[domain]:[port]/api/v1/discoveries/{connectorUuid}/attributes
+```
+
+This returns the `Attributes` of the run, such as the hosts and ports to scan:
+
+```json
+[
+  {
+    "uuid": "2cc7b1ee-7656-4844-a651-aed2300b750b",
+    "name": "data_hosts",
+    "type": "data",
+    "contentType": "string",
+    "description": "Addresses, hostnames, ranges or subnets to scan. One target per entry.",
+    "properties": { "label": "Hosts", "required": true, "list": true, "multiSelect": true, "extensibleList": true, ... },
+    ...
+  },
+  {
+    "uuid": "acc48fc4-803e-45b1-951f-02764abcbbe8",
+    "name": "data_ports",
+    "type": "data",
+    "contentType": "string",
+    "description": "Ports to probe on each host, as a single port or a range. One per entry; leave empty to scan 443.",
+    ...
+  },
+  ...
+]
+```
+
+A `Connector` can also have `Attributes` of its own for each resource, which `GET /api/v1/discoveries/{connectorUuid}/{resource}/attributes` returns, for example `.../certificates/attributes`. The `Network Discovery Provider` has none: everything it needs configures the run as a whole.
+
+Knowing the resources and the attributes, we can create the `Discovery`:
+
+```bash
+curl -X POST \
+  --cacert [ca-cert] \
+  --cert [client-cert] \
+  --cert-type [type] \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  --data '
+  {
+    "name": "ILM Hostname Discovery",
+    "connectorUuid": "ef092b12-e181-4734-8e34-73152612a945",
+    "resources": ["certificates", "keys"],
+    "attributes": [
+      {
+        "version": "v3",
+        "uuid": "2cc7b1ee-7656-4844-a651-aed2300b750b",
+        "name": "data_hosts",
+        "contentType": "string",
+        "content": [ { "contentType": "string", "data": "www.example.com" } ]
+      },
+      {
+        "version": "v3",
+        "uuid": "acc48fc4-803e-45b1-951f-02764abcbbe8",
+        "name": "data_ports",
+        "contentType": "string",
+        "content": [ { "contentType": "string", "data": "443" } ]
+      }
+    ]
+  }' \
+  https://[domain]:[port]/api/v1/discoveries
+```
+
+- `resources` is required, and every resource must be one the `Connector` discovers.
+- `resourceAttributes` carries the `Attributes` of each resource, keyed by resource, for example `"resourceAttributes": { "certificates": [ ... ] }`. It may only name resources in `resources`.
+- `interfaceUuid` is needed only when the `Connector` exposes more than one `discovery` interface; with exactly one, it is selected automatically. The interfaces and their `uuid` are listed in the `Connector`'s details, `GET /api/v2/connectors/{uuid}`, under `interfaces`, as the entries whose `code` is `discovery`.
+- `triggers` optionally lists the triggers to evaluate on the newly discovered certificates.
+
+The platform starts the `Discovery` at the `Connector` before it answers. When the `Connector` refuses the configuration, the request fails with the `Connector`'s answer and no `Discovery` is created. Otherwise, its `uuid` is sent back:
+
+```json
+{
+  "uuid": "c0aaafda-a731-4175-8ec4-2cdcd06015fa"
+}
+```
+
+If the `Connector` cannot be reached, the request fails and no `Discovery` is created. If the `Connector` fails once it has been asked to start the `Discovery`, for example with a server error or a timeout, the `Discovery` is created and ends `Failed` with the reason in its message.
+
+### Discovery Provider v1
+
+For a `Connector` registered as v1, we need to know the `Attributes` of the `Kind` we use:
 
 ```bash
 curl -X GET \
@@ -32,52 +148,28 @@ To get details about the `Connector`, you can use the API call described in [Reg
 This returns the list of applicable attributes for the `Discovery` process, such as:
 ```json
 [
-    {
-        "uuid": "1b6c48ad-c1c7-4c82-91ef-3b61bc9f52ac",
-        "name": "ip",
-        "label": "IPs/Hostnames",
-        "type": "STRING",
-        "required": true,
-        "readOnly": false,
-        "visible": true,
-        "list": false,
-        "description": "Multiple values can be given seperated by comma ','.",
-        "multiSelect": false
-    },
-    {
-        "uuid": "a9091e0d-f9b9-4514-b275-1dd52aa870ec",
-        "name": "port",
-        "content": {
-            "value": 443
-        },
-        "label": "Ports",
-        "type": "INTEGER",
-        "required": false,
-        "readOnly": false,
-        "visible": true,
-        "list": false,
-        "description": "Multiple values can be given seperated by comma ','.",
-        "multiSelect": false
-    },
-    {
-        "uuid": "3c70d728-e8c3-40f9-b9b2-5d7256f89ef0",
-        "name": "allPorts",
-        "content": {
-            "value": false
-        },
-        "label": "All Ports?",
-        "type": "BOOLEAN",
-        "required": false,
-        "readOnly": false,
-        "visible": true,
-        "list": false,
-        "description": "Check to discover certificates from all ports.",
-        "multiSelect": false
-    }
+  {
+    "uuid": "1b6c48ad-c1c7-4c82-91ef-3b61bc9f52ac",
+    "name": "ip",
+    "type": "data",
+    "contentType": "string",
+    "properties": { "label": "IPs/Hostnames", "required": true, ... },
+    ...
+  },
+  {
+    "uuid": "a9091e0d-f9b9-4514-b275-1dd52aa870ec",
+    "name": "port",
+    "type": "data",
+    "contentType": "string",
+    "content": [ { "data": "443", "reference": "443" } ],
+    "properties": { "label": "Ports", "required": false, ... },
+    ...
+  },
+  ...
 ]
 ```
 
-Knowing the attributes, we can create the `Discovery` using the following request:
+Knowing the attributes, we can create the `Discovery` with its `kind`. A v1 `Discovery` takes no `resources` or `resourceAttributes`:
 ```bash
 curl -X POST \
   --cacert [ca-cert] \
@@ -92,22 +184,18 @@ curl -X POST \
     "kind": "IP-Hostname",
     "attributes": [
       {
-        "name": "port",
-        "content": {
-          "value": 443
-        }
-      },
-      {
-        "name": "allPorts",
-        "content": {
-          "value": false
-        }
-      },
-      {
+        "version": "v2",
+        "uuid": "1b6c48ad-c1c7-4c82-91ef-3b61bc9f52ac",
         "name": "ip",
-        "content": {
-          "value": "www.example.com"
-        }
+        "contentType": "string",
+        "content": [ { "data": "www.example.com" } ]
+      },
+      {
+        "version": "v2",
+        "uuid": "a9091e0d-f9b9-4514-b275-1dd52aa870ec",
+        "name": "port",
+        "contentType": "string",
+        "content": [ { "data": "443" } ]
       }
     ]
   }' \
@@ -123,19 +211,24 @@ When the `Discovery` process is successfully created, its `uuid` is sent back:
 
 ## Create `Discovery` using the Web Interface
 
-Follow these steps to create new Network `Discovery`.
-All required attributes will be displayed.  
+Follow these steps to create new Network `Discovery`:
 
-1. Log in to the Operator Interface `https://[domain]:[port]/operator`
-2. Click **Discovery** in the left menu 
-3. Click **Add New Discovery** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
-4. Fill the columns with the attributes:   
+1. Click **Discoveries** in the left menu to display the **Discovery Store**
+2. Click **Add** (plus symbol <span style={{color: '#1473b5',}}><FontAwesomeIcon icon={faPlus} /></span>)
+3. In **Create Discovery**, fill in:
     - Discovery Name: `ILM Hostname Discovery`
     - Discovery Provider: `Network Discovery Provider`
-    - Type: `IP-Hostname`
-    - IP/Hostname: `www.example.com`
-    - Port: `443`
-    - All Ports?: `No`
-5. Click on **Create** button to start the `Discovery`
-    
-You have created successfully the `Discovery` for discover certificates from the website `www.example.com`.
+    - Interface: shown only when the provider exposes more than one discovery interface, as `Discovery (v2)` and so on. Select the one to use
+    - Resources: `Certificate` and `Key`
+4. On the **Connector Attributes** tab, fill in the run attributes:
+    - Hosts: `www.example.com`
+    - Ports: `443`
+
+   The **Certificate** and **Key** tabs hold the attributes of each resource. The `Network Discovery Provider` has none of its own, and the tabs say so.
+5. Optionally, select **Triggers** to evaluate on the newly discovered certificates. The **Triggers** widget is shown when the discovery targets certificates.
+6. Optionally, switch on **Schedule** to create a scheduled job instead of running the discovery once now, and fill in its **Job Name** and **Cron Expression (UTC)**, and whether it runs **One Time Only**.
+7. Click **Create** to start the `Discovery`
+
+The detail of the new `Discovery` opens, or the detail of the job when it was scheduled. You have successfully created the `Discovery` to discover certificates and keys from the website `www.example.com`.
+
+For a `Connector` registered as v1, the form has no **Interface** and **Resources**. Select its **Kind** instead, for example `IP-Hostname`, and fill in the attributes of the **Connector Attributes** tab that appear for it.
