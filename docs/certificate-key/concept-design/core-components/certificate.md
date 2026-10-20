@@ -117,9 +117,25 @@ For a connector-backed registration, the platform replays the registration's tra
 A registration can be protected with an **authorization secret** (a challenge), so that only a caller who presents the same secret can complete the issuance of the registered placeholder.
 
 - The operator supplies the secret — and, optionally, an expiry window — when registering. It is opt-in; the platform never generates one.
-- The secret is stored **encrypted**; the same secret must be presented with the issue request to complete a `Registered` certificate. Verification is constant-time, and repeated failures lock the registration.
+- The secret is stored **encrypted**; the same secret must be presented with the issue request to complete a `Registered` certificate. Verification is constant-time, and repeated failures lock the registration. The number of failed attempts allowed is a [platform setting](../../settings/platform.md#registration) (five by default).
 - The challenge is a control between the operator and the platform — the authority connector is not involved and never sees the secret.
-- While a registration is active, renewing or rekeying the certificate is currently rejected.
+- While a registration is `Active`, renewing or rekeying the certificate requires the same secret. See [Renew and rekey with a challenge](#renew-and-rekey-with-a-challenge).
+- A [pre-registered successor](../../quick-start/certificate-management/register-certificate.mdx#register-a-successor) of the certificate has a challenge of its own.
+
+#### Renew and rekey with a challenge
+
+A certificate that has a registration in the `Active` state can be renewed or rekeyed through the platform's renew and rekey operations only by a caller who presents the challenge, in the `authorizationSecret` property of the request. A certificate without a registration, or with a `Closed` one, is renewed and rekeyed without it.
+
+| Situation                                                      | Result                                                                                                              |
+|----------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| The challenge is correct                                       | The operation proceeds, the failed-attempts counter is reset, and the registration follows the new certificate     |
+| The challenge is wrong                                         | The request is refused and **one failed attempt is counted**, even when the request would have failed anyway        |
+| No challenge is presented                                      | The request is refused and **no attempt is counted**                                                                |
+| The registration is `Locked` or `Expired`                      | The request is refused                                                                                              |
+
+A `Locked` registration cannot be reset. If the certificate is still `Registered`, it can no longer be completed; if it is issued, it can no longer be renewed or rekeyed this way. Issue a new certificate or [register a successor](../../quick-start/certificate-management/register-certificate.mdx#register-a-successor) instead. The issuance window applies to the first issuance only: once the registered certificate is issued, there is no deadline for renewing or rekeying it.
+
+Renewing a certificate in a location cannot carry the challenge, and neither can a CMP key update through a profile whose challenge source is `Protocol Default`. On a certificate with an `Active` registration, both are refused without counting an attempt. A CMP profile whose challenge source is `Certificate Registration` authenticates key updates with the challenge; see [CMP Profile](../../protocols/cmp/cmp-profile.md#challenge-source).
 
 #### Registration and issuance flow
 
@@ -426,8 +442,9 @@ Metadata can be used for further processing of the `Certificate` by different co
 
 Certificates can be linked to each other through **successor** and **predecessor** relationships. A *successor* certificate is intended to replace its *predecessor*.
 
-This relationship can be established in two ways:
+This relationship is established in one of the following ways:
 - **Automatically** — when a successor certificate is created as a result of a **rekey** or **renewal** operation.
+- **By pre-registration** — when the successor of a certificate is [registered](../../quick-start/certificate-management/register-certificate.mdx#register-a-successor) before it is issued.
 - **Manually** — by explicitly associating existing certificates.
 
 When setting up a **manual relationship**, the following conditions must be met:
@@ -442,8 +459,8 @@ The **predecessor** certificate is always the one issued earlier, and the **succ
 The type of relationship between the two certificates is determined as follows:
 
 - **`Pending`** — The successor certificate has not yet been issued. The relation type will be automatically updated once issuance is complete.
-- **`Renewal`** — Both certificates share the same issuer, public key, and (if applicable) alternative public key.
-- **`Rekey`** — Both certificates share the same issuer, but their public keys differ.
+- **`Renewal`** — Both certificates share the same subject, issuer, public key, and (if applicable) alternative public key.
+- **`Rekey`** — Both certificates share the same subject and issuer, but their public keys differ.
 - **`Replacement`** — Any other case that does not fit the above criteria.
 
 ### Relation Type Transitions

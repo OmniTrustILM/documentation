@@ -26,6 +26,15 @@ These associations may include:
 
 Default associations can be set during **profile creation** or modified later when **editing** the protocol profile.
 
+## Challenge source
+
+SCEP and CMP profiles have a **Challenge Source** that decides how a client is authenticated when it enrolls:
+
+- **Protocol Default** — the authentication configured on the profile applies.
+- **Certificate Registration** — the client enrolls against a certificate that was [registered](../quick-start/certificate-management/register-certificate.mdx) beforehand, and authenticates with the challenge of that registration. The profile has no secret of its own.
+
+How a request is matched to a registration is described on the [SCEP Profile](scep/scep-profile.md#challenge-source) and [CMP Profile](cmp/cmp-profile.md#challenge-source) pages. A request that does not match, or whose challenge is wrong, is refused with a generic error that does not say which check failed. The reason is in the platform log and, when a registration was identified, in the event history of its certificate. A wrong challenge counts as a failed attempt toward [locking the registration](../concept-design/core-components/certificate.md#authorization-secret-challenge).
+
 ## Request attribute validation
 
 When a client enrolls with a CSR over a protocol, the platform validates the CSR against the [resolved request-attribute set](../concept-design/core-components/ra-profile.md#request-attributes) of the `RA Profile` that serves the request. What is checked, and what the strict and lenient modes mean, is described in [External CSR validation](../concept-design/core-components/ra-profile.md#external-csr-validation). The platform never rewrites the request. It either accepts or rejects it.

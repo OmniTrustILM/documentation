@@ -58,20 +58,33 @@ All v3 certificate operations are `POST` requests under `/v3/authorityProvider/c
 
 | Operation | Path | Purpose |
 |-----------|------|---------|
+| List request attributes | `/request/attributes` | Optional. Schema of the certificate request identity (subject, SANs, extensions). |
 | List issue attributes | `/issue/attributes` | Dynamic attribute schema for issuance. |
 | Issue | `/issue` | Issue a certificate from a CSR. |
+| List renew attributes | `/renew/attributes` | Optional. Dynamic attribute schema for renewal and rekey. |
 | Renew / rekey | `/renew` | Renew or rekey. Status and cancel reuse the `issue` endpoints. |
 | List revoke attributes | `/revoke/attributes` | Dynamic attribute schema for revocation. |
 | Revoke | `/revoke` | Revoke a certificate. |
 | List register attributes | `/register/attributes` | Dynamic attribute schema for registration. |
 | Register | `/register` | Pre-register an identity (no CSR). |
+| List identify attributes | `/identify/attributes` | Optional. Dynamic attribute schema for identifying a certificate. |
 | Identify | `/identify` | Identify an uploaded certificate at the CA. |
 | Status | `/issue/status`, `/revoke/status`, `/register/status` | Poll a parked operation. |
 | Cancel | `/issue/cancel`, `/revoke/cancel`, `/register/cancel` | Cancel an in-flight operation. |
 
-Renew and rekey do not have their own status, cancel, or attribute endpoints — they reuse the `issue` ones.
+Renew and rekey do not have their own status or cancel endpoints — they reuse the `issue` ones.
 
 Unlike v2, v3 has **no connector-side attribute validation** round-trip. The platform validates request attributes structurally against the schema returned by the `…/attributes` endpoints; the connector is not asked to re-validate.
+
+### Optional attribute schemas
+
+The `/request/attributes`, `/renew/attributes` and `/identify/attributes` endpoints are optional. They are not advertised with a capability flag: a connector offers a schema by serving the endpoint. They take the same request as the other attribute-list endpoints and return an array of attribute definitions.
+
+- `/request/attributes` lists the request attributes the connector offers for the certificate request identity. The platform combines them with the request attributes of the `RA Profile` according to its [merge mode](../../concept-design/core-components/request-attribute.md#merge-mode), which also describes what applies when the connector offers none.
+- `/renew/attributes` lists the attributes asked for when a certificate is renewed or rekeyed.
+- `/identify/attributes` lists the attributes asked for when a certificate is identified at the CA, for example when it is uploaded or assigned to an `RA Profile`.
+
+A connector that does not offer a schema answers `404`, `501` with the error `OPERATION_NOT_SUPPORTED`, or an empty array, and the platform treats each of them as "no schema". Any other error fails the operation. Without a renew or identify schema, the operation takes no attributes: no attribute form is shown, and attribute values supplied for the operation are rejected.
 
 ## Synchronous and asynchronous operations
 
@@ -167,6 +180,8 @@ Both, along with the certificate states through registration and completion, are
 ## For connector developers
 
 A v3 connector reconstructs the CA session from `authorityAttributes` + `raProfileAttributes` on every call. The **base contract** it must implement is the attribute-list endpoints (`/issue/attributes`, `/revoke/attributes`), `issue`, `renew`, `revoke`, `identify`, and the authority-level `listAuthorityAttributes`, `checkAuthorityConnection`, `listRaProfileAttributes`, `getCrl`, `getCaCertificates`.
+
+**Optional by endpoint** — `/request/attributes`, `/renew/attributes` and `/identify/attributes`; see [Optional attribute schemas](#optional-attribute-schemas).
 
 **Optional, capability-advertised** behavior (only used when the corresponding flag is advertised):
 
