@@ -4,12 +4,12 @@ sidebar_position: 8
 
 # Caching
 
-To keep request latency low — especially on the authentication hot path, where the same lookups repeat across many requests — `Core` maintains a number of in-memory caches. Each cache holds the result of an operation that is comparatively expensive to recompute (an authentication decision, a resolved certificate chain, a connector lookup) so that subsequent identical requests are served without repeating the work.
+To keep request latency low — especially on the authentication hot path, where the same lookups repeat across many requests — `Core` maintains a number of in-memory caches. Each cache holds the result of an operation that is comparatively expensive to recompute (an authentication or authorization decision, a resolved certificate chain, a connector lookup) so that subsequent identical requests are served without repeating the work.
 
 All caches share the same foundation:
 
 - **In-memory and per-instance.** Caches live in the memory of each `Core` instance and are not shared between instances. In a high-availability deployment, every instance warms and invalidates its own caches independently.
-- **Bounded.** Each cache is limited both by a time-to-live (an entry expires a fixed time after it is written, **five minutes by default**) and by a maximum number of entries. Both limits are tunable.
+- **Bounded.** Each cache is limited both by a time-to-live (an entry expires a fixed time after it is written, **five minutes by default**) and by a maximum number of entries. Both limits are tunable; [Configuration](#configuration) lists the settings of the authentication and the authorization cache.
 - **Transaction-safe invalidation.** When a change requires a cached entry to be removed, the eviction is deferred until the surrounding database transaction commits, so a rolled-back change never disturbs the cache. Within a single transaction, repeated full-cache clears are collapsed into one.
 
 :::info
@@ -36,8 +36,31 @@ Some results are deliberately never cached:
 
 Beyond time-to-live expiry, the authentication cache is invalidated whenever a change could affect an authentication decision. Invalidation happens at two granularities:
 
-- **Per-identity** — cached entries for a user are removed when that user's profile is updated, role assignments change, or the user is disabled or deleted. The cached entry for a certificate is removed when its user association changes or when the certificate is revoked through the platform. The next request from that identity re-authenticates.
+- **Per-identity** — cached entries for a user are removed when that user's profile is updated, role assignments change, or the user is disabled or deleted. The cached entry for a certificate is removed when its user association changes or when the certificate is revoked through the platform. The next request from that identity re-authenticates. Because sign-in does not check revocation, a revoked certificate that is still associated with an enabled user is accepted again; to block it, remove the association or disable the user.
 - **Global** — when a role itself changes (the role is updated or deleted, or its permissions are changed), the entire authentication cache is cleared. Because such a change can affect every user holding that role, clearing all entries is the safe choice; all identities re-authenticate on their next request.
+
+## Authorization cache
+
+Every protected operation is checked against the platform's authorization policies, which are evaluated by the Open Policy Agent (OPA). Without caching, each check would be a round-trip to OPA. The authorization cache stores the results of these checks, so a repeated check is served from memory and does not leave the `Core` process. For how authorization works, see [Authorization](./access-control/authorization.md).
+
+Two kinds of results are cached, each in its own cache:
+
+- **Verdicts** — the answer to whether a caller may perform an action on a resource.
+- **Object filters** — the set of objects of a resource that a caller may access, as used when listing and reading objects.
+
+Each has its own size limit, and the authorization cache can be switched off; see [Configuration](#configuration).
+
+### What an entry is keyed by
+
+An entry is keyed by the caller's **effective permissions**, not by the caller's identity, so users who hold the same permissions share cached results. When a user's permissions change, for example because a role is assigned or removed, the user's next request is checked against the new permissions.
+
+### Keeping authorization decisions fresh
+
+Beyond time-to-live expiry, the authorization cache is cleared in full when a role changes: the same changes that clear the authentication cache (a role is updated or deleted, or its permissions are changed) clear both caches on the instance that processed the change.
+
+A redeployment of the OPA policies does not clear the cache; decisions made under the previous policies are served until they expire.
+
+A change cleared on one `Core` instance reaches the others when their entries expire; see [Effective time of changes](#effective-time-of-changes).
 
 ## Certificate chain cache
 
@@ -102,9 +125,9 @@ How quickly a cached value becomes consistent with a fresh recomputation depends
 
 In practice this means:
 
-- User-affecting changes (disabling a user, changing role permissions, revoking a user's certificate association) become effective platform-wide **within the time-to-live window** — not instantly.
-- Credentials revoked **outside** of `Core` are not signalled to the cache. This includes JWTs revoked at the identity provider and client certificates revoked at the issuing CA but not yet reflected in `Core`'s own certificate state. The cached authentication outcome remains valid for that credential until its time-to-live elapses.
-- A role change clears the entire authentication cache on the processing instance, so every cached identity there re-authenticates on its next request — briefly raising load on the authentication service.
+- User-affecting changes (disabling a user, changing role permissions, removing a user's certificate association) become effective platform-wide **within the time-to-live window** — not instantly.
+- Credentials revoked **outside** of `Core` are not signaled to the cache. This includes JWTs revoked at the identity provider. The cached authentication outcome remains valid for that credential until its time-to-live elapses.
+- A role change clears the entire authentication cache on the processing instance, so every cached identity there re-authenticates on its next request — briefly raising load on the authentication service. It also clears the authorization cache there, so the next checks go to OPA until the cache warms up again.
 
 ## Operational considerations
 
@@ -114,6 +137,19 @@ Entries also do not survive a restart — caches start empty and warm up as requ
 
 ## Resetting a cache
 
-In normal operation a cache never needs to be reset by hand. Entries are removed automatically whenever the underlying data changes — a single key is evicted when its object changes, and the whole authentication cache is cleared when a role changes — and any entry that is not invalidated expires on its own once its time-to-live elapses (five minutes by default).
+In normal operation a cache never needs to be reset by hand. Entries are removed automatically whenever the underlying data changes — a single key is evicted when its object changes, and both the authentication and the authorization cache are cleared in full when a role changes — and any entry that is not invalidated expires on its own once its time-to-live elapses (five minutes by default).
 
-There is currently **no runtime endpoint to flush a cache**: at present the management interface exposes only health and info, so caches cannot be cleared through an API call today. When a full reset is genuinely required — for example after a direct database change that bypasses `Core` — the supported way to discard all cached state is to **restart the `Core` instance**. Because caches are in-memory and per-instance, they start empty on boot and warm up again as requests arrive; in a high-availability deployment each instance must be restarted to clear its own copy.
+There is **no runtime endpoint to flush a cache**: the management interface exposes only health and info. When a full reset is genuinely required — for example after a direct database change that bypasses `Core` — the supported way to discard all cached state is to **restart the `Core` instance**. Because caches are in-memory and per-instance, they start empty on boot and warm up again as requests arrive; in a high-availability deployment each instance must be restarted to clear its own copy.
+
+## Configuration
+
+The authentication and the authorization cache are configured through these `Core` environment variables, which take effect when `Core` starts. Set them with Helm in the `ilm` chart's [`additionalEnv.variables`](../../installation-guide/deployment/deployment-helm/configurable-parameters.md#customization-parameters), or with the Operator in [`spec.core.env`](../../installation-guide/deployment/deployment-operator/custom-resources/platform.md#per-component-overrides). The authentication settings also apply to the [credential verification cache](#credential-verification-cache).
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `AUTH_CACHE_TTL_MINUTES` | `5` | Minutes an authentication result stays cached. |
+| `AUTH_CACHE_MAX_SIZE` | `500` | Maximum number of cached results per authentication method. |
+| `AUTHZ_CACHE_ENABLED` | `true` | `false` switches the authorization cache off, so every check goes to OPA. |
+| `AUTHZ_CACHE_TTL_MINUTES` | `5` | Minutes an authorization decision stays cached. Keep it at or below `AUTH_CACHE_TTL_MINUTES`; `Core` logs a warning otherwise. |
+| `AUTHZ_RESOURCE_CACHE_MAX_SIZE` | `10000` | Maximum number of cached verdicts. |
+| `AUTHZ_OBJECT_CACHE_MAX_SIZE` | `1000` | Maximum number of cached object filters. |
