@@ -19,7 +19,9 @@ The **OTPKI Connector** is the [`Connector`](../../concept-design/architecture/c
 | Revoke                   | Revokes an issued certificate with the selected revocation reason                        |
 | Register                 | Pre-registers an identity in OTPKI before a certificate request exists                   |
 | Identify                 | Matches an existing certificate against OTPKI by its serial number                       |
-| CA certificates and CRLs | Downloads the certificate chain and the latest CRL of the selected certification authority |
+| CA certificates          | Downloads the certificate chain of the selected certification authority                  |
+
+The connector does not provide CRLs; the platform downloads them from the CRL distribution point in each certificate.
 
 The connector authenticates to OTPKI with an OAuth 2.0 access token obtained through the **client credentials** grant. OTPKI validates that token against the identity provider that issued it, and resolves it to an OTPKI user whose roles determine what the connector is allowed to do.
 
@@ -57,8 +59,10 @@ The connector authenticates to OTPKI with an OAuth 2.0 access token obtained thr
 Before you start, make sure that:
 
 - OTPKI is installed, running, and reachable from the OTPKI Connector. Installing and operating OTPKI is out of scope of this document, refer to the [OTPKI documentation](https://docs.otpki.com/).
+- The deployed OTPKI is a 1.0.x release. The connector does not work with earlier releases, so upgrade OTPKI and the connector together. If certificates carry otherName subject alternative names, such as a user principal name, use 1.0.1 or a later 1.0.x: OTPKI 1.0.0 encodes them incorrectly, and the platform then stores the certificate without subject alternative names.
 - An OIDC identity provider is registered in OTPKI and can issue client credentials tokens. See [Identity Providers](https://docs.otpki.com/docs/operations/administration/identity/identity-providers/).
-- The OTPKI Connector is deployed and registered in the platform. Deploying the connector is out of scope of this document, see [Register Connectors](../../quick-start/certificate-management/register-connectors.mdx) for registering it.
+- The platform is release 2.19.0 or later. The connector fills the `RA Profile` form through Attributes v2 callbacks, which earlier releases do not provide.
+- The OTPKI Connector is deployed with `OTPKI_LOGIN_PASSWORD_KEY` set, see [Password configuration](./configure-profiles.md#password-configuration), and registered in the platform. Deploying the connector is out of scope of this document, see [Register Connectors](../../quick-start/certificate-management/register-connectors.mdx) for registering it.
 - A [`Vault Profile`](../../concept-design/core-components/vault-profile.md) is available in the platform to store the OAuth client credentials.
 
 ## Integration

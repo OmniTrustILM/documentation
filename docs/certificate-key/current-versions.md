@@ -68,7 +68,7 @@ no second matrix.
 | Email Notification Provider    | `1.2.1`  | `hub.omnitrustregistry.com/ilm/email-notification-provider`            |
 | CT Logs Discovery Provider     | `1.0.2`  | `hub.omnitrustregistry.com/ilm/ct-logs-discovery-provider`             |
 | Webhook Notification Provider  | `1.0.0`  | `hub.omnitrustregistry.com/ilm/webhook-notification-provider`          |
-| OTPKI Connector                | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/otpkiconnector`                 |
+| OTPKI Connector                | `1.1.0`  | `hub.omnitrustregistry.com/ilm-private/otpki-connector`                |
 | MS ADCS NG Connector           | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/ms-adcs-ng-connector`           |
 | Timestamp Formatting Connector | `1.0.0`  | `hub.omnitrustregistry.com/ilm-private/timestamp-formatting-connector` |
 
