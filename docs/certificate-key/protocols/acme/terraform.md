@@ -76,6 +76,24 @@ resource "acme_registration" "reg" {
 
 When the account is deleted, it is deactivated in the platform.
 
+## External Account Binding
+
+Add the `external_account_binding` block to the `acme_registration` resource. For the `kid` and the key, see [Set up an ACME client](external-account-binding.md#set-up-an-acme-client):
+
+```hcl
+resource "acme_registration" "reg" {
+  account_key_pem = tls_private_key.private_key.private_key_pem
+  email_address   = "terraform@example.com"
+
+  external_account_binding {
+    key_id      = "[kid]"
+    hmac_base64 = var.eab_key
+  }
+}
+```
+
+Keep the key in a sensitive variable instead of writing it in the configuration.
+
 ## Create certificate
 
 Certificate is created using `acme_certificate` resource. The resource requires account key and certificate signing request that can be generated or provided externally.

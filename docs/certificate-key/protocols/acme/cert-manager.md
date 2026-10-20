@@ -52,6 +52,27 @@ spec:
 
 You should adjust this manifest according to your specific Kubernetes cluster. If the platform's access point is using TLS certificate issued from private certification authority, you should include the CA certificate in `cert-manager` configuration, otherwise it will reject communication.
 
+### External Account Binding
+
+If the `ACME Profile` requires External Account Binding, store the key in a Kubernetes `Secret` and add an `externalAccountBinding` block with the `kid` to the `ClusterIssuer` manifest. For the `kid` and the key, see [Set up an ACME client](external-account-binding.md#set-up-an-acme-client):
+
+```bash
+kubectl create secret generic eab-secret -n cert-manager \
+  --from-literal=secret=[key]
+```
+
+```yaml
+spec:
+  acme:
+    externalAccountBinding:
+      keyID: [kid]
+      keySecretRef:
+        name: eab-secret
+        key: secret
+```
+
+### Apply the manifest
+
 When you are ready, you can apply the manifest. This will start the communication with the ACME server and register the ACME client. You can check if the registration of ACME client was successful by [listing all ACME Clients](/api/core-acme#tag/acme-account-management/GET/v1/acmeAccounts) in the platform and checking the state of the `ClusterIssuer`:
 ```bash
 kubectl describe -n cert-manager clusterissuers.cert-manager.io clusterissuer-ilm-acme
