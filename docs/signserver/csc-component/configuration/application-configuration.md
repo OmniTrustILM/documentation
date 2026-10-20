@@ -310,6 +310,11 @@ spring:
     username: 'cscuser'
     # Password to connect to the database
     password: 'your-strong-password'
+    # Passwordless authentication to Azure Database for PostgreSQL with a Microsoft Entra ID token.
+    # Set `username` to the Entra principal and remove `password`,
+    # see Passwordless database authentication below
+    #azure:
+    #  passwordless-enabled: true
     # Driver class name of the database
     # for PostgreSQL use: org.postgresql.Driver
     # for MySQL use: com.mysql.cj.jdbc.Driver
@@ -342,6 +347,23 @@ springdoc:
   api-docs:
     path: /openapi
 ```
+
+## Passwordless database authentication
+
+With Azure Database for PostgreSQL, the CSC component can authenticate to the database with a Microsoft Entra ID token instead of a password. The token comes from the workload identity of the container, for example [Microsoft Entra Workload ID](https://learn.microsoft.com/azure/aks/workload-identity-overview) on Azure Kubernetes Service, and the identity must be [added to the server as a Microsoft Entra role](https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-manage-azure-ad-users).
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://myserver.postgres.database.azure.com:5432/cscdb?sslmode=verify-full&sslrootcert=/opt/cscapi/azure-root-ca.pem
+    username: csc-api-identity
+    azure:
+      passwordless-enabled: true
+```
+
+- Set `username` to the name of the Entra principal and remove `password`. A password that is set takes precedence, and the component then authenticates with the password.
+- Set `sslmode=verify-full` in the URL. Otherwise the connection uses `sslmode=require`, which encrypts it but verifies neither the server certificate nor the host name.
+- The PostgreSQL driver takes the trusted CA certificates only from the PEM file named by `sslrootcert`, which the container does not provide by default. Mount the Azure root CA certificates and name the file in `sslrootcert`, or add `sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory` to the URL to use the Java truststore instead.
 
 ## Application profiles
 
