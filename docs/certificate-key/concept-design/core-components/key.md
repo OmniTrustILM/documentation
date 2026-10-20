@@ -19,6 +19,8 @@ In addition to the above details, the following are mapped to the `Key` for the 
 - `Group` it belongs to
 - Optionally description of the `Key`
 
+A `Key` found by a discovery belongs to no `Token Profile`, see [Discovered keys](../modules/key-inventory.md#discovered-keys).
+
 ## Attributes
 
 `Key` attributes hold information related to the platform. It can contain Custom Attributes as well as Metadata Attributes.
