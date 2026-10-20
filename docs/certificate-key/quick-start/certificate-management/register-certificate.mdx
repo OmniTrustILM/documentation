@@ -54,6 +54,8 @@ When a challenge was set, the registration carries an authorization state — a 
 
 The identity from the registration is preserved. Completion runs through the standard issue flow.
 
+A registration with a challenge can also be completed by a SCEP or CMP client, through a profile whose challenge source is `Certificate Registration`; see [Challenge source](../../protocols/common-properties.md#challenge-source).
+
 ## Register a successor
 
 You can pre-register the certificate that will replace an issued or revoked one. The successor is a certificate in the `Registered` state that is completed later, and it is shown on the **Related Certificates** of the source as a **Pending** successor. How the relation resolves once the successor is issued is described in [Relation Type Determination](../../concept-design/core-components/certificate.md#relation-type-determination).
@@ -85,10 +87,14 @@ curl -X POST \
   {
     "csrAttributes": [
       {
+        "uuid": "9abaeba0-973d-11ed-a8fc-0242ac120002",
         "name": "commonName",
+        "version": "v3",
+        "contentType": "string",
         "content": [
           {
-            "value": "server01.example.com"
+            "contentType": "string",
+            "data": "server01.example.com"
           }
         ]
       }
@@ -98,6 +104,8 @@ curl -X POST \
   https://[domain]:[port]/api/v2/operations/authorities/e045a12a-e114-45ed-90b8-bac7e750e803/raProfiles/166b5cf5-63f2-11ec-90d6-0242ac120003/certificates/register
   #https://[domain]:[port]/api/v2/operations/authorities/{authorityUuid}/raProfiles/{raProfileUuid}/certificates/register
 ```
+
+Each `csrAttributes` entry is a request attribute of the `RA Profile`, with its value in `data`. Take its `uuid`, `name` and `contentType` from [Get CSR Generation Attributes](/api/core-certificate#tag/certificate-inventory/GET/v1/certificates/csr/attributes) called with the profile's `raProfileUuid`; the example uses `commonName` from the platform default set.
 
 The response carries the pre-registered certificate's `uuid`:
 

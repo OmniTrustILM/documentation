@@ -28,8 +28,7 @@ Problem types are grouped by category:
   "errorCode": "VALIDATION_FAILED",
   "correlationId": "f5a2e0e0c1ec41d4b7208b5b0c7bc7d9",
   "timestamp": "2025-09-08T12:41:22Z",
-  "retryable": true,
-  "retryAfterSeconds": 30
+  "retryable": false
 }
 ```
 

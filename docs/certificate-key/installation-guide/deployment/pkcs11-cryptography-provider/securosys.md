@@ -107,6 +107,18 @@ docker run --rm -it -v "$PWD/vendor:/etc/pkcs11-vendor" --entrypoint /opt/primus
 
 Keep `.secrets.cfg` safe, and do not store the setup password with it: while the setup password is valid, it can enroll another client.
 
+## Store the configuration in a Secret
+
+Store `primus.cfg` and `.secrets.cfg` in a Secret, which the sidecar mounts read-only at `/etc/pkcs11-vendor`:
+
+```bash
+kubectl -n <NAMESPACE> create secret generic pkcs11-vendor-securosys \
+  --from-file=primus.cfg=vendor/primus.cfg \
+  --from-file=.secrets.cfg=vendor/.secrets.cfg
+```
+
+The sidecar needs no writable volume.
+
 ## Size the session pool
 
 A partition accepts a limited number of sessions, and the limit is low on developer tiers. Keep `max_sessions` in the proxy configuration below it; see [Sessions](./deployment.md#sessions).

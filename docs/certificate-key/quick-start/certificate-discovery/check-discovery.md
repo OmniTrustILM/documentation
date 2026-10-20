@@ -70,7 +70,7 @@ curl -X PATCH \
   #https://[domain]:[port]/api/v1/discoveries/{uuid}/cancel
 ```
 
-Each answers `204 No Content` when it is done, and `422 Unprocessable Entity` when the `Discovery` is not in a status that allows it. Cancelling cannot be undone: what the `Discovery` collected is never imported into the inventory.
+Each answers `204 No Content` when it is done, and `422 Unprocessable Entity` when the `Discovery` is not in a status that allows it. Cancelling cannot be undone: what the `Discovery` collected is never imported into the inventory. A `Discovery` left stopped for 7 days, by default, is cancelled in the same way, see [Time limits](../../concept-design/modules/discovery.md#time-limits).
 
 ### Read the messages
 
@@ -99,11 +99,12 @@ Steps for checking `Discovery` status:
 The **Details** tab shows:
 
 - **Discovery Details**, with the **Status**, the **Connector Interface** the discovery runs through, and the **Resources** it targets
+- **Metadata**, what the provider reports about the run, such as **Why targets failed**
 - **Progress**, for a v2 discovery, and for any discovery while it is processing: how many targets the provider has examined, how many held nothing or failed, what it has found per resource, and during processing how many items have been imported
 - **Import summary**, with the items received, those new to the inventory, imported and not imported
 
 The page refreshes itself while the discovery is In Progress or Processing. Once the discovery has finished, its status becomes Completed, or Warning when something was not imported or a target could not be read.
 
-For a v2 `Discovery` whose provider can stop it, the detail offers **Stop** while it is In Progress, **Resume** while it is Stopped, and **Cancel** in either status, to a user with the permission for each. A `Discovery` that cannot be stopped can be cancelled through the API only. **Delete** is available once a v2 `Discovery` has finished.
+For a v2 `Discovery` whose provider can stop it, the detail offers **Stop** while it is In Progress, **Resume** while it is Stopped, and **Cancel** in either status, to a user with the permission for each. A `Discovery` left stopped for 7 days, by default, is cancelled, and nothing it found is imported. A `Discovery` that cannot be stopped can be cancelled through the API only. **Delete** is available once a v2 `Discovery` has finished.
 
 The **Messages** tab lists the problems the discovery ran into and how often each occurred. Messages are advisory: a discovery with messages has not necessarily failed.

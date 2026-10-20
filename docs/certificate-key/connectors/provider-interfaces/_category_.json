@@ -1,4 +1,8 @@
 {
   "position": 11,
-  "label": "Provider Interfaces"
+  "label": "Provider Interfaces",
+  "link": {
+    "type": "generated-index",
+    "description": "A new authority, cryptography or discovery connector implements Authority Provider v3, Cryptography Provider v2 or Discovery Provider v2."
+  }
 }

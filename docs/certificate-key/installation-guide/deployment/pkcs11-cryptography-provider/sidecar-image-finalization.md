@@ -30,7 +30,7 @@ The base image `hub.omnitrustregistry.com/ilm-private/pkcs11-sidecar-base` conta
 
 The image runs as user `10001`. Give the directories that the vendor software writes at runtime to group `0`, group-writable, so that the image also runs where the cluster assigns the user. Never put credentials, HSM addresses, partition secrets or Security World files into the image.
 
-A sidecar has to keep running while its HSM is unreachable, so that the other Config Profiles in the pod stay in service. The vendor pages give the settings that keep it running.
+A sidecar has to keep running while its HSM is unreachable, so that the other Config Profiles in the pod stay in service. The pages for [Utimaco CryptoServer](./utimaco.md), [Securosys Primus](./securosys.md) and [Entrust nShield](./nshield.md) give the settings that keep it running.
 
 ## The proxy configuration
 

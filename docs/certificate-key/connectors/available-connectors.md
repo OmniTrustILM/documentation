@@ -41,5 +41,6 @@ The following `Connectors` are officially available:
 | [OTPKI Connector](../integration-guides/otpki-connector/overview.md)                           | [Authority Provider v3](./provider-interfaces/authority-provider-v3.md)                 |
 | [MS ADCS NG Connector](../integration-guides/ms-adcs-ng-connector/overview.md)                 | [Authority Provider v3](./provider-interfaces/authority-provider-v3.md)                 |
 | [PKCS#11 Cryptography Provider](../integration-guides/pkcs11-cryptography-provider/integration-guide.md) | [Cryptography Provider v2](./provider-interfaces/cryptography-provider-v2.md)           |
+| Software Cryptography Provider                                                                 | [Cryptography Provider v2](./provider-interfaces/cryptography-provider-v2.md)           |
 | [Timestamp Formatting Connector](../../signing/timestamping/timestamp-formatting-connector.md) | [Signature Formatting Provider](./provider-interfaces/signature-formatting-provider.md) |
 | Network Discovery Provider                                                                     | [Discovery Provider v2](./provider-interfaces/discovery-provider-v2.md)                 |

@@ -40,8 +40,8 @@ Before you start, make sure that:
 
 The following steps are required to deliver notifications to an HTTP endpoint:
 
-| #     | Reference                                                                            | Short description                                                                |
-|-------|--------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| **1** | [Configure Notification Instance](./configure-instance.md)                           | Create the notification instance with the URL and the content type               |
-| **2** | [Templates](./templates.md)                                                          | Write the request body, for the `JSON` and `XML` content types                   |
-| **3** | [Notification Profile](../../concept-design/core-components/notification-profile.md) | Use the instance in a notification profile and associate the profile with events |
+| #     | Reference                                                                                                                 | Short description                                                                                             |
+|-------|---------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| **1** | [Configure Notification Instance](./configure-instance.md)                                                                | Create the notification instance with the URL and the content type                                            |
+| **2** | [Templates](./templates.md)                                                                                               | Write the request body, for the `JSON` and `XML` content types                                                |
+| **3** | [Send Notifications on Events](../../concept-design/core-components/notification-profile.md#send-notifications-on-events) | Use the instance in a notification profile, and send the profile from a trigger on the events to notify about |

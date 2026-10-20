@@ -7,7 +7,7 @@ sidebar_position: 5
 | Property    | Value |
 |-------------|-------|
 | HTTP status | `400 Bad Request` |
-| Retryable   | Yes |
+| Retryable   | No |
 | Error code  | `ATTRIBUTES_ERROR` |
 
 ## Summary
@@ -24,7 +24,7 @@ An error occurred while processing attributes. This is distinct from general val
 
 ## How to fix
 
-- Fetch the current attribute definitions for the operation using the appropriate `GET /attributes` endpoint on the connector (via Core).
+- Fetch the operation's current attribute definitions from the connector, through Core.
 - Ensure all required attributes are present and their values match the declared data types and constraints.
 - If a dependent attribute depends on another attribute's value, ensure the dependency is resolved before submitting.
 
@@ -40,7 +40,6 @@ An error occurred while processing attributes. This is distinct from general val
   "errorCode": "ATTRIBUTES_ERROR",
   "correlationId": "2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e",
   "timestamp": "2025-09-08T11:30:00Z",
-  "retryable": true,
-  "retryAfterSeconds": 30
+  "retryable": false
 }
 ```

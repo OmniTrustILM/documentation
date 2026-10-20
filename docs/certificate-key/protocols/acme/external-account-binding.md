@@ -41,7 +41,7 @@ In the administrator interface, the **Generate key** button of the `ACME Profile
 
 ## Store the key as a secret
 
-Store the key as a `Secret` of the type **Secret Key** or **Generic**, with the key as its content. Other secret types, such as `API Key`, cannot be used. The secret must be enabled.
+Store the key as a `Secret` of the type **Secret Key** or **Generic**, with the key as its content. Other secret types, such as `API Key`, cannot be used. The secret must be enabled. A secret is kept in a [`Vault`](../../concept-design/core-components/vault.md) through an enabled [`Vault Profile`](../../concept-design/core-components/vault-profile.md), so both must exist before you store the key, by hand or with the **Generate key** dialog.
 
 ## Register the secret on the ACME Profile
 

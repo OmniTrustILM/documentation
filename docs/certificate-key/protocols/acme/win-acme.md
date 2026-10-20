@@ -53,7 +53,7 @@ wacs.exe `
 
 ## Using `win-acme` with `IIS` and self-hosted HTTP challenge
 
-Once each pre-requisite and configuration are set up, you can run `win-acme` executable file *`wascs.exe`* with administrator privileges (to enable automatic detection of `IIS` services) and follow these steps:
+Once each pre-requisite and configuration are set up, you can run `win-acme` executable file *`wacs.exe`* with administrator privileges (to enable automatic detection of `IIS` services) and follow these steps:
 
 ### Interactive mode
 
@@ -89,9 +89,9 @@ For all `win-acme` command line arguments, refer to [win-acme documentation](htt
 
 ### Interactive mode
 
-- Run `win-acme` executable file *`wascs.exe`* with administrator privileges
+- Run `win-acme` executable file *`wacs.exe`* with administrator privileges
 - Please choose from the menu: **`O`** (*More Options*)
-- Please choose from the menu> **`T`** (*(Re)Create Scheduled Task*)
+- Please choose from the menu: **`T`** (*(Re)Create Scheduled Task*)
 - Please specify the user you want the task to be run under (user with administrator privileges is recommended to allow automatic binding configuration on the `IIS` server)
 - The scheduled task for automatic renewal of all certificates managed by `win-acme` is now created
 

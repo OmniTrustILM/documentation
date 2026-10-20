@@ -489,7 +489,7 @@ is the connector's authoritative set of attribute definitions, addressable by UU
 
 | Property           | Type                    | Short description                                                       | Required                                     |
 |--------------------|-------------------------|------------------------------------------------------------------------|----------------------------------------------|
-| `connectorVersion` | `string`                | Connector build version, echoed so `Core` can detect staleness. A version string, not a content hash. | <span class="badge badge--success">Yes</span> |
+| `connectorVersion` | `string`                | Connector build version. A version string, not a content hash. | <span class="badge badge--success">Yes</span> |
 | `definitions`      | list of `BaseAttribute` | Attribute definitions, polymorphic across attribute schema v2/v3.      | <span class="badge badge--success">Yes</span> |
 
 Registry rules:
@@ -509,19 +509,13 @@ stored definition (Core, keyed by connector + name)
 ```
 
 On the Attributes v2 path `Core` does not re-derive definitions by re-listing per-operation schemas (the
-legacy UI-flow behavior); the resolution ladder above fetches only the missing UUIDs. The **one** exception
-is a connector-signalled `ATTRIBUTE_DEFINITION_NOT_FOUND` (a `CONNECTOR`-general error, HTTP `404`,
-non-retryable): `Core` then refreshes that connector's **whole registry once** and retries. This
-cache-miss path is what lets `Core` resolve definitions it has never listed — API-only clients,
-never-materialised `GROUP` children, metadata referenced by content mapping.
+legacy UI-flow behavior); the resolution ladder above fetches only the missing UUIDs. This cache-miss
+path is what lets `Core` resolve definitions it has never listed — API-only clients, never-materialized
+`GROUP` children, metadata referenced by content mapping.
 
-:::info[Staleness — planned]
-Correctness today rests on the **cache-miss path** above plus the existing **manual connector
-reconnect/reload** (which forces a full re-fetch and covers connector upgrades). Automatic
-**build-version staleness detection** (auto-refetching when `connectorVersion` changes) and
-**orphan/drift cleanup** of definitions a connector stops emitting are **planned as a fast-follow and
-are not yet available**. The registry already carries `connectorVersion` so the signal is ready.
-:::
+When a callback fails with `ATTRIBUTE_DEFINITION_NOT_FOUND` (a `CONNECTOR`-general error, HTTP `404`,
+non-retryable), `Core` re-fetches that one definition from the connector, even though it has it stored,
+and retries the callback once.
 
 ### Conformance and startup self-validation
 
@@ -759,9 +753,9 @@ autonumber
         note right of Core: Still unresolved → fail, naming the UUID(s)
     end
     Core -> Connector : Dispatch callback / validate operation
-    alt ATTRIBUTE_DEFINITION_NOT_FOUND
-        Core -> Connector : Refresh registry once
-        Core -> Connector : Retry
+    alt Callback fails with ATTRIBUTE_DEFINITION_NOT_FOUND
+        Core -> Connector : Re-fetch definition
+        Core -> Connector : Retry callback once
     end
 @enduml
 ```

@@ -121,9 +121,9 @@ The user who performed the action is never notified of it. A participant who can
 
 ### Notification profiles
 
-Operators can also have comment events delivered through [notification profiles](./notification-profile.md) by associating a profile with the **Comment created** or **Comment resolved** event. Nothing is delivered through a profile unless it is associated.
+Operators can also have comment events delivered through a [notification profile](./notification-profile.md), by sending the profile from a trigger on the **Comment created** or **Comment resolved** event; see [Send notifications on events](./notification-profile.md#send-notifications-on-events). Nothing is delivered through a profile otherwise.
 
-The association can be made globally in [Settings → Events](../../settings/events.md), or for a specific [group](./group.md). A group-scoped association applies to comments on objects that belong to that group, which lets a team subscribe to the comment activity on its own objects.
+The trigger can be associated with the event globally in [Settings → Events](../../settings/events.md), or for a specific [group](./group.md). A group-scoped association applies to comments on objects that belong to that group, which lets a team subscribe to the comment activity on its own objects.
 
 :::warning
 A profile that delivers through an external notification provider sends the comment text as written by the user to every recipient of the profile. Comments are free text and may quote information from the object. Size the recipient list of a profile bound to comment events accordingly, and prefer group-scoped associations over a broad global one. Internal notifications carry a summary and the identifiers of the comment, not its text.

@@ -9,6 +9,8 @@ sidebar_position: 20
 The information held by the `Notification` varies depending on the `Kind` of Notification Provider and is defined by the `Connector`.
 `Notification Provider` uses `Attributes` to get the data needed to process external notification.
 
+To deliver notifications by e-mail or to an HTTP endpoint, see the [Email Notification Provider](../../integration-guides/email-notification-provider/overview.md) and [Webhook Notification Provider](../../integration-guides/webhook-notification-provider/overview.md) guides.
+
 `Notification` has the following parameters:
 
 | Parameter               | Description                                                                             |
