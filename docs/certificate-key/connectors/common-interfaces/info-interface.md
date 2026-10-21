@@ -78,37 +78,52 @@ The `version` is the letter `v` followed by the version number, such as `"v2"` o
 
 ### Interface codes
 
-The `code` field must be one of the following values defined by the `ConnectorInterface` enum:
+The `code` field must be one of the following values defined by the [`ConnectorInterface` enum](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/client/connector/v2/ConnectorInterface.java):
 
-| Code            | Label           | Description                                              |
-|-----------------|-----------------|----------------------------------------------------------|
-| `info`          | Info            | Connector identity and interface listing                 |
-| `health`        | Health          | Health status with Kubernetes liveness/readiness probes  |
-| `metrics`       | Metrics         | Prometheus/OpenMetrics metrics endpoint                  |
-| `authority`     | Authority       | Certification authority operations                       |
-| `discovery`     | Discovery       | Discovery of certificates and keys                       |
-| `entity`        | Entity          | End-entity and location management                       |
-| `compliance`    | Compliance      | Compliance rules                                         |
-| `cryptography`  | Cryptography    | Cryptographic key management and operations              |
-| `notification`  | Notification    | Notification delivery                                    |
-| `secret`        | Secret          | Secret/credential management                             |
+| Code                   | Label              | Category   |
+|------------------------|--------------------|------------|
+| `info`                 | Info               | Common     |
+| `health`               | Health             | Common     |
+| `metrics`              | Metrics            | Common     |
+| `attributes`           | Attributes         | Common     |
+| `authority`            | Authority          | Functional |
+| `discovery`            | Discovery          | Functional |
+| `entity`               | Entity             | Functional |
+| `compliance`           | Compliance         | Functional |
+| `cryptography`         | Cryptography       | Functional |
+| `notification`         | Notification       | Functional |
+| `secret`               | Secret             | Functional |
+| `signatureFormatting`  | Signature Formatting | Functional |
+| `cadesFormatting`      | CAdES Formatting   | Functional |
+| `jadesFormatting`      | JAdES Formatting   | Functional |
+| `padesFormatting`      | PAdES Formatting   | Functional |
+| `xadesFormatting`      | XAdES Formatting   | Functional |
 
 ### Feature flags
 
-Feature flags are optional capability indicators that signal connector behaviour beyond what the API reference defines. The `features` field contains values from the `FeatureFlag` enum:
+Feature flags are optional capability indicators that signal connector behaviour beyond what the API reference defines. The `features` field contains values from the [`FeatureFlag` enum](https://github.com/OmniTrustILM/interfaces/blob/main/src/main/java/com/otilm/api/model/client/connector/v2/FeatureFlag.java):
 
-| Code               | Applicable interfaces | Description                                                                  |
-|--------------------|-----------------------|------------------------------------------------------------------------------|
-| `stateless`        | any                   | The connector does not require a persistence layer (e.g., no database)       |
-| `openMetrics`      | `metrics`             | Metrics are exposed in OpenMetrics format (in addition to Prometheus text)   |
-| `asynchronous`     | `cryptography`        | Accepts asynchronous execution, with status and cancel endpoints             |
-| `keyImport`        | `cryptography`        | Imports protected key material into a token                                  |
-| `keyExport`        | `cryptography`        | Exports keys created or imported as exportable, as protected key material    |
-| `secretVersioning` | `secret`              | Supports versioning of secrets, keeping a history of previous values         |
-| `secretRotation`   | `secret`              | Supports triggering rotation of secrets                                      |
-| `discoveryStopResume` | `discovery`        | Supports stopping a running discovery with a resumable checkpoint and resuming it later — see [Discovery Provider v2](../provider-interfaces/discovery-provider-v2.md#stop-resume-and-cancel) |
+| Code                      | Behavior      | Applicable interfaces                                      | Prerequisite          | Description |
+|---------------------------|---------------|------------------------------------------------------------|------------------------|-------------|
+| `stateless`               | Informational | any                                                        |                        | A stateless connector does not require a persistence layer (e.g. database) |
+| `openMetrics`             | Informational | `metrics`                                                  |                        | Metrics are exposed in OpenMetrics format |
+| `asynchronous`            | Enforced      | `cryptography`                                             |                        | Supports asynchronous operations |
+| `keyImport`               | Enforced      | `cryptography`                                             |                        | Supports importing key material supplied as a protected PKCS#8 envelope into the technology |
+| `keyExport`               | Enforced      | `cryptography`                                             |                        | Supports exporting key material as a protected PKCS#8 envelope |
+| `secretVersioning`        | Enforced      | `secret`                                                   |                        | Supports versioning of secrets, allowing history of secrets to be kept |
+| `secretRotation`          | Enforced      | `secret`                                                   |                        | Supports triggering rotation of secrets |
+| `contentSigning`          | Enforced      | `padesFormatting`, `xadesFormatting`, `cadesFormatting`, `jadesFormatting` |                        | Supports content signing workflows |
+| `levelTimestamped`        | Enforced      | `padesFormatting`, `xadesFormatting`, `cadesFormatting`, `jadesFormatting` | `contentSigning`       | Reaches the TIMESTAMPED level for the family interface by implementing the signature timestamp imprint and embed pair |
+| `levelLongTerm`           | Enforced      | `padesFormatting`, `xadesFormatting`, `cadesFormatting`, `jadesFormatting` | `levelTimestamped`     | Reaches the LONG_TERM level for the family interface by implementing `extendToLevel` with its own fetching |
+| `levelArchival`           | Enforced      | `padesFormatting`, `xadesFormatting`, `cadesFormatting`, `jadesFormatting` | `levelLongTerm`        | Reaches the ARCHIVAL level for the family interface by implementing the archive timestamp imprint and embed pair |
+| `timestamping`            | Enforced      | `signatureFormatting`                                      |                        | Supports timestamping of signatures |
+| `certificateRegistration` | Enforced      | `authority`                                                 |                        | Supports pre-registering a certificate identity at the upstream CA before a CSR exists |
+| `certificateStatusPolling` | Enforced     | `authority`                                                 |                        | Supports polling for asynchronous operation completion |
+| `certificateRequestStructured` | Enforced | `authority`                                                 |                        | Accepts the structured `requestContent` model on register, issue, and renew |
+| `certificateIdentityOverride` | Enforced | `authority`                                                |                        | Applies an authoritative platform-supplied identity to a forwarded CSR |
+| `discoveryStopResume`     | Enforced      | `discovery`                                                |                        | Supports pausing a running discovery with a resumable checkpoint and resuming it later |
 
-A flag is either informational or enforced. `Core` handles an informational flag's behavior whether or not the connector lists it; `stateless` and `openMetrics` are informational. An enforced flag is opt-in: the capability counts as supported only when the connector lists the flag on that interface, and `Core` never invokes it otherwise. The other flags in this table are enforced.
+A flag is either informational or enforced. `Core` handles an informational flag's behavior whether or not the connector lists it; `stateless` and `openMetrics` are informational. An enforced flag is opt-in: the capability counts as supported only when the connector lists the flag on that interface, and `Core` never invokes it otherwise. The other flags in this table are enforced. The signature-level flags form a prerequisite ladder: `levelTimestamped` requires `contentSigning`, `levelLongTerm` requires `levelTimestamped`, and `levelArchival` requires `levelLongTerm`.
 
 ### Processes
 
