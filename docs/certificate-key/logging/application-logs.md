@@ -51,6 +51,8 @@ Every JSON line carries the time, the log level, the name of the logger, the thr
 
 Most audit records are written separately from the request that caused them, so an audit line does not necessarily carry the `log_actor_` and `log_source_` fields of the request. Who performed the operation, and from where, is in the `actor` and `source` of its `log_record`.
 
+For a delegated bearer request, use `log_record.actor.delegate.identifier` and, when present, `log_record.actor.delegate.subject` to correlate the integration with the user in `log_record.actor`. These fields belong to [record schema 1.2](log-record-structure.md#delegate); update schema validation in the collector or SIEM before upgrading. The delegate identifies only the outermost actor. Audit records created asynchronously by triggers and workflows continue to name the user only. Complete access tokens are never logged; authentication failure messages use the existing redacted-token representation without its signature.
+
 ### Storing JSON logs in Elasticsearch or OpenSearch
 
 The `operationData` and `additionalData` fields of a `log_record` hold data whose shape differs from one operation to another; for audit logs, `additionalData` holds the parameters of the request when verbose audit logging is enabled in the [logging settings](../settings/logging.md). With dynamic mapping, a field that holds text in one record and an object in another causes the record to be rejected, and the number of distinct fields can exceed the limit of the index.
@@ -99,12 +101,12 @@ The following is an audit log line in the ECS layout. It is shown formatted for 
   },
   "service": {
     "name": "core",
-    "version": "2.20.0",
+    "version": "2.21.0",
     "node": { "name": "core-7d9f6c8b5-x2kqp" }
   },
   "message": "revoke certificates success",
   "log_record": {
-    "version": "1.1",
+    "version": "1.2",
     "audited": true,
     "module": "certificates",
     "actor": {

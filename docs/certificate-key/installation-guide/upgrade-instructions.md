@@ -6,6 +6,17 @@ sidebar_position: 9
 
 How you upgrade the platform depends on how you deployed it. Upgrading should always be performed with caution. The upgrade process is **irreversible**, so it is essential to create backups of the database and of your deployment's configuration before proceeding.
 
+## Upgrading to 2.21.0
+
+Review the following delegation changes before upgrading:
+
+- **Tokens carrying `act` now require an allowed delegate.** Previously the actor claim was ignored. After the upgrade, a bearer token carrying `act` is refused with HTTP `401` until its immediate delegate is explicitly allowed in the issuing provider's [authentication settings](../settings/authentication.md#allowed-delegates). This also applies to timestamping. The failure audit message names the provider and, when resolvable, the delegate identifier. Tokens without `act` keep their existing behavior.
+- **SIEM and log collectors must accept record schema 1.2.** The new optional `actor.delegate` object attributes delegated requests. Update consumers that validate against schema 1.1 before upgraded nodes send records. Core 2.21.0 continues to read existing stored records, and its existing filters and exports continue to work.
+- **Complete the Core rollout before saving delegation settings or enabling delegated traffic.** An older node receiving an audit message through JMS accepts it but drops the delegate when storing it. An older Core node reading a delegate-bearing record already stored by an upgraded node cannot deserialize that record from the shared database, so audit log listing and export can fail during a mixed-version rollout. Older nodes also retain the previous behavior of ignoring `act`. Upgrade every Core node before allowing delegated traffic.
+- **Plan a downgrade around both audit records and provider configuration.** An older version cannot read provider configuration saved with `allowedDelegates` or `delegateClaim`, or database audit records containing `actor.delegate`. Saving a provider again with only its older supported fields does not resolve the audit-record incompatibility. Once delegate-bearing records have been stored, keep a compatible Core reader or restore the database and deployment/provider configuration together from a consistent pre-upgrade backup. While the upgraded version is still running, preserve or export any post-upgrade audit records needed for retention before restoring that backup. A downgrade also restores the previous behavior of ignoring `act`.
+
+No database migration is required for delegation. Authorization, ownership, and certificate and object histories still use the user. Audit records created asynchronously by triggers and workflows continue to name the user only. Keycloak's delegation preview remains an explicit [opt-in](../integration-guides/keycloak/delegation.md#enable-the-keycloak-features); upgrading the platform does not enable it.
+
 ## Upgrading to 2.20.0
 
 Whatever your deployment, check the following before you upgrade to 2.20.0:
