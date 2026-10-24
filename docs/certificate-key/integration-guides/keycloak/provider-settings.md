@@ -37,3 +37,9 @@ To create such provider, a request to the [Update OAuth2 Provider settings API](
     "sessionMaxInactiveInterval": 600
 }
 ```
+
+## Allow delegated integrations
+
+Delegation is disabled for the provider until `allowedDelegates` contains the integration's exact identifier. For Keycloak client delegation, keep `delegateClaim: "client_id"` and add the actor client's ID, for example `automation-client`, to `allowedDelegates`. Merge the fields into the complete provider configuration above; they do not replace the issuer, audience, or user mapping settings.
+
+See [Authentication settings](../../settings/authentication.md#allowed-delegates) for validation and [Delegate access through token exchange](delegation.md) for the Keycloak setup. The provider validates the resulting access token; the exchange itself happens at Keycloak's token endpoint.

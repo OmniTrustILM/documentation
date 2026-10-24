@@ -10,6 +10,10 @@ Structure of log records is defined by [Log Record JSON Schema](https://github.c
 
 When Core writes its application logs in a JSON format, each audit and event log record appears in the `log_record` field of the log line, see [Application Logs](application-logs.md#audit-and-event-logs-in-json-format).
 
+The current record schema is **1.2**. It adds the optional `actor.delegate` object for [delegated bearer requests](../concept-design/architecture/access-control/identification.md#delegation-tokens). Core 2.21.0 continues to read existing records, including schema 1.1 records without a delegate. Log collectors and SIEM pipelines that validate records must accept schema 1.2 before upgraded nodes begin sending them.
+
+Older Core versions cannot deserialize database records containing `actor.delegate`; their audit log listing and export can fail if they encounter those rows. This differs from receiving an audit message through JMS, where an older receiver accepts the message but drops the delegate. Complete the Core rollout before enabling delegated traffic and follow the [downgrade guidance](../installation-guide/upgrade-instructions.md#upgrading-to-2210) before restoring an older version.
+
 ## Log structure
 
 The log record structure is defined by the following properties:
@@ -62,6 +66,33 @@ Actor object contains following properties:
 | `authMethod` | String | <span class="badge badge--success">Yes</span> | Authentication method used by actor, can be certificate, token, etc.                           |
 | `uuid`       | String | <span class="badge badge--danger">No</span>   | Identification of actor, usually UUID of object representing actor type                        |
 | `name`       | String | <span class="badge badge--danger">No</span>   | Associated name with actor based on type. For example, username, protocol name, connector name |
+| [`delegate`](#delegate) | Object | <span class="badge badge--danger">No</span> | Immediate delegate acting on behalf of the user, for a delegated bearer request |
+
+### Delegate
+
+An actor authenticated as a user may carry an optional `delegate` object. The actor's `uuid` and `name` still identify the user; the delegate identifies the system acting on that user's behalf.
+
+| Property | Type | Required | Description |
+|---|---|---|---|
+| `identifier` | String | Yes | The configured delegate claim from the outermost `act`, for example `act.client_id`. |
+| `subject` | String | No | The outermost `act.sub`, when it is a non-blank string different from `identifier`. |
+
+For example, the actor portion of a schema 1.2 audit record can be:
+
+```json
+{
+  "type": "user",
+  "authMethod": "token",
+  "uuid": "6a1c5f3e-0d3b-4c9e-9a51-3f0f6e2d1b77",
+  "name": "jane.admin",
+  "delegate": {
+    "identifier": "automation-client",
+    "subject": "delegate-service-account-id"
+  }
+}
+```
+
+The optional object leaves room for a future delegation chain, but only the immediate delegate is recorded today. Records for direct requests omit the delegate. Certificate history and other objects' event history continue to identify the user, and audit records created asynchronously by triggers and workflows name the user only. Complete access tokens are never included in the record; authentication failure messages use the existing redacted-token representation without its signature.
 
 ### Source
 

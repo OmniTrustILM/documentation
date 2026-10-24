@@ -26,6 +26,13 @@ When multiple methods are present in a request, the first one in the priority or
 
 The client certificate header and its setup are described in [Client Certificate Authentication](../../certificate-key/installation-guide/deployment/client-certificate-authentication.md). A request whose certificate fails validation is rejected; it does not fall back to bearer or Basic authentication.
 
+### Delegation tokens
+
+When the `TSP Profile` accepts bearer tokens, the timestamping endpoint applies the same [delegation validation](../../certificate-key/concept-design/architecture/access-control/identification.md#delegation-tokens) as the API. The external identity provider issues the access token; Core validates it against the OAuth 2.0 provider selected by its issuer, including the signature, audience, time, and the provider's [allowed delegates](../../certificate-key/settings/authentication.md#allowed-delegates).
+
+A token carrying `act` is refused with HTTP `401` if the immediate delegate is not allowed or the actor claim is malformed. An empty allowlist refuses every delegation token. Only the outermost `act` is checked and recorded. A token without `act` follows the existing bearer-token behavior.
+
+The user identified by the token's top-level claims still needs every permission listed below. The delegate receives no platform role or permission. The request's audit record identifies the user and adds the [delegate](../../certificate-key/logging/log-record-structure.md#delegate); the complete token is never logged. Changes to the provider's allowlist take effect on the next timestamping request, even when the user's identity is cached.
 ### Rejection and the 401 challenge
 
 When authentication fails — the presented method is not allowed by the profile, or the credentials do not verify — the platform answers with HTTP 401. If the profile accepts password or bearer-token authentication, the response's `WWW-Authenticate` header advertises those methods to the caller. For a profile that accepts only client certificates, or when no profile could be resolved, there is no client-actionable HTTP challenge, so the header is omitted.

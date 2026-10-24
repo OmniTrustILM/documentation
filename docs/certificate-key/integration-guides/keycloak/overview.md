@@ -32,6 +32,7 @@ The following steps should be done to integrate Keycloak with the platform:
 | **2** | [Configure OAuth2 Provider](provider-settings.md)          | Add Keycloak provider to the platform OAuth2 provider settings   |
 | **3** | [Create User and Login](create-user-login.md)              | Create new Keycloak user and login                               |
 | **4** | **(Optional)** [Add ILM Theme](theme.md)        | Add the ILM custom theme to Keycloak and realm                   |
+| **5** | **(Optional)** [Delegate access through token exchange](delegation.md) | Let an integrated client act on behalf of a user with an attributed access token |
 
 ## Identity providers
 
