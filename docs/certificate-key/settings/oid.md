@@ -152,6 +152,7 @@ Two endpoints of the [Certificate API](/api/core-certificate) list the extension
 Every extension is listed, in the order it is encoded, whether or not the OID is registered. An entry has these fields:
 
 - `oid` — the extension OID in dotted notation.
+- `name` — the display name from the certificate extension registry, built in or registered as a Custom OID. It is absent when the OID is not registered.
 - `critical` — whether the extension is marked critical.
 - `der` — the extension value as Base64-encoded DER, in the same form a `DER` value takes when [mapping an extension](#custom-certificate-extensions).
 - `jer` — the value decoded to [JER](#asn1-modules-and-jer-values). It is present only when the OID has an ASN.1 module, registered as a Custom OID or [shipped by Core](#shipped-modules), and the value decodes against it. Otherwise the entry carries `der` only; an extension whose value cannot be decoded does not hide the others.
