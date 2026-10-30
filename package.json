@@ -32,7 +32,7 @@
     "@docusaurus/plugin-client-redirects": "^3.10.2",
     "@docusaurus/preset-classic": "^3.10.2",
     "@mdx-js/react": "^3.1.0",
-    "@scalar/api-reference": "1.75.0",
+    "@scalar/api-reference": "1.76.4",
     "clsx": "^2.0.0",
     "docusaurus-plugin-remote-content": "^4.0.0",
     "plantuml-encoder": "^1.4.0",
