@@ -76,18 +76,6 @@ Because a single certificate change can affect many chains — any chain whose p
 
 Calls to connectors rely on connector routing information that would otherwise be looked up repeatedly. `Core` caches this per-connector lookup so connector calls avoid the repeated resolution. The entry for a connector is evicted when that connector is edited or deleted, so configuration changes take effect immediately.
 
-## Credential verification cache
-
-TSP requests use HTTP Basic authentication. Verifying a credential requires computing a fingerprint over the presented username and password and comparing it against the stored one — so successful verifications are cached to keep the timestamping hot path fast.
-
-The cache stores **positive results only**. A failed credential check is never cached; it always goes through the full verification path. The cache key is `HMAC-SHA-256(pepper, secretUuid:password)`, which means the raw password is never stored or recoverable from cache state.
-
-The HMAC pepper is a random value generated at startup and never persisted. Because the pepper changes on every restart, no entry from a previous run can be verified against the new pepper, so the cache is effectively invalidated across restarts — consistent with the general principle that cached entries do not survive a restart.
-
-Beyond time-to-live expiry, the cache is evicted per-secret: when a credential is deleted, rotated, or its mapped-user assignment changes, all cache entries associated with that secret UUID are removed immediately. A reverse index maps each secret UUID to the cache entries it has contributed, so all of them are dropped in one step.
-
-One accepted trade-off: account-level changes that do not touch the credential itself — notably disabling or deprovisioning the mapped user — do not trigger an eviction. The cached positive result remains valid until it expires by time-to-live. This is a deliberate performance decision: a per-request liveness check on the signing hot path is not affordable, and user-disable events are rare enough that the TTL window is an acceptable bound. As with all caches on this page, see [Effective time of changes](#effective-time-of-changes) for how this plays out across instances.
-
 ## Signing profile cache
 
 `Core` caches signing profiles so that the signing and timestamping pipeline can resolve a profile by name without reloading it from the database on every request. The cache key is the profile's name.
@@ -145,7 +133,7 @@ There is **no runtime endpoint to flush a cache**: the management interface expo
 
 ## Configuration
 
-The authentication and the authorization cache are configured through these `Core` environment variables, which take effect when `Core` starts. Set them with Helm in the `ilm` chart's [`additionalEnv.variables`](../../installation-guide/deployment/deployment-helm/configurable-parameters.md#customization-parameters), or with the Operator in [`spec.core.env`](../../installation-guide/deployment/deployment-operator/custom-resources/platform.md#per-component-overrides). The authentication settings also apply to the [credential verification cache](#credential-verification-cache).
+The authentication and the authorization cache are configured through these `Core` environment variables, which take effect when `Core` starts. Set them with Helm in the `ilm` chart's [`additionalEnv.variables`](../../installation-guide/deployment/deployment-helm/configurable-parameters.md#customization-parameters), or with the Operator in [`spec.core.env`](../../installation-guide/deployment/deployment-operator/custom-resources/platform.md#per-component-overrides).
 
 | Variable | Default | Meaning |
 |---|---|---|
