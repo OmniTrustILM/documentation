@@ -66,3 +66,25 @@ The **Registration** section of the Certificates tab holds the platform defaults
 |-------------------------------------|-------------------------------------------------------------------------------------------------|---------------|
 | **Default Issuance Window (days)**  | Default issuance window in days, applied to a challenge-protected pre-registration that omits an explicit expiry | 7 days        |
 | **Max Failed Attempts**             | Maximum failed challenge-verification attempts before the registration authorization locks     | 5             |
+
+### Upload
+
+The **Upload** section of the Certificates tab holds the setting for certificates that are added by hand, through an upload or a [file import](../quick-start/certificate-management/import-certificates-and-keys.mdx):
+
+| Name                    | Description                                                                          | Default Value |
+|-------------------------|--------------------------------------------------------------------------------------|---------------|
+| **Automatic Ownership** | Makes the user who uploads a certificate, or imports it from a file, its owner       | `disabled`    |
+
+While it is disabled, an uploaded or imported certificate has no owner until someone assigns one. With **Automatic Ownership** enabled:
+
+- The uploading user becomes the owner of each certificate added by an upload, in the web interface or through the API, and of each certificate a file import creates. A file import also creates the issuer certificates of a chain, and the importing user owns those too. A certificate that an administrator uploads for a user in the user management is owned by that administrator.
+- A certificate that is already in the inventory keeps its owner.
+- Certificates found by [discovery](../concept-design/modules/discovery.md) or issued by the platform keep their current ownership rules.
+- An owner that a trigger of the [Certificate Uploaded event](../concept-design/core-components/workflow/event.md#certificate-uploaded-event) sets takes precedence. A trigger that sets the owner, to a user or to nobody, decides the owner, and automatic ownership leaves the certificate as the trigger left it. Use such a trigger to exclude certain certificates.
+- Certificates uploaded before the setting was enabled are not changed, and disabling the setting does not remove the owners it assigned.
+
+:::warning[Owner rights]
+An owner has full rights over the certificate, such as updating, archiving and deleting it and switching its RA profile, and can open it without the permission to see other certificates. Enable the setting only when everyone who may upload certificates should have these rights over what they upload.
+:::
+
+A change applies to the uploads the platform processes after it. With several `Core` replicas, a replica other than the one that saved the change applies it after its next settings cache refresh, which runs every 30 seconds by default and is set in seconds by the `Core` environment variable `SETTINGS_CACHE_REFRESH_INTERVAL`.

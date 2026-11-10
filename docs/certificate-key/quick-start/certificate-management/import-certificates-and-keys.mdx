@@ -38,6 +38,8 @@ A file with certificates and keys can be imported into the inventory in one step
 | **Certificate added to an existing key** | The key was already in the inventory, and its certificate is new.     |
 | **Not imported**                         | The entry failed, and the result shows the reason the platform gives. |
 
+An entry that has a certificate links to it with **Open certificate**, when you may see the certificate. A certificate the platform does not add, for example because an ignore trigger of the [Certificate Uploaded event](../../concept-design/core-components/workflow/event.md#certificate-uploaded-event) rejects it, is **Not imported**, and the reason points to that event's history.
+
 **Retry failed entries** imports the failed entries again, after the file password is entered again for a protected file. **Back to edit** returns to the selection.
 
 ## What an import does
@@ -48,6 +50,7 @@ A file with certificates and keys can be imported into the inventory in one step
 - Key pairs and secret keys are imported separately: for a selection that mixes them, the import button stays disabled.
 - An imported key is registered disabled, and a key completed from its public key keeps its public key's state. Click **Enable** on the key before it signs, is exported, or is downloaded with its certificate.
 - The selected certificates are registered in the inventory, and each leaf certificate is associated with its key.
+- With **Automatic Ownership** enabled in the [platform settings](../../settings/platform.md#upload), the importing user becomes the owner of every certificate the import creates, including the issuer certificates of a chain. A certificate already in the inventory keeps its owner.
 
 ## Limits
 

@@ -57,6 +57,8 @@ Unlike most certificate events, **Certificate Uploaded cannot be overridden per 
 
 Custom attribute values supplied in the upload request take precedence: they are applied after the action triggers run and override any conflicting values the triggers set.
 
+When **Automatic Ownership** is enabled in the [platform settings](../../../settings/platform.md#upload), the uploading user becomes the certificate's owner after the action triggers have run and the upload has been stored, unless a trigger acted on the owner. A trigger that sets the owner, to a user or to nobody, decides it, so the certificate's event history shows one owner change. The notifications the platform sends to a certificate's owner then reach the uploading user as well.
+
 The upload can be processed synchronously or asynchronously. A synchronous upload returns once the certificate has been processed and added to the inventory. An asynchronous upload returns immediately, and the certificate appears in the inventory once processing — including trigger evaluation — has completed.
 
 #### Rejected uploads
