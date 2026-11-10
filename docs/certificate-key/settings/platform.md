@@ -79,9 +79,7 @@ While it is disabled, an uploaded or imported certificate has no owner until som
 
 - The uploading user becomes the owner of each certificate added by an upload, in the web interface or through the API, and of each certificate a file import creates. A file import also creates the issuer certificates of a chain, and the importing user owns those too. A certificate that an administrator uploads for a user in the user management is owned by that administrator.
 - A certificate that is already in the inventory keeps its owner.
-- Certificates found by [discovery](../concept-design/modules/discovery.md) or issued by the platform keep their current ownership rules.
 - An owner that a trigger of the [Certificate Uploaded event](../concept-design/core-components/workflow/event.md#certificate-uploaded-event) sets takes precedence. A trigger that sets the owner, to a user or to nobody, decides the owner, and automatic ownership leaves the certificate as the trigger left it. Use such a trigger to exclude certain certificates.
-- Certificates uploaded before the setting was enabled are not changed, and disabling the setting does not remove the owners it assigned.
 
 :::warning[Owner rights]
 An owner has full rights over the certificate, such as updating, archiving and deleting it and switching its RA profile, and can open it without the permission to see other certificates. Enable the setting only when everyone who may upload certificates should have these rights over what they upload.
