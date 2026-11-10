@@ -84,5 +84,3 @@ While it is disabled, an uploaded or imported certificate has no owner until som
 :::warning[Owner rights]
 An owner has full rights over the certificate, such as updating, archiving and deleting it and switching its RA profile, and can open it without the permission to see other certificates. Enable the setting only when everyone who may upload certificates should have these rights over what they upload.
 :::
-
-A change applies to the uploads the platform processes after it. With several `Core` replicas, a replica other than the one that saved the change applies it after its next settings cache refresh, which runs every 30 seconds by default and is set in seconds by the `Core` environment variable `SETTINGS_CACHE_REFRESH_INTERVAL`.
