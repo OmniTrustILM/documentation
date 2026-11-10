@@ -32,6 +32,8 @@ The `Notification Profile` represents configuration how notifications are handle
 In case of notifying in context of monitoring events, notification system controls how often and how many notifications are sent to prevent spamming user with notifications carrying the same information.
 Frequency and maximum repetitions are checked per notification profile, object and event that defines notification event.
 
+What a profile that sets neither frequency nor repetitions does depends on the **single notification without reminders** property of the event, shown in the [supported events](workflow/event.md#supported-events).
+
 :::note[Example of monitoring event]
 When certificate expiring event is raised for certificate X, notification system will mark the time of lst notification of the event for certificate X through notification profile X and increment notification counter.
 :::
