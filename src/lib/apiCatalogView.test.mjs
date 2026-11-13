@@ -12,8 +12,8 @@ const manifest = {entries: {
 
 test('makes every published API discoverable with metadata from the validated manifest', () => {
     const entries = buildApiCatalogView({catalog, manifest, baseUrl: '/'});
-    assert.equal(entries.length, 59);
-    assert.equal(new Set(entries.map(({id}) => id)).size, 59);
+    assert.equal(entries.length, 61);
+    assert.equal(new Set(entries.map(({id}) => id)).size, 61);
     assert.deepEqual(entries.find(({id}) => id === 'core-certificate'), {
         id: 'core-certificate', label: 'Certificate', group: 'Core API',
         title: 'Certificate inventory', description: 'Find and renew certificates',
@@ -48,7 +48,7 @@ test('combines a group filter with search without mutating the complete catalog'
     assert.equal(filterApiCatalog(entries, {group: 'Connector API'}).length, 14);
     assert.deepEqual(filterApiCatalog(entries, {group: 'Protocol API', query: 'ACME'}).map(({id}) => id), ['protocol-acme']);
     assert.deepEqual(filterApiCatalog(entries, {query: 'nothing-matches-this'}), []);
-    assert.equal(filterApiCatalog(entries).length, 59);
-    assert.equal(filterApiCatalog(entries, {query: '  '}).length, 59);
-    assert.equal(entries.length, 59);
+    assert.equal(filterApiCatalog(entries).length, 61);
+    assert.equal(filterApiCatalog(entries, {query: '  '}).length, 61);
+    assert.equal(entries.length, 61);
 });
