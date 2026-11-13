@@ -8,6 +8,8 @@ Users can sign in to the platform with a client certificate. The TLS terminator 
 
 You need a TLS terminator that can request a client certificate and set a request header from it, and access to the platform's trusted-certificate and header settings.
 
+EST clients use the same header, but `Core` checks their certificates itself under the rules of each EST Profile instead of signing them in as users; see [EST Deployment and Security](../../protocols/est/deployment-security.md#tls-and-client-certificates).
+
 ## 1. Register the client certificate
 
 Associate the client's own certificate with an enabled [user](../../concept-design/architecture/access-control/users.md), and assign the roles that the user needs. You can upload the certificate, or select one that the platform already holds, which must be issued, not archived and not associated with another user. Associating the issuing CA does not register the clients it issued. For the first administrator, follow [Create Super Administrator](../create-super-administrator.md).

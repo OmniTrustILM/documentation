@@ -32,6 +32,7 @@ export const apiCatalog = [
             ['core-cryptographic-operations', 'Cryptographic Operations'],
             ['core-discovery', 'Discovery'],
             ['core-entity', 'Entity'],
+            ['core-est', 'EST'],
             ['core-group', 'Group'],
             ['core-inspection', 'Inspection'],
             ['core-key', 'Key', 'doc-openapi-core-cryptographic-key'],
@@ -86,6 +87,7 @@ export const apiCatalog = [
         entries: [
             ['protocol-acme', 'ACME'],
             ['protocol-cmp', 'CMP'],
+            ['protocol-est', 'EST'],
             ['protocol-scep', 'SCEP'],
             ['protocol-tsp', 'TSP'],
         ],

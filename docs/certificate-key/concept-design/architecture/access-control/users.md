@@ -21,6 +21,7 @@ The following system users are defined:
 | `acme`                       | System user for ACME client operations                                                     |
 | `scep`                       | System user for SCEP client operations                                                     |
 | `cmp`                        | System user for CMP client operations                                                      |
+| `est`                        | System user for EST client operations                                                      |
 | `localhost`                  | System user for local operations                                                           |
 | `attribute-content-resolver` | System user for resolving an authority's own infrastructure references when assembling connector requests |
 

@@ -24,8 +24,8 @@ describe('API catalog', () => {
   it('renders all references and downloads before JavaScript runs', () => {
     const html = document.createElement('div');
     html.innerHTML = renderToStaticMarkup(<ApiCatalog entries={entries} />);
-    expect(html.querySelectorAll('a[href^="/preview/api/"]').length).toBe(59);
-    expect(html.querySelectorAll('a[href^="/preview/api-specs/"]').length).toBe(59);
+    expect(html.querySelectorAll('a[href^="/preview/api/"]').length).toBe(61);
+    expect(html.querySelectorAll('a[href^="/preview/api-specs/"]').length).toBe(61);
     expect(html.querySelector('h1')?.textContent).toBe('API reference');
     expect(html.textContent).toContain('2.20.0');
     expect(html.textContent).toContain('1.8.0');
@@ -36,11 +36,11 @@ describe('API catalog', () => {
     fireEvent.change(screen.getByRole('searchbox', {name: 'Search API references'}), {
       target: {value: 'ACME'},
     });
-    expect(screen.getByRole('status').textContent).toContain('2 of 59');
+    expect(screen.getByRole('status').textContent).toContain('2 of 61');
     fireEvent.change(screen.getByRole('combobox', {name: 'API family'}), {
       target: {value: 'Protocol API'},
     });
-    expect(screen.getByRole('status').textContent).toContain('1 of 59');
+    expect(screen.getByRole('status').textContent).toContain('1 of 61');
     const results = within(screen.getByRole('region', {name: 'API references'}));
     expect(results.getByRole('link', {name: 'ACME'}).getAttribute('href')).toBe(
       '/preview/api/protocol-acme',
@@ -52,16 +52,16 @@ describe('API catalog', () => {
     render(<ApiCatalog entries={entries} />);
     const search = screen.getByRole('searchbox', {name: 'Search API references'});
     fireEvent.change(search, {target: {value: 'RENEW inventory'}});
-    expect(screen.getByRole('status').textContent).toContain('1 of 59');
+    expect(screen.getByRole('status').textContent).toContain('1 of 61');
     expect(screen.getByRole('link', {name: 'Certificate inventory'}).getAttribute('href')).toBe(
       '/preview/api/core-certificate',
     );
     fireEvent.change(search, {target: {value: 'no such reference'}});
-    expect(screen.getByRole('status').textContent).toContain('0 of 59');
+    expect(screen.getByRole('status').textContent).toContain('0 of 61');
     expect(screen.getByText(/No API references match/)).toBeTruthy();
     fireEvent.click(screen.getByRole('button', {name: 'Clear filters'}));
     expect((search as HTMLInputElement).value).toBe('');
-    expect(screen.getByRole('status').textContent).toContain('59 of 59');
+    expect(screen.getByRole('status').textContent).toContain('61 of 61');
     expect((screen.getByRole('combobox', {name: 'API family'}) as HTMLSelectElement).value).toBe(
       '',
     );
@@ -72,10 +72,10 @@ describe('API catalog', () => {
     fireEvent.change(screen.getByRole('combobox', {name: 'API family'}), {
       target: {value: 'CSC API'},
     });
-    expect(screen.getByRole('status').textContent).toContain('1 of 59');
+    expect(screen.getByRole('status').textContent).toContain('1 of 61');
     expect(screen.getByText('1 reference')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', {name: 'Clear filters'}));
-    expect(screen.getByRole('status').textContent).toContain('59 of 59');
+    expect(screen.getByRole('status').textContent).toContain('61 of 61');
     expect(screen.getAllByText(/^[2-9]\d* references$/).length).toBeGreaterThan(0);
   });
 });
