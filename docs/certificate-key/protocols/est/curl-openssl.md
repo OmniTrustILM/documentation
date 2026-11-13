@@ -136,6 +136,7 @@ The EST Profile decides whether renewal and rekey are allowed and from when; a r
 When the EST Profile allows server-side key generation, `/serverkeygen` returns a new private key with the certificate. The request still has to be signed, but without key recovery the platform generates a key of the same type and size as the key that signed it, so that key can be thrown away:
 
 ```bash
+old_umask=$(umask); umask 077
 openssl req -new -newkey ec -pkeyopt ec_paramgen_curve:P-256 -nodes -keyout /dev/null \
   -subj "/CN=device-002" | sed '/-----/d' > keygen.b64
 content_type=$(curl -sS --fail-with-body --cacert tls-ca.pem -u "$EST_USER:$EST_PASSWORD" \
@@ -153,14 +154,15 @@ key, certs = email.message_from_binary_file(open(sys.argv[1], "rb")).get_payload
 open("server-key.der", "wb").write(key.get_payload(decode=True))
 open("server-cert.p7b", "wb").write(certs.get_payload(decode=True))
 EOF
-(umask 077; openssl pkey -inform DER -in server-key.der -out server.key)
+openssl pkey -inform DER -in server-key.der -out server.key
 openssl pkcs7 -inform DER -in server-cert.p7b -print_certs -out server.pem
 openssl verify -CAfile ca-chain.pem server.pem
 openssl x509 -in server.pem -noout -pubkey | cmp -s - <(openssl pkey -in server.key -pubout) && echo "key matches"
 rm keygen.body keygen.mime server-key.der
+umask "$old_umask"
 ```
 
-The key travels unencrypted inside the TLS connection. Store it like any private key and delete the intermediate files. See [Server-side key generation](est-profile.md#server-side-key-generation) and [Server-generated keys](deployment-security.md#server-generated-keys).
+The `umask 077` keeps the response, the intermediate files and `server.key` readable by you only until the last line restores the previous umask. The key travels unencrypted inside the TLS connection. Store it like any private key and delete the intermediate files. See [Server-side key generation](est-profile.md#server-side-key-generation) and [Server-generated keys](deployment-security.md#server-generated-keys).
 
 ## URLs with and without a label
 
