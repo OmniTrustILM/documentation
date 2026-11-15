@@ -32,7 +32,7 @@ The Vendor Certificate and RA Certificate policies, and `/simplereenroll` under 
 The TLS terminator must:
 
 - request a client certificate without requiring one, so that clients authenticating with HTTP Basic credentials can still connect;
-- when it verifies client certificates itself, accept the CAs that EST Profiles trust, in addition to those of platform users;
+- when it verifies client certificates itself, accept the CAs that EST Profiles trust and the CAs that issue certificates through the RA Profiles with EST activated, in addition to those of platform users. A client reenrolls with the certificate the platform issued, which can chain to a different CA than its enrollment certificate;
 - remove any certificate header that the caller sent, on every request, and set the header only from the TLS handshake. A header that a caller can set lets the caller present any certificate.
 
 Restrict direct access to the API gateway and `Core`, so that no request reaches them without passing the TLS terminator.
