@@ -83,11 +83,14 @@ When the certificate is not issued within the request, for example because the R
 openssl req -new -newkey ec -pkeyopt ec_paramgen_curve:P-256 -nodes -keyout pending.key -out pending.csr \
   -subj "/CN=device-004"
 rm -rf pending && mkdir pending
-while estclient -e -w 30 -s ilm.example.com -p 443 --path-seg devices -u "$EST_USER" -h "$EST_PASSWORD" \
-  -y pending.csr --pem-output -o pending 2>&1 | grep -q EST_ERR_CA_ENROLL_RETRY; do
+until test -s pending/cert-0-0.pem; do
+  estclient -e -w 30 -s ilm.example.com -p 443 --path-seg devices -u "$EST_USER" -h "$EST_PASSWORD" \
+    -y pending.csr --pem-output -o pending > pending.log 2>&1
+  test -s pending/cert-0-0.pem && break
+  grep -q EST_ERR_CA_ENROLL_RETRY pending.log || { cat pending.log; exit 1; }
   sleep 30
 done
-test -s pending/cert-0-0.pem && echo "certificate received"
+echo "certificate received"
 ```
 
 See [Approval and polling](overview.md#approval-and-polling).
