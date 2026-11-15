@@ -104,6 +104,8 @@ estclient -r -s ilm.example.com -p 443 --path-seg devices -c device.pem -k devic
 openssl verify -CAfile ca-chain.pem renew/cert-0-0.pem
 ```
 
+When the renewal can stay pending, for example because the RA Profile requires an approval, `estclient` signs the request again when it repeats it. With an EC key every signature differs, so the platform does not recognize the repeated request as the pending one; renew such a certificate with an RSA key, whose signature does not change, or with [curl and OpenSSL](curl-openssl.md#renew-or-rekey-a-certificate), which can send the same request again.
+
 To rekey, use [curl and OpenSSL](curl-openssl.md#renew-or-rekey-a-certificate). The EST Profile decides whether renewal and rekey are allowed and from when; see [Renewal and rekey](overview.md#renewal-and-rekey).
 
 ## Server-side key generation
