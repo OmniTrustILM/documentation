@@ -90,7 +90,7 @@ The platform recognizes a repeated request by the SHA-256 fingerprint of the cer
 | Rejected                                                        | `403 The certificate request was rejected.`                           |
 | Failed, revoked or expired                                      | A new request                                                         |
 
-A repeated request is answered at once, without the wait. Identical requests that arrive at the same time, on one `Core` instance or on several, create one certificate: one of them submits it, and the others wait for it within the issue wait and are answered from its state, so they receive the same certificate, the same `202`, or the same error, `503` when the certificate could not be issued. Under the Certificate Registration policy, a repeated request is answered from the registration it completed without checking its password again, so a client that missed the answer can still collect its certificate. For such a `/simpleenroll`, a rejected, failed, revoked or expired certificate is answered with `401` instead of the table above. `/serverkeygen` does not answer `202`: every request generates a new key, and a certificate that is not issued in time is answered with `503`.
+A request that the same client repeats is answered at once, without the wait; the same request from another client is a new request and gets a certificate of its own. Identical requests from one client that arrive at the same time, on one `Core` instance or on several, create one certificate: one of them submits it, and the others wait for it within the issue wait and are answered from its state, so they receive the same certificate, the same `202`, or the same error, `503` when the certificate could not be issued. Under the Certificate Registration policy, a repeated request is answered from the registration it completed without checking its password again, so a client that missed the answer can still collect its certificate. For such a `/simpleenroll`, a rejected, failed, revoked or expired certificate is answered with `401` instead of the table above. `/serverkeygen` does not answer `202`: every request generates a new key, and a certificate that is not issued in time is answered with `503`.
 
 ```plantuml Enrollment with approval and polling
 @startuml
@@ -103,14 +103,14 @@ actor Approver
 
 Client -> Core [[protocol-est#tag/est-operations/POST/v1/protocols/.well-known/est/simpleenroll]]: POST /simpleenroll\n(PKCS#10 request)
 Core -> Core: Resolve route, authenticate client,\nvalidate request
-Core -> Core: Find certificate requested through\nthis route with the same request
+Core -> Core: Find certificate requested by this client\nthrough this route with the same request
 Core -> Core: Create certificate request,\npending approval
 Core --> Client: 202 Accepted\nRetry-After (30 by default)
 Approver -> Core: Approve request
 Core -> Connector: Issue certificate
 Connector --> Core: Issued certificate
 Client -> Core [[protocol-est#tag/est-operations/POST/v1/protocols/.well-known/est/simpleenroll]]: POST /simpleenroll\n(the same request)
-Core -> Core: Find certificate requested through\nthis route with the same request
+Core -> Core: Find certificate requested by this client\nthrough this route with the same request
 Core --> Client: 200 OK\ncerts-only CMS with the certificate
 @enduml
 ```
