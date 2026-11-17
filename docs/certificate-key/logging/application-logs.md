@@ -41,7 +41,7 @@ The format applies only to the application logs Core writes to its container. Lo
 Every JSON line carries the time, the log level, the name of the logger, the thread and the message. In addition:
 
 - While Core handles a request, each line carries who made the request and what it was, in fields whose names start with `log_actor_` (for example `log_actor_name` and `log_actor_type`) and `log_source_` (for example `log_source_path` and `log_source_ipAddress`).
-- During protocol requests, such as ACME, CMP or SCEP, and some other operations, lines also name the operation and the object it acts on, in fields whose names start with `log_audit_` (for example `log_audit_operation` and `log_audit_resource`).
+- During protocol requests, such as ACME, CMP, EST or SCEP, and some other operations, lines also name the operation and the object it acts on, in fields whose names start with `log_audit_` (for example `log_audit_operation` and `log_audit_resource`).
 - An error carries its stack trace in a single field, instead of on separate lines.
 - In the ECS layout, `service.name` is `core`, and when Core runs on Kubernetes `service.node.name` is the name of the pod that wrote the line, so that lines from different replicas can be told apart.
 

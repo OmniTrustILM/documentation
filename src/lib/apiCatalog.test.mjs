@@ -19,7 +19,8 @@ const PUBLISHED_ROUTES = [
     '/api/core-cmp/', '/api/core-comment/', '/api/core-compliance-profile/',
     '/api/core-compliance-v2/',
     '/api/core-connector/', '/api/core-credential/', '/api/core-cryptographic-operations/',
-    '/api/core-discovery/', '/api/core-entity/', '/api/core-group/', '/api/core-inspection/',
+    '/api/core-discovery/', '/api/core-entity/', '/api/core-est/', '/api/core-group/',
+    '/api/core-inspection/',
     '/api/core-key/',
     '/api/core-local/', '/api/core-location/', '/api/core-notification/', '/api/core-other/',
     '/api/core-proxy/',
@@ -37,14 +38,15 @@ const PUBLISHED_ROUTES = [
     '/api/connector-entity-provider/', '/api/connector-notification-provider/',
     '/api/connector-secret-provider/', '/api/connector-signature-formatting-provider/',
     '/api/messaging-time-quality/',
-    '/api/protocol-acme/', '/api/protocol-cmp/', '/api/protocol-scep/', '/api/protocol-tsp/',
+    '/api/protocol-acme/', '/api/protocol-cmp/', '/api/protocol-est/', '/api/protocol-scep/',
+    '/api/protocol-tsp/',
     '/api/csc-component/',
 ];
 
 test('publishes exactly the routes the site published before', () => {
     const routes = resolveApiCatalog(apiCatalog, VERSIONS).map((entry) => entry.route);
     assert.deepEqual(routes.slice().sort(), PUBLISHED_ROUTES.slice().sort());
-    assert.equal(routes.length, 59);
+    assert.equal(routes.length, 61);
 });
 
 test('derives document URLs from the entry id', () => {
@@ -83,7 +85,7 @@ test('renders a multi-entry group as a dropdown and a single-entry group as a li
 
     const core = items.find((item) => item.label === 'Core API');
     assert.equal(core.position, 'left');
-    assert.equal(core.items.length, 39);
+    assert.equal(core.items.length, 40);
     assert.deepEqual(core.items[0], {label: 'ACME', to: '/api/core-acme/'});
     assert.equal(core.to, undefined);
 
@@ -99,7 +101,7 @@ test('keeps navbar groups and entries in catalog order', () => {
         ['Core API', 'Connector API', 'Messaging API', 'Protocol API', 'CSC API'],
     );
     const protocol = items.find((item) => item.label === 'Protocol API');
-    assert.deepEqual(protocol.items.map((i) => i.label), ['ACME', 'CMP', 'SCEP', 'TSP']);
+    assert.deepEqual(protocol.items.map((i) => i.label), ['ACME', 'CMP', 'EST', 'SCEP', 'TSP']);
 });
 
 test('rejects a duplicate id', () => {

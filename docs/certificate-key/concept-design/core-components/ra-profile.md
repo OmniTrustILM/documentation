@@ -86,4 +86,4 @@ A warning is raised only for a CSR supplied by the client. A request the platfor
 
 The warnings are returned as `requestAttributeWarnings` in the response of the issue, issue-existing, renew and rekey operations. The field is also present in the response of the register operation but is always empty: registration is checked when the registered certificate is completed. The certificate is issued whether or not there are warnings.
 
-Requests that arrive through ACME, SCEP and CMP are validated the same way, but nobody reads the warnings: they are written to the log. A violation under strict validation is returned as the error of the protocol.
+Requests that arrive through ACME, SCEP, CMP and EST are validated the same way, but nobody reads the warnings: they are written to the log. A violation under strict validation is returned as the error of the protocol.

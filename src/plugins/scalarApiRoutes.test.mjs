@@ -159,12 +159,12 @@ test('registers the complete API catalog in a separate hub data module', async (
   assert.ok(hub, 'the API hub must be a real generated route');
   assert.equal(hub.exact, true);
   assert.equal(hub.modules.entries, '/generated/api-catalog.json');
-  assert.equal(modules.get('api-catalog.json').length, 59);
+  assert.equal(modules.get('api-catalog.json').length, 61);
   assert.equal(
     modules.get('api-catalog.json').find(({id}) => id === 'core-certificate').title,
     'Certificate API',
   );
-  assert.equal(routes.length, 60);
+  assert.equal(routes.length, 62);
   assert.equal(
     routes.find(({path}) => path === '/preview/api/core-certificate').modules.entries,
     undefined,

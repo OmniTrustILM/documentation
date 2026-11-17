@@ -88,4 +88,4 @@ Bindings are authored together with the profile's request attributes. The platfo
 - **Validating an external CSR** — a client-supplied CSR is checked against the resolved set, in strict or lenient mode. See [External CSR validation](./ra-profile.md#external-csr-validation).
 - **Telling the connector what is requested** — a connector that advertises structured request content receives the resolved identity as typed lists. See [Structured Certificate Request Content](../../connectors/provider-interfaces/request-attributes-structured.md).
 - **Pre-registering a certificate** — the identity of a certificate registered before any key exists can be given as request-attribute values.
-- **Protocol enrollment** — CSRs enrolled over protocols such as ACME, CMP, and SCEP are validated against the resolved set of the protocol's `RA Profile`.
+- **Protocol enrollment** — CSRs enrolled over protocols such as ACME, CMP, EST, and SCEP are validated against the resolved set of the protocol's `RA Profile`.

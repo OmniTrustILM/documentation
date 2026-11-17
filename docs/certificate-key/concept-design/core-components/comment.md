@@ -15,7 +15,7 @@ The comment panel is shown on the detail page of the following objects:
 | Group    | Objects                                                                                                                                                      |
 |----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Inventory | Certificates, cryptographic keys, tokens, discoveries, secrets, vaults, authorities, entities, locations, connectors, approvals                              |
-| Profiles | RA profiles, vault profiles, compliance profiles, approval profiles, notification profiles, signing profiles, token profiles, ACME, SCEP, CMP and TSP profiles |
+| Profiles | RA profiles, vault profiles, compliance profiles, approval profiles, notification profiles, signing profiles, token profiles, ACME, SCEP, CMP, EST and TSP profiles |
 
 The panel, its controls and its behavior are the same on every one of them. Certificate requests and the objects owned by a connector are not commentable.
 
