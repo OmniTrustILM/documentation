@@ -114,6 +114,7 @@ curl -X POST \
 - `resourceAttributes` carries the `Attributes` of each resource, keyed by resource, for example `"resourceAttributes": { "certificates": [ ... ] }`. It may only name resources in `resources`.
 - `interfaceUuid` is needed only when the `Connector` exposes more than one `discovery` interface; with exactly one, it is selected automatically. The interfaces and their `uuid` are listed in the `Connector`'s details, `GET /api/v2/connectors/{uuid}`, under `interfaces`, as the entries whose `code` is `discovery`.
 - `triggers` optionally lists the triggers to evaluate on the newly discovered certificates.
+- `window` optionally limits the `Discovery` to what was created or changed recently, for example `"window": { "mode": "lookback", "lookback": "P7D" }` for the last 7 days. `mode` is `full`, `lookback` or, for a scheduled `Discovery` only, `sinceLastSuccessfulRun`; `lookback` is a positive duration, required with the `lookback` mode and refused with the others. `sinceLastSuccessfulRun` is refused here; it is accepted only in the `request` of a scheduled discovery, `POST /api/v1/discoveries/schedule`. Without `window`, the `Discovery` runs full. A window other than `full` needs a `Connector` that lists the `discoveryIncremental` feature flag, see [Discovery window](../../concept-design/modules/discovery.md#discovery-window).
 
 The platform starts the `Discovery` at the `Connector` before it answers. When the `Connector` refuses the configuration, the request fails with the `Connector`'s answer and no `Discovery` is created. Otherwise, its `uuid` is sent back:
 
@@ -218,6 +219,7 @@ Follow these steps to create new Network `Discovery`:
     - Discovery Provider: `Network Discovery Provider`
     - Interface: shown only when the provider exposes more than one discovery interface, as `Discovery (v2)` and so on. Select the one to use
     - Resources: `Certificate` and `Key`
+    - Discovery Window: shown only when the provider lists the `discoveryIncremental` feature flag. Keep `Full` to discover everything, or select `Lookback` and set how far back to look as a number of days or hours, for example `7` and `Days`. `Since the last successful run` is offered once **Schedule** is switched on. See [Discovery window](../../concept-design/modules/discovery.md#discovery-window)
 4. On the **Connector Attributes** tab, fill in the run attributes:
     - Hosts: `www.example.com`
     - Ports: `443`

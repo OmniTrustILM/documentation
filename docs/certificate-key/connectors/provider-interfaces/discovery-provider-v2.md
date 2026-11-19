@@ -123,6 +123,30 @@ Every resume response replaces the value. A resume response without `stoppable` 
 
 A run that stays stopped too long is cancelled by the platform, which then sends the connector a cancel on a best-effort basis.
 
+### Incremental discovery
+
+Discovering only what is new is an optional capability. A connector that supports it lists the [`discoveryIncremental`](../common-interfaces/info-interface.md#feature-flags) feature flag on its `discovery` interface. The flag is enforced: the platform offers a [discovery window](../../concept-design/modules/discovery.md#discovery-window) only for a connector that lists it.
+
+When a run has a window other than full, `Core` resolves it into one instant just before it calls initiate and, when the window gives a start point, sends it as `discoverSince`, an RFC 3339 date-time that may carry fractional seconds:
+
+```json
+{
+  "runId": "5f0c2a8e-6b1d-4c3e-9a57-1f2d3c4b5a69",
+  "resources": ["certificates"],
+  "attributes": [ ... ],
+  "discoverSince": "2026-11-17T12:00:00Z"
+}
+```
+
+- **Absent** means a full run: discover everything, as without the flag. A full run, every run of a discovery created without a window, and a run whose window gives no start point carry no `discoverSince`. The last case is a Since the last successful run job with no successful execution in its history, such as on its first run.
+- **Present** means: discover only the items created or changed at or after this instant, as far as the technology can tell. What counts as a change is the connector's decision; document it, see [For connector developers](#for-connector-developers).
+
+`discoverSince` is sent on initiate only. Status, results, stop, resume and cancel do not carry it, so the connector keeps it in its `checkpoint`, which `Core` replays on every later request. A resumed run continues with the `discoverSince` it was initiated with.
+
+`Core` stores the `discoverSince` it sent on the discovery and shows it to the user, so the user can see which period a run covered. It never sends a `discoverSince` in the future, but it does not compare it with the target's clock either.
+
+The request bodies are decoded strictly, and a connector that does not know `discoverSince` would refuse the initiate. That is why `Core` sends it only while the flag is listed. When a connector loses the flag, discoveries that ask for a window fail; see [When the `Connector` withdraws the window](../../concept-design/modules/discovery.md#when-the-connector-withdraws-the-window).
+
 ### Errors
 
 The connector answers errors as `application/problem+json`, following [Error Handling](../error-handling.md). These codes carry a meaning of their own in the run lifecycle:
@@ -163,6 +187,14 @@ When implementing the lifecycle:
 - **Refuse a stop on a finished run** with `422` `OPERATION_PAST_POINT_OF_NO_RETURN`. Accepting it makes `Core` record the run as stopped and stop draining it, and the run may then never complete.
 - **Expect concurrent requests for one run.** `Core` checks whether an operation is legal before it calls the connector, so two resumes, or a resume and a stop, can reach the connector at the same time. Serialize initiate, stop and resume per run.
 - **Size result buffers for the polling interval.** After a drain that finds nothing new, the next one comes only at the next poll, as described in [Run lifecycle](#run-lifecycle).
+
+A connector that lists `discoveryIncremental` also:
+
+- **Keeps `discoverSince` in the checkpoint.** Read it on initiate and write it into the first `checkpoint`, so that every later request, on any instance, applies the same window. A run without it in the checkpoint is a full run.
+- **Fixes the upper bound at initiate.** Record in the checkpoint the moment, or the newest record, the run reads up to. Items created while the run is in progress then neither shift its pages nor prolong it; the next run picks them up.
+- **Chooses a safety margin.** Read from slightly before `discoverSince`, rather than exactly from it, to cover the difference between the platform's clock and the target's, and items the target lists only some time after it dates them. Base the margin on how the technology behaves, for example 15 minutes for a service that lists new records within minutes. An item read twice costs little: `Core` keeps one item per resource and `uniqueRef` in a run, and a certificate or key already in the inventory only gets the discovery's metadata. An item missed is not found again until a full run. Keep the margin fixed, and do not shift the `discoverSince` that `Core` records; `Core` shows the user the value it sent.
+- **Documents what the window covers.** Say in the connector's info attribute which items it reads again in a window, which changes it cannot see, such as a status change the technology does not date, and how wide its margin is. Users read it when they choose a window.
+- **Never fails a run because of `discoverSince`.** An instant before anything the target holds means a full read. An instant the target cannot filter by exactly means reading more, never less.
 
 ## Specification
 
