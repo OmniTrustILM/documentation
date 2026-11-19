@@ -36,7 +36,7 @@ The following steps explain the process of `Discovery`:
 1. `Client` selects the `Connector` that will perform the discovery
 2. For a v2 `Connector`, `Client` selects the resources to discover, certificates, keys or both. For a v1 `Connector`, `Client` selects the `Kind`
 3. `Client` gets the list of `Attributes` for the selection and provides their values
-4. `Client` optionally assigns triggers, and creates the `Discovery`, either to run now or as a scheduled job
+4. `Client` optionally chooses a [discovery window](#discovery-window), assigns triggers, and creates the `Discovery`, either to run now or as a scheduled job
 
 For a v1 discovery, `Core` forwards the `Attributes` to the `Connector`, checks the `Connector` for the status of the discovery, and collects all certificates when it has finished.
 
@@ -65,6 +65,54 @@ A v2 discovery that targets keys adds the keys it finds to the key inventory. Wh
 A key that is found but not added, such as a private key, is still listed in the discovery's results with the reason, and the discovery ends `Warning`.
 
 Keys are added as the user who started the discovery, who needs the `create` permission on `keys`. Without it, no key is added, and the discovery ends `Warning` once its retries run out; its messages name the missing permission as the likely cause.
+
+## Discovery window
+
+A full discovery reads everything its target holds. On a large target that is slow, and it mostly reads again what the inventory already has. The discovery window lets a discovery read only what was created or changed since a point in time:
+
+| Window | Discovers | Available for |
+|--------|-----------|---------------|
+| Full | Everything the target holds. This is the default. | One-off and scheduled discoveries |
+| Lookback | What was created or changed within a duration before the discovery starts, such as the last 7 days | One-off and scheduled discoveries |
+| Since the last successful run | What was created or changed since the scheduled job last ran successfully | Scheduled discoveries only |
+
+The window is offered only for a v2 `Connector` whose `discovery` interface lists the `discoveryIncremental` [feature flag](../../connectors/common-interfaces/info-interface.md#feature-flags). For any other `Connector`, the form shows no window, and the platform refuses a discovery that asks for one other than Full. A discovery without a window runs full, so discoveries and scheduled jobs created before the window existed keep running as they did.
+
+### How the platform finds the start point
+
+When a discovery with a window starts, the platform turns its window into one point in time and sends it to the `Connector`, which discovers only what was created or changed at or after it:
+
+- **Full** sends nothing, and the `Connector` reads everything.
+- **Lookback** sends the moment the discovery starts minus the duration. In the form, the duration is a number of days or hours, 7 days by default. Through the API, it is a positive ISO-8601 duration of days and time, for example `P7D` for 7 days, `PT12H` for 12 hours, `P1DT6H` for 30 hours or `PT30M` for 30 minutes; years, months and weeks are not accepted.
+- **Since the last successful run** sends the time at which the scheduled job fired for its most recent execution that succeeded. See [Discovery jobs](../architecture/scheduler.md#discovery-jobs) for which executions succeed. The time is taken when the job fired, before its discovery was created, so what was created while that discovery ran falls inside the next window.
+
+Since the last successful run follows the scheduled job's own history, not the discoveries it created:
+
+- An execution that failed or was cancelled never moves the start point. The next execution starts from the last one that succeeded, so nothing created in between is skipped.
+- An execution whose discovery ended `Warning` counts as succeeded and moves the start point.
+- The first execution of a job, and any execution after the job's successful executions were removed from its history, runs full.
+
+A stopped discovery that is resumed keeps its start point.
+
+The detail of a discovery shows its **Discovery window**, with the duration for Lookback, and **Discovered since**, the point in time the platform sent. A discovery that ran full shows no **Discovered since**.
+
+:::note
+The `Connector` may read slightly further back than the start point, to cover a difference between the platform's clock and the target's. Anything read twice is not imported twice: a certificate or key already in the inventory only gets the discovery's metadata. Whether the `Connector` widens the window, and by how much, is described in its own documentation.
+:::
+
+### What an incremental discovery does not detect
+
+A discovery with a window reads only what the target reports as created or changed since the start point. What counts as a change depends on the technology, and the `Connector`'s documentation says what it can tell. In general, an incremental discovery does not detect:
+
+- **Changes the target does not record as one.** A certificate revoked or expired since the last run, or one moved to another place, is read again only when the target dates the change. The platform's own [certificate status update](../architecture/scheduler.md#supported-task-types) keeps the status of certificates already in the inventory current.
+- **Anything older than the start point** that the inventory is missing, for example because an earlier discovery failed to import it or it was deleted from the inventory.
+- **Removals.** A discovery never removes what it found earlier, whatever its window.
+
+Schedule a full discovery from time to time alongside the incremental one to catch what it does not detect, see [Incremental and full discovery jobs](../architecture/scheduler.md#incremental-and-full-discovery-jobs).
+
+### When the `Connector` withdraws the window
+
+The window can be chosen only while the `Connector` lists `discoveryIncremental`. When a `Connector` is replaced by a version without the flag, a discovery or scheduled job that asks for a window other than Full no longer runs full in its place: each of its discoveries ends `Failed`, with a message naming `discoveryIncremental`, and the `Connector` is not asked to start it. Delete the scheduled job and schedule it again with the Full window, or restore a `Connector` that lists the flag.
 
 ## Operations
 

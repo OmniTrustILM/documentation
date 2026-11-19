@@ -107,6 +107,7 @@ Feature flags are optional capability indicators that signal connector behaviour
 | `secretVersioning` | `secret`              | Supports versioning of secrets, keeping a history of previous values         |
 | `secretRotation`   | `secret`              | Supports triggering rotation of secrets                                      |
 | `discoveryStopResume` | `discovery`        | Supports stopping a running discovery with a resumable checkpoint and resuming it later — see [Discovery Provider v2](../provider-interfaces/discovery-provider-v2.md#stop-resume-and-cancel) |
+| `discoveryIncremental` | `discovery`       | Honors `discoverSince` on initiate and discovers only items created or changed since then — see [Discovery Provider v2](../provider-interfaces/discovery-provider-v2.md#incremental-discovery) |
 
 A flag is either informational or enforced. `Core` handles an informational flag's behavior whether or not the connector lists it; `stateless` and `openMetrics` are informational. An enforced flag is opt-in: the capability counts as supported only when the connector lists the flag on that interface, and `Core` never invokes it otherwise. The other flags in this table are enforced.
 

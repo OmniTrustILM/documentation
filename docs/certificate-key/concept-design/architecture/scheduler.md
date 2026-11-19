@@ -94,4 +94,22 @@ A discovery job's execution stays open until its discovery ends. A stopped disco
 
 When the discovery cannot be created, the execution fails and says why. A discovery whose `Connector` refuses its configuration ends `Failed`, and so does the execution. A one-time discovery job is removed from the scheduler after an execution that succeeded or was cancelled, and stays in the scheduler after one that failed.
 
+### Incremental and full discovery jobs
+
+A discovery job can run with a [discovery window](../modules/discovery.md#discovery-window), when its `Connector` supports one. Each execution then discovers only what was created or changed since a start point:
+
+- **Since the last successful run** starts from the time the job fired for its last successful execution, and runs full on its first execution, so a one-time job with this window always runs full. See [How the platform finds the start point](../modules/discovery.md#how-the-platform-finds-the-start-point).
+- **Lookback** starts the same duration before every execution, whatever the earlier executions did. Choose a duration longer than the interval between executions, or what was created between them is missed.
+
+Each job follows only its own history. Two jobs that discover the same target do not share a start point, so they can run side by side with different windows. A common pattern is a frequent incremental job that keeps the inventory current, and a less frequent full job that catches what an [incremental discovery does not detect](../modules/discovery.md#what-an-incremental-discovery-does-not-detect):
+
+| Job | Window | Cron expression | Runs |
+|-----|--------|-----------------|------|
+| `Example CA - new certificates` | Since the last successful run | `0 0 * ? * *` | Every hour |
+| `Example CA - full` | Full | `0 0 2 ? * SUN` | Every Sunday at 02:00 UTC |
+
+Create the two jobs from the same discovery settings, changing only the window, the job name and the cron expression. When both are due at once, they run as two separate discoveries.
+
+Only the cron expression of a scheduled job can be changed. To change its window, delete the job and schedule it again; the new job starts with a full execution when its window is Since the last successful run.
+
 The Scheduler stands as an essential component within the platform, enabling the systematic execution of management and automation tasks. By mastering the concepts of Scheduled Tasks, Cron Expressions, and Execution History, users gain a thorough understanding of how to utilize this feature effectively.
