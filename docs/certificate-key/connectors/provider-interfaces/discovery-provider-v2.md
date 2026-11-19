@@ -127,7 +127,7 @@ A run that stays stopped too long is cancelled by the platform, which then sends
 
 Discovering only what is new is an optional capability. A connector that supports it lists the [`discoveryIncremental`](../common-interfaces/info-interface.md#feature-flags) feature flag on its `discovery` interface. The flag is enforced: the platform offers a [discovery window](../../concept-design/modules/discovery.md#discovery-window) only for a connector that lists it.
 
-When a run has a window other than full, `Core` resolves it into one instant just before it calls initiate, and sends it as `discoverSince`, an RFC 3339 date-time that may carry fractional seconds:
+When a run has a window other than full, `Core` resolves it into one instant just before it calls initiate and, when the window gives a start point, sends it as `discoverSince`, an RFC 3339 date-time that may carry fractional seconds:
 
 ```json
 {
@@ -138,7 +138,7 @@ When a run has a window other than full, `Core` resolves it into one instant jus
 }
 ```
 
-- **Absent** means a full run: discover everything, as without the flag. A full run, and every run of a discovery created without a window, carries no `discoverSince`.
+- **Absent** means a full run: discover everything, as without the flag. A full run, every run of a discovery created without a window, and a run whose window gives no start point carry no `discoverSince`. The last case is a Since the last successful run job with no successful execution in its history, such as on its first run.
 - **Present** means: discover only the items created or changed at or after this instant, as far as the technology can tell. What counts as a change is the connector's decision; document it, see [For connector developers](#for-connector-developers).
 
 `discoverSince` is sent on initiate only. Status, results, stop, resume and cancel do not carry it, so the connector keeps it in its `checkpoint`, which `Core` replays on every later request. A resumed run continues with the `discoverSince` it was initiated with.
