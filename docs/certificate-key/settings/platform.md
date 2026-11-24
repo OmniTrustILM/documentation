@@ -66,3 +66,21 @@ The **Registration** section of the Certificates tab holds the platform defaults
 |-------------------------------------|-------------------------------------------------------------------------------------------------|---------------|
 | **Default Issuance Window (days)**  | Default issuance window in days, applied to a challenge-protected pre-registration that omits an explicit expiry | 7 days        |
 | **Max Failed Attempts**             | Maximum failed challenge-verification attempts before the registration authorization locks     | 5             |
+
+### Renewal Information
+
+The **Renewal Information** section of the Certificates tab controls how often the platform refreshes the [renewal windows](../concept-design/core-components/renewal-window.md#renewal-information-from-the-certificate-authority) that certificate authorities suggest. The refresh itself is turned on per `RA Profile`, in its [renewal settings](../concept-design/core-components/ra-profile.md#renewal-settings); these values apply to every `RA Profile` that uses it. The web interface edits the intervals in hours and days; the API (`certificates.renewalInfo`) takes seconds.
+
+| Name | API key | Description | Default Value |
+|---|---|---|---|
+| **Refresh Minimum Interval** | `refreshMinInterval` | Lower bound for the delay between two refreshes of a renewal window, from 60 to 604800 seconds | 1 hour |
+| **Refresh Maximum Interval** | `refreshMaxInterval` | Upper bound for the delay between two refreshes of a renewal window, from 60 to 604800 seconds | 24 hours |
+| **Refresh Default Interval** | `refreshDefaultInterval` | Delay between refreshes when the certificate authority gives no retry-after time, from 60 to 604800 seconds. The first refreshes of the certificates of an `RA Profile` are also spread over it | 6 hours |
+| **Refresh Batch Size** | `refreshBatchSize` | How many certificates are asked about in one request to the connector, from 1 to 50 | 20 |
+| **Refresh Re-check Interval** | `refreshRecheckInterval` | How long to wait before asking again about a certificate that the certificate authority does not know or has no advice for, from 3600 to 31536000 seconds | 7 days |
+
+The minimum must not exceed the default, and the default must not exceed the maximum.
+
+:::note
+An [Update platform settings](/api/core-other#tag/settings/PUT/v1/settings/platform) request that carries the `renewalInfo` section replaces it as a whole: a value left out returns to its default. A request without the section leaves it unchanged.
+:::

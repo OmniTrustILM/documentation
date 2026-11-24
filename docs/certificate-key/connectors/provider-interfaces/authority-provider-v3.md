@@ -9,7 +9,7 @@ sidebar_position: 2
 Authority Provider v3 is the current interface between the `Core` and a certification authority. Like the [v2 interface](./authority-provider-v2.md) it covers certificate **issue**, **renew**, **rekey**, and **revoke**, and adds **pre-registration** — registering an identity with the CA before a CSR exists. It differs from v2 in three ways:
 
 - **Stateless.** There is no authority-instance lifecycle (`createAuthorityInstance` and friends are gone). The authority identity travels in every request.
-- **Capability-driven.** Optional behavior (pre-registration, status polling, structured requests, identity override) is advertised per connector and enforced by the platform.
+- **Capability-driven.** Optional behavior (pre-registration, status polling, structured requests, identity override, renewal information) is advertised per connector and enforced by the platform.
 - **Synchronous or asynchronous.** Any operation may complete immediately or be accepted for later completion, which the platform polls to a terminal state.
 
 The v3 certificate states and transitions (`Pending Registration`, `Registered`, the async `Pending Issue` / `Pending Revoke` states, and their restore paths) are documented on the [Certificate state](../../concept-design/core-components/certificate.md#certificate-state) page; this page describes the connector interface itself and does not repeat the state diagram.
@@ -49,6 +49,7 @@ Optional v3 behavior is gated by capabilities a connector advertises in its inte
 | Certificate status polling | `certificateStatusPolling` | The connector can be polled for asynchronous completion. Without it, the platform will not poll even if the connector accepts an operation with `202`. |
 | Structured certificate request | `certificateRequestStructured` | The connector accepts the structured request-content model on register / issue / renew. |
 | Certificate identity override | `certificateIdentityOverride` | The connector applies a platform-supplied identity to a forwarded CSR (e.g. an End Entity override) instead of stripping and re-signing it. |
+| Certificate renewal information | `certificateRenewalInfo` | The connector reports the renewal window the CA suggests for issued certificates (the `/renewalInfo` endpoint). See [Renewal information](#renewal-information). |
 
 The platform enforces capabilities in depth: the operation is only attempted when the adapter supports it, the authority advertises the flag, and — as a final backstop — the connector may still answer `OPERATION_NOT_SUPPORTED` at runtime.
 
@@ -71,6 +72,7 @@ All v3 certificate operations are `POST` requests under `/v3/authorityProvider/c
 | Identify | `/identify` | Identify an uploaded certificate at the CA. |
 | Status | `/issue/status`, `/revoke/status`, `/register/status` | Poll a parked operation. |
 | Cancel | `/issue/cancel`, `/revoke/cancel`, `/register/cancel` | Cancel an in-flight operation. |
+| Renewal information | `/renewalInfo` | Optional, with `certificateRenewalInfo`. Renewal windows suggested by the CA for a batch of issued certificates. |
 
 Renew and rekey do not have their own status or cancel endpoints — they reuse the `issue` ones.
 
@@ -177,6 +179,63 @@ Two aspects of registration are handled entirely by the platform and do not invo
 
 Both, along with the certificate states through registration and completion, are described on the [Certificate state](../../concept-design/core-components/certificate.md#registration-lifecycle) page.
 
+## Renewal information
+
+When an authority advertises `certificateRenewalInfo`, Core asks the connector for the renewal window the CA suggests for its issued certificates, for example from the ACME Renewal Information ([RFC 9773](https://datatracker.ietf.org/doc/html/rfc9773)) of an ACME CA. The window means "the CA advises renewing inside this window"; a window that starts in the past means renew now. Core stores it as the [renewal window](../../concept-design/core-components/renewal-window.md) of the certificate with the source `authority`.
+
+Only the refresh job of Core calls the endpoint, for the certificates of `RA Profiles` that use the renewal window from the certificate authority, as described in [Renewal information from the certificate authority](../../concept-design/core-components/renewal-window.md#renewal-information-from-the-certificate-authority). No user request and no ACME request reaches it.
+
+### Request
+
+`POST /v3/authorityProvider/certificates/renewalInfo` carries `authorityAttributes` and `raProfileAttributes`, like the other certificate operations, and a batch of certificates of one `RA Profile`:
+
+| Field | Required | Description |
+|---|---|---|
+| `certificates` | Yes | 1 to 50 items; Core sends at most the **Refresh Batch Size** platform setting |
+| `certificates[].reference` | Yes | An opaque identifier, unique within the request, that the connector returns with the result |
+| `certificates[].certificate` | Yes | The certificate, Base64-encoded DER |
+| `certificates[].meta` | No | The metadata the connector stored for the certificate |
+
+A blank field, a repeated reference or a batch outside the limits above is invalid and answered with `422`.
+
+### Response
+
+The connector answers `200` with one result per item, in any order, whatever the outcome of each item:
+
+| Field | Description |
+|---|---|
+| `retryAfter` | Optional. Seconds until the next refresh for every result without its own |
+| `results[].reference` | The reference of the item |
+| `results[].status` | `available`, `unknown`, `notSupported` or `retry` |
+| `results[].windowStart`, `results[].windowEnd` | The suggested window; required for `available`, and the end must be after the start |
+| `results[].explanationUrl` | Optional. A page that explains the window. Core keeps it only when it is an absolute `http` or `https` URL of at most 2048 characters, and drops it otherwise |
+| `results[].retryAfter` | Optional. Seconds until the next refresh of this certificate |
+| `results[].reason` | Optional. A short text for the operator, without certificate content |
+
+Core handles the statuses as follows:
+
+| Status | Meaning | Core |
+|---|---|---|
+| `available` | The CA suggests a window | Stores the window and refreshes it after the retry-after time |
+| `unknown` | The CA does not know the certificate | Removes a window that came from the CA and asks again only after the **Refresh Re-check Interval** |
+| `notSupported` | The CA gives no advice for the certificate | As `unknown` |
+| `retry` | Temporary failure, or the connector did not reach the item in time | Asks again after the retry-after time, or after a growing delay when none is given |
+
+An item missing from `results`, a repeated reference, or an `available` result without a valid window is treated as `retry`.
+
+### Retry-after rules
+
+The next refresh of a certificate comes after the item's `retryAfter`, else the response's `retryAfter`, else the **Refresh Default Interval**. The delay is kept between the **Refresh Minimum Interval** and the **Refresh Maximum Interval** and varied by up to 10 %. These are [platform settings](../../settings/platform.md#renewal-information). Without any retry-after time, a `retry` result is asked again after a growing delay, see [Renewal information from the certificate authority](../../concept-design/core-components/renewal-window.md#renewal-information-from-the-certificate-authority).
+
+Errors of the whole call:
+
+| Answer | Core |
+|---|---|
+| `422`, `429`, `503`, another error, a timeout or an unreadable response | Logs the error and asks about the batch again after the growing delay |
+| `404`, `501` or the error `OPERATION_NOT_SUPPORTED`, although the flag is advertised | Logs a warning and asks about the batch again only after the **Refresh Re-check Interval** |
+
+The connector paces its calls to the CA itself. It should answer within 20 seconds, and answer `retry` for the items it did not reach in that time rather than fail the request.
+
 ## Errors
 
 The connector answers errors as `application/problem+json`, following [Error Handling](../error-handling.md). These codes are specific to this interface:
@@ -201,6 +260,7 @@ A v3 connector reconstructs the CA session from `authorityAttributes` + `raProfi
 - `certificateRegistration` → implement `/register` and `/register/attributes` (and, if registration can be asynchronous, `/register/status` and `/register/cancel`).
 - `certificateStatusPolling` → implement the `…/status` and `…/cancel` endpoints and honor `202`. Without advertising it, returning `202` will leave the certificate parked with no polling.
 - `certificateRequestStructured` / `certificateIdentityOverride` → accept the structured request-content model and apply a platform-supplied identity to a forwarded CSR.
+- `certificateRenewalInfo` → implement `/renewalInfo`; see [Renewal information](#renewal-information). In the Go SDK, implement the optional `RenewalInfoProvider` interface and register it with `WithRenewalInfo`: the route is served only then, and the handler checks the size of the batch, the references and the windows. A connector that advertises `certificateRenewalInfo` requires Core 2.21 or later.
 
 **Signalling async:** return `202` with a connector-owned `meta` tracking handle in the body. The platform replays that `meta` on every subsequent status, cancel, and register-bound issue call, and reports completion through the status endpoint as `inProgress` / `completed` / `failed`.
 
