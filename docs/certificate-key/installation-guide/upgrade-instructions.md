@@ -6,6 +6,15 @@ sidebar_position: 9
 
 How you upgrade the platform depends on how you deployed it. Upgrading should always be performed with caution. The upgrade process is **irreversible**, so it is essential to create backups of the database and of your deployment's configuration before proceeding.
 
+## Upgrading to 2.21.0
+
+Version 2.21.0 adds [renewal windows](../concept-design/core-components/renewal-window.md), ACME [renewal information](../protocols/acme/acme-profile.md#renewal-information) and [automatic renewal](../concept-design/core-components/workflow/execution.md#renew-certificate). Check the following before you upgrade:
+
+- **Off by default** — every renewal setting of `RA Profiles` and `ACME Profiles` is off after the upgrade. Until an administrator turns one on, no certificate has a renewal window, no **Certificate renewal due** event fires, no connector is asked for renewal information, ACME directories are unchanged and `replaces` in ACME orders is ignored. `Expiring`, the expiring threshold and the **Certificate expiring** event are unchanged.
+- **ACME connector** — the version of the ACME connector that reports renewal information from the CA requires Core 2.21.0 or later, because earlier Cores refuse a connector that advertises a capability they do not know. Upgrade Core first, or together with the connector. The connector no longer writes the `acmeAriWindow` metadata of issued certificates; values stored earlier remain as history.
+- **Updates through the API** — an `ACME Profile` update that leaves out `renewalInfoEnabled` or `renewalInfoRetryAfter` keeps their current values, see [ACME Profile](../protocols/acme/acme-profile.md). The `renewalInfo` section of the platform settings and the renewal settings of an `RA Profile` are replaced as a whole: a script that updates them without sending every value returns the missing ones to their defaults.
+- **Application properties** — the refresh of renewal information has its own [application properties](../concept-design/core-components/renewal-window.md#application-properties), `provider.renewal-info.*`. Their defaults need no change, and no new messaging queue is needed.
+
 ## Upgrading to 2.20.0
 
 Whatever your deployment, check the following before you upgrade to 2.20.0:

@@ -23,8 +23,50 @@ sidebar_position: 3
 | **Require agree to Terms of Service**               | Specifies whether the Terms of Service must be agreed for new account registration | `false`              | <span class="badge badge--danger">No</span>   |
 | **External Account Binding secrets**                | Secrets holding the keys that new accounts must bind with. See [External Account Binding](external-account-binding.md) | none (anyone may register) | <span class="badge badge--danger">No</span>   |
 | **Pre-authorized identifiers**                      | Identifiers that accounts may obtain without proving control of them, and whether an identifier the list does not cover needs a challenge (the default) or is refused. See [Pre-authorized identifiers](#pre-authorized-identifiers) | none                 | <span class="badge badge--danger">No</span>   |
+| **Enable renewal information**                      | Serve [renewal information](#renewal-information) to ACME clients and accept `replaces` in new orders | `false` | <span class="badge badge--danger">No</span>   |
+| **Renewal information retry-after**                 | Seconds clients wait before asking for renewal information again, from 300 to 86400 | `21600` (6 hours) | <span class="badge badge--danger">No</span>   |
 
 By default `ACME Profiles` will be created without any default `RA Profile`, if not selected any.
+
+:::note
+Updating an `ACME Profile` through the API replaces its configuration, except for `renewalInfoEnabled` and `renewalInfoRetryAfter`: a request that leaves out either field, or sends it as `null`, keeps its current value. Creating a profile without them applies the defaults.
+:::
+
+## Renewal information
+
+An `ACME Profile` can serve ACME Renewal Information ([RFC 9773](https://datatracker.ietf.org/doc/html/rfc9773)): ACME clients that support it ask the platform when to renew each certificate, instead of renewing at a fixed share of its lifetime. The platform answers with the [renewal window](../../concept-design/core-components/renewal-window.md) of the certificate, whichever source set it. A certificate without a window gets no renewal information, so turn on a source of windows as well, in the [renewal settings](../../concept-design/core-components/ra-profile.md#renewal-settings) of the `RA Profile`, or request [early renewal](../../concept-design/core-components/ra-profile.md#early-renewal).
+
+Renewal information is off by default. When **Enable renewal information** is on, the directory of the profile carries the `renewalInfo` URL, in both ACME APIs:
+
+- `https://<hostname>:<port>/api/v1/protocols/acme/{acmeProfileName}/renewal-info`
+- `https://<hostname>:<port>/api/v1/protocols/acme/raProfile/{raProfileName}/renewal-info`
+
+A client asks for the renewal information of a certificate with `GET <renewalInfo>/{certID}`, where the certificate identifier is built from its authority key identifier and serial number as RFC 9773 describes. The request needs no account and no nonce, and the platform answers from its database without calling the CA:
+
+| Answer | When |
+|---|---|
+| `200` with the `suggestedWindow` (`start`, `end`) and, when set, the `explanationURL` | The certificate is issued and not archived under the `RA Profile` of the request and has a renewal window |
+| `400` with the ACME error `malformed` | The certificate identifier cannot be read |
+| `404` | Renewal information is off or the profile is disabled, the certificate is unknown, or it has no window |
+
+The `Retry-After` and `Cache-Control: max-age` headers of a `200` answer carry the **Renewal information retry-after**. While the window of the certificate is forced by [early renewal](../../concept-design/core-components/ra-profile.md#early-renewal), they carry at most one hour, so that clients pick up the forced window quickly.
+
+The certificate is looked up among the certificates of one `RA Profile`: the `RA Profile` of the URL, or the default `RA Profile` of the `ACME Profile`. Through the ACME API of the `ACME Profile`, renewal information therefore needs a default `RA Profile`; without one every request answers `404`.
+
+### Replacing a certificate
+
+A client that renews a certificate can name it in the `replaces` field of the new order. When renewal information is on, the platform checks the field and answers:
+
+| Answer | When |
+|---|---|
+| `400` with the ACME error `malformed` | The certificate cannot be replaced by this order: it is unknown, it is not an issued certificate of the `RA Profile`, it was ordered by another account, or it shares no identifier with the order. The answer is the same in each case, so it reveals nothing about other accounts |
+| `409` with the ACME error `alreadyReplaced` | Another order that is still live already replaces the certificate, or it already has an issued successor |
+
+An accepted `replaces` is stored with the order and returned in the order object. When the order is finalized, the platform renews the certificate if the CSR keeps its key, rekeys it if the CSR has a new key, and otherwise issues a new certificate. In each case the new certificate is the [successor](../../concept-design/core-components/certificate.md#relations) of the replaced one. When the platform renews or rekeys, the connector can tell the upstream CA which certificate is replaced.
+
+The replaced certificate is not revoked. It is no longer due for renewal, and the **Certificate expiring** and **Certificate renewal due** events stop for it.
+
+When renewal information is off, `replaces` is ignored as in earlier versions: it is not checked, stored or returned.
 
 ## Pre-authorized identifiers
 
