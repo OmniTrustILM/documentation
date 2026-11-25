@@ -86,6 +86,8 @@ A certificate is eligible when it is issued, not archived, not expired and has n
 
 Each affected certificate gets an `Update renewal window` entry with the source `Forced` in its history, and the request is recorded in the audit log as `Request early renewal` with the spread and the explanation URL. Nothing is revoked and no approval is asked; the renewals that follow go through the approval rules of the `RA Profile` as usual.
 
+A forced window stays when the `RA Profile` of the certificate changes, unless a CA window that starts earlier has already replaced it. See [Effective window](./renewal-window.md#effective-window).
+
 ## Request attributes
 
 `RA Profile` defines the request attributes of its certificate service — what the requester fills in on the request form and where each value lands in the issued certificate. If you are new to request attributes, read the [Request Attribute](./request-attribute.md) concept first.

@@ -44,6 +44,8 @@ A change that moves the start earlier and comes from the CA or from an administr
 
 A forced window cannot be cancelled. It is replaced by the next forced window, or by a CA window that starts earlier.
 
+A CA window that replaces a forced window has the source `authority` and is handled like any other CA window. When the `RA Profile` of the certificate is then assigned, changed or removed, that window is removed too and the certificate falls back to the policy window of the new `RA Profile`, or to no window. The earlier forced window does not come back; to still renew the certificate early, request early renewal again.
+
 ## Renewal due
 
 A certificate is **due for renewal** when its window has started and it has no issued successor. Renewal keeps the window of the old certificate for its history, but the certificate is no longer due.
