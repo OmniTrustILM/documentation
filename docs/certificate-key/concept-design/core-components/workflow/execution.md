@@ -82,7 +82,7 @@ A renewal fails when its request is refused, or when the new certificate is late
 
 A location that no longer holds the old certificate is settled: with an issued new certificate it counts as done, and without one it is no longer tracked.
 
-When the platform holds the key and the new certificate is issued but replacing the old one in a location fails, the renewal still counts as done. The failure is written to the certificate and trigger history, naming where the new and old certificates are, and is not retried. The new certificate replaces the old one in its locations only when the certificate authority issues it at once; with an authority that issues asynchronously, push it to the locations yourself.
+When the platform holds the key and the new certificate is issued but replacing the old one in a location fails, the renewal still counts as done. The failure is written to the certificate and trigger history, naming where the new and old certificates are, and is not retried. When the certificate authority issues the new certificate asynchronously, the replacement runs, as the trigger owner, once the platform learns from the authority that it is issued, and a failure is handled the same way.
 
 #### Permissions of the trigger owner
 
