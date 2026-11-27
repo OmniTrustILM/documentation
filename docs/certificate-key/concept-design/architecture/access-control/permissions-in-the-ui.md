@@ -26,7 +26,7 @@ The interface treats sections and operations differently:
 A disabled control explains itself in one of two ways:
 
 - **You need the _action_ permission on _resource_.** The user's roles do not grant the action on the resource, for example _You need the Update permission on RA Profile._
-- **Your permissions do not allow _action_ on this object.** The user holds the action on the resource, but not on this object, for example because the object is in a group on which the action is denied, or because the operation also needs access to a related object the user cannot use.
+- **Your permissions do not allow _action_ on this object.** The user holds the action on the resource, but not on this object, for example because the role denies the action on this object, or because the operation also needs access to a related object the user cannot use.
 
 A user whose roles grant every action, such as `superadmin` or `admin`, is offered every operation.
 
