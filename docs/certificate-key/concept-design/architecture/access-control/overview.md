@@ -21,5 +21,6 @@ The access control consists of the following parts:
 | [Externalized Authentication](externalized-authentication.md) | External authentication system support        |
 | [Identification](identification.md)                           | Supported identification options              |
 | [Authorization](authorization.md)                             | Authorization policies and evaluation process |
+| [Permissions in the User Interface](permissions-in-the-ui.md) | Sections and operations offered to each user  |
 | [Users](users.md)                                             | User management                               |
 | [Roles and Permissions](roles-permissions.md)                 | Management of roles and permissions           |
