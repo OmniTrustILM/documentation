@@ -35,6 +35,8 @@ For more information about the authorization policies, refer to [Auth OPA Polici
 
 In addition to evaluation of object access based on individual assigned permissions for resource actions, user can be granted access to some object by its owner and group associations.
 
-In case of owner association, if authorized user is the owner of accessed object, it has granted access for all actions on that object.
+In case of owner association, if authorized user is the owner of accessed object, it has granted access for all actions that are checked on that object. Operations checked only on the resource, such as certificate, key and secret lifecycle operations, still need the action on the resource.
 
-In case of group associations, user permissions for action `Members` for resource `Group` is evaluated and checked if it is allowed for any group associated to accessed object. If it is true, user has granted access for `List` and `Detail` action on that object.
+In case of group associations, user permissions for action `Members` for resource `Group` is evaluated and checked if it is allowed for any group associated to accessed object. If it is true, user has granted access for `List` and `Detail` action on that object, unless the object is also assigned to a group on which the `Members` action is denied.
+
+The web interface reflects these rules: it offers on each object the actions that ownership, group access and grants on that object allow. See [Permissions in the User Interface](permissions-in-the-ui.md).
